@@ -1,2 +1,32 @@
 # FOZ
-Nhập môn CNPM project
+
+This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
+
+The target audience is general web users seeking online community spaces. They will use the application exclusively through standard web browsers on any internet-connected device, including desktop computers, laptops, and smartphones.
+
+Key Features:
+
+- Content Posting: Users can easily create text-based posts to initiate new discussion threads on topics they care about.
+- Reading and Interaction: Members can browse existing threads, read ongoing discussions, and interact by leaving their own comments or replies.
+- Thread Summarization: The application utilizes an AI engine to automatically generate brief overviews of lengthy discussion threads.
+
+## User Roles
+
+| Role  | Description                                                                      |
+| ----- | -------------------------------------------------------------------------------- |
+| User  | Can post/view the posts, have interactions with the posts such as like, comment. |
+| Admin | Manage the whole system.                                                         |
+
+## Functional Groups
+
+| ID  | Group Name                 | Description                                                                                                  |
+| --- | -------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 1   | Authentication             | Sign up, log in, log out                                                                                     |
+| 2   | Profile management         | Edit profile info, change password, change avatar                                                            |
+| 3   | Search posts               | Users can search posts, sort search results (time or related), click to view search results                  |
+| 4   | Post recommendation        | Forum can recommend posts based on time and trending order                                                   |
+| 5   | Upload/Remove Post         | Poster can post to the forum, can remove their posts                                                         |
+| 6   | Post Management            | Original poster can delete unwanted comments on their posts, can lock the post when no more comments needed. |
+| 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                              |
+| 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                               |
+| 9   | Post Summarization (TL;DR) | A summarization inside a post (like Quora post summarization)                                                |
