@@ -19,14 +19,14 @@ Key Features:
 
 ## Functional Groups
 
-| ID  | Group Name                 | Description                                                                                                  |
-| --- | -------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 1   | Authentication             | Sign up, log in, log out                                                                                     |
-| 2   | Profile management         | Edit profile info, change password, change avatar                                                            |
-| 3   | Search posts               | Users can search posts, sort search results (time or related), click to view search results                  |
-| 4   | Post recommendation        | Forum can recommend posts based on time and trending order                                                   |
-| 5   | Upload/Remove Post         | Poster can post to the forum, can remove their posts                                                         |
-| 6   | Post Management            | Original poster can delete unwanted comments on their posts, can lock the post when no more comments needed. |
-| 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                              |
-| 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                               |
-| 9   | Post Summarization (TL;DR) | A summarization inside a post (like Quora post summarization)                                                |
+| ID  | Group Name                 | Description                                                                                              |
+| --- | -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1   | Authentication             | Sign up, log in, log out                                                                                 |
+| 2   | Profile management         | Edit profile info, change password, change avatar                                                        |
+| 3   | Search posts               | Users can search for desired posts                                                                       |
+| 4   | Post recommendation        | Forum can recommend posts based on time and trending order                                               |
+| 5   | Upload/Remove Post         | Poster can post to the forum, can remove their posts                                                     |
+| 6   | Post Management            | Original poster can delete unwanted comments on their posts, lock the post when no more comments needed. |
+| 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                          |
+| 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                           |
+| 9   | Post Summarization (TL;DR) | A summarization inside a post                                                                            |
