@@ -1,6 +1,8 @@
-# FOZ
+# FOZ (THIS PROJECT IS TRYING TO REPLICATE THREADS.COM)
 
-This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
+IMPORTANT: All of the below is to be change, nothing is strictly decided yet.
+
+This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces. 
 
 The target audience is general web users seeking online community spaces. They will use the application exclusively through standard web browsers on any internet-connected device, including desktop computers, laptops, and smartphones.
 
@@ -12,12 +14,15 @@ Key Features:
 
 ## User Roles
 
+
 | Role  | Description                                                                      |
 | ----- | -------------------------------------------------------------------------------- |
 | User  | Can post/view the posts, have interactions with the posts such as like, comment. |
 | Admin | Manage the whole system.                                                         |
 
+
 ## Functional Groups
+
 
 | ID  | Group Name                 | Description                                                                                              |
 | --- | -------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -30,3 +35,5 @@ Key Features:
 | 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                          |
 | 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                           |
 | 9   | Post Summarization (TL;DR) | A summarization inside a post                                                                            |
+
+
