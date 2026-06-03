@@ -1,50 +1,140 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+SYNC IMPACT REPORT
+==================
+Version change: TEMPLATE → 1.0.0 (initial population)
+
+Principles added:
+  - I. Modular Client-Server Architecture (new)
+  - II. Enforced Folder Structure (new)
+  - III. Clean Code & Reusability (new)
+  - IV. Security at Every Layer (new)
+  - V. AI Service Abstraction (new)
+  - VI. Consistency Over Cleverness (new)
+
+Sections added:
+  - Core Principles (6 principles)
+  - Quality Standards
+  - Governance
+
+Templates reviewed:
+  ✅ .specify/templates/plan-template.md — Constitution Check section is dynamically resolved; no update needed
+  ✅ .specify/templates/spec-template.md — No constitution-specific references; no update needed
+  ✅ .specify/templates/tasks-template.md — Task categories (security hardening, error handling) align with principles; no update needed
+
+Deferred TODOs:
+  - None
+-->
+
+# FOZ Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Modular Client-Server Architecture
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+The project MUST maintain strict separation between client and server.
+The client layer MUST NOT contain business logic; the server layer MUST NOT
+embed presentation concerns. Each side MUST be independently runnable,
+testable, and deployable. Cross-cutting concerns (auth tokens, shared types)
+MUST be placed in explicitly defined shared contracts, not in either layer
+directly.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+Rationale: Prevents coupling that makes the system brittle to change and hard
+to scale independently.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Enforced Folder Structure
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Every module, file, and asset MUST reside in a predictable, agreed-upon
+location derived from the project's folder conventions. Deviations MUST be
+justified in writing and approved before implementation. The folder structure
+MUST be documented in the plan artifact and treated as a first-class design
+decision, not an afterthought.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+Rationale: Predictable structure reduces onboarding time and prevents
+organizational debt from accumulating.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. Clean Code & Reusability
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Code MUST be written for the next reader, not the current author. Components,
+utilities, and service functions MUST be designed for reuse before duplication
+is permitted. Error handling MUST be centralized — each architectural layer
+MUST expose errors through a single, consistent mechanism. Inline error
+swallowing is forbidden; errors MUST propagate explicitly to a designated
+handler.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Rationale: Duplication and scattered error handling are the primary sources of
+maintenance cost in long-lived projects.
+
+### IV. Security at Every Layer
+
+Authentication and authorization MUST be enforced at every architectural
+boundary, not only at the entry point. Input validation MUST occur at the
+point of ingestion (API boundary) and MUST NOT be skipped for "internal"
+calls. Sensitive data MUST never be logged or exposed in error responses.
+Role-based access control (User / Admin) MUST be a first-class concern
+implemented consistently across all protected resources.
+
+Rationale: Security added as a bolt-on after the fact is consistently
+inadequate; it must be structural.
+
+### V. AI Service Abstraction
+
+All AI-powered features (e.g., post summarization) MUST be implemented behind
+a dedicated service interface. The underlying AI provider (model, API, or
+library) MUST be swappable without changes to business logic or API contracts.
+AI calls MUST be isolated, have explicit error boundaries, and MUST NOT block
+core user flows if unavailable.
+
+Rationale: AI providers change rapidly; abstraction prevents vendor lock-in
+and ensures system resilience when AI services are degraded or replaced.
+
+### VI. Consistency Over Cleverness
+
+Patterns established in one part of the codebase MUST be followed everywhere
+they apply. Novel or clever solutions MUST be avoided when a conventional
+approach exists. When a new pattern is introduced, it MUST be documented and
+applied consistently going forward — not used once as a one-off. Code that
+surprises the reader requires justification.
+
+Rationale: Inconsistency is a hidden form of complexity. Predictability
+reduces bugs, speeds reviews, and lowers cognitive load.
+
+## Quality Standards
+
+All code reaching the main branch MUST:
+
+- Pass linting and formatting checks with zero warnings.
+- Have error handling routed through the centralized error mechanism (no
+  silent catch blocks).
+- Include no dead code, commented-out blocks, or debug artifacts.
+- Respect the folder structure defined in the feature plan.
+- Pass role-based access checks for any protected resource.
+
+Performance and scalability expectations are feature-specific and MUST be
+documented in each feature's plan.md under Technical Context.
+
+## Development Workflow
+
+- Features MUST begin with a spec, then a plan, then task generation before
+  any implementation starts.
+- Each task MUST reference its user story and phase.
+- Security hardening and error handling tasks are NOT optional polish — they
+  are part of every implementation phase.
+- AI-related tasks MUST include an explicit abstraction layer task before
+  implementing AI provider integration.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other coding conventions and informal
+agreements in the project. Amendments require:
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+1. A written proposal describing the principle change and rationale.
+2. Version bump per semantic versioning rules (MAJOR/MINOR/PATCH).
+3. Update to `LAST_AMENDED_DATE`.
+4. Propagation check against all `.specify/templates/*.md` files.
+
+All implementation plans MUST include a Constitution Check section that
+validates the feature design against these principles before Phase 0 research
+begins. Non-compliance MUST be explicitly justified in the plan's Complexity
+Tracking section.
+
+**Version**: 1.0.0 | **Ratified**: 2026-06-04 | **Last Amended**: 2026-06-04
