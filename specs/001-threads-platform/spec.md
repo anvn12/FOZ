@@ -6,6 +6,16 @@
 
 **Status**: Draft
 
+## Clarifications
+
+### Session 2026-06-04
+
+- Q: How should content ownership be determined and enforced given there is no authentication? → A: Prototype trust model — ownership is tracked by the author field on each post, and the UI surfaces controls (e.g., delete) based on the currently selected user identity. No server-side enforcement exists; the system trusts that users act within their own identity.
+- Q: Can a user like their own thread or reply? → A: Yes — self-like is allowed with no restriction. A user may like their own content and the like counts toward the total.
+- Q: Does the app launch with pre-existing seed content, or do all five users start with an empty feed? → A: Pre-seeded — the five users launch with sample threads and replies already present to enable immediate demo and testing without manual content creation.
+- Q: When another user posts a new thread, does it auto-appear in the active user's feed in real time, or only counts update live? → A: Counts only — like and reply counts update in real time; new threads from other users do not auto-push into the feed and require a reload to appear.
+- Q: How does a user reload the feed to see new threads, given a full browser refresh resets the session? → A: An in-app refresh control (button or pull-to-refresh gesture) reloads feed content without resetting the selected user identity.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — User Selection & Identity (Priority: P1)
@@ -206,6 +216,8 @@ confirm no delete option is available.
 
 - What happens if the user scrolls faster than new content can load?
   A loading indicator MUST appear while content is being fetched.
+- What happens if all seeded and user-created content is deleted and the feed
+  is empty? An explicit empty-state message MUST be displayed.
 - What happens when the 500-character limit is reached mid-word?
   Submission MUST be blocked; the user MUST be shown the current count clearly.
 - What happens when image attachment fails or exceeds a reasonable file size?
@@ -227,6 +239,9 @@ confirm no delete option is available.
   use it for the duration of the session.
 - **FR-003**: The system MUST display a consolidated feed of all threads in
   reverse chronological order.
+- **FR-003a**: The feed MUST provide an in-app refresh control (button or
+  pull-to-refresh gesture) that reloads feed content and surfaces new threads
+  from other users without resetting the active user session.
 - **FR-004**: The feed MUST support infinite scroll, loading older content
   automatically as the user approaches the bottom.
 - **FR-005**: Users MUST be able to create a thread containing text (up to 500
@@ -237,20 +252,31 @@ confirm no delete option is available.
   conversation chain.
 - **FR-008**: Replies MUST appear directly below their parent thread with a
   visual connector indicating conversational continuity.
-- **FR-009**: Users MUST be able to like or unlike any thread or reply.
+- **FR-009**: Users MUST be able to like or unlike any thread or reply,
+  including their own content. Self-likes count toward the total with no
+  restriction.
 - **FR-010**: Like counts and reply counts MUST update in real time across all
-  active sessions without requiring a page refresh.
+  active sessions without requiring a page refresh. New threads posted by other
+  users do NOT auto-push into the feed; they appear only after the feed is
+  manually reloaded.
 - **FR-011**: Users MUST be able to follow or unfollow any other user.
-- **FR-012**: Users MUST be able to delete their own threads and replies.
-- **FR-013**: Users MUST NOT be able to delete content authored by other users.
-- **FR-014**: Users MUST NOT be able to edit any thread or reply after posting.
+- **FR-012**: The UI MUST display a delete control only on threads and replies
+  authored by the currently selected user; no delete control appears on content
+  authored by others.
+- **FR-013**: No server-side ownership verification is required in this phase;
+  enforcement is prototype trust — UI-gated only. The system MUST record the
+  author identity on every thread and reply to drive UI visibility rules.
+- **FR-014**: Users MUST NOT be able to edit any thread or reply after posting;
+  no edit control is presented to any user on any content.
 - **FR-015**: Deleting a thread MUST also remove all of its replies.
 
 ### Key Entities
 
 - **User**: A predefined identity with a name and avatar. Five instances exist.
   Attributes: name, avatar, list of followed users, authored threads, liked
-  items.
+  items. Each thread and reply MUST store the author's user identity at creation
+  time; this is the sole ownership signal used by the UI (prototype trust model,
+  no server-side auth enforcement).
 - **Thread**: A top-level post. Attributes: author, text body (≤ 500 chars),
   optional single image, timestamp, like count, reply count, list of replies.
 - **Reply**: A response to a thread. Attributes: author, text body, timestamp,
@@ -285,6 +311,9 @@ confirm no delete option is available.
 
 - The five predefined users are static for this phase; no user creation,
   registration, or profile editing is in scope.
+- The application MUST launch with pre-seeded sample threads and replies
+  distributed across the five users, enabling immediate use without manual
+  content creation. Seed data volume is a plan-level detail.
 - The single attached image per thread is assumed to be a standard web-compatible
   format (JPEG, PNG, GIF, WebP); file size limits are a technical detail to
   be determined in the plan phase.

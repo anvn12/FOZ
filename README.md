@@ -12,7 +12,7 @@ Key Features:
 - Reading and Interaction: Members can browse existing threads, read ongoing discussions, and interact by leaving their own comments or replies.
 - Thread Summarization: The application utilizes an AI engine to automatically generate brief overviews of lengthy discussion threads.
 
-## User Roles
+## User Roles (CAN CHANGE)
 
 
 | Role  | Description                                                                      |
@@ -21,7 +21,7 @@ Key Features:
 | Admin | Manage the whole system.                                                         |
 
 
-## Functional Groups
+## Functional Groups (CAN CHANGE)
 
 
 | ID  | Group Name                 | Description                                                                                              |

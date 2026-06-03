@@ -5,4 +5,15 @@ alwaysApply: true
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
+at `specs/001-threads-platform/plan.md`.
+
+Key facts:
+- Stack: React 18 + Vite + TypeScript (client), Node.js + Express + Socket.io + Prisma + TypeScript (server)
+- Database: MS SQL Server via Prisma ORM
+- Structure: `client/` (SPA) and `server/` (API + real-time) at repo root
+- Real-time: Socket.io `global-feed` room; only like/reply counts are live
+- Session: express-session (in-memory), active userId in session
+- Images: Multer → `server/uploads/` served as static
+- No auth — prototype trust model; ownership enforced by UI only
+- See `specs/001-threads-platform/` for spec, research, data-model, contracts, quickstart
 <!-- SPECKIT END -->
