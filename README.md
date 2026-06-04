@@ -1,39 +1,44 @@
-# FOZ (THIS PROJECT IS TRYING TO REPLICATE THREADS.COM)
+# FOZ — Threads Platform (Prototype)
 
-IMPORTANT: All of the below is to be change, nothing is strictly decided yet.
+Web-based social platform replicating core Threads.com experience: predefined users, feed, threads, replies, likes, follows, and real-time count updates.
 
-This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces. 
+## Stack
 
-The target audience is general web users seeking online community spaces. They will use the application exclusively through standard web browsers on any internet-connected device, including desktop computers, laptops, and smartphones.
+- **Client**: React 18, Vite, TypeScript, Tailwind CSS, TanStack Query, Zustand, Socket.io-client
+- **Server**: Node.js, Express, TypeScript, Prisma, Socket.io, MS SQL Server
 
-Key Features:
+## Structure
 
-- Content Posting: Users can easily create text-based posts to initiate new discussion threads on topics they care about.
-- Reading and Interaction: Members can browse existing threads, read ongoing discussions, and interact by leaving their own comments or replies.
-- Thread Summarization: The application utilizes an AI engine to automatically generate brief overviews of lengthy discussion threads.
+```text
+client/     # SPA (Vite + React)
+server/     # API + Socket.io + Prisma
+specs/001-threads-platform/   # Spec Kit artifacts (spec, plan, tasks, contracts)
+```
 
-## User Roles (CAN CHANGE)
+## Quick start
 
+See **[specs/001-threads-platform/quickstart.md](specs/001-threads-platform/quickstart.md)** for full setup (database, seed, run, verify).
 
-| Role  | Description                                                                      |
-| ----- | -------------------------------------------------------------------------------- |
-| User  | Can post/view the posts, have interactions with the posts such as like, comment. |
-| Admin | Manage the whole system.                                                         |
+```bash
+# Server
+cd server && cp .env.example .env   # edit DATABASE_URL
+npm install && npx prisma migrate dev && npx prisma db seed
+npm run dev
 
+# Client (separate terminal)
+cd client && npm install && npm run dev
+```
 
-## Functional Groups (CAN CHANGE)
+Open http://localhost:5173 — pick one of five users, then use the feed.
 
+## Current MVP scope (001-threads-platform)
 
-| ID  | Group Name                 | Description                                                                                              |
-| --- | -------------------------- | -------------------------------------------------------------------------------------------------------- |
-| 1   | Authentication             | Sign up, log in, log out                                                                                 |
-| 2   | Profile management         | Edit profile info, change password, change avatar                                                        |
-| 3   | Search posts               | Users can search for desired posts                                                                       |
-| 4   | Post recommendation        | Forum can recommend posts based on time and trending order                                               |
-| 5   | Upload/Remove Post         | Poster can post to the forum, can remove their posts                                                     |
-| 6   | Post Management            | Original poster can delete unwanted comments on their posts, lock the post when no more comments needed. |
-| 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                          |
-| 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                           |
-| 9   | Post Summarization (TL;DR) | A summarization inside a post                                                                            |
+- Five predefined users, no passwords
+- Global feed, infinite scroll, in-app refresh
+- Post threads (≤500 chars + optional image)
+- Replies with visual thread connector
+- Like/unlike (real-time counts via Socket.io)
+- Follow/unfollow
+- Delete own content only (UI-gated, prototype trust model)
 
-
+Out of scope for this feature: auth, editing posts, AI summarization, admin tools.

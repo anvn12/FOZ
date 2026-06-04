@@ -185,7 +185,7 @@ model Thread {
   replyCount Int      @default(0)
   createdAt  DateTime @default(now())
 
-  author  User    @relation(fields: [authorId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies Reply[]
   likes   Like[]
 }
@@ -199,7 +199,7 @@ model Reply {
   createdAt DateTime @default(now())
 
   thread Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  author User   @relation(fields: [authorId], references: [id])
+  author User   @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   likes  Like[]
 }
 
@@ -210,9 +210,9 @@ model Like {
   replyId   String?
   createdAt DateTime @default(now())
 
-  user   User    @relation(fields: [userId], references: [id])
-  thread Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  reply  Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  thread Thread? @relation(fields: [threadId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reply  Reply?  @relation(fields: [replyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([userId, threadId])
   @@unique([userId, replyId])
@@ -224,8 +224,8 @@ model Follow {
   followingId String
   createdAt   DateTime @default(now())
 
-  follower  User @relation("follower",  fields: [followerId],  references: [id])
-  following User @relation("following", fields: [followingId], references: [id])
+  follower  User @relation("follower",  fields: [followerId],  references: [id], onDelete: NoAction, onUpdate: NoAction)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([followerId, followingId])
 }
