@@ -145,6 +145,9 @@ export async function createThread(params: {
       name: thread.author.name,
       avatarUrl: thread.author.avatarUrl,
     },
+    replies: [],
+    likedByMe: false,
+    followingAuthor: false,
   };
 }
 

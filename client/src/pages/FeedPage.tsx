@@ -8,6 +8,7 @@ import { FeedList } from "../components/feed/FeedList";
 import { ThreadCompose } from "../components/thread/ThreadCompose";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import type { FeedPage, Thread } from "../types";
+import { normalizeThreadForFeed } from "../utils/normalizeThread";
 import { Navigate } from "react-router-dom";
 
 export function FeedPage() {
@@ -23,12 +24,13 @@ export function FeedPage() {
   }
 
   const onThreadCreated = (thread: Thread) => {
+    const normalized = normalizeThreadForFeed(thread);
     queryClient.setQueryData<{ pages: FeedPage[]; pageParams: unknown[] }>(
       ["feed"],
       (old) => {
         if (!old?.pages?.length) {
           return {
-            pages: [{ threads: [thread], nextCursor: null }],
+            pages: [{ threads: [normalized], nextCursor: null }],
             pageParams: [undefined],
           };
         }
@@ -36,7 +38,7 @@ export function FeedPage() {
         return {
           ...old,
           pages: [
-            { ...first, threads: [thread, ...first.threads] },
+            { ...first, threads: [normalized, ...first.threads] },
             ...old.pages.slice(1),
           ],
         };

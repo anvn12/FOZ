@@ -6,7 +6,7 @@ interface Props {
   activeUserId?: string;
   onLike: (reply: Reply) => void;
   onDelete: (replyId: string) => Promise<void>;
-  likePending?: boolean;
+  isReplyLikePending?: (replyId: string) => boolean;
 }
 
 export function ReplyList({
@@ -14,20 +14,21 @@ export function ReplyList({
   activeUserId,
   onLike,
   onDelete,
-  likePending,
+  isReplyLikePending,
 }: Props) {
-  if (replies.length === 0) return null;
+  const list = replies ?? [];
+  if (list.length === 0) return null;
 
   return (
     <div className="mt-2 space-y-1">
-      {replies.map((reply) => (
+      {list.map((reply) => (
         <ReplyCard
           key={reply.id}
           reply={reply}
           isOwner={reply.author.id === activeUserId}
           onLike={() => onLike(reply)}
           onDelete={() => onDelete(reply.id)}
-          likePending={likePending}
+          likePending={isReplyLikePending?.(reply.id)}
         />
       ))}
     </div>

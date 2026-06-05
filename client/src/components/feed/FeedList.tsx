@@ -39,7 +39,7 @@ export function FeedList({
   isFetching,
 }: Props) {
   const queryClient = useQueryClient();
-  const { toggleLike, isPending: likePending } = useLike();
+  const { toggleLike, isTargetPending } = useLike();
   const { toggleFollow } = useFollow();
 
   if (isFetching && threads.length === 0) {
@@ -121,19 +121,22 @@ export function FeedList({
           key={thread.id}
           thread={thread}
           activeUserId={activeUserId}
-          likePending={likePending}
+          likePending={isTargetPending("thread", thread.id)}
+          isReplyLikePending={(replyId) => isTargetPending("reply", replyId)}
           onLike={() =>
-            toggleLike({
+            void toggleLike({
               targetType: "thread",
               targetId: thread.id,
               likedByMe: thread.likedByMe,
+              likeCount: thread.likeCount,
             })
           }
           onReplyLike={(reply) =>
-            toggleLike({
+            void toggleLike({
               targetType: "reply",
               targetId: reply.id,
               likedByMe: reply.likedByMe,
+              likeCount: reply.likeCount,
             })
           }
           onFollow={() =>

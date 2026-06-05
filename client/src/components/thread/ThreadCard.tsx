@@ -20,6 +20,7 @@ interface Props {
   onReplyDelete: (replyId: string) => Promise<void>;
   onReply: (content: string) => Promise<void>;
   likePending?: boolean;
+  isReplyLikePending?: (replyId: string) => boolean;
 }
 
 export function ThreadCard({
@@ -32,6 +33,7 @@ export function ThreadCard({
   onReplyDelete,
   onReply,
   likePending,
+  isReplyLikePending,
 }: Props) {
   const [showReply, setShowReply] = useState(false);
   const imageSrc = thread.imageUrl
@@ -98,7 +100,7 @@ export function ThreadCard({
             activeUserId={activeUserId}
             onLike={onReplyLike}
             onDelete={onReplyDelete}
-            likePending={likePending}
+            isReplyLikePending={isReplyLikePending}
           />
         </div>
       </div>

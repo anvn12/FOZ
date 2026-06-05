@@ -5,6 +5,24 @@ function appError(statusCode: number, code: string, message: string): Error {
   return Object.assign(new Error(message), { statusCode, code });
 }
 
+async function currentThreadLikeCount(threadId: string): Promise<number> {
+  const thread = await prisma.thread.findUnique({
+    where: { id: threadId },
+    select: { likeCount: true },
+  });
+  if (!thread) throw appError(404, "NOT_FOUND", "Thread not found");
+  return thread.likeCount;
+}
+
+async function currentReplyLikeCount(replyId: string): Promise<number> {
+  const reply = await prisma.reply.findUnique({
+    where: { id: replyId },
+    select: { likeCount: true },
+  });
+  if (!reply) throw appError(404, "NOT_FOUND", "Reply not found");
+  return reply.likeCount;
+}
+
 export async function likeTarget(params: {
   userId: string;
   targetType: "thread" | "reply";
@@ -66,7 +84,11 @@ export async function likeTarget(params: {
       "code" in e &&
       (e as { code: string }).code === "P2002"
     ) {
-      throw appError(409, "ALREADY_LIKED", "Already liked");
+      const likeCount =
+        params.targetType === "thread"
+          ? await currentThreadLikeCount(params.targetId)
+          : await currentReplyLikeCount(params.targetId);
+      return likeCount;
     }
     throw e;
   }
@@ -85,7 +107,7 @@ export async function unlikeTarget(params: {
       },
     });
     if (!existing) {
-      throw appError(404, "NOT_LIKED", "Not liked");
+      return currentThreadLikeCount(params.targetId);
     }
 
     const likeCount = await prisma.$transaction(async (tx) => {
@@ -111,7 +133,7 @@ export async function unlikeTarget(params: {
     },
   });
   if (!existing) {
-    throw appError(404, "NOT_LIKED", "Not liked");
+    return currentReplyLikeCount(params.targetId);
   }
 
   const likeCount = await prisma.$transaction(async (tx) => {
