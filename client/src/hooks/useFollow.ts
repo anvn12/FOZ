@@ -1,13 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/api";
+import { feedQueryKey } from "../lib/feedQuery";
+import { useSessionStore } from "../store/sessionStore";
 import type { FeedPage } from "../types";
 
 export function useFollow() {
   const queryClient = useQueryClient();
+  const userId = useSessionStore((s) => s.activeUser?.id);
 
-  const updateFollowing = (userId: string, following: boolean) => {
-    queryClient.setQueriesData<{ pages: FeedPage[] }>(
-      { queryKey: ["feed"] },
+  const updateFollowing = (authorId: string, following: boolean) => {
+    if (!userId) return;
+    queryClient.setQueryData<{ pages: FeedPage[] }>(
+      feedQueryKey(userId),
       (old) => {
         if (!old) return old;
         return {
@@ -15,7 +19,7 @@ export function useFollow() {
           pages: old.pages.map((page) => ({
             ...page,
             threads: page.threads.map((t) =>
-              t.author.id === userId
+              t.author.id === authorId
                 ? { ...t, followingAuthor: following }
                 : t,
             ),

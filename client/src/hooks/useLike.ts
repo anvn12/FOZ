@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../services/api";
+import { feedQueryKey } from "../lib/feedQuery";
+import { useSessionStore } from "../store/sessionStore";
 import type { FeedPage, Thread } from "../types";
 
 type TargetType = "thread" | "reply";
@@ -11,6 +13,7 @@ function pendingKey(targetType: TargetType, targetId: string) {
 
 export function useLike() {
   const queryClient = useQueryClient();
+  const userId = useSessionStore((s) => s.activeUser?.id);
   const [pending, setPending] = useState<Set<string>>(() => new Set());
 
   const updateCaches = useCallback(
@@ -20,8 +23,9 @@ export function useLike() {
       likeCount: number,
       likedByMe: boolean,
     ) => {
-      queryClient.setQueriesData<{ pages: FeedPage[] }>(
-        { queryKey: ["feed"] },
+      if (!userId) return;
+      queryClient.setQueryData<{ pages: FeedPage[]; pageParams: unknown[] }>(
+        feedQueryKey(userId),
         (old) => {
           if (!old) return old;
           return {
@@ -36,7 +40,7 @@ export function useLike() {
         },
       );
     },
-    [queryClient],
+    [queryClient, userId],
   );
 
   const isTargetPending = useCallback(
@@ -52,6 +56,8 @@ export function useLike() {
       likedByMe: boolean;
       likeCount: number;
     }) => {
+      if (!userId) return;
+
       const { targetType, targetId, likedByMe, likeCount } = params;
       const pk = pendingKey(targetType, targetId);
       const path =
@@ -60,7 +66,9 @@ export function useLike() {
           : `/api/replies/${targetId}/likes`;
 
       const nextLiked = !likedByMe;
-      const optimisticCount = nextLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+      const optimisticCount = nextLiked
+        ? likeCount + 1
+        : Math.max(0, likeCount - 1);
 
       setPending((s) => new Set(s).add(pk));
       updateCaches(targetType, targetId, optimisticCount, nextLiked);
@@ -78,15 +86,15 @@ export function useLike() {
           updateCaches(targetType, targetId, serverCount, true);
         }
       } catch (e) {
-        updateCaches(targetType, targetId, likeCount, likedByMe);
         if (e instanceof ApiError && e.code === "ALREADY_LIKED") {
-          updateCaches(targetType, targetId, likeCount + 1, true);
+          updateCaches(targetType, targetId, likeCount, true);
           return;
         }
         if (e instanceof ApiError && e.code === "NOT_LIKED") {
           updateCaches(targetType, targetId, likeCount, false);
           return;
         }
+        updateCaches(targetType, targetId, likeCount, likedByMe);
         console.error("Like toggle failed:", e);
       } finally {
         setPending((s) => {
@@ -96,7 +104,7 @@ export function useLike() {
         });
       }
     },
-    [updateCaches],
+    [updateCaches, userId],
   );
 
   return { toggleLike, isTargetPending };

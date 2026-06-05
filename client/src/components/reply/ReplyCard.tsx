@@ -3,6 +3,7 @@ import { LikeButton } from "../common/LikeButton";
 import { DeleteButton } from "../common/DeleteButton";
 import type { Reply } from "../../types";
 import { formatTime } from "../../utils/formatTime";
+import { replyMessageBodyClassName } from "../../lib/messageBody";
 
 interface Props {
   reply: Reply;
@@ -28,7 +29,7 @@ export function ReplyCard({
           {formatTime(reply.createdAt)}
         </span>
       </div>
-      <p className="mt-1 text-sm text-neutral-200">{reply.content}</p>
+      <p className={replyMessageBodyClassName}>{reply.content}</p>
       <div className="mt-1 flex items-center gap-2">
         <LikeButton
           likeCount={reply.likeCount}

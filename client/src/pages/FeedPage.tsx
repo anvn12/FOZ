@@ -9,15 +9,16 @@ import { ThreadCompose } from "../components/thread/ThreadCompose";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import type { FeedPage, Thread } from "../types";
 import { normalizeThreadForFeed } from "../utils/normalizeThread";
+import { feedQueryKey } from "../lib/feedQuery";
 import { Navigate } from "react-router-dom";
 
 export function FeedPage() {
   const activeUser = useSessionStore((s) => s.activeUser);
   const { clearSession } = useSession();
   const { threads, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, refetch } =
-    useFeed();
+    useFeed(activeUser?.id);
   const queryClient = useQueryClient();
-  useSocketFeedSync();
+  useSocketFeedSync(activeUser?.id);
 
   if (!activeUser) {
     return <Navigate to="/" replace />;
@@ -26,7 +27,7 @@ export function FeedPage() {
   const onThreadCreated = (thread: Thread) => {
     const normalized = normalizeThreadForFeed(thread);
     queryClient.setQueryData<{ pages: FeedPage[]; pageParams: unknown[] }>(
-      ["feed"],
+      feedQueryKey(activeUser.id),
       (old) => {
         if (!old?.pages?.length) {
           return {

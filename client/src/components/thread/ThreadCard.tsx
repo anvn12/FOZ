@@ -7,6 +7,7 @@ import { ReplyList } from "../reply/ReplyList";
 import { ReplyCompose } from "../reply/ReplyCompose";
 import type { Reply, Thread } from "../../types";
 import { formatTime } from "../../utils/formatTime";
+import { messageBodyClassName } from "../../lib/messageBody";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
@@ -59,7 +60,7 @@ export function ThreadCard({
               onToggle={onFollow}
             />
           </div>
-          <p className="mt-2 whitespace-pre-wrap text-sm">{thread.content}</p>
+          <p className={messageBodyClassName}>{thread.content}</p>
           {imageSrc && (
             <img
               src={imageSrc}

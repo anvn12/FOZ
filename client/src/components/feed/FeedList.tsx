@@ -4,6 +4,7 @@ import { InfiniteScrollTrigger } from "./InfiniteScrollTrigger";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { EmptyState } from "../common/EmptyState";
 import { api } from "../../services/api";
+import { feedQueryKey } from "../../lib/feedQuery";
 import { useLike } from "../../hooks/useLike";
 import { useFollow } from "../../hooks/useFollow";
 import type { FeedPage, Reply, Thread } from "../../types";
@@ -50,68 +51,66 @@ export function FeedList({
     return <EmptyState message="No threads yet" />;
   }
 
+  const patchFeed = (
+    updater: (old: { pages: FeedPage[] }) => { pages: FeedPage[] },
+  ) => {
+    if (!activeUserId) return;
+    queryClient.setQueryData(feedQueryKey(activeUserId), updater);
+  };
+
   const appendReply = (threadId: string, reply: Reply) => {
-    queryClient.setQueriesData<{ pages: FeedPage[] }>(
-      { queryKey: ["feed"] },
-      (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page) => ({
-            ...page,
-            threads: page.threads.map((t) =>
-              t.id === threadId
-                ? {
-                    ...t,
-                    replies: [...t.replies, { ...reply, likedByMe: false }],
-                    replyCount: t.replyCount + 1,
-                  }
-                : t,
-            ),
-          })),
-        };
-      },
-    );
+    patchFeed((old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          threads: page.threads.map((t) =>
+            t.id === threadId
+              ? {
+                  ...t,
+                  replies: [...(t.replies ?? []), { ...reply, likedByMe: false }],
+                  replyCount: t.replyCount + 1,
+                }
+              : t,
+          ),
+        })),
+      };
+    });
   };
 
   const removeThread = (threadId: string) => {
-    queryClient.setQueriesData<{ pages: FeedPage[] }>(
-      { queryKey: ["feed"] },
-      (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page) => ({
-            ...page,
-            threads: page.threads.filter((t) => t.id !== threadId),
-          })),
-        };
-      },
-    );
+    patchFeed((old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          threads: page.threads.filter((t) => t.id !== threadId),
+        })),
+      };
+    });
   };
 
   const removeReply = (threadId: string, replyId: string) => {
-    queryClient.setQueriesData<{ pages: FeedPage[] }>(
-      { queryKey: ["feed"] },
-      (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page) => ({
-            ...page,
-            threads: page.threads.map((t) =>
-              t.id === threadId
-                ? {
-                    ...t,
-                    replies: t.replies.filter((r) => r.id !== replyId),
-                    replyCount: Math.max(0, t.replyCount - 1),
-                  }
-                : t,
-            ),
-          })),
-        };
-      },
-    );
+    patchFeed((old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          threads: page.threads.map((t) =>
+            t.id === threadId
+              ? {
+                  ...t,
+                  replies: (t.replies ?? []).filter((r) => r.id !== replyId),
+                  replyCount: Math.max(0, t.replyCount - 1),
+                }
+              : t,
+          ),
+        })),
+      };
+    });
   };
 
   return (
