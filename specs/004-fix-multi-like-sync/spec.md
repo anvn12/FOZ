@@ -50,6 +50,8 @@ When a user likes or unlikes any item, the displayed like count updates once to 
 - What happens when the same user receives a live count update from another session or user while liking multiple items? Only the affected item’s aggregate count may change; other items’ liked state for the current user must not reset.
 - What happens when a like request fails for one item? Only that item reverts; other already-liked items remain liked with correct counts.
 - What happens when the user unlikes one of several liked items? Only that item’s count decreases and heart clears; other likes remain unchanged.
+- What happens when a live update arrives while the user is rapidly liking items? Server state is authoritative; client reverts to server state if conflict detected.
+- What happens when a like request fails after optimistic update? Button reverts to previous state, toast notification appears with retry option.
 
 ## Requirements *(mandatory)*
 
@@ -62,6 +64,11 @@ When a user likes or unlikes any item, the displayed like count updates once to 
 - **FR-005**: A manual feed refresh MUST show all likes the current user made in the session, not only the first one.
 - **FR-006**: Unlike actions MUST only affect the targeted thread or comment, not other liked items.
 - **FR-007**: Liked state and counts after refresh MUST match the persisted state for the signed-in user across all items they liked.
+- **FR-008**: Like actions MUST use optimistic updates with server confirmation; UI updates instantly and reverts to server state on failure.
+- **FR-009**: The like button MUST be disabled during the like/unlike operation to prevent duplicate actions.
+- **FR-010**: Like operations MUST complete within 300ms under normal network conditions.
+- **FR-011**: On conflict between client and server state, server state MUST be authoritative; client MUST revert to server state.
+- **FR-012**: When a like action fails, the system MUST display a toast notification with a retry option.
 
 ### Key Entities
 
@@ -78,6 +85,7 @@ When a user likes or unlikes any item, the displayed like count updates once to 
 - **SC-003**: After refresh, the number of items showing as liked by the user equals the number of distinct like actions performed in the session (minus any explicit unlikes).
 - **SC-004**: Unlike on one of five liked items leaves the other four liked with unchanged counts (except legitimate aggregate updates).
 - **SC-005**: Re-sign-in as the same user preserves 100% of likes from the prior session test set.
+- **SC-006**: Like operations complete within 300ms in 95% of cases under normal network conditions.
 
 ## Assumptions
 
@@ -86,3 +94,13 @@ When a user likes or unlikes any item, the displayed like count updates once to 
 - “Refresh” means the in-app feed refresh control or full page reload — both must show consistent results.
 - Real-time count updates from other users may still change aggregate counts on items the current user did not just interact with; that is expected and not a failure.
 - Mobile and desktop share the same like behavior; no separate mobile scope.
+
+## Clarifications
+
+### Session 2026-06-07
+
+- Q: What is the update strategy for like actions? → A: Optimistic update with server confirmation (instant UI, rollback on failure).
+- Q: How should the like button behave during the operation? → A: Disable button during operation (prevent double-click).
+- Q: What is the target latency for a like action to complete? → A: 300ms (balanced, typical for social apps).
+- Q: How should conflicts between client and server state be resolved? → A: Server authoritative (client reverts to server state on conflict).
+- Q: What is the error recovery UX when a like action fails? → A: Toast notification with retry option.

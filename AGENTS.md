@@ -74,3 +74,8 @@ cd server && npm start          # node dist/app.js
 - Both packages use `type: "module"` (ESM).
 - Server tsconfig: `module: "Node16"`, `moduleResolution: "Node16"`.
 - Client tsconfig: `moduleResolution: "bundler"`, `noEmit: true`, `allowImportingTsExtensions: true`.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
