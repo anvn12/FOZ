@@ -29,7 +29,7 @@ Compared to many traditional social networking platforms, Threads focuses on sim
 ### 2. Guest Access (Unauthenticated Users) 
 
 ![Homepage](threads/homepage%20(not%20signed%20in).png)
-![Homepage](threads/homepage%20(not%20signed%2020in)%202.png)
+![Homepage](threads/homepage%20(not%20signed%20in)%202.png)
  
 Users can access Threads without signing in and browse a feed containing trending and recommended public posts. This allows visitors to explore the platform before creating an account or logging in. 
 
@@ -432,7 +432,7 @@ Threads allows users to switch between Light Mode and Dark Mode according to the
 
 Providing multiple appearance options enhances accessibility and allows users to customize their viewing experience. 
 
-![More](threads/light%UI.png)
+![More](threads/light%20UI.png)
 
 ### 3. Account Settings 
 
