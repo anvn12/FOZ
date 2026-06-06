@@ -28,8 +28,8 @@ Compared to many traditional social networking platforms, Threads focuses on sim
 
 ### 2. Guest Access (Unauthenticated Users) 
 
-![Homepage](threads/homepage (not signed in).png)
-![Homepage](threads/homepage (not signed in) 2.png)
+![Homepage](threads/homepage%20(not%20signed%20in).png)
+![Homepage](threads/homepage%20(not%20signed%2020in)%202.png)
  
 Users can access Threads without signing in and browse a feed containing trending and recommended public posts. This allows visitors to explore the platform before creating an account or logging in. 
 
@@ -49,7 +49,7 @@ Threads displays a pop-up notification prompting the user to sign in before cont
 
 ### 3. Sign-In Process 
 
-![Signup](threads/sign up.png)
+![Signup](threads/sign%20up.png)
 
 Threads is tightly integrated with Instagram and relies on Instagram accounts for authentication. Users can sign in using their existing Instagram credentials rather than creating a separate Threads account. 
 
@@ -69,7 +69,7 @@ This design simplifies account management by maintaining a unified identity acro
 
 ###  1. Create Thread 
 
-![post](threads/new threads.png)
+![post](threads/new%20threads.png)
 
 Users can create new content by selecting the Create Thread button from the navigation menu or by clicking the floating “+” button located in the bottom-right corner of the interface. 
 
@@ -98,8 +98,6 @@ One particularly interesting design element is the way multiple images are displ
 
 Such design choices demonstrate how content presentation can enhance user engagement and encourage more creative forms of storytelling. Similar approaches may serve as useful references when designing visually dynamic social media interfaces. 
 
- 
-
 ### 3. Drafts 
 
 Threads allows users to save unfinished posts as drafts. 
@@ -113,8 +111,6 @@ Prepare content in advance
 Review and refine posts before publication 
 
 Draft management improves flexibility and supports users who prefer to plan or revise their content before sharing it publicly. 
-
- 
 
 ### 4. Post Visibility & Content Controls 
 
@@ -136,15 +132,11 @@ Another distinctive feature is Threads' approach to content sensitivity and spoi
 
 This approach preserves content moderation functionality while maintaining an aesthetically pleasing user experience. It demonstrates how practical interface requirements can be combined with creative visual design to make the platform feel more engaging and distinctive. 
 
- 
-
- 
-
 ## Profile Management 
 
 ### 1. View Profile 
 
-![Profile](threads/profile 1.png)
+![Profile](threads/profile%201.png)
 
 The Profile section allows users to manage and review their personal activity on Threads. By selecting the Profile button from the navigation menu, users are redirected to their profile page. 
 
@@ -159,17 +151,15 @@ On this page, users can view:
 * Reposted content 
 
 * Liked posts 
-![Profile](threads/profile 2.png)
+![Profile](threads/profile%202.png)
 
 Here, users can also edit their posted threads: 
 
-![Profile](threads/post setting.png)
-
-
+![Profile](threads/post%20setting.png)
 
 ### 2. Edit Profile 
 
- ![Profile](threads/edit profile.png)
+ ![Profile](threads/edit%20profile.png)
 
 The Edit Profile button opens a pop-up dialog containing the user's basic account information and customization options. 
 
@@ -188,8 +178,6 @@ Users can modify various profile attributes, including:
 * Other personal profile information 
 
 The editing interface is simple and accessible, allowing users to update their information without leaving the current page. This pop-up design reduces navigation complexity and provides a smoother profile management experience. 
-
- 
 
 ## Feed Generation & Content Discovery 
 
@@ -230,11 +218,9 @@ Unlike the For You feed, the Following feed does not heavily rely on recommendat
 
 This design benefits users who prefer a chronological and less algorithm-driven experience, ensuring that important updates from followed accounts are not overshadowed by trending or recommended content. 
 
- 
-
 ## User Interactions 
 
-![Profile](threads/post management (feed).png)
+![Profile](threads/post%20management%20(feed).png)
 
 ### 1. Like 
 The Like feature allows users to express appreciation or agreement with a post. Liked posts are stored in the user's account and can be reviewed later through the Profile section. 
@@ -258,8 +244,6 @@ Unlike traditional comment systems that may be limited in structure, Threads org
 
 As a result, comments are a central part of the Threads experience. Users can freely share opinions, insights, questions, and experiences, making discussions often as valuable as the original post itself. This design encourages deeper engagement and community-driven conversations. 
 
- 
-
 ### 4. Share 
 
 The Share feature allows users to distribute content beyond the Threads platform. 
@@ -273,8 +257,6 @@ Users can:
 * Share content to other social media platforms and communication channels 
 
 * Sharing plays an important role in content dissemination, helping posts reach a broader audience while also enabling users to easily exchange content with friends and communities. This feature significantly contributes to user engagement and platform growth through organic content distribution. 
-
- 
 
 ### 5. User Preview Card 
 
@@ -350,8 +332,6 @@ After entering a query, Threads returns a list of relevant results based on the 
 
 These filtering options help narrow the search scope and allow users to locate content more efficiently, especially when searching within large discussion topics. 
 
- 
-
 ### 2. Trending Topics Discovery 
 
 Below the search bar, Threads displays a collection of trending topics currently gaining attention across the platform. 
@@ -362,7 +342,7 @@ This feature supports content discovery by making emerging conversations more ac
 
 ### 3. Recommended Accounts 
 
-![Search](threads/search (following suggestions).png)
+![Search](threads/search%20(following%20suggestions).png)
 
 Further down the discovery page, Threads presents a list of recommended accounts that users may be interested in following. 
 
@@ -420,7 +400,6 @@ This filtering system reduces information overload and enables users to quickly 
 
 The Activity page plays an important role in maintaining user engagement by keeping users informed about both personal interactions and broader platform trends, ensuring they remain connected to ongoing discussions and community activity. 
 
- 
 ## More Menu & Settings 
 
 ### 1. More Menu 
@@ -445,8 +424,6 @@ Available options include:
 
 This design helps keep the primary interface clean and uncluttered while still providing quick access to less frequently used functions. 
 
- 
-
 ### 2. Appearance Settings 
 
 ![More](threads/UI.png)
@@ -455,7 +432,7 @@ Threads allows users to switch between Light Mode and Dark Mode according to the
 
 Providing multiple appearance options enhances accessibility and allows users to customize their viewing experience. 
 
-![More](threads/light UI.png)
+![More](threads/light%UI.png)
 
 ### 3. Account Settings 
 
@@ -529,8 +506,6 @@ Users may:
 
 * These features contribute to a more personalized browsing experience. 
 
- 
-
 ### 4. Liked and Saved Posts 
 
 ![More](threads/liked.png)
@@ -544,8 +519,6 @@ Displays posts that the user has liked, allowing them to revisit content that th
 Saved Posts 
 
 Displays posts that have been explicitly saved for future reference. This feature is useful for preserving important discussions, resources, or content that users wish to access later. 
-
- 
 
 ### 5. Report a Problem 
 
@@ -565,11 +538,7 @@ Provide feedback about platform features
 
 This channel helps Meta collect user feedback and continuously improve the platform. 
 
- 
-
 ### 6. Log Out
-
-
 
 ## Messaging
 
