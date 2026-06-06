@@ -2,6 +2,9 @@
 
 # B - Project Proposal
 
+Performer: Nguyễn Tuấn An (24127011)
+Reviewer: Nguyễn Hải Trọng (24127311)
+
 ## Introduction
 
 This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
@@ -50,7 +53,20 @@ The target audience is general **web** users seeking online community spaces. Th
 
 # C - Existing App Survey
 
+## First app survey (main for reference)
+
+Performer: Phạm Đinh Gia Khánh (24127420)
+Reviewer: Nguyễn Hải Nam (24127088)
+
+## Second app survey (main for reference)
+
+Performer: Nguyễn Hải Nam (24127088)
+Reviewer: Phạm Đinh Gia Khánh (24127420)
+
 # D - Team Contract
+
+Performer: Nguyễn Tuấn An (24127011)
+Reviewer: Nguyễn Hải Trọng (24127311)
 
 ## 1. Team Roles and Responsibilities
 
@@ -60,9 +76,9 @@ The target audience is general **web** users seeking online community spaces. Th
 | Member | Role | Responsibilities |
 | --- | --- | --- |
 | Nguyễn Tuấn An (24127011) | Project Manager | Facilitates meetings, tracks sprint progress, manages the project board (Jira), and ensures deadlines are met. Contributes to full-stack development. |
-| Member 2 | UI/UX Designer | Leads the wireframing, prototyping, and user journey mapping phases. Ensures design consistency across the application. Guides the team during frontend UI implementation. Contributes to full-stack development. |
-| Member 4 | Backend & Database Developer | Designs the database schema, establishes API architectures, and leads server-side performance strategies. Guides the team on database queries and backend logic. Contributes to full-stack development. |
-| Member 5 | QA Engineer (Tester) | Defines testing protocols. Leads the team in writing test cases and performing bug hunts. Contributes to full-stack development. |
+| Nguyễn Hải Nam (24127088) | QA Engineer (Tester) | Defines testing protocols. Leads the team in writing test cases and performing bug hunts. Contributes to full-stack development. |
+| Nguyễn Hải Trọng (24127311) | Backend & Database Developer | Designs the database schema, establishes API architectures, and leads server-side performance strategies. Guides the team on database queries and backend logic. Contributes to full-stack development. |
+| Phạm Đinh Gia Khánh (24127420) | UI/UX Designer | Leads the wireframing, prototyping, and user journey mapping phases. Ensures design consistency across the application. Guides the team during frontend UI implementation. Contributes to full-stack development. |
 | Võ An Phú (24127494) | Frontend Developer | Establishes frontend coding standards, selects frontend frameworks/libraries, and ensures responsive, accessible design implementation. Contributes to full-stack development. |
 
 ## 2. Communication Plan
@@ -123,3 +139,7 @@ The target audience is general **web** users seeking online community spaces. Th
 - **Update Process:** Any team member can propose an amendment to the contract. Amendments will be adopted if they pass a simple majority vote (3/5) during a weekly sync.
 
 # E - Development Tools and Process Setup
+
+Performer: Võ An Phú (24127494)
+Reviewer: Nguyễn Tuấn An (24127011)
+
