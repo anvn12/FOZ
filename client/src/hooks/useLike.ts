@@ -2,14 +2,17 @@ import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../services/api";
 import { feedQueryKey } from "../lib/feedQuery";
+import { mergeLikeCount } from "../lib/likeCountMerge";
+import {
+  addLikePending,
+  isLikePending,
+  likePendingKey,
+  removeLikePending,
+} from "../lib/likePending";
 import { useSessionStore } from "../store/sessionStore";
 import type { FeedPage, Thread } from "../types";
 
 type TargetType = "thread" | "reply";
-
-function pendingKey(targetType: TargetType, targetId: string) {
-  return `${targetType}:${targetId}`;
-}
 
 export function useLike() {
   const queryClient = useQueryClient();
@@ -45,7 +48,7 @@ export function useLike() {
 
   const isTargetPending = useCallback(
     (targetType: TargetType, targetId: string) =>
-      pending.has(pendingKey(targetType, targetId)),
+      pending.has(likePendingKey(targetType, targetId)),
     [pending],
   );
 
@@ -59,7 +62,7 @@ export function useLike() {
       if (!userId) return;
 
       const { targetType, targetId, likedByMe, likeCount } = params;
-      const pk = pendingKey(targetType, targetId);
+      const pk = likePendingKey(targetType, targetId);
       const path =
         targetType === "thread"
           ? `/api/threads/${targetId}/likes`
@@ -71,6 +74,7 @@ export function useLike() {
         : Math.max(0, likeCount - 1);
 
       setPending((s) => new Set(s).add(pk));
+      addLikePending(pk);
       updateCaches(targetType, targetId, optimisticCount, nextLiked);
 
       try {
@@ -83,11 +87,13 @@ export function useLike() {
           const { likeCount: serverCount } = await api.post<{ likeCount: number }>(
             path,
           );
-          updateCaches(targetType, targetId, serverCount, true);
+          const merged = mergeLikeCount(optimisticCount, serverCount, true);
+          updateCaches(targetType, targetId, merged, true);
         }
       } catch (e) {
         if (e instanceof ApiError && e.code === "ALREADY_LIKED") {
-          updateCaches(targetType, targetId, likeCount, true);
+          const merged = mergeLikeCount(likeCount, likeCount + 1, true);
+          updateCaches(targetType, targetId, merged, true);
           return;
         }
         if (e instanceof ApiError && e.code === "NOT_LIKED") {
@@ -102,6 +108,7 @@ export function useLike() {
           next.delete(pk);
           return next;
         });
+        removeLikePending(pk);
       }
     },
     [updateCaches, userId],
@@ -129,3 +136,5 @@ function updateThread(
     ),
   };
 }
+
+export { isLikePending };

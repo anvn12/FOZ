@@ -45,10 +45,8 @@ export async function getPaginatedFeed(params: {
 
       if (params.userId) {
         const [like, follow] = await Promise.all([
-          prisma.like.findUnique({
-            where: {
-              userId_threadId: { userId: params.userId, threadId: thread.id },
-            },
+          prisma.like.findFirst({
+            where: { userId: params.userId, threadId: thread.id },
           }),
           prisma.follow.findUnique({
             where: {
@@ -67,10 +65,8 @@ export async function getPaginatedFeed(params: {
         thread.replies.map(async (reply) => {
           let replyLikedByMe = false;
           if (params.userId) {
-            const rLike = await prisma.like.findUnique({
-              where: {
-                userId_replyId: { userId: params.userId, replyId: reply.id },
-              },
+            const rLike = await prisma.like.findFirst({
+              where: { userId: params.userId, replyId: reply.id },
             });
             replyLikedByMe = !!rLike;
           }

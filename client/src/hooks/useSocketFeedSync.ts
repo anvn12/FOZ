@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { socket } from "../services/socket";
 import { feedQueryKey } from "../lib/feedQuery";
+import { mergeLikeCount } from "../lib/likeCountMerge";
+import { isLikePending, likePendingKey } from "../lib/likePending";
 import type { FeedPage } from "../types";
 
 export function useSocketFeedSync(userId: string | undefined) {
@@ -27,18 +29,35 @@ export function useSocketFeedSync(userId: string | undefined) {
       targetId: string;
       likeCount: number;
     }) => {
+      const pk = likePendingKey(payload.targetType, payload.targetId);
+      if (isLikePending(pk)) return;
+
       patchFeed((pages) =>
         pages.map((page) => ({
           ...page,
           threads: page.threads.map((t) => {
             if (payload.targetType === "thread" && t.id === payload.targetId) {
-              return { ...t, likeCount: payload.likeCount };
+              return {
+                ...t,
+                likeCount: mergeLikeCount(
+                  t.likeCount,
+                  payload.likeCount,
+                  t.likedByMe,
+                ),
+              };
             }
             return {
               ...t,
               replies: (t.replies ?? []).map((r) =>
                 payload.targetType === "reply" && r.id === payload.targetId
-                  ? { ...r, likeCount: payload.likeCount }
+                  ? {
+                      ...r,
+                      likeCount: mergeLikeCount(
+                        r.likeCount,
+                        payload.likeCount,
+                        r.likedByMe,
+                      ),
+                    }
                   : r,
               ),
             };

@@ -5,7 +5,7 @@ alwaysApply: true
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/003-fix-text-likes-ui/plan.md`.
+at `specs/004-fix-multi-like-sync/plan.md`.
 
 Key facts:
 - Stack: React 18 + Vite + TypeScript (client), Node.js + Express + Socket.io + Prisma + TypeScript (server)
@@ -15,6 +15,7 @@ Key facts:
 - Session: express-session (in-memory), active userId in session
 - Images: Multer → `server/uploads/` served as static
 - No auth — prototype trust model; ownership enforced by UI only
-- Feed cache MUST be keyed by session user id (`["feed", userId]`)
-- See `specs/003-fix-text-likes-ui/` for spec, research, data-model, contracts, quickstart
+- Feed cache keyed by session user id (`["feed", userId]`)
+- Like model: MSSQL needs filtered unique indexes on nullable threadId/replyId FKs
+- See `specs/004-fix-multi-like-sync/` for spec, research, data-model, contracts, quickstart
 <!-- SPECKIT END -->

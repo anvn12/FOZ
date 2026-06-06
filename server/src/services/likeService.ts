@@ -23,6 +23,21 @@ async function currentReplyLikeCount(replyId: string): Promise<number> {
   return reply.likeCount;
 }
 
+async function findLikeForTarget(params: {
+  userId: string;
+  targetType: "thread" | "reply";
+  targetId: string;
+}) {
+  if (params.targetType === "thread") {
+    return prisma.like.findFirst({
+      where: { userId: params.userId, threadId: params.targetId },
+    });
+  }
+  return prisma.like.findFirst({
+    where: { userId: params.userId, replyId: params.targetId },
+  });
+}
+
 export async function likeTarget(params: {
   userId: string;
   targetType: "thread" | "reply";
@@ -84,11 +99,15 @@ export async function likeTarget(params: {
       "code" in e &&
       (e as { code: string }).code === "P2002"
     ) {
-      const likeCount =
-        params.targetType === "thread"
-          ? await currentThreadLikeCount(params.targetId)
-          : await currentReplyLikeCount(params.targetId);
-      return likeCount;
+      const existing = await findLikeForTarget(params);
+      if (existing) {
+        const likeCount =
+          params.targetType === "thread"
+            ? await currentThreadLikeCount(params.targetId)
+            : await currentReplyLikeCount(params.targetId);
+        return likeCount;
+      }
+      console.error("Like create failed with unexpected unique violation", e);
     }
     throw e;
   }
@@ -100,44 +119,22 @@ export async function unlikeTarget(params: {
   targetId: string;
   io: Server;
 }) {
-  if (params.targetType === "thread") {
-    const existing = await prisma.like.findUnique({
-      where: {
-        userId_threadId: { userId: params.userId, threadId: params.targetId },
-      },
-    });
-    if (!existing) {
-      return currentThreadLikeCount(params.targetId);
-    }
+  const existing = await findLikeForTarget(params);
+  if (!existing) {
+    return params.targetType === "thread"
+      ? currentThreadLikeCount(params.targetId)
+      : currentReplyLikeCount(params.targetId);
+  }
 
-    const likeCount = await prisma.$transaction(async (tx) => {
-      await tx.like.delete({ where: { id: existing.id } });
+  const likeCount = await prisma.$transaction(async (tx) => {
+    await tx.like.delete({ where: { id: existing.id } });
+    if (params.targetType === "thread") {
       const updated = await tx.thread.update({
         where: { id: params.targetId },
         data: { likeCount: { decrement: 1 } },
       });
       return updated.likeCount;
-    });
-
-    params.io.to("global-feed").emit("like:updated", {
-      targetType: "thread",
-      targetId: params.targetId,
-      likeCount,
-    });
-    return likeCount;
-  }
-
-  const existing = await prisma.like.findUnique({
-    where: {
-      userId_replyId: { userId: params.userId, replyId: params.targetId },
-    },
-  });
-  if (!existing) {
-    return currentReplyLikeCount(params.targetId);
-  }
-
-  const likeCount = await prisma.$transaction(async (tx) => {
-    await tx.like.delete({ where: { id: existing.id } });
+    }
     const updated = await tx.reply.update({
       where: { id: params.targetId },
       data: { likeCount: { decrement: 1 } },
@@ -146,7 +143,7 @@ export async function unlikeTarget(params: {
   });
 
   params.io.to("global-feed").emit("like:updated", {
-    targetType: "reply",
+    targetType: params.targetType,
     targetId: params.targetId,
     likeCount,
   });

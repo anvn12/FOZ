@@ -47,6 +47,9 @@ model Reply {
   likes  Like[]
 }
 
+/// Like targets exactly one thread OR one reply (nullable FK on the other side).
+/// MSSQL: do NOT use unfiltered UNIQUE(userId, replyId) — NULL replyId on thread
+/// likes collides. Uniqueness enforced by filtered indexes in migration SQL.
 model Like {
   id        String   @id @default(cuid())
   userId    String
@@ -58,8 +61,8 @@ model Like {
   thread Thread? @relation(fields: [threadId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   reply  Reply?  @relation(fields: [replyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([userId, threadId])
-  @@unique([userId, replyId])
+  @@index([userId, threadId])
+  @@index([userId, replyId])
 }
 
 model Follow {
