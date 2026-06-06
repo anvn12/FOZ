@@ -1,5 +1,7 @@
 # FOZ
 
+## Introduction
+
 This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
 
 The target audience is general web users seeking online community spaces. They will use the application exclusively through standard web browsers on any internet-connected device, including desktop computers, laptops, and smartphones.
@@ -30,3 +32,19 @@ Key Features:
 | 7   | Post Interaction           | Users can interact with the posts with upvote/downvote, comment                                          |
 | 8   | Admin Management           | Admins can explicitly remove posts, ban users.                                                           |
 | 9   | Post Summarization (TL;DR) | A summarization inside a post                                                                            |
+
+## File Structure
+
+```Plaintext
+FOZ/
+├── src/                            # Source code
+├── docs/                           # Documentation
+│   ├── meeting-minutes/
+│   ├── PA/
+│   │   └── PA1/
+│   │       └── .md
+|   └── references/                 # Reference materials (e.g., UI design inspirations)
+├── tests/                          # Test plan, test cases, test reports
+├── .env.example                    # Template for environment variables
+└── README.md                       # Project documentation
+```
