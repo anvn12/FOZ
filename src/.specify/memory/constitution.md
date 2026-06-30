@@ -1,50 +1,134 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 (unratified template) → 1.0.0
+- Project name: FOZ
+- Modified principles: N/A (initial ratification; all principles newly adopted)
+  - PRINCIPLE_1 → I. Modular Client-Server Architecture
+  - PRINCIPLE_2 → II. Enforced Folder Structure
+  - PRINCIPLE_3 → III. Clean Code & Reusability
+  - PRINCIPLE_4 → IV. Security at Every Layer
+  - PRINCIPLE_5 → V. Consistency Over Cleverness
+- Added sections:
+  - Quality Standards (Section 2)
+  - Development Workflow (Section 3)
+  - Deferred Principles (AI Service Abstraction)
+  - Governance
+- Removed sections: N/A
+- Templates requiring updates:
+  - .specify/templates/plan-template.md — ✅ compatible (Constitution Check section present; gates delegate to this file)
+  - .specify/templates/spec-template.md — ✅ compatible (mandatory User Scenarios / Requirements / Success Criteria align with Quality Standards)
+  - .specify/templates/tasks-template.md — ✅ compatible (Setup + Foundational phases hold the required Prisma migration task for moderation pipeline)
+  - .specify/templates/checklist-template.md — ✅ compatible (generic, no constitution-coupled content)
+  - .specify/templates/commands/*.md — ✅ N/A (no command files present in templates/commands/)
+  - Runtime guidance: README.md — ✅ compatible (describes User/Moderator/Admin roles consistent with Principle IV)
+- Follow-up TODOs: none
+-->
+
+# FOZ Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Modular Client-Server Architecture
+Strict client/server separation. No business logic in the client; no
+presentation in the server. Client and server ship as two independent npm
+packages. There MUST be no shared package between them.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Cross-cutting contracts — DTOs, error envelopes, and socket event names — are
+**MIRRORED by hand** across `client/src/types` and `server/src/types`. Mirrored
+types stay in sync by convention and MUST be updated in the same change. A
+shared package is a deliberate non-goal until duplication cost visibly exceeds
+sync cost.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Enforced Folder Structure
+Every file MUST live in a predictable, documented location. The canonical
+layout is defined in `AGENTS.md` (Repo Structure) and in each package's own
+directory tree. Folder structure is documented in the plan artifact as a
+first-class design decision.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Deviations require written justification plus approval **before**
+implementation, not after.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Clean Code & Reusability
+Write for the next reader. Reuse before duplicate. Error handling MUST be
+centralized per architectural layer via one consistent mechanism per layer.
+No inline error swallowing: errors MUST propagate explicitly to a designated
+handler.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+No dead code, commented-out blocks, or debug artifacts on `main`.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Security at Every Layer
+Authentication and authorization MUST be enforced at every architectural
+boundary, not only at the entry point. Input validation MUST happen at
+ingestion (the API boundary) and MUST never be skipped for "internal" calls.
+Sensitive data MUST NOT be logged and MUST NOT appear in error responses.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Authorization is ownership-based by default: users may only create, edit, and
+delete their own content, enforced in both the UI and the API.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Role-based access control (User / Mod / Admin) is first-class for the
+moderation pipeline:
+
+- Users report threads or other users to moderators.
+- Moderators review reports and flag them as violations OR dismiss them.
+  Moderators MUST NOT issue punishments.
+- Admins review flagged violations and issue punishments (warn, suspend, ban).
+  Admins outrank Mods.
+- Each role tier MUST be enforced at the API boundary via middleware, not
+  only in the UI.
+
+Separation of powers: no single role may both flag and punish.
+
+### V. Consistency Over Cleverness
+Patterns MUST be followed everywhere they apply. No novel or clever solutions
+where a conventional approach exists. New patterns MUST be documented and
+applied consistently going forward. Code that surprises the reader requires
+written justification.
+
+## Quality Standards
+
+All code on `main` MUST:
+
+- Pass the package type check with zero errors (`tsc --noEmit` per package).
+  Lint/format config, once added, becomes binding from that point forward.
+- Handle errors through the centralized error mechanism; no silent catch.
+- Contain no dead code, commented-out blocks, or debug artifacts.
+- Respect the folder structure defined in the feature plan.
+- Pass ownership checks — and role checks once RBAC lands — for protected
+  resources.
+- Document performance and scalability expectations in each `plan.md` under
+  Technical Context, since these are feature-specific.
+
+## Development Workflow
+
+- Features start with spec → plan → task generation **before** implementation.
+- Each task MUST reference its user story and phase.
+- Security hardening and error handling MUST be part of every implementation
+  phase, not optional polish.
+- Moderation-pipeline tasks MUST include a Prisma migration task (the `role`
+  field plus report and violation tables) before any mod or admin UI or route
+  work begins.
+
+## Deferred Principles
+
+### AI Service Abstraction (not yet active)
+No AI feature is mandated yet. This principle auto-promotes to a Core
+Principle when the first AI spec lands. When active:
+
+- AI calls MUST sit behind a dedicated service interface.
+- The provider MUST be swappable without business-logic changes.
+- AI unavailability MUST NOT block core user flows.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other coding conventions and informal
+agreements.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Amendments require: a written proposal with rationale, a semver version bump,
+a `LAST_AMENDED_DATE` update, and a propagation check against all
+`.specify/templates/*.md` files.
+
+All implementation plans MUST include a **Constitution Check** section
+validating the design against these principles before Phase 0 research.
+Non-compliance MUST be justified in the plan's Complexity Tracking section.
+
+**Version**: 1.0.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-06-30
