@@ -9,7 +9,7 @@ This document fixes the frontend stack for FOZ
 > reasoning, ordered the same way. If you want to change a row, update the
 > table *and* its section in the same PR.
 
-## Stack at a glance
+## Initial stack
 
 | Layer | Choice | Version floor |
 | --- | --- | --- |
