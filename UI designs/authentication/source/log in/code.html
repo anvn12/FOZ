@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FOZ LOGIN</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#1b1b1b",
+                    "outline-variant": "#cfc4c5",
+                    "on-surface-variant": "#4c4546",
+                    "surface": "#f9f9f9",
+                    "tertiary": "#000000",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#1a1c1c",
+                    "on-secondary-container": "#646464",
+                    "secondary-container": "#e3e2e2",
+                    "inverse-on-surface": "#f1f1f1",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "surface-bright": "#f9f9f9",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "secondary-fixed": "#e3e2e2",
+                    "on-primary-fixed-variant": "#474747",
+                    "surface-variant": "#e2e2e2",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#c6c6c6",
+                    "inverse-surface": "#2f3131",
+                    "secondary-fixed-dim": "#c7c6c6",
+                    "on-background": "#1a1c1c",
+                    "tertiary-fixed-dim": "#c6c6c6",
+                    "surface-container": "#eeeeee",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#1b1b1b",
+                    "secondary": "#5e5e5e",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#464747",
+                    "background": "#f9f9f9",
+                    "primary-fixed": "#e2e2e2",
+                    "primary": "#000000",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-surface": "#1a1c1c",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#7e7576",
+                    "surface-container-low": "#f3f3f3",
+                    "surface-tint": "#5e5e5e",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-dim": "#dadada",
+                    "on-tertiary-container": "#838484",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-primary-container": "#848484"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "24px",
+                    "max-width": "640px"
+            },
+            "fontFamily": {
+                    "headline-md": [
+                            "Inter"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "headline-lg": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "headline-lg-mobile": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-md": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-sm": [
+                            "11px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.04em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.03em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="h-full flex justify-center bg-surface-container-lowest antialiased">
+<main class="w-full max-w-max-width h-full flex flex-col px-margin-mobile py-8 md:py-16 md:px-margin-desktop relative">
+<!-- Header -->
+<header class="flex flex-col items-center justify-center pt-8 pb-12">
+<div class="w-16 h-16 mb-6">
+<img alt="FOZ Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuFUAAtVcovOo_ChuyzkjKQ1tRCZAFP8eGgWbDjfRzrDJ6sFrsoEmPx4C29hDSOBy8mZx1mA1OV1kbV68udWOPwbU7FjVBNhzHrt_wOhwJtrG6L4gpu4E_oV3FZNvPs4VuBbculDXsFyMC9REVdfFT5rm10Zrcnr85Q-bunJ4RVM0GmKAhkzcjv6j5b2nshf3bMgTd01RqmeyG1mpsttBL9XKy7IEDOTCDPgUr9uH8fhCiKNRvP2-y1las"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary text-center">Log in to FOZ</h1>
+</header>
+<!-- Form Area -->
+<div class="flex-grow flex flex-col justify-center">
+<form class="flex flex-col space-y-4">
+<!-- Input Group -->
+<div class="space-y-3">
+<div class="relative">
+<input class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl border border-outline-variant px-4 py-4 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-colors placeholder:text-outline" placeholder="Username, email or phone" type="text"/>
+</div>
+<div class="relative">
+<input class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl border border-outline-variant px-4 py-4 pr-12 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-colors placeholder:text-outline" placeholder="Password" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Forgot Password -->
+<div class="flex justify-end pt-1">
+<a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors" href="#">Forgot password?</a>
+</div>
+<!-- Actions -->
+<div class="pt-6 space-y-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md rounded-xl py-4 flex items-center justify-center hover:opacity-90 transition-opacity" type="submit">
+                        Log in
+                    </button>
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink-0 px-4 text-secondary font-label-sm text-label-sm uppercase">or</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<button class="w-full bg-transparent border border-outline-variant text-primary font-label-md text-label-md rounded-xl py-4 flex items-center justify-center hover:bg-surface transition-colors space-x-2" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" fill-rule="evenodd"></path>
+</svg>
+<span>Continue with Instagram</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer -->
+<footer class="pt-8 pb-4 text-center">
+<p class="font-body-md text-body-md text-secondary">
+                Don't have an account? 
+                <a class="font-label-md text-label-md text-primary hover:underline ml-1" href="#">Sign up</a>
+</p>
+</footer>
+</main>
+<script>
+        // Minimal interactive logic for password toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const togglePasswordBtn = document.querySelector('button[type="button"]:not(.w-full)');
+            const passwordInput = document.querySelector('input[type="password"]');
+            const iconSpan = togglePasswordBtn.querySelector('.material-symbols-outlined');
+
+            if(togglePasswordBtn && passwordInput && iconSpan) {
+                togglePasswordBtn.addEventListener('click', () => {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    if (type === 'text') {
+                        iconSpan.textContent = 'visibility_off';
+                        iconSpan.setAttribute('data-icon', 'visibility_off');
+                    } else {
+                        iconSpan.textContent = 'visibility';
+                        iconSpan.setAttribute('data-icon', 'visibility');
+                    }
+                });
+            }
+        });
+    </script>
+</body></html>

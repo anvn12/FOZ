@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FOZ - Welcome Back</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#1b1b1b",
+                      "outline-variant": "#cfc4c5",
+                      "on-surface-variant": "#4c4546",
+                      "surface": "#f9f9f9",
+                      "tertiary": "#000000",
+                      "on-error-container": "#93000a",
+                      "tertiary-container": "#1a1c1c",
+                      "on-secondary-container": "#646464",
+                      "secondary-container": "#e3e2e2",
+                      "inverse-on-surface": "#f1f1f1",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "surface-bright": "#f9f9f9",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e8e8e8",
+                      "secondary-fixed": "#e3e2e2",
+                      "on-primary-fixed-variant": "#474747",
+                      "surface-variant": "#e2e2e2",
+                      "error-container": "#ffdad6",
+                      "inverse-primary": "#c6c6c6",
+                      "inverse-surface": "#2f3131",
+                      "secondary-fixed-dim": "#c7c6c6",
+                      "on-background": "#1a1c1c",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "surface-container": "#eeeeee",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#1b1b1b",
+                      "secondary": "#5e5e5e",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#464747",
+                      "background": "#f9f9f9",
+                      "primary-fixed": "#e2e2e2",
+                      "primary": "#000000",
+                      "tertiary-fixed": "#e2e2e2",
+                      "on-surface": "#1a1c1c",
+                      "on-error": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "outline": "#7e7576",
+                      "surface-container-low": "#f3f3f3",
+                      "surface-tint": "#5e5e5e",
+                      "surface-container-highest": "#e2e2e2",
+                      "surface-dim": "#dadada",
+                      "on-tertiary-container": "#838484",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "on-secondary-fixed": "#1b1c1c",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "on-primary-container": "#848484"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "24px",
+                      "max-width": "640px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.03em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-container-lowest text-on-background font-body-md antialiased min-h-screen flex flex-col items-center justify-center">
+<main class="w-full max-w-max-width mx-auto flex flex-col h-screen sm:h-auto sm:min-h-[800px] sm:shadow-lg sm:rounded-2xl sm:border sm:border-outline-variant bg-surface-container-lowest overflow-hidden">
+<!-- Header -->
+<header class="flex flex-col items-center justify-center pt-16 pb-8 px-margin-mobile flex-shrink-0">
+<img alt="FOZ Logo" class="w-12 h-12 mb-4 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuFUAAtVcovOo_ChuyzkjKQ1tRCZAFP8eGgWbDjfRzrDJ6sFrsoEmPx4C29hDSOBy8mZx1mA1OV1kbV68udWOPwbU7FjVBNhzHrt_wOhwJtrG6L4gpu4E_oV3FZNvPs4VuBbculDXsFyMC9REVdfFT5rm10Zrcnr85Q-bunJ4RVM0GmKAhkzcjv6j5b2nshf3bMgTd01RqmeyG1mpsttBL9XKy7IEDOTCDPgUr9uH8fhCiKNRvP2-y1las"/>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight text-center">
+                WELCOME BACK<br/>to FOZ
+            </h1>
+</header>
+<!-- Center / Body -->
+<div class="flex-1 flex flex-col items-center px-margin-mobile w-full">
+<div class="flex flex-col items-center justify-center mb-12">
+<img alt="FOZ Large Logo" class="w-32 h-32 object-contain opacity-10" src="https://lh3.googleusercontent.com/aida/AP1WRLuFUAAtVcovOo_ChuyzkjKQ1tRCZAFP8eGgWbDjfRzrDJ6sFrsoEmPx4C29hDSOBy8mZx1mA1OV1kbV68udWOPwbU7FjVBNhzHrt_wOhwJtrG6L4gpu4E_oV3FZNvPs4VuBbculDXsFyMC9REVdfFT5rm10Zrcnr85Q-bunJ4RVM0GmKAhkzcjv6j5b2nshf3bMgTd01RqmeyG1mpsttBL9XKy7IEDOTCDPgUr9uH8fhCiKNRvP2-y1las"/>
+</div>
+<div class="w-full space-y-6">
+<div class="text-center space-y-2">
+<h2 class="font-headline-md text-headline-md text-primary">Start connecting again</h2>
+<p class="font-body-md text-body-md text-secondary">Choose an account to log in</p>
+</div>
+<!-- Account Card -->
+<div class="flex items-center justify-between p-4 bg-surface rounded-xl border border-outline-variant hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center space-x-4">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant" data-alt="A striking minimalist portrait of a confident young man in high-contrast black and white photography. He wears a simple dark shirt. The lighting is soft and studio-quality, emphasizing the subject against a pure white background. The aesthetic is clean, premium, and sophisticated, matching a high-end editorial style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-igVrgj6GPfZsfBVxNAknmsTFukSlfdVQ5ELMvSRHvImGawFts_itd66CzjHVOKqmGkgdukFkO-Wh7k3q9-DSYTl7YDsTTXN0JfACYa2so3bIk5AsBb30_gfQb00tuJJSln2dErnmJcWRuIJ4x0_tXucc4FOQUnCW0RbrIcBcrW3_A_cZIZ3EalS24kIECiD3kyzIuLUz2eUMwA_r6P6mhkWtEDLHhpbShGVjoKeyoIhK06jJPFvfeQ6ryvMT72_Y1AkmnkeR7SA"/>
+<div>
+<p class="font-label-md text-label-md text-primary">John Doe</p>
+<p class="font-body-md text-body-md text-secondary text-sm">@john_foz</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Log in
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto p-margin-mobile flex flex-col space-y-4 w-full flex-shrink-0 border-t border-outline-variant bg-surface-container-lowest">
+<button class="w-full py-3 bg-transparent border border-outline-variant text-primary font-label-md text-label-md rounded-xl hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                Log in to another FOZ account
+            </button>
+<button class="w-full py-3 bg-transparent text-secondary font-label-md text-label-md rounded-xl hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                Create new account
+            </button>
+</footer>
+</main>
+</body></html>
