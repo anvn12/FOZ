@@ -1,0 +1,215 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FOZ Post Composer States</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#353434",
+                        "on-primary": "#2f3131",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-container-high": "#2a2a2a",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "primary": "#ffffff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "outline-variant": "#444748",
+                        "on-surface": "#e5e2e1",
+                        "inverse-on-surface": "#313030",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-secondary-fixed-variant": "#00497d",
+                        "surface": "#141313",
+                        "on-primary-fixed-variant": "#454747",
+                        "on-background": "#e5e2e1",
+                        "on-surface-variant": "#c4c7c8",
+                        "secondary-container": "#0095f6",
+                        "surface-tint": "#c6c6c7",
+                        "on-primary-container": "#636565",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-dim": "#141313",
+                        "surface-bright": "#3a3939",
+                        "tertiary-container": "#e2e2e2",
+                        "on-secondary": "#003258",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container": "#201f1f",
+                        "background": "#141313",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-error": "#690005",
+                        "inverse-primary": "#5d5f5f",
+                        "surface-container-highest": "#353434",
+                        "on-secondary-fixed": "#001d36",
+                        "on-primary-fixed": "#1a1c1c",
+                        "secondary-fixed": "#d1e4ff",
+                        "outline": "#8e9192",
+                        "primary-container": "#e2e2e2",
+                        "secondary": "#9ecaff",
+                        "on-tertiary-container": "#636565",
+                        "on-secondary-container": "#002b4d",
+                        "secondary-fixed-dim": "#9ecaff",
+                        "on-tertiary": "#2f3131",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "thread-line-width": "1.5px",
+                        "gutter": "12px",
+                        "avatar-size-lg": "48px",
+                        "max-width-desktop": "700px",
+                        "container-padding": "1rem",
+                        "avatar-size-sm": "32px"
+                    },
+                    "fontFamily": {
+                        "body-main": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-timestamp": ["Inter"],
+                        "headline-bold": ["Inter"],
+                        "body-secondary": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-main": ["15px", { "lineHeight": "21px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "label-sm": ["13px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "500" }],
+                        "label-timestamp": ["14px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-bold": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-secondary": ["15px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #000000;
+        }
+        
+        /* Spin Animation for loader */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin 1.5s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-on-background font-body-main antialiased min-h-screen flex flex-col pt-20 pb-20">
+<!-- Top Navigation Anchor (Simulated context) -->
+<header class="fixed top-0 w-full z-50 flex justify-center items-center h-16 px-gutter max-w-desktop mx-auto bg-background/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex-1"></div>
+<h1 class="text-headline-bold font-headline-bold text-primary">FOZ</h1>
+<div class="flex-1 flex justify-end gap-4">
+<span class="material-symbols-outlined text-outline cursor-pointer hover:opacity-70">search</span>
+</div>
+</header>
+<!-- Main Container -->
+<main class="w-full max-w-[700px] mx-auto px-4 md:px-0 flex flex-col gap-8">
+<!-- Header for Presentation Context -->
+<div class="mb-4 pt-6">
+<h2 class="text-on-surface-variant text-label-sm font-label-sm uppercase tracking-widest border-b border-outline-variant pb-2">Composer States</h2>
+</div>
+<!-- STATE 1: IDLE -->
+<section class="border-b border-outline-variant pb-6 flex flex-col gap-4">
+<p class="text-outline text-label-sm font-label-sm mb-2">1. Idle State</p>
+<div class="flex items-start gap-3 w-full bg-[#101010] p-4 rounded-xl border border-[#262626]">
+<img alt="Avatar" class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-[#262626] shrink-0" data-alt="A hyper-realistic profile portrait of a modern digital user. High contrast lighting on a dark background. Cyberpunk or modern minimalist aesthetic. Sharp focus, cinematic lighting. 50-100 words detailing the lighting and mood to fit a sleek tech platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH8qqJkWXfgd8wVxQ8RIT_OoOliM7G8EYbsJbYicFogEzrVnM4e58jPScWXbqx0HeGXqfIDYfE8KD65f8I3-uKPQeGLd-ISxx4BGoZAEorpz4zKIp3Al_iTImNnX6cR1MukvoDFvuyGS026ZNkCe7zpOTVlfcLNl07hCvRO-HBRjUElU5KKnhn-Ydrng7-qR8EqjX3NXEuA875k3U-XtTrieiTqNvO9RYBZo3mKeoc4Rfz5e7-QpYnT_jxoB-K4wm4l_fk2KGYQICq">
+<div class="flex-1 flex flex-col pt-3">
+<input class="bg-transparent border-none outline-none text-body-main font-body-main text-primary placeholder:text-outline w-full p-0 focus:ring-0 cursor-pointer" placeholder="Start a discussion on FOZ..." readonly="" type="text">
+</div>
+</div>
+</section>
+<!-- STATE 2: TYPING -->
+<section class="border-b border-outline-variant pb-6 flex flex-col gap-4">
+<p class="text-outline text-label-sm font-label-sm mb-2">2. Typing State</p>
+<div class="flex items-start gap-3 w-full bg-[#101010] p-4 rounded-xl border border-[#262626] ring-1 ring-outline-variant/30">
+<img alt="Avatar" class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-[#262626] shrink-0" data-alt="A hyper-realistic profile portrait of a modern digital user. High contrast lighting on a dark background. Cyberpunk or modern minimalist aesthetic. Sharp focus, cinematic lighting. 50-100 words detailing the lighting and mood to fit a sleek tech platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKTRYb6blPtWQaIuSx5EsqWtpqbrkXhCWFXXdpSxGr8dSDN-Fi2-R7Lj877Qdf9qhj3eKmlPVbxgsWl5EXVbzM-mGKAYrDQXr9jswgn7ZvWeycYo-vVc0j9aaI3wM1I_G7OGXtau8u3qYH2ht8br7_McOuuJm4fMNr8O3Z91U3dHDNTc9vLhnXTmKZsUM1seqxEA-ErQ0GJi-IU7ql3mwPr5mlXxwfg_KnIXAmMCVfJK-U9tZOUAgi25zJHLjqmL1vJ4nkoFkGxnmJ">
+<div class="flex-1 flex flex-col w-full">
+<textarea class="bg-transparent border-none outline-none text-body-main font-body-main text-primary w-full p-0 pt-2 min-h-[100px] resize-none focus:ring-0 placeholder:text-outline/30" placeholder="Start a discussion on FOZ...">The design architecture of this platform feels incredibly fluid. Relying on tonal shifts instead of drop shadows creates such a seamless reading experience. Has anyone else experimented with zero-gap layouts for dense feeds? #DesignSystems</textarea>
+<!-- Toolbar -->
+<div class="flex items-center justify-between mt-2 pt-3 border-t border-[#262626]">
+<div class="flex items-center gap-1">
+<button aria-label="Add image" class="p-2 rounded-full hover:bg-surface-variant transition-colors text-secondary-container group">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</button>
+<button aria-label="Add GIF" class="p-2 rounded-full hover:bg-surface-variant transition-colors text-secondary-container group">
+<span class="material-symbols-outlined text-[20px]">gif_box</span>
+</button>
+<button aria-label="Add poll" class="p-2 rounded-full hover:bg-surface-variant transition-colors text-secondary-container group">
+<span class="material-symbols-outlined text-[20px]">poll</span>
+</button>
+<button aria-label="Add location" class="p-2 rounded-full hover:bg-surface-variant transition-colors text-secondary-container group">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<!-- Character count ring (simulated nearly full) -->
+<div class="relative w-6 h-6 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewBox="0 0 24 24">
+<circle cx="12" cy="12" fill="none" r="10" stroke="#262626" stroke-width="2"></circle>
+<!-- 210 length approx 85% of 2*pi*10=62.8 -> 53.3 -->
+<circle class="text-primary-fixed" cx="12" cy="12" fill="none" r="10" stroke="#e2e2e2" stroke-dasharray="62.8" stroke-dashoffset="15" stroke-width="2"></circle>
+</svg>
+</div>
+<!-- Post Button -->
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-4 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all font-bold">
+                                Post
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- STATE 3: SUBMITTING -->
+<section class="border-b border-outline-variant pb-6 flex flex-col gap-4">
+<p class="text-outline text-label-sm font-label-sm mb-2">3. Submitting State</p>
+<div class="flex items-start gap-3 w-full bg-[#101010] p-4 rounded-xl border border-[#262626] opacity-70 cursor-not-allowed">
+<img alt="Avatar" class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-[#262626] shrink-0 opacity-50" data-alt="A hyper-realistic profile portrait of a modern digital user. High contrast lighting on a dark background. Cyberpunk or modern minimalist aesthetic. Sharp focus, cinematic lighting. 50-100 words detailing the lighting and mood to fit a sleek tech platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApvZYMKpdEUKiz7pVSo3NOHUWsLH043Nj-8EvTz7U5Z0j7VpZlw9sxOhkTZ9eSp_S1pKrKdu11FdvlqqLz4ug5tofXDx6X4XjnUixMItHGKFhRLEnoqWrCRHW5kNmbFBMkeD23-2L3MObFTD9Wf_Apx3GtnOHNShXK9PF8lOCggjJywpekSb1g_to_UI6I5dAyiK3AFqaLp1ty8vOJw7CxPUJjSQoUXgGY-IdIbNT8_GxD4gY5eBq2glKSOZz1eeOQHaknccF7P_vB">
+<div class="flex-1 flex flex-col w-full">
+<textarea class="bg-transparent border-none outline-none text-body-main font-body-main text-on-surface-variant w-full p-0 pt-2 min-h-[100px] resize-none focus:ring-0 cursor-not-allowed" disabled="">The design architecture of this platform feels incredibly fluid. Relying on tonal shifts instead of drop shadows creates such a seamless reading experience. Has anyone else experimented with zero-gap layouts for dense feeds? #DesignSystems</textarea>
+<!-- Toolbar -->
+<div class="flex items-center justify-between mt-2 pt-3 border-t border-[#262626]">
+<div class="flex items-center gap-1 opacity-50">
+<span class="p-2 text-outline"><span class="material-symbols-outlined text-[20px]">image</span></span>
+<span class="p-2 text-outline"><span class="material-symbols-outlined text-[20px]">gif_box</span></span>
+<span class="p-2 text-outline"><span class="material-symbols-outlined text-[20px]">poll</span></span>
+<span class="p-2 text-outline"><span class="material-symbols-outlined text-[20px]">location_on</span></span>
+</div>
+<div class="flex items-center gap-4">
+<!-- Submitting Spinner replacing button -->
+<div class="h-[32px] flex items-center justify-center px-4">
+<span class="material-symbols-outlined text-primary animate-spin-slow text-[24px]">progress_activity</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Mobile) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-12 md:hidden bg-background border-t border-outline-variant">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-90 transition-all">home</span>
+<span class="material-symbols-outlined text-outline cursor-pointer active:scale-90 transition-all">search</span>
+<span class="material-symbols-outlined text-outline cursor-pointer active:scale-90 transition-all">add_box</span>
+<span class="material-symbols-outlined text-outline cursor-pointer active:scale-90 transition-all">favorite</span>
+<span class="material-symbols-outlined text-outline cursor-pointer active:scale-90 transition-all">person</span>
+</nav>
+</body></html>
