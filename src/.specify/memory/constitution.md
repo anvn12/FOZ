@@ -1,27 +1,31 @@
 <!--
 Sync Impact Report
-- Version change: 0.0.0 (unratified template) → 1.0.0
-- Project name: FOZ
-- Modified principles: N/A (initial ratification; all principles newly adopted)
-  - PRINCIPLE_1 → I. Modular Client-Server Architecture
-  - PRINCIPLE_2 → II. Enforced Folder Structure
-  - PRINCIPLE_3 → III. Clean Code & Reusability
-  - PRINCIPLE_4 → IV. Security at Every Layer
-  - PRINCIPLE_5 → V. Consistency Over Cleverness
-- Added sections:
-  - Quality Standards (Section 2)
-  - Development Workflow (Section 3)
-  - Deferred Principles (AI Service Abstraction)
-  - Governance
-- Removed sections: N/A
+- Version change: 1.0.0 → 1.1.0
+- Trigger: Vision Document v1.1 (moderation workflow split into 3 use cases,
+  AI fallback chain + auth-gating, accessibility & audit-logging NFRs,
+  reporting scope confirmed as content + users, single report table).
+- Modified principles:
+  - PRINCIPLE_IV → IV. Security at Every Layer: added Guest as a read-only
+    tier; added rate limiting and moderation audit logging; aligned moderation
+    language to a single report table with status lifecycle
+    (pending → dismissed | escalated → closed); reporting scope =
+    posts, comments, or users.
+  - NEW PRINCIPLE_VI → VI. AI Service Isolation (promoted from Deferred):
+    provider swappable + fallback chain, auth-gated, graceful degradation.
+- Added sections: none.
+- Removed sections: Deferred Principles (AI Service Abstraction promoted to
+  Core as Principle VI).
+- Quality Standards: added WCAG 2.1 Level AA requirement.
+- Development Workflow: moderation migration task now references the single
+  report table + status enum (report and violation tables consolidated).
 - Templates requiring updates:
-  - .specify/templates/plan-template.md — ✅ compatible (Constitution Check section present; gates delegate to this file)
-  - .specify/templates/spec-template.md — ✅ compatible (mandatory User Scenarios / Requirements / Success Criteria align with Quality Standards)
-  - .specify/templates/tasks-template.md — ✅ compatible (Setup + Foundational phases hold the required Prisma migration task for moderation pipeline)
-  - .specify/templates/checklist-template.md — ✅ compatible (generic, no constitution-coupled content)
-  - .specify/templates/commands/*.md — ✅ N/A (no command files present in templates/commands/)
-  - Runtime guidance: README.md — ✅ compatible (describes User/Moderator/Admin roles consistent with Principle IV)
-- Follow-up TODOs: none
+  - .specify/templates/plan-template.md — ✅ compatible (Constitution Check section unchanged)
+  - .specify/templates/spec-template.md — ✅ compatible
+  - .specify/templates/tasks-template.md — ✅ compatible (moderation migration task wording updated)
+  - .specify/templates/checklist-template.md — ✅ compatible
+  - .specify/templates/commands/*.md — ✅ N/A
+  - Runtime guidance: README.md — ⚠ review: add Guest role alongside User/Moderator/Admin to match Principle IV.
+- Follow-up TODOs: update README.md role list to include Guest.
 -->
 
 # FOZ Constitution
@@ -65,24 +69,42 @@ Sensitive data MUST NOT be logged and MUST NOT appear in error responses.
 Authorization is ownership-based by default: users may only create, edit, and
 delete their own content, enforced in both the UI and the API.
 
-Role-based access control (User / Mod / Admin) is first-class for the
+Role-based access control (Guest / User / Mod / Admin) is first-class for the
 moderation pipeline:
 
-- Users report threads or other users to moderators.
-- Moderators review reports and flag them as violations OR dismiss them.
-  Moderators MUST NOT issue punishments.
-- Admins review flagged violations and issue punishments (warn, suspend, ban).
-  Admins outrank Mods.
+- Guests are read-only and unauthenticated: they may view content but MUST
+  NOT post, interact, report, or trigger AI features; any write attempt MUST
+  be rejected at the API boundary and prompt authentication.
+- Users report posts, comments, or other users to moderators.
+- Moderators review pending reports and either dismiss them OR escalate
+  critical cases to admins. Moderators MUST NOT issue punishments.
+- Admins review escalated reports and issue punishments (warn, suspend, ban,
+  remove content). Admins outrank Mods.
+- Reports carry a status lifecycle: pending → dismissed | escalated → closed.
 - Each role tier MUST be enforced at the API boundary via middleware, not
   only in the UI.
 
 Separation of powers: no single role may both flag and punish.
+
+Rate limiting MUST be applied to costly or abuse-prone endpoints (e.g., AI
+summarization).
+
+Moderation actions — escalations, punishments, content removal — MUST be
+logged for audit. Logs MUST NOT contain sensitive data.
 
 ### V. Consistency Over Cleverness
 Patterns MUST be followed everywhere they apply. No novel or clever solutions
 where a conventional approach exists. New patterns MUST be documented and
 applied consistently going forward. Code that surprises the reader requires
 written justification.
+
+### VI. AI Service Isolation
+AI features MUST sit behind a dedicated service interface. The provider MUST
+be swappable without business-logic changes, and a fallback provider chain
+MUST be configured so a single provider outage or quota exhaustion does not
+disable the feature. AI features MUST require authentication; guests MUST NOT
+trigger AI calls. AI unavailability MUST NOT block core user flows — it MUST
+degrade gracefully with a clear message.
 
 ## Quality Standards
 
@@ -97,6 +119,8 @@ All code on `main` MUST:
   resources.
 - Document performance and scalability expectations in each `plan.md` under
   Technical Context, since these are feature-specific.
+- Frontend MUST meet WCAG 2.1 Level AA (keyboard navigation, color contrast,
+  screen-reader labels).
 
 ## Development Workflow
 
@@ -105,18 +129,13 @@ All code on `main` MUST:
 - Security hardening and error handling MUST be part of every implementation
   phase, not optional polish.
 - Moderation-pipeline tasks MUST include a Prisma migration task (the `role`
-  field plus report and violation tables) before any mod or admin UI or route
-  work begins.
+  field plus the `report` table with its status enum: pending, dismissed,
+  escalated, closed) before any mod or admin UI or route work begins.
 
 ## Deferred Principles
 
-### AI Service Abstraction (not yet active)
-No AI feature is mandated yet. This principle auto-promotes to a Core
-Principle when the first AI spec lands. When active:
-
-- AI calls MUST sit behind a dedicated service interface.
-- The provider MUST be swappable without business-logic changes.
-- AI unavailability MUST NOT block core user flows.
+None currently active. The AI Service principle was promoted to Core
+Principle VI upon the Vision Document v1.1 landing the TL;DR feature.
 
 ## Governance
 
@@ -131,4 +150,4 @@ All implementation plans MUST include a **Constitution Check** section
 validating the design against these principles before Phase 0 research.
 Non-compliance MUST be justified in the plan's Complexity Tracking section.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-06-30
+**Version**: 1.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-08
