@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FOZ Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8fafa",
+                        "surface-dim": "#d8dada",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#42474c",
+                        "on-primary-container": "#848484",
+                        "on-secondary-fixed": "#001d32",
+                        "surface-container-highest": "#e1e3e3",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#eff1f1",
+                        "tertiary-container": "#171c20",
+                        "tertiary-fixed-dim": "#c2c7cc",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "on-surface-variant": "#4c4546",
+                        "surface": "#f8fafa",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004a75",
+                        "on-error": "#ffffff",
+                        "on-background": "#191c1d",
+                        "secondary-fixed-dim": "#95ccff",
+                        "inverse-surface": "#2e3131",
+                        "outline": "#7e7576",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-container": "#eceeee",
+                        "surface-container-low": "#f2f4f4",
+                        "primary": "#000000",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e6e8e9",
+                        "primary-fixed": "#e2e2e2",
+                        "secondary": "#006399",
+                        "on-secondary-container": "#003f63",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#cfc4c5",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e1e3e3",
+                        "primary-container": "#1b1b1b",
+                        "inverse-primary": "#c6c6c6",
+                        "surface-tint": "#5e5e5e",
+                        "error-container": "#ffdad6",
+                        "background": "#f8fafa",
+                        "tertiary-fixed": "#dee3e8",
+                        "secondary-fixed": "#cde5ff",
+                        "secondary-container": "#35adff",
+                        "on-primary-fixed-variant": "#474747",
+                        "tertiary": "#000000",
+                        "on-tertiary-container": "#7f8489",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed": "#171c20"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "margin-desktop": "auto",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+                        "body-md": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["16px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "24px", "fontWeight": "800" }],
+                        "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-[56px] pt-[60px] md:pt-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 h-[60px] bg-surface/90 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-margin-mobile max-w-[600px] mx-auto left-0 right-0 md:hidden">
+<button aria-label="Menu" class="text-primary hover:opacity-80 transition-opacity p-2 -ml-2" id="menu-btn">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-black tracking-tighter text-primary">
+            FOZ
+        </div>
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-4 py-1.5 rounded-full hover:opacity-80 transition-opacity">
+            Log in
+        </button>
+</header>
+<!-- NavigationDrawer (Hidden by default) -->
+<div class="fixed inset-0 z-[60] hidden" id="nav-drawer">
+<div class="absolute inset-0 bg-black/20 backdrop-blur-sm" id="drawer-overlay"></div>
+<div class="absolute bottom-0 w-full bg-surface-container-lowest rounded-t-lg max-w-[600px] mx-auto left-0 right-0 shadow-xl flex flex-col p-gutter transform transition-transform duration-300 translate-y-full" id="drawer-content">
+<div class="font-headline-md text-headline-md font-bold mb-4 px-4 pt-2">
+                Menu
+            </div>
+<div class="flex flex-col w-full divide-y divide-outline-variant">
+<button class="flex items-center gap-4 py-4 px-4 hover:bg-surface-container-low transition-colors text-on-surface-variant font-label-lg text-label-lg w-full text-left">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </button>
+<button class="flex items-center gap-4 py-4 px-4 hover:bg-surface-container-low transition-colors text-on-surface-variant font-label-lg text-label-lg w-full text-left">
+<span class="material-symbols-outlined">report</span>
+                    Report a Problem
+                </button>
+</div>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="max-w-[600px] mx-auto w-full flex flex-col divide-y divide-outline-variant">
+<!-- Post 1 -->
+<article class="p-gutter flex gap-sm">
+<!-- Avatar Column -->
+<div class="flex-shrink-0 w-10">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A close up portrait of a young black woman wearing sunglasses and looking off camera. The lighting is bright and summery, giving a relaxed modern vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoJhZ87PZhx7ZtHz61H6K1LB2CqQQ9_mq1iUOUw9U2ahyMJBUNsLBIcuKXsS9K5OJtD_oPOXo9CyPuN7a7zuCnAToeYDOz5O3bm8DPiL24HxdgoMXDmGu_mBC-YWdNCOASV-bzou0Ut-1JM7Dm4KoiAMsl6PstzNEfEZsg4-nefouPo9uw4VYwxGcEqKSnD7vST0M_YPgtG1r5b76EAhSXUcBHiUehyM9bSk0BTtuHfHDdKhKF23xCDA"/>
+</div>
+</div>
+<!-- Content Column -->
+<div class="flex-1 flex flex-col min-w-0">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-baseline gap-1 truncate">
+<span class="font-label-lg text-label-lg text-primary truncate">ohiris</span>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">Love Island USA</span>
+<span class="font-body-md text-body-md text-outline">3h</span>
+</div>
+<button class="text-outline hover:text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-primary mb-3 whitespace-pre-wrap">TRIGGER WARNING ⚠️ I am about to say something positive about Sincere!! This does not mean I am Team Sincere, but I am about to say something positive about him....</p>
+<!-- Action Row -->
+<div class="flex items-center justify-between text-outline max-w-[300px]">
+<button class="flex items-center gap-1 hover:text-primary group transition-colors">
+<span class="material-symbols-outlined text-[20px] group-hover:text-error transition-colors">favorite</span>
+<span class="font-label-md text-label-md">1.1K</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="font-label-md text-label-md">92</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+<span class="font-label-md text-label-md">20</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">send</span>
+<span class="font-label-md text-label-md">6</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post 2 -->
+<article class="p-gutter flex gap-sm">
+<div class="flex-shrink-0 w-10">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A portrait of a young woman with long dark hair, smiling gently. The background is slightly blurred indicating a depth of field typical of professional portraiture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjxQRZFBgc5skHg7SF-jdgU9a3yfcbqsbwyqtPN9UfZkXsykZm4HA0hrAIHUZR6UEzXpgvIFTZTZZUriRVMcEWC65E8BhjbDvPlIvFoXWCT52MnZab8FX-RAHy78R5XmtQSMrhd5ta6kwsK_W79CXQoMT4Tw32sWc1HG24zO02xAxQBQgVbGRLOUNbr8yEAhIFK2mMX2WlLw6bA3dV8ZAnuYnnmW7wjLLwibfoawMmY5eMQf8zEx7Tgg"/>
+</div>
+</div>
+<div class="flex-1 flex flex-col min-w-0">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-baseline gap-1 truncate">
+<span class="font-label-lg text-label-lg text-primary truncate">jillianbydesignn</span>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">Love Island USA</span>
+<span class="font-body-md text-body-md text-outline">3h</span>
+</div>
+<button class="text-outline hover:text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-primary mb-3">Kayda's downfall is as shocking as Corbin's redemption. I thought I was taking my girl to the finale</p>
+<div class="flex items-center justify-between text-outline max-w-[300px]">
+<button class="flex items-center gap-1 hover:text-primary group transition-colors">
+<span class="material-symbols-outlined text-[20px] group-hover:text-error transition-colors">favorite</span>
+<span class="font-label-md text-label-md">6.3K</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="font-label-md text-label-md">48</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+<span class="font-label-md text-label-md">178</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">send</span>
+<span class="font-label-md text-label-md">99</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post 3 (With Image) -->
+<article class="p-gutter flex gap-sm">
+<div class="flex-shrink-0 w-10">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A circular profile picture showing a wide shot of a crowded sports stadium under bright stadium lights at night." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwTROSj8qMVDnK-OMAbIFmqHXhB4cWhbbZQMNM0_13cxJgOTPA9gceLFF9bLqhrGlq5cJ7MTtoRH_8cduK883PPggWaguuRHVd76Jj86W5GIoeFZ_S9nJ8o4tjh28h8GrjEWgGKXTXiz7w-R7jQuIgdtZG0fDlH-0peatEfkCOQXnh-4lEnEPsaAWfjr3zxsvKgjZqJIwdeYoBrU0dV4vEB0M16NWMK6MQjvnlm9k2NT5R7Tef_i0iRA"/>
+</div>
+</div>
+<div class="flex-1 flex flex-col min-w-0">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-baseline gap-1 truncate">
+<span class="font-label-lg text-label-lg text-primary truncate">lu_28.97</span>
+<span class="font-body-md text-body-md text-outline">15h</span>
+</div>
+<button class="text-outline hover:text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-primary mb-3">劉85敢不敢追平！</p>
+<div class="rounded-lg overflow-hidden border border-outline-variant mb-3 bg-surface-container-lowest">
+<img alt="Post attachment" class="w-full h-auto object-cover max-h-[300px]" data-alt="A television broadcast frame of a baseball player wearing a blue and white uniform with a blue helmet. He is looking intently towards the left. The background shows blurred advertising boards and the lower part of the screen has broadcast graphics showing game statistics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwIQoV7YE57OZZvNpB3AEk1cg478FDtQQaMtwTCO5mmaCB6g2gQR4SyYc3P8AVc3kP8REHrUdeGiG8-6zfhpC0NqEYRvN4yiXNk7lyasmze-9UJPBo8sMlSqmXfJvE2HlWiIuh45wvkozOzEcesdepE9y8YQAsQNBjI0uouMWQPwMCQ0LTo02vAHdZAq7mallRZHNX4p3gbMEbc6bIPEu9D-3lh8Q3L79lDdycpgcsxeO5e7AE6PapCg"/>
+</div>
+<div class="flex items-center justify-between text-outline max-w-[300px]">
+<button class="flex items-center gap-1 hover:text-primary group transition-colors">
+<span class="material-symbols-outlined text-[20px] group-hover:text-error transition-colors">favorite</span>
+<span class="font-label-md text-label-md">382</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="font-label-md text-label-md">61</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">send</span>
+<span class="font-label-md text-label-md">3</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post 4 -->
+<article class="p-gutter flex gap-sm">
+<div class="flex-shrink-0 w-10">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A headshot of a middle aged white man with short grey hair and a stubble beard, smiling confidently against a studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDTuLEbIHaHWN7Ps4FTuxXldX2AKDz6xXZNxBYWfWQ9eSgIAqKoASbusRZEe_Wi3SNsnfkAF6kRbhvn6M7NmNXhmnfrDFsqgAXIzBT5V_VCdUhuyCpHlyd7UHf5bggkwy7KbCrrWyvHc-oaWTM-1H1UGw5RpOp0A6NwQ0ye66xFtavgXt0l7MPWmHob_YTMyiau_EQ0BGA2UGObw7f9-RtnKqICuJJot3sqbGQOSdgwjRVsuDHP0wObA"/>
+</div>
+</div>
+<div class="flex-1 flex flex-col min-w-0">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-1 truncate">
+<span class="font-label-lg text-label-lg text-primary truncate">bravoandy</span>
+<span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-body-md text-body-md text-outline ml-1">18h</span>
+</div>
+<button class="text-outline hover:text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-primary mb-3">Good morning.... ? Can't tell yet. Hopeful as ever.</p>
+<div class="flex items-center justify-between text-outline max-w-[300px]">
+<button class="flex items-center gap-1 hover:text-primary group transition-colors">
+<span class="material-symbols-outlined text-[20px] group-hover:text-error transition-colors">favorite</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</article>
+<div class="h-20 w-full"></div> <!-- spacer for bottom nav -->
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 h-[56px] bg-surface/90 backdrop-blur-xl border-t border-outline-variant flex justify-around items-center px-4 max-w-[600px] mx-auto left-0 right-0 md:hidden">
+<button aria-label="Home" class="text-primary scale-110 flex flex-col items-center justify-center w-12 h-12">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">home</span>
+</button>
+<button aria-label="Search" class="text-outline opacity-60 hover:text-primary transition-colors flex flex-col items-center justify-center w-12 h-12">
+<span class="material-symbols-outlined text-[28px]">search</span>
+</button>
+<button aria-label="Add" class="text-outline opacity-60 hover:text-primary transition-colors flex flex-col items-center justify-center w-12 h-12">
+<div class="w-10 h-10 bg-surface-container-high rounded-lg border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</div>
+</button>
+<button aria-label="Profile" class="text-outline opacity-60 hover:text-primary transition-colors flex flex-col items-center justify-center w-12 h-12">
+<span class="material-symbols-outlined text-[28px]">person</span>
+</button>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menu-btn');
+            const navDrawer = document.getElementById('nav-drawer');
+            const drawerOverlay = document.getElementById('drawer-overlay');
+            const drawerContent = document.getElementById('drawer-content');
+
+            function openDrawer() {
+                navDrawer.classList.remove('hidden');
+                // trigger reflow
+                void navDrawer.offsetWidth;
+                drawerContent.classList.remove('translate-y-full');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeDrawer() {
+                drawerContent.classList.add('translate-y-full');
+                setTimeout(() => {
+                    navDrawer.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300); // match transition duration
+            }
+
+            menuBtn.addEventListener('click', openDrawer);
+            drawerOverlay.addEventListener('click', closeDrawer);
+        });
+    </script>
+</body></html>
