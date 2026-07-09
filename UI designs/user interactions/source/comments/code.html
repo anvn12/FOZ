@@ -1,0 +1,319 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FOZ - Thread Detail</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f1f1f1",
+                        "inverse-surface": "#303030",
+                        "inverse-primary": "#ffb3b6",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#5c3f41",
+                        "primary-fixed-dim": "#ffb3b6",
+                        "on-primary-fixed-variant": "#920028",
+                        "primary": "#ba0035",
+                        "tertiary-fixed-dim": "#62dda0",
+                        "background": "#f9f9f9",
+                        "on-surface": "#1b1b1b",
+                        "tertiary-fixed": "#7ffaba",
+                        "surface-dim": "#dadada",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-container": "#f6fff6",
+                        "on-tertiary-fixed-variant": "#005233",
+                        "tertiary-container": "#008656",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#906f70",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#e2dfde",
+                        "primary-container": "#e12149",
+                        "surface-container": "#eeeeee",
+                        "surface": "#f9f9f9",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary-fixed": "#002112",
+                        "on-background": "#1b1b1b",
+                        "outline-variant": "#e5bdbe",
+                        "surface-variant": "#e2e2e2",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-secondary-container": "#636262",
+                        "tertiary": "#006a43",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-tint": "#be0037",
+                        "primary-fixed": "#ffdada",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#40000c",
+                        "on-secondary-fixed": "#1b1b1c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "container-max": "640px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "1.2", "letterSpacing": "0", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Minimal custom CSS for things Tailwind config can't handle purely via utility classes */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24 !important;
+        }
+        /* Hide scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md min-h-screen">
+<!-- TopNavBar (JSON Implementation) -->
+<!-- Nav Suppression applied to Bottom/Side Nav due to this being a detail/focus view, prioritizing canvas -->
+<nav class="bg-surface/80 dark:bg-surface/80 backdrop-blur-xl fixed top-0 w-full border-b border-on-surface/[0.06] dark:border-inverse-surface/[0.06] z-50 transition-transform">
+<div class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto z-50">
+<!-- Back Button Contextually Added for Detail View within constraints -->
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<a class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-black text-primary dark:text-inverse-primary tracking-tighter absolute left-1/2 -translate-x-1/2" href="#" style="color: rgb(0, 0, 0);">FOZ</a>
+<div class="flex gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas (Constrained width feed layout) -->
+<main class="max-w-container-max mx-auto pt-[64px] pb-[100px] bg-surface-container-lowest min-h-screen">
+<!-- Parent Post (Focused) -->
+<article class="px-gutter md:px-lg pt-lg pb-md border-b border-on-surface/[0.06]">
+<!-- Author Meta -->
+<div class="flex items-center gap-sm mb-md">
+<img class="w-12 h-12 rounded-full object-cover border border-on-surface/[0.04]" data-alt="A polished, modern portrait of an urban creative professional against a minimalist studio backdrop. The lighting is soft and cinematic, emphasizing clean skin textures and a confident expression. High-key lighting, bright white and subtle grey tones dominant, matching the pristine light-mode aesthetic of the application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9qrO50ONSfHRh95hdGy8C3LuDIbYkFm4hXsY5s-3jQveo2nvgJSBUu87OwYMjSVXBFTTYjZh8YPIu5QlE9ha0t-CJlpcDIXX1BNbzkpgJbtB-cBzspuB8NAt0U3KvjZCYabkLF9TBzsXLUl0Xb3OHRhYr_mFJhf1knuImriu5yt8Zei6sKyt9FAfq2yH6PL0QtmqULl5-jqZ-D3LQHbbmKmMWpHF2WATnu95gnJ4lT5epy-l3YN6X8yktEDMVlUcTV0sDHwbXQ-mv">
+<div class="flex flex-col flex-1">
+<div class="flex items-center gap-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Elena Rostova</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary-container icon-fill" data-icon="verified">verified</span>
+</div>
+<span class="font-body-md text-body-md text-secondary">@elenar • 4h</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low text-secondary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Post Content -->
+<div class="mb-lg">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                    Just finished reviewing the latest architectural drafts for the new cultural center. The way they've integrated light-wells into the subterranean exhibition spaces is breathtaking. It completely redefines how we interact with natural light in underground structures. Has anyone else seen the preliminary renders?
+                </p>
+<div class="mt-md rounded-xl overflow-hidden border border-on-surface/[0.06] bg-surface-container-low">
+<img class="w-full h-[280px] object-cover hover:opacity-95 transition-opacity cursor-pointer" data-alt="A striking architectural render of a subterranean exhibition space. The room is incredibly minimalist, defined by pristine white concrete walls and pale polished stone floors. A massive, geometric skylight cuts through the ceiling, allowing a brilliant shaft of natural sunlight to illuminate a singular, abstract sculpture below. The scene feels vast, silent, and deeply atmospheric, relying on extreme contrast between the bright light well and the soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBum8q6a_HuPDKJEJzlRhRPPeDb0pvR1OqjdxcsP0N6GJYaa-tqOWYV6XDfGORZQziaE3ZBpvSQYrO3XMAHGnnGt7ZE33uWo2G0bSgKoNobBUSv8idbdng9stSUKyK-4pS1Zb53j4WaCAOdPGUGLp2LUbR-IjsVZ5I3W6Ky1cIRqBfeQpZbEjyv4B5wWA5xJabw9jtK9BFGcNWYBHre6zv9wvmqzLk1mWcE6XVhLSDLeOQ82VpI6V_I-4o2Wn7DBJ3Xrv7wMUQ80e4O">
+</div>
+</div>
+<!-- Action Bar Metrics -->
+<div class="flex items-center justify-between pt-sm border-t border-on-surface/[0.04] text-secondary font-label-sm text-label-sm">
+<div class="flex items-center gap-xl w-full">
+<button class="flex items-center gap-xs hover:text-primary transition-colors group">
+<span class="material-symbols-outlined group-hover:bg-primary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="chat_bubble">chat_bubble</span>
+<span class="">42</span>
+</button>
+<button class="flex items-center gap-xs hover:text-tertiary-container transition-colors group">
+<span class="material-symbols-outlined group-hover:bg-tertiary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="repeat">repeat</span>
+<span class="">12</span>
+</button>
+<button class="flex items-center gap-xs text-primary transition-colors group">
+<span class="material-symbols-outlined icon-fill group-hover:bg-primary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="favorite">favorite</span>
+<span class="font-label-bold">384</span>
+</button>
+<button class="flex items-center gap-xs hover:text-primary transition-colors group ml-auto">
+<span class="material-symbols-outlined group-hover:bg-primary-container/[0.1] p-[6px] rounded-full" data-icon="share">share</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Nested Comment Tree -->
+<section class="px-gutter md:px-lg py-md pb-xl">
+<!-- Comment Group 1 -->
+<div class="relative mb-lg">
+<!-- Level 1 Reply -->
+<div class="relative grid grid-cols-[36px_1fr] gap-x-sm">
+<!-- Left Col: Avatar & Vertical Line -->
+<div class="flex flex-col items-center">
+<img class="w-9 h-9 rounded-full object-cover border border-on-surface/[0.04] z-10 bg-surface-container-lowest relative" data-alt="Close up profile picture of a young male designer in a bright, modern studio. He is wearing minimalist clothing. The image is brightly lit with a clean white background, perfectly suited for a pristine light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu75OJ6qvZqVZ6yDcYGn9TRanoPye6ZqDCjWrvQSJxKzampwmjGAbVlrT7C_hCXb11lKNKxITcIFJ0Qkpy9puB7aZ-HdeHUZT18wMPPBrUmQHCTUHAbbwXCJs0xDsVI9MO8D0PUgxCgSNNIhtVR2nIeFglYZhGD2iIsz_fAx-pU-SXaBHzOk2k4xBXR7SIDfnrdyievLMKMMvRuunYJS1mjiGZiOuVCDd3oLkWep0t0eyiHx9oxWdnMNM-3fg5cQnoZ4VVb3e-6m5v">
+<!-- Connecting line passing down to next sibling/child -->
+<div class="w-[2px] bg-on-surface/[0.06] flex-grow mt-2 -mb-4"></div>
+</div>
+<!-- Right Col: Content -->
+<div class="pb-md">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Marcus Vance</span>
+<span class="font-body-md text-body-md text-secondary">@mvance • 2h</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                            Yes! The renders are incredible. I love how they are using those reflective surfaces near the light-wells to bounce the light deeper into the corridors. It's brilliant passive design.
+                        </p>
+<!-- Mini Actions -->
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-label-sm">12</span>
+</button>
+</div>
+<!-- Nested Thread Container (Level 2) -->
+<div class="mt-md relative">
+<!-- Level 2 Reply A -->
+<div class="relative grid grid-cols-[28px_1fr] gap-x-sm mb-md">
+<!-- Curve connecting from parent vertical line -->
+<div class="absolute left-[-22px] top-[-16px] w-[36px] h-[32px] border-l-[2px] border-b-[2px] border-on-surface/[0.06] rounded-bl-xl z-0"></div>
+<div class="flex flex-col items-center z-10">
+<img class="w-7 h-7 rounded-full object-cover border border-on-surface/[0.04] bg-surface-container-lowest" data-alt="A minimalist avatar photo of a woman with short dark hair, wearing glasses, against an absolute white background. The image matches the high-key, pristine aesthetic of the application design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN1yp0Fi9xiUjbqjGsYDaMzIIGH7vx6Bgw1oKnuizGi8rHx25EvSRLYXFDlK43eS-mgXHOiD8zgIZUaVFBV7FRh6xtIyizZGG6fsNk03_Sgu77xuc5KdSRUBmgpK8lKucD5MzXC-R17nAE-kldjA8QWHVoksvmAlbzPkfd8ICuxijUtVKxUfnT9rMIImdPvZkydkf-ZQ0VFvgAxyh4quSzd4HhRxyO_RMN-yatlFqHlqYdTwM5HuKW8y_6pAj6eb9XCi9AZIrkhesE">
+<!-- Line continuing down to next nested reply -->
+<div class="w-[2px] bg-on-surface/[0.06] flex-grow mt-2 -mb-6 absolute top-7 bottom-[-24px] left-[13px] z-0"></div>
+</div>
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Sarah Jenkins</span>
+<span class="font-body-md text-body-md text-secondary">@sjenk • 1h</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                                        Exactly. Though I wonder about the maintenance of those reflective panels over time. Dust could severely impact the light dispersal.
+                                    </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 text-primary transition-colors"><span class="material-symbols-outlined text-[18px] icon-fill" data-icon="favorite">favorite</span><span class="font-label-sm text-label-sm">3</span></button>
+</div>
+</div>
+</div>
+<!-- Level 2 Reply B -->
+<div class="relative grid grid-cols-[28px_1fr] gap-x-sm mt-md">
+<!-- Curve connecting from parent vertical line -->
+<div class="absolute left-[-22px] top-[-16px] w-[36px] h-[32px] border-l-[2px] border-b-[2px] border-on-surface/[0.06] rounded-bl-xl z-0"></div>
+<div class="flex flex-col items-center z-10">
+<img class="w-7 h-7 rounded-full object-cover border border-on-surface/[0.04] bg-surface-container-lowest" data-alt="Avatar portrait of a person with a neutral expression, warm lighting, very simple and clean composition with a stark white background to blend seamlessly into the UI canvas." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx7HakmkYpepPKnzzhrTgjOZRaHc6plOcB_VyC4MhC8w3wLVgcnTcRYdCSpnm2S1zunAJlaw03I08PTT4djbi3NkFzBycvLsKqxAT6zVMotPizW6Hmy4CIS_BuiGOxrRwEzEHq0EcSqEB_lBezikvwhCmHJGxfgdDR13cBlMQtjviqckzCKi_9BM-QY9ReVXHMfYb_LRd02jrill1ldEPEoqBS0Cl_VizSD1ketJajKIIXxlPPLFHhCvFHsR_20HsChgC4hZvguVdN">
+</div>
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Elena Rostova</span>
+<span class="font-body-md text-body-md text-secondary">@elenar • 45m</span>
+<span class="bg-surface-container-low text-secondary px-2 py-[2px] rounded-full font-label-sm text-[10px] ml-auto uppercase tracking-wide">Author</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                                        They actually address that in the specs! There's an automated electrostatic cleaning system built into the mounting frames.
+                                    </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment Group 2 (Standalone Level 1) -->
+<div class="relative mb-lg">
+<div class="relative grid grid-cols-[36px_1fr] gap-x-sm">
+<div class="flex flex-col items-center">
+<img class="w-9 h-9 rounded-full object-cover border border-on-surface/[0.04] z-10 bg-surface-container-lowest relative" data-alt="A high-contrast, minimalist portrait of an older gentleman with silver hair and wireframe glasses. Shot on an absolute white background with soft, diffused studio lighting. The aesthetic is extremely clean and editorial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl4SgIW4OK3pUfmYa-Nmj-5WQuhLl8gMkpg23ORfKz7W7AAILosYQufBNkzponE_cfiUNN3IJATIokrPhBWcZ7GlDNyK987SPtEtOsx28rhme9mnFfIJI8spmGvihDCr2VWXlQAxyT_INN3EHttOmf7l9-tvJBtvHuFHUTKj1nmnHZkqJcgFmy9BCugDFn92NMGem_1N3KnBaRlplrTxslZtL6H7OUwMcUzai-9eF9AGqzMLMLjeTj4f8kaPUZWUlzFf930gFA6y9g">
+</div>
+<div class="pb-sm">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">David Chen</span>
+<span class="font-body-md text-body-md text-secondary">@dchen_arch • 3h</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                            Visually stunning, yes. But I'm skeptical about the acoustic properties of that main hall. Concrete and glass in a subterranean vault usually equals an echo chamber. I hope they've layered in some serious dampening materials that aren't obvious in the renders.
+                        </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span><span class="font-label-sm text-label-sm">8</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- View More Links -->
+<div class="ml-[44px] mt-sm">
+<button class="font-label-bold text-label-bold text-primary hover:text-primary-container transition-colors">
+                    View 12 more replies
+                </button>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Reply Input Box -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-xl border-t border-on-surface/[0.06] z-40 pb-safe">
+<div class="max-w-container-max mx-auto px-gutter py-sm flex items-center gap-sm">
+<img class="w-9 h-9 rounded-full border border-on-surface/[0.04] hidden sm:block" data-alt="The current user's profile avatar. A simple, flat illustration of a face in a minimalist line-art style on a pale grey background, fitting seamlessly into the UI's pristine light mode theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5I2nc8jn4KxHIBpv1hw2-AiOkzxXvZwlxUn2iBO1ke6bf3G8s9pj2Zwv8oR5dyLL4bTwC-IABH8-6Hzg-iWh9XJ170eA01ZAv5CFEMymprPenEa3hKcpP5WpHCAmi5dpFECSOEa7EWTWC6UjOZ0gOe8Oe6-5yhMT1QNM35QNl6ly6iiAQ8G009Ao-zXuYgsFtVD2pHeMZyViPIZTk94Ze4sXAimR3SzU8D4nso8SFyNU0L4kbehkwm0gpp3R_42OvPKH1I4LKC2nS">
+<div class="flex-1 bg-surface-container-low rounded-full flex items-center px-4 py-2 border border-transparent focus-within:border-on-surface/[0.2] transition-colors">
+<input class="flex-1 bg-transparent border-none outline-none font-body-md text-body-md text-on-surface placeholder:text-secondary p-0 focus:ring-0" placeholder="Reply to Elena Rostova..." type="text">
+<button class="text-primary font-label-bold text-label-bold ml-2 hover:opacity-80 transition-opacity">Post</button>
+</div>
+</div>
+</div>
+
+
+
+
+</body></html>
