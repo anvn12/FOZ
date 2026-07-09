@@ -1,0 +1,276 @@
+<!DOCTYPE html><html class="light" lang="en" style="width: 390px; height: 884px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>New Thread - FOZ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#1c1b1b",
+                      "primary": "#000000",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "on-secondary-fixed-variant": "#464747",
+                      "on-error-container": "#93000a",
+                      "outline-variant": "#c4c7c7",
+                      "inverse-on-surface": "#f1f1f1",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#c8c6c5",
+                      "tertiary-fixed": "#e2e2e2",
+                      "tertiary": "#000000",
+                      "surface-container-low": "#f3f3f3",
+                      "outline": "#747878",
+                      "error": "#ba1a1a",
+                      "surface": "#f9f9f9",
+                      "on-secondary-container": "#626262",
+                      "secondary": "#5e5e5e",
+                      "secondary-container": "#e1dfdf",
+                      "surface-bright": "#f9f9f9",
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-background": "#1a1c1c",
+                      "surface-dim": "#dadada",
+                      "primary-fixed": "#e5e2e1",
+                      "on-error": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e2e2e2",
+                      "secondary-fixed": "#e4e2e2",
+                      "on-surface": "#1a1c1c",
+                      "surface-container": "#eeeeee",
+                      "tertiary-container": "#1a1c1c",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#c7c6c6",
+                      "on-tertiary-container": "#838484",
+                      "on-primary-container": "#858383",
+                      "surface-tint": "#5f5e5e",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "on-secondary-fixed": "#1b1c1c",
+                      "on-surface-variant": "#444748",
+                      "surface-variant": "#e2e2e2",
+                      "on-primary-fixed-variant": "#474646",
+                      "inverse-surface": "#2f3131",
+                      "surface-container-high": "#e8e8e8",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "background": "#f9f9f9",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "16px",
+                      "md": "24px",
+                      "base": "4px",
+                      "xs": "8px",
+                      "xl": "64px",
+                      "lg": "40px",
+                      "container-max": "1120px",
+                      "gutter": "20px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            overscroll-behavior-y: none;
+        }
+        /* Hide scrollbar for textarea but keep functionality */
+        textarea::-webkit-scrollbar {
+            display: none;
+        }
+        textarea {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            resize: none;
+        }
+        
+        .nav-shell-hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased h-screen flex flex-col overflow-hidden">
+<!-- Modal Header -->
+<header class="flex justify-between items-center h-16 px-md border-b border-surface-container shrink-0 bg-surface">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors active:opacity-70 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">close</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">New Post</h1>
+<div class="w-10 h-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-surface flex flex-col p-md gap-sm">
+<!-- Primary Post Entry -->
+<div class="flex gap-sm relative z-10">
+<!-- Avatar Column -->
+<div class="flex flex-col items-center shrink-0">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant/30 z-10 bg-surface" data-alt="A close up professional headshot of a young professional in a brightly lit studio setting with a clean white background. High key lighting, minimal shadows, corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC44kbQ6TTFyqsvimI-aOcoxZ3fphzdoz84clJuhMZzPKJbbLV9UDU1qGpQOI3nRrJPHc4jtmIFXDG4EfOVso3yM5XPnY9_pB9oXpkCGW2rgGN9GfdpAY1KpwIFbHY4pMHrKUDr411QhWJBLFBE0fIlyry5nn9eTPtNTaG1czatvXBbtGG2Kjc_fbbzxycYZus1j6C2CDoT37n0y1h3QXndr82QxO0_gFauZi_RGRcWMd8sNLls29WD">
+<!-- Thread Line Connector -->
+<div class="w-px h-full bg-outline-variant/40 my-xs"></div>
+</div>
+<!-- Content Column -->
+<div class="flex-1 flex flex-col min-h-[120px]">
+<div class="flex items-center mb-xs">
+<span class="font-label-md text-label-md text-primary font-semibold">User Name</span>
+</div>
+<textarea class="w-full bg-transparent border-none p-0 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0" id="primary-textarea" placeholder="What's on your mind?" rows="4"></textarea>
+<!-- Media Preview Area (Hidden by default) -->
+<div class="hidden mt-sm rounded-lg border border-outline-variant/50 overflow-hidden relative" id="media-preview">
+<button class="absolute top-2 right-2 w-8 h-8 bg-surface/80 backdrop-blur rounded-full flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors z-10">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+<!-- Placeholder for attached image -->
+</div>
+<div class="flex items-center justify-between mt-xs">
+  <div class="flex items-center gap-xs text-on-surface-variant">
+    <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors active:opacity-70">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">image</span>
+    </button>
+  </div>
+  <button class="bg-primary text-on-primary px-md py-xs rounded-full font-label-md text-label-md font-semibold hover:opacity-90 active:scale-95 transition-all opacity-50 cursor-not-allowed" id="post-btn-inline">
+    Post
+  </button>
+</div></div>
+</div>
+<!-- Add to Thread Placeholder -->
+<div class="flex gap-sm opacity-50 transition-opacity focus-within:opacity-100 mt-xs">
+<div class="flex flex-col items-center shrink-0">
+<div class="w-6 h-6 rounded-full border border-outline-variant/50 flex items-center justify-center bg-surface-container-low mt-2">
+
+</div>
+</div>
+<div class="flex-1 pt-2">
+
+</div>
+</div>
+</main>
+<!-- Footer Actions (Sticky Bottom) -->
+
+<script>
+        // Simple script to enable the post button when text is entered
+        document.addEventListener('DOMContentLoaded', () => {
+            const textarea = document.getElementById('primary-textarea');
+            const postBtn = document.getElementById('post-btn');
+            
+            textarea.addEventListener('input', () => {
+                if (textarea.value.trim().length > 0) {
+                    postBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    postBtn.classList.add('cursor-pointer');
+                } else {
+                    postBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    postBtn.classList.remove('cursor-pointer');
+                }
+                
+                // Auto-resize textarea
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            });
+            
+            // Focus textarea on load
+            setTimeout(() => {
+                textarea.focus();
+            }, 100);
+        });
+    </script>
+
+
+
+
+</body></html>
