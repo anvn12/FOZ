@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FOZ - Logout</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#7e7576",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-low": "#f3f3f3",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-secondary-fixed-variant": "#464747",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-bright": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1a1c1c",
+                        "surface-dim": "#dadada",
+                        "inverse-primary": "#c6c6c6",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "on-primary-container": "#848484",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e3e2e2",
+                        "on-secondary-container": "#646464",
+                        "surface-container": "#eeeeee",
+                        "primary-container": "#1b1b1b",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-tertiary-container": "#838484",
+                        "on-surface-variant": "#4c4546",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-tint": "#5e5e5e",
+                        "tertiary": "#000000",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "inverse-surface": "#2f3131",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "surface-variant": "#e2e2e2",
+                        "background": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "tertiary-container": "#1a1c1c",
+                        "surface": "#f9f9f9",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary": "#5e5e5e",
+                        "primary": "#000000",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#cfc4c5",
+                        "secondary-container": "#e3e2e2",
+                        "surface-container-high": "#e8e8e8",
+                        "primary-fixed": "#e2e2e2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "max-width": "640px",
+                        "margin-desktop": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-lg antialiased min-h-screen flex justify-center overflow-hidden">
+<!-- Background Layer (Blurred Profile Page) -->
+<div class="fixed inset-0 z-0 pointer-events-none filter blur-md opacity-40">
+<!-- Mock TopAppBar -->
+<header class="bg-surface dark:bg-background border-b border-outline-variant dark:border-outline fixed top-0 w-full z-10 flex items-center justify-between px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto h-16 left-0 right-0">
+<span class="material-symbols-outlined text-primary dark:text-on-background" data-icon="menu">menu</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg tracking-tighter text-primary dark:text-on-background">FOZ</span>
+<span class="material-symbols-outlined text-primary dark:text-on-background" data-icon="account_circle">account_circle</span>
+</header>
+<!-- Mock Content -->
+<main class="w-full max-w-max-width mx-auto pt-24 px-margin-mobile md:px-margin-desktop flex flex-col gap-6">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-full bg-surface-container"></div>
+<div>
+<div class="w-32 h-6 bg-surface-container rounded mb-2"></div>
+<div class="w-24 h-4 bg-surface-container rounded"></div>
+</div>
+</div>
+<div class="w-full h-px bg-outline-variant"></div>
+<div class="flex flex-col gap-4">
+<div class="w-full h-64 bg-surface-container rounded-lg"></div>
+<div class="w-full h-32 bg-surface-container rounded-lg"></div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-margin-mobile bg-tertiary/40 backdrop-blur-xl">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest w-full max-w-[400px] rounded-[24px] shadow-2xl p-6 flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
+<!-- Avatar Placeholder -->
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-4xl text-secondary" data-icon="person">person</span>
+</div>
+<!-- Username & Prompt -->
+<div class="mb-8">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">@john_foz</h2>
+<p class="font-body-lg text-body-lg text-secondary">Log out of your account?</p>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-3">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-[12px] hover:opacity-80 transition-opacity active:scale-95">
+                    Log out
+                </button>
+<button class="w-full bg-transparent text-primary font-label-md text-label-md py-4 rounded-[12px] border border-outline-variant hover:bg-surface-container-low transition-colors active:scale-95">
+                    Cancel
+                </button>
+</div>
+</div>
+</div>
+</body></html>

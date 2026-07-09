@@ -107,6 +107,12 @@ enforced at the API boundary via middleware, not only in the UI:
   suspend, ban). Administrators outrank Moderators.
 - Separation of powers: no single role may both flag and punish.
 
+Rate limiting MUST be applied to costly or abuse-prone endpoints (e.g., AI
+summarization).
+
+Moderation actions — escalations, punishments, content removal — MUST be
+logged for audit. Logs MUST NOT contain sensitive data.
+
 ### V. Consistency Over Cleverness
 Patterns MUST be followed everywhere they apply. No novel or clever
 solutions where a conventional approach exists. New patterns MUST be
@@ -161,6 +167,14 @@ Shared:
 - `src/shared/` Zod schemas are the source of truth, imported via path
   aliases. No workspace package, no codegen, no tRPC.
 
+### VI. AI Service Isolation
+AI features MUST sit behind a dedicated service interface. The provider MUST
+be swappable without business-logic changes, and a fallback provider chain
+MUST be configured so a single provider outage or quota exhaustion does not
+disable the feature. AI features MUST require authentication; guests MUST NOT
+trigger AI calls. AI unavailability MUST NOT block core user flows — it MUST
+degrade gracefully with a clear message.
+
 ## Quality Standards
 
 All code on `main` MUST:
@@ -178,6 +192,8 @@ All code on `main` MUST:
   resources.
 - Document performance and scalability expectations in each `plan.md` under
   Technical Context, since these are feature-specific.
+- Frontend MUST meet WCAG 2.1 Level AA (keyboard navigation, color contrast,
+  screen-reader labels).
 
 ## Development Workflow
 
