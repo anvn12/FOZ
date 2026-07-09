@@ -1,6 +1,5 @@
 # Spec-Driven Development (SDD) & GitHub Spec Kit Training Summary
 
-## Document Metadata
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam*
 
 
@@ -47,8 +46,3 @@ One of the most valuable artifacts learned is the project constitution. It serve
 * **Course Module:** Introduction to Spec-Driven Development with GitHub Spec Kit (Greenfield Intro)
 * **Platform:** Microsoft Learn / GitHub Open Source Guides
 * **Status:** Fully Completed
-* **Application to Project FOZ:** The team has successfully initialized GitHub Spec Kit within our `/src` directory, generated our `constitution.md` file, and is utilizing the SDD workflow to systematically build out functional groups such as Authentication, Post Creation, and AI-powered Post Summarization.
-![SDD and Github Spec Kit Module Assessment](spec_kit_prove_assessment.png)
-Completed SDD and Github Spec Kit Module Assessment
-![Completed SDD and Github Spec Kit Course](spec_kit_prove.png)
-Completed SDD and Github Spec Kit Course
