@@ -1,64 +1,70 @@
-<!DOCTYPE html><html class="dark" lang="en"><head>
+<!DOCTYPE html><html class="light" lang="en"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>FOZ - Comments View</title>
+<title>FOZ - Thread Detail</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "surface-variant": "#353434",
-                        "on-primary": "#2f3131",
-                        "primary-fixed": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#c6c6c7",
-                        "primary": "#ffffff",
-                        "surface-container-lowest": "#0e0e0e",
-                        "outline-variant": "#444748",
-                        "on-surface": "#e5e2e1",
-                        "inverse-on-surface": "#313030",
-                        "tertiary": "#ffffff",
-                        "on-tertiary-fixed": "#1a1c1c",
-                        "on-error-container": "#ffdad6",
-                        "tertiary-fixed-dim": "#c6c6c7",
-                        "on-secondary-fixed-variant": "#00497d",
-                        "surface": "#141313",
-                        "on-primary-fixed-variant": "#454747",
-                        "on-background": "#e5e2e1",
-                        "on-surface-variant": "#c4c7c8",
-                        "secondary-container": "#0095f6",
-                        "surface-tint": "#c6c6c7",
-                        "on-primary-container": "#636565",
-                        "on-tertiary-fixed-variant": "#454747",
-                        "surface-dim": "#141313",
-                        "surface-bright": "#3a3939",
-                        "tertiary-container": "#e2e2e2",
-                        "on-secondary": "#003258",
-                        "surface-container-low": "#1c1b1b",
-                        "inverse-surface": "#e5e2e1",
-                        "surface-container": "#201f1f",
-                        "background": "#141313",
-                        "tertiary-fixed": "#e2e2e2",
-                        "on-error": "#690005",
-                        "inverse-primary": "#5d5f5f",
-                        "surface-container-highest": "#353434",
-                        "on-secondary-fixed": "#001d36",
-                        "on-primary-fixed": "#1a1c1c",
-                        "secondary-fixed": "#d1e4ff",
-                        "outline": "#8e9192",
-                        "primary-container": "#e2e2e2",
-                        "secondary": "#9ecaff",
-                        "on-tertiary-container": "#636565",
-                        "on-secondary-container": "#002b4d",
-                        "secondary-fixed-dim": "#9ecaff",
-                        "on-tertiary": "#2f3131",
-                        "error": "#ffb4ab",
-                        "error-container": "#93000a"
+                        "inverse-on-surface": "#f1f1f1",
+                        "inverse-surface": "#303030",
+                        "inverse-primary": "#ffb3b6",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#5c3f41",
+                        "primary-fixed-dim": "#ffb3b6",
+                        "on-primary-fixed-variant": "#920028",
+                        "primary": "#ba0035",
+                        "tertiary-fixed-dim": "#62dda0",
+                        "background": "#f9f9f9",
+                        "on-surface": "#1b1b1b",
+                        "tertiary-fixed": "#7ffaba",
+                        "surface-dim": "#dadada",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-container": "#f6fff6",
+                        "on-tertiary-fixed-variant": "#005233",
+                        "tertiary-container": "#008656",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#906f70",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#e2dfde",
+                        "primary-container": "#e12149",
+                        "surface-container": "#eeeeee",
+                        "surface": "#f9f9f9",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary-fixed": "#002112",
+                        "on-background": "#1b1b1b",
+                        "outline-variant": "#e5bdbe",
+                        "surface-variant": "#e2e2e2",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-secondary-container": "#636262",
+                        "tertiary": "#006a43",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-tint": "#be0037",
+                        "primary-fixed": "#ffdada",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#40000c",
+                        "on-secondary-fixed": "#1b1b1c"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -67,196 +73,247 @@
                         "full": "9999px"
                     },
                     "spacing": {
-                        "thread-line-width": "1.5px",
-                        "gutter": "12px",
-                        "avatar-size-lg": "48px",
-                        "max-width-desktop": "700px",
-                        "container-padding": "1rem",
-                        "avatar-size-sm": "32px"
+                        "base": "8px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "container-max": "640px"
                     },
                     "fontFamily": {
-                        "body-main": ["Inter"],
+                        "headline-md": ["Inter"],
                         "label-sm": ["Inter"],
-                        "label-timestamp": ["Inter"],
-                        "headline-bold": ["Inter"],
-                        "body-secondary": ["Inter"]
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
                     },
                     "fontSize": {
-                        "body-main": ["15px", { "lineHeight": "21px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
-                        "label-sm": ["13px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "500" }],
-                        "label-timestamp": ["14px", { "lineHeight": "18px", "fontWeight": "400" }],
-                        "headline-bold": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-secondary": ["15px", { "lineHeight": "20px", "fontWeight": "400" }]
+                        "headline-md": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "1.2", "letterSpacing": "0", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
                     }
                 }
             }
         }
     </script>
 <style>
-        body { background-color: #000000; color: #e5e2e1; }
-        .thread-line { width: 1.5px; background-color: #262626; position: absolute; left: 50%; transform: translateX(-50%); top: 100%; bottom: -1rem; z-index: 0; }
-        .thread-line-terminator { bottom: auto; height: 1.5rem; }
-        .thread-line-nested { width: 1.5px; background-color: #262626; position: absolute; left: calc(var(--avatar-size-sm) / 2); top: calc(var(--avatar-size-sm) + 4px); bottom: -1rem; z-index: 0; }
-        .thread-line-curve { position: absolute; left: calc(var(--avatar-size-sm) / 2); top: 0; width: 1.5rem; height: 1.5rem; border-left: 1.5px solid #262626; border-bottom: 1.5px solid #262626; border-bottom-left-radius: 0.5rem; z-index: 0; }
-        .interaction-icon { font-variation-settings: 'FILL' 0; transition: color 0.2s, font-variation-settings 0.2s; cursor: pointer; }
-        .interaction-icon.liked { color: #ffb4ab; font-variation-settings: 'FILL' 1; }
-        .interaction-icon:hover { opacity: 0.7; }
-        .avatar-ring { border: 1px solid rgba(255,255,255,0.1); }
+        /* Minimal custom CSS for things Tailwind config can't handle purely via utility classes */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24 !important;
+        }
+        /* Hide scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
     </style>
 </head>
-<body class="bg-background dark:bg-background text-on-background dark:text-on-background font-body-main antialiased selection:bg-surface-variant selection:text-primary">
-<!-- Top Navigation Bar -->
-<nav class="fixed top-0 w-full z-50 flex justify-center items-center h-16 px-gutter max-w-desktop mx-auto bg-background/80 backdrop-blur-md border-b border-outline-variant hidden md:flex">
-<div class="flex-1"></div>
-<div class="flex-1 flex justify-center text-headline-bold font-headline-bold text-primary dark:text-primary cursor-pointer hover:opacity-70 transition-opacity active:scale-95 transition-transform">FOZ</div>
-<div class="flex-1 flex justify-end items-center gap-6 text-outline dark:text-outline font-body-main text-body-main">
-<span class="material-symbols-outlined text-outline dark:text-outline hover:opacity-70 transition-opacity cursor-pointer active:scale-95 transition-transform" data-icon="home">home</span>
-<span class="material-symbols-outlined text-outline dark:text-outline hover:opacity-70 transition-opacity cursor-pointer active:scale-95 transition-transform" data-icon="search">search</span>
-<span class="material-symbols-outlined text-outline dark:text-outline hover:opacity-70 transition-opacity cursor-pointer active:scale-95 transition-transform" data-icon="add_box">add_box</span>
-<span class="material-symbols-outlined text-outline dark:text-outline hover:opacity-70 transition-opacity cursor-pointer active:scale-95 transition-transform" data-icon="favorite">favorite</span>
-<span class="material-symbols-outlined text-primary dark:text-primary hover:opacity-70 transition-opacity cursor-pointer active:scale-95 transition-transform" data-icon="person">person</span>
+<body class="bg-surface-container-lowest text-on-surface font-body-md min-h-screen">
+<!-- TopNavBar (JSON Implementation) -->
+<!-- Nav Suppression applied to Bottom/Side Nav due to this being a detail/focus view, prioritizing canvas -->
+<nav class="bg-surface/80 dark:bg-surface/80 backdrop-blur-xl fixed top-0 w-full border-b border-on-surface/[0.06] dark:border-inverse-surface/[0.06] z-50 transition-transform">
+<div class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto z-50">
+<!-- Back Button Contextually Added for Detail View within constraints -->
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<a class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-black text-primary dark:text-inverse-primary tracking-tighter absolute left-1/2 -translate-x-1/2" href="#" style="color: rgb(0, 0, 0);">FOZ</a>
+<div class="flex gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
 </div>
 </nav>
-<!-- Main Content Container -->
-<main class="w-full max-w-desktop mx-auto pt-4 pb-20 md:pt-20 px-4 md:px-0">
-<div class="flex items-center gap-3 mb-6 border-b border-outline-variant pb-4 sticky top-0 md:top-16 bg-background/90 z-40 backdrop-blur-sm">
-<button class="material-symbols-outlined text-on-surface hover:opacity-70 transition-opacity" onclick="history.back()">arrow_back</button>
-<h1 class="font-headline-bold text-headline-bold text-primary">Back</h1>
+<!-- Main Content Canvas (Constrained width feed layout) -->
+<main class="max-w-container-max mx-auto pt-[64px] pb-[100px] bg-surface-container-lowest min-h-screen">
+<!-- Parent Post (Focused) -->
+<article class="px-gutter md:px-lg pt-lg pb-md border-b border-on-surface/[0.06]">
+<!-- Author Meta -->
+<div class="flex items-center gap-sm mb-md">
+<img class="w-12 h-12 rounded-full object-cover border border-on-surface/[0.04]" data-alt="A polished, modern portrait of an urban creative professional against a minimalist studio backdrop. The lighting is soft and cinematic, emphasizing clean skin textures and a confident expression. High-key lighting, bright white and subtle grey tones dominant, matching the pristine light-mode aesthetic of the application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9qrO50ONSfHRh95hdGy8C3LuDIbYkFm4hXsY5s-3jQveo2nvgJSBUu87OwYMjSVXBFTTYjZh8YPIu5QlE9ha0t-CJlpcDIXX1BNbzkpgJbtB-cBzspuB8NAt0U3KvjZCYabkLF9TBzsXLUl0Xb3OHRhYr_mFJhf1knuImriu5yt8Zei6sKyt9FAfq2yH6PL0QtmqULl5-jqZ-D3LQHbbmKmMWpHF2WATnu95gnJ4lT5epy-l3YN6X8yktEDMVlUcTV0sDHwbXQ-mv">
+<div class="flex flex-col flex-1">
+<div class="flex items-center gap-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Elena Rostova</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary-container icon-fill" data-icon="verified">verified</span>
 </div>
-<!-- Thread Container -->
-<div class="flex flex-col gap-0">
-<!-- Parent Post -->
-<article class="flex gap-4 pt-4 relative bg-surface-lowest group hover:bg-[#101010] transition-colors rounded-lg px-2 -mx-2">
-<!-- Avatar Column -->
-<div class="flex flex-col items-center relative z-10 w-[48px] shrink-0">
-<img alt="sarah_design" class="w-[48px] h-[48px] rounded-full object-cover avatar-ring bg-surface-container" data-alt="A striking minimalist portrait of a young woman with short dark hair, wearing a sleek black turtleneck. The lighting is high-contrast, dramatic studio lighting with deep shadows, emphasizing a moody, modern aesthetic. The background is pure black, matching the sophisticated dark-mode UI style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDRscTVyrJHgQFDfs1k9Dc4qUzNChbqwEllyjIZxXJtpRQz0Jwkjo5-v49epYr4AEzExTzKlHv_9-J9nFvc6MFqN01Nng8UX8B8i7c1FrdjCUnBl1y-NRBDD0pq_ToZONZOoJH2FbAwU8cQq9KcKmUTDHYHaVVg5TCCGLzMk86qWMWsg2Rwozi9HlWQGe5lC05YRx1vPbpyeLEc1xlE15EKgYykX0ZWjTP0uCfDW4nw6jkSaiE6JUPBrvoKQ4vkUZaJhZOv7cw_BeK">
-<!-- Thread Line connecting to child -->
-<div class="thread-line"></div>
+<span class="font-body-md text-body-md text-secondary">@elenar • 4h</span>
 </div>
-<!-- Content Column -->
-<div class="flex flex-col flex-1 pb-4">
-<div class="flex items-center justify-between mb-1">
-<div class="flex items-center gap-2">
-<span class="font-label-sm text-label-sm text-primary font-medium">sarah_design</span>
-<span class="material-symbols-outlined text-secondary-container text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-<span class="font-label-timestamp text-label-timestamp text-outline">· 2h</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low text-secondary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
 </div>
-<button class="material-symbols-outlined text-outline hover:text-on-surface transition-colors text-[20px]">more_horiz</button>
-</div>
-<div class="font-body-main text-body-main text-on-surface mb-3 pr-4">
-                        Just finished a deep dive into the new Material 3 design tokens. The tonal elevation approach is fascinating, but shifting away from traditional box-shadows in dark mode feels like a complete rewiring of how I structure depth. Thoughts?
-                    </div>
-<!-- Interactions -->
-<div class="flex items-center gap-6 text-outline font-label-sm text-label-sm">
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">favorite</span>
-<span class="group-hover/action:text-primary transition-colors">142</span>
-</div>
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">chat_bubble</span>
-<span class="group-hover/action:text-primary transition-colors">12</span>
-</div>
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">sync</span>
-</div>
-<div class="flex items-center gap-1.5 group/action cursor-pointer ml-auto mr-2">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">share</span>
+<!-- Post Content -->
+<div class="mb-lg">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                    Just finished reviewing the latest architectural drafts for the new cultural center. The way they've integrated light-wells into the subterranean exhibition spaces is breathtaking. It completely redefines how we interact with natural light in underground structures. Has anyone else seen the preliminary renders?
+                </p>
+<div class="mt-md rounded-xl overflow-hidden border border-on-surface/[0.06] bg-surface-container-low">
+<img class="w-full h-[280px] object-cover hover:opacity-95 transition-opacity cursor-pointer" data-alt="A striking architectural render of a subterranean exhibition space. The room is incredibly minimalist, defined by pristine white concrete walls and pale polished stone floors. A massive, geometric skylight cuts through the ceiling, allowing a brilliant shaft of natural sunlight to illuminate a singular, abstract sculpture below. The scene feels vast, silent, and deeply atmospheric, relying on extreme contrast between the bright light well and the soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBum8q6a_HuPDKJEJzlRhRPPeDb0pvR1OqjdxcsP0N6GJYaa-tqOWYV6XDfGORZQziaE3ZBpvSQYrO3XMAHGnnGt7ZE33uWo2G0bSgKoNobBUSv8idbdng9stSUKyK-4pS1Zb53j4WaCAOdPGUGLp2LUbR-IjsVZ5I3W6Ky1cIRqBfeQpZbEjyv4B5wWA5xJabw9jtK9BFGcNWYBHre6zv9wvmqzLk1mWcE6XVhLSDLeOQ82VpI6V_I-4o2Wn7DBJ3Xrv7wMUQ80e4O">
 </div>
 </div>
-</div>
-</article>
-<!-- Child Reply (Level 1) -->
-<article class="flex gap-4 pt-2 relative bg-surface-lowest group hover:bg-[#101010] transition-colors rounded-lg px-2 -mx-2">
-<!-- Avatar Column -->
-<div class="flex flex-col items-center relative z-10 w-[48px] shrink-0">
-<img alt="mike_dev" class="w-[32px] h-[32px] rounded-full object-cover avatar-ring bg-surface-container mt-1" data-alt="A stylish portrait of a man in his thirties wearing a minimal, structured dark grey jacket. He has a subtle beard and wire-rimmed glasses. The image features a cool, monochromatic cinematic lighting setup against a completely black void background, perfectly fitting a premium tech forum aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-l9-IlZj1KaQBZOEizlzS1-kC_NfizctU-W5m-lTcYxPHUUy85DEiL3L4VvwILjKXpfSfjM0m657dbJKoTMQlnxQdLi-1DYhJADfsN0DsDZnA9c-pBMf93cUlXoODYtWUG9dGnXFcrDLJl1ulwi0Nfdl3Tv2_ExvP7Ij3XsffYCfmB38rmRlHXizAxnme7AhLzZ5gJF4ucPr2PVnpzXxqszeJmwLJi-Yvp4QdDZnzHIVMWC1JsWQNRmsP70nX5PeBj18nSnT427Zd">
-<!-- Thread Line connecting to grandchild -->
-<div class="thread-line" style="top: 2.5rem; width: 1.5px; left: 50%;"></div>
-</div>
-<!-- Content Column -->
-<div class="flex flex-col flex-1 pb-4">
-<div class="flex items-center justify-between mb-1">
-<div class="flex items-center gap-2">
-<span class="font-label-sm text-label-sm text-primary font-medium">mike_dev</span>
-<span class="font-label-timestamp text-label-timestamp text-outline">· 1h</span>
-</div>
-<button class="material-symbols-outlined text-outline hover:text-on-surface transition-colors text-[20px]">more_horiz</button>
-</div>
-<div class="font-body-main text-body-main text-on-surface mb-3 pr-4">
-                        Totally agree. It forces you to rely entirely on borders and subtle background shifts. I've found that using a strict 1px #262626 border for separation is the only way to keep complex interfaces legible without looking muddy.
-                    </div>
-<!-- Interactions -->
-<div class="flex items-center gap-6 text-outline font-label-sm text-label-sm">
-<div class="flex items-center gap-1.5 group/action cursor-pointer" onclick="this.querySelector('.interaction-icon').classList.toggle('liked');">
-<span class="material-symbols-outlined interaction-icon text-[20px]">favorite</span>
-<span class="group-hover/action:text-primary transition-colors">45</span>
-</div>
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">chat_bubble</span>
-<span class="group-hover/action:text-primary transition-colors">3</span>
-</div>
+<!-- Action Bar Metrics -->
+<div class="flex items-center justify-between pt-sm border-t border-on-surface/[0.04] text-secondary font-label-sm text-label-sm">
+<div class="flex items-center gap-xl w-full">
+<button class="flex items-center gap-xs hover:text-primary transition-colors group">
+<span class="material-symbols-outlined group-hover:bg-primary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="chat_bubble">chat_bubble</span>
+<span class="">42</span>
+</button>
+<button class="flex items-center gap-xs hover:text-tertiary-container transition-colors group">
+<span class="material-symbols-outlined group-hover:bg-tertiary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="repeat">repeat</span>
+<span class="">12</span>
+</button>
+<button class="flex items-center gap-xs text-primary transition-colors group">
+<span class="material-symbols-outlined icon-fill group-hover:bg-primary-container/[0.1] p-[6px] rounded-full -ml-[6px]" data-icon="favorite">favorite</span>
+<span class="font-label-bold">384</span>
+</button>
+<button class="flex items-center gap-xs hover:text-primary transition-colors group ml-auto">
+<span class="material-symbols-outlined group-hover:bg-primary-container/[0.1] p-[6px] rounded-full" data-icon="share">share</span>
+</button>
 </div>
 </div>
 </article>
-<!-- Grandchild Reply (Level 2) -->
-<article class="flex gap-4 pt-2 relative bg-surface-lowest group hover:bg-[#101010] transition-colors rounded-lg px-2 -mx-2 ml-[48px]">
-<!-- The curve connecting to parent thread -->
-<div class="thread-line-curve" style="left: calc(-24px - 0.75px); top: 0; width: 24px; height: 1.5rem; border-left: 1.5px solid #262626; border-bottom: 1.5px solid #262626; border-bottom-left-radius: 0.5rem;"></div>
-<!-- Avatar Column -->
-<div class="flex flex-col items-center relative z-10 w-[32px] shrink-0 mt-3">
-<img alt="lucy_art" class="w-[24px] h-[24px] rounded-full object-cover avatar-ring bg-surface-container" data-alt="An abstract, generative digital art avatar featuring precise, thin white geometric lines curving elegantly over a pitch-black background. The aesthetic is extremely modern, minimalist, and computational, ideal for a sophisticated design system forum user profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKSVRO_I82CwJdr9sIwB25qqNXov4q0mXf1yrrCBjjvYrEDT5d_tTCsPxBSppggH56EpZdQKMCyhQ_hDTDFz3JS3Zgd74YU5_dbQj64-YY3hd3kdhkTR9MVIsmR5N_hmcN7Y3zU7ITdzbiF-dXNsW3vG0i4G4QqtE41lgbchvm42VVV9Vf5BGDkL8pj7oYP6ElGzDMAH2KmXtuHZDYl3YkwqvXPqPBQ0f66wdMMVZgNi1VO0wRYuh7NlfDOWsMM7fsMmJ9WrEM_TYI">
-<!-- Terminating thread line (no children) -->
+<!-- Nested Comment Tree -->
+<section class="px-gutter md:px-lg py-md pb-xl">
+<!-- Comment Group 1 -->
+<div class="relative mb-lg">
+<!-- Level 1 Reply -->
+<div class="relative grid grid-cols-[36px_1fr] gap-x-sm">
+<!-- Left Col: Avatar & Vertical Line -->
+<div class="flex flex-col items-center">
+<img class="w-9 h-9 rounded-full object-cover border border-on-surface/[0.04] z-10 bg-surface-container-lowest relative" data-alt="Close up profile picture of a young male designer in a bright, modern studio. He is wearing minimalist clothing. The image is brightly lit with a clean white background, perfectly suited for a pristine light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu75OJ6qvZqVZ6yDcYGn9TRanoPye6ZqDCjWrvQSJxKzampwmjGAbVlrT7C_hCXb11lKNKxITcIFJ0Qkpy9puB7aZ-HdeHUZT18wMPPBrUmQHCTUHAbbwXCJs0xDsVI9MO8D0PUgxCgSNNIhtVR2nIeFglYZhGD2iIsz_fAx-pU-SXaBHzOk2k4xBXR7SIDfnrdyievLMKMMvRuunYJS1mjiGZiOuVCDd3oLkWep0t0eyiHx9oxWdnMNM-3fg5cQnoZ4VVb3e-6m5v">
+<!-- Connecting line passing down to next sibling/child -->
+<div class="w-[2px] bg-on-surface/[0.06] flex-grow mt-2 -mb-4"></div>
 </div>
-<!-- Content Column -->
-<div class="flex flex-col flex-1 pb-4">
-<div class="flex items-center justify-between mb-1 mt-2">
-<div class="flex items-center gap-2">
-<span class="font-label-sm text-label-sm text-primary font-medium">lucy_art</span>
-<span class="font-label-timestamp text-label-timestamp text-outline">· 45m</span>
+<!-- Right Col: Content -->
+<div class="pb-md">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Marcus Vance</span>
+<span class="font-body-md text-body-md text-secondary">@mvance • 2h</span>
 </div>
-<button class="material-symbols-outlined text-outline hover:text-on-surface transition-colors text-[20px]">more_horiz</button>
+<p class="font-body-md text-body-md text-on-surface">
+                            Yes! The renders are incredible. I love how they are using those reflective surfaces near the light-wells to bounce the light deeper into the corridors. It's brilliant passive design.
+                        </p>
+<!-- Mini Actions -->
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-label-sm">12</span>
+</button>
 </div>
-<div class="font-body-main text-body-main text-on-surface mb-3 pr-4">
-                        The 1px border rule is golden. I'd also add that leveraging typography weight—really pushing the contrast between labels and body text—helps compensate for the lack of spatial depth cues.
-                    </div>
-<!-- Interactions -->
-<div class="flex items-center gap-6 text-outline font-label-sm text-label-sm">
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">favorite</span>
-<span class="group-hover/action:text-primary transition-colors">18</span>
+<!-- Nested Thread Container (Level 2) -->
+<div class="mt-md relative">
+<!-- Level 2 Reply A -->
+<div class="relative grid grid-cols-[28px_1fr] gap-x-sm mb-md">
+<!-- Curve connecting from parent vertical line -->
+<div class="absolute left-[-22px] top-[-16px] w-[36px] h-[32px] border-l-[2px] border-b-[2px] border-on-surface/[0.06] rounded-bl-xl z-0"></div>
+<div class="flex flex-col items-center z-10">
+<img class="w-7 h-7 rounded-full object-cover border border-on-surface/[0.04] bg-surface-container-lowest" data-alt="A minimalist avatar photo of a woman with short dark hair, wearing glasses, against an absolute white background. The image matches the high-key, pristine aesthetic of the application design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN1yp0Fi9xiUjbqjGsYDaMzIIGH7vx6Bgw1oKnuizGi8rHx25EvSRLYXFDlK43eS-mgXHOiD8zgIZUaVFBV7FRh6xtIyizZGG6fsNk03_Sgu77xuc5KdSRUBmgpK8lKucD5MzXC-R17nAE-kldjA8QWHVoksvmAlbzPkfd8ICuxijUtVKxUfnT9rMIImdPvZkydkf-ZQ0VFvgAxyh4quSzd4HhRxyO_RMN-yatlFqHlqYdTwM5HuKW8y_6pAj6eb9XCi9AZIrkhesE">
+<!-- Line continuing down to next nested reply -->
+<div class="w-[2px] bg-on-surface/[0.06] flex-grow mt-2 -mb-6 absolute top-7 bottom-[-24px] left-[13px] z-0"></div>
 </div>
-<div class="flex items-center gap-1.5 group/action cursor-pointer">
-<span class="material-symbols-outlined interaction-icon group-hover/action:text-primary text-[20px]">chat_bubble</span>
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Sarah Jenkins</span>
+<span class="font-body-md text-body-md text-secondary">@sjenk • 1h</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                                        Exactly. Though I wonder about the maintenance of those reflective panels over time. Dust could severely impact the light dispersal.
+                                    </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 text-primary transition-colors"><span class="material-symbols-outlined text-[18px] icon-fill" data-icon="favorite">favorite</span><span class="font-label-sm text-label-sm">3</span></button>
 </div>
 </div>
 </div>
-</article>
+<!-- Level 2 Reply B -->
+<div class="relative grid grid-cols-[28px_1fr] gap-x-sm mt-md">
+<!-- Curve connecting from parent vertical line -->
+<div class="absolute left-[-22px] top-[-16px] w-[36px] h-[32px] border-l-[2px] border-b-[2px] border-on-surface/[0.06] rounded-bl-xl z-0"></div>
+<div class="flex flex-col items-center z-10">
+<img class="w-7 h-7 rounded-full object-cover border border-on-surface/[0.04] bg-surface-container-lowest" data-alt="Avatar portrait of a person with a neutral expression, warm lighting, very simple and clean composition with a stark white background to blend seamlessly into the UI canvas." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx7HakmkYpepPKnzzhrTgjOZRaHc6plOcB_VyC4MhC8w3wLVgcnTcRYdCSpnm2S1zunAJlaw03I08PTT4djbi3NkFzBycvLsKqxAT6zVMotPizW6Hmy4CIS_BuiGOxrRwEzEHq0EcSqEB_lBezikvwhCmHJGxfgdDR13cBlMQtjviqckzCKi_9BM-QY9ReVXHMfYb_LRd02jrill1ldEPEoqBS0Cl_VizSD1ketJajKIIXxlPPLFHhCvFHsR_20HsChgC4hZvguVdN">
 </div>
-<!-- Reply Input Area Sticky Bottom -->
-<div class="fixed bottom-12 md:bottom-0 left-0 w-full bg-[#0a0a0a]/90 backdrop-blur-md border-t border-outline-variant p-4 z-40 hidden md:block">
-<div class="max-w-desktop mx-auto flex gap-3 items-center">
-<img alt="You" class="w-8 h-8 rounded-full avatar-ring" data-alt="A sleek, pure black circular avatar with a subtle, glowing white 'FOZ' logo in the center, representing the user's current session in a premium, minimalist dark-mode environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2DJwdhiNHOH0o8k7Di975puhmNCV-pajkABPIFEo2AqdGkmHEkntzL37qH52xFGCDxDybgTHE0BD3znkA0UINGc8PpSRz7ucun-RIjfPXI20PH1WwmxxR3khEqq1gGAk9G-YDd4yzJsZXOhfAes_PjNoVKTgESZZmwhysbWmvDefntd8fstRTCp_hmX5XGxrbDlUJ0q8XWYs6WSZvzf-er3Qy8u2D9y5a-RustCooqYfRrkAgiBDo0Ptc4jH-OZ1-2eEUGts_65oT">
-<input class="flex-1 bg-[#101010] border-none text-on-surface font-body-main text-body-main rounded-full px-4 py-2 focus:ring-1 focus:ring-outline-variant placeholder:text-outline placeholder:opacity-50" placeholder="Reply to sarah_design..." type="text">
-<button class="bg-primary text-background font-label-sm text-label-sm px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity">Post</button>
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">Elena Rostova</span>
+<span class="font-body-md text-body-md text-secondary">@elenar • 45m</span>
+<span class="bg-surface-container-low text-secondary px-2 py-[2px] rounded-full font-label-sm text-[10px] ml-auto uppercase tracking-wide">Author</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                                        They actually address that in the specs! There's an automated electrostatic cleaning system built into the mounting frames.
+                                    </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span></button>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment Group 2 (Standalone Level 1) -->
+<div class="relative mb-lg">
+<div class="relative grid grid-cols-[36px_1fr] gap-x-sm">
+<div class="flex flex-col items-center">
+<img class="w-9 h-9 rounded-full object-cover border border-on-surface/[0.04] z-10 bg-surface-container-lowest relative" data-alt="A high-contrast, minimalist portrait of an older gentleman with silver hair and wireframe glasses. Shot on an absolute white background with soft, diffused studio lighting. The aesthetic is extremely clean and editorial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl4SgIW4OK3pUfmYa-Nmj-5WQuhLl8gMkpg23ORfKz7W7AAILosYQufBNkzponE_cfiUNN3IJATIokrPhBWcZ7GlDNyK987SPtEtOsx28rhme9mnFfIJI8spmGvihDCr2VWXlQAxyT_INN3EHttOmf7l9-tvJBtvHuFHUTKj1nmnHZkqJcgFmy9BCugDFn92NMGem_1N3KnBaRlplrTxslZtL6H7OUwMcUzai-9eF9AGqzMLMLjeTj4f8kaPUZWUlzFf930gFA6y9g">
+</div>
+<div class="pb-sm">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-bold text-label-bold text-on-surface">David Chen</span>
+<span class="font-body-md text-body-md text-secondary">@dchen_arch • 3h</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                            Visually stunning, yes. But I'm skeptical about the acoustic properties of that main hall. Concrete and glass in a subterranean vault usually equals an echo chamber. I hope they've layered in some serious dampening materials that aren't obvious in the renders.
+                        </p>
+<div class="flex items-center gap-lg mt-sm text-secondary">
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span></button>
+<button class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span><span class="font-label-sm text-label-sm">8</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- View More Links -->
+<div class="ml-[44px] mt-sm">
+<button class="font-label-bold text-label-bold text-primary hover:text-primary-container transition-colors">
+                    View 12 more replies
+                </button>
+</div>
+</section>
 </main>
-<!-- Bottom Navigation Bar (Mobile Only) -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-12 md:hidden bg-background dark:bg-background border-t border-outline-variant">
-<div class="flex flex-col items-center justify-center w-full h-full text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all cursor-pointer">
-<span class="material-symbols-outlined" data-icon="home">home</span>
+<!-- Fixed Bottom Reply Input Box -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-xl border-t border-on-surface/[0.06] z-40 pb-safe">
+<div class="max-w-container-max mx-auto px-gutter py-sm flex items-center gap-sm">
+<img class="w-9 h-9 rounded-full border border-on-surface/[0.04] hidden sm:block" data-alt="The current user's profile avatar. A simple, flat illustration of a face in a minimalist line-art style on a pale grey background, fitting seamlessly into the UI's pristine light mode theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5I2nc8jn4KxHIBpv1hw2-AiOkzxXvZwlxUn2iBO1ke6bf3G8s9pj2Zwv8oR5dyLL4bTwC-IABH8-6Hzg-iWh9XJ170eA01ZAv5CFEMymprPenEa3hKcpP5WpHCAmi5dpFECSOEa7EWTWC6UjOZ0gOe8Oe6-5yhMT1QNM35QNl6ly6iiAQ8G009Ao-zXuYgsFtVD2pHeMZyViPIZTk94Ze4sXAimR3SzU8D4nso8SFyNU0L4kbehkwm0gpp3R_42OvPKH1I4LKC2nS">
+<div class="flex-1 bg-surface-container-low rounded-full flex items-center px-4 py-2 border border-transparent focus-within:border-on-surface/[0.2] transition-colors">
+<input class="flex-1 bg-transparent border-none outline-none font-body-md text-body-md text-on-surface placeholder:text-secondary p-0 focus:ring-0" placeholder="Reply to Elena Rostova..." type="text">
+<button class="text-primary font-label-bold text-label-bold ml-2 hover:opacity-80 transition-opacity">Post</button>
 </div>
-<div class="flex flex-col items-center justify-center w-full h-full text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all cursor-pointer">
-<span class="material-symbols-outlined" data-icon="search">search</span>
 </div>
-<div class="flex flex-col items-center justify-center w-full h-full text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all cursor-pointer">
-<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
 </div>
-<div class="flex flex-col items-center justify-center w-full h-full text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all cursor-pointer">
-<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
-</div>
-<div class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-primary hover:bg-surface-container-low active:scale-90 transition-all cursor-pointer">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-</div>
-</nav>
+
+
+
+
 </body></html>
