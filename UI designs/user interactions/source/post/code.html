@@ -1,10 +1,10 @@
-<!DOCTYPE html><html class="dark" lang="en"><head>
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>FOZ - Post &amp; Action States</title>
+<title>FOZ - Post Feed</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script id="tailwind-config">
         tailwind.config = {
@@ -12,53 +12,53 @@
             theme: {
                 extend: {
                     "colors": {
-                        "surface-variant": "#353434",
-                        "on-primary": "#2f3131",
-                        "primary-fixed": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#c6c6c7",
-                        "primary": "#ffffff",
-                        "surface-container-lowest": "#0e0e0e",
-                        "outline-variant": "#444748",
-                        "on-surface": "#e5e2e1",
-                        "inverse-on-surface": "#313030",
-                        "tertiary": "#ffffff",
-                        "on-tertiary-fixed": "#1a1c1c",
-                        "on-error-container": "#ffdad6",
-                        "tertiary-fixed-dim": "#c6c6c7",
-                        "on-secondary-fixed-variant": "#00497d",
-                        "surface": "#141313",
-                        "on-primary-fixed-variant": "#454747",
-                        "on-background": "#e5e2e1",
-                        "on-surface-variant": "#c4c7c8",
-                        "secondary-container": "#0095f6",
-                        "surface-tint": "#c6c6c7",
-                        "on-primary-container": "#636565",
-                        "on-tertiary-fixed-variant": "#454747",
-                        "surface-dim": "#141313",
-                        "surface-bright": "#3a3939",
-                        "tertiary-container": "#e2e2e2",
-                        "on-secondary": "#003258",
-                        "surface-container-low": "#1c1b1b",
-                        "inverse-surface": "#e5e2e1",
-                        "surface-container": "#201f1f",
-                        "background": "#141313",
-                        "tertiary-fixed": "#e2e2e2",
-                        "on-error": "#690005",
-                        "inverse-primary": "#5d5f5f",
-                        "surface-container-highest": "#353434",
-                        "on-secondary-fixed": "#001d36",
-                        "on-primary-fixed": "#1a1c1c",
-                        "secondary-fixed": "#d1e4ff",
-                        "outline": "#8e9192",
-                        "primary-container": "#e2e2e2",
-                        "secondary": "#9ecaff",
-                        "on-tertiary-container": "#636565",
-                        "on-secondary-container": "#002b4d",
-                        "secondary-fixed-dim": "#9ecaff",
-                        "on-tertiary": "#2f3131",
-                        "error": "#ffb4ab",
-                        "error-container": "#93000a"
+                        "inverse-on-surface": "#f1f1f1",
+                        "inverse-surface": "#303030",
+                        "inverse-primary": "#ffb3b6",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#5c3f41",
+                        "primary-fixed-dim": "#ffb3b6",
+                        "on-primary-fixed-variant": "#920028",
+                        "primary": "#ba0035",
+                        "tertiary-fixed-dim": "#62dda0",
+                        "background": "#f9f9f9",
+                        "on-surface": "#1b1b1b",
+                        "tertiary-fixed": "#7ffaba",
+                        "surface-dim": "#dadada",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-container": "#f6fff6",
+                        "on-tertiary-fixed-variant": "#005233",
+                        "tertiary-container": "#008656",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#906f70",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#e2dfde",
+                        "primary-container": "#e12149",
+                        "surface-container": "#eeeeee",
+                        "surface": "#f9f9f9",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary-fixed": "#002112",
+                        "on-background": "#1b1b1b",
+                        "outline-variant": "#e5bdbe",
+                        "surface-variant": "#e2e2e2",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-secondary-container": "#636262",
+                        "tertiary": "#006a43",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-tint": "#be0037",
+                        "primary-fixed": "#ffdada",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#40000c",
+                        "on-secondary-fixed": "#1b1b1c"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -67,26 +67,32 @@
                         "full": "9999px"
                     },
                     "spacing": {
-                        "thread-line-width": "1.5px",
-                        "gutter": "12px",
-                        "avatar-size-lg": "48px",
-                        "max-width-desktop": "700px",
-                        "container-padding": "1rem",
-                        "avatar-size-sm": "32px"
+                        "base": "8px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "container-max": "640px"
                     },
                     "fontFamily": {
-                        "body-main": ["Inter"],
+                        "headline-md": ["Inter"],
                         "label-sm": ["Inter"],
-                        "label-timestamp": ["Inter"],
-                        "headline-bold": ["Inter"],
-                        "body-secondary": ["Inter"]
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
                     },
                     "fontSize": {
-                        "body-main": ["15px", { "lineHeight": "21px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
-                        "label-sm": ["13px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "500" }],
-                        "label-timestamp": ["14px", { "lineHeight": "18px", "fontWeight": "400" }],
-                        "headline-bold": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-secondary": ["15px", { "lineHeight": "20px", "fontWeight": "400" }]
+                        "headline-md": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "1.2", "letterSpacing": "0", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
                     }
                 }
             }
@@ -94,165 +100,240 @@
     </script>
 <style>
         body {
-            background-color: #000000;
+            background-color: #FFFFFF;
+        }
+        .composer-focus:focus-within .expanded-composer {
+            display: block;
+        }
+        .composer-focus:focus-within .idle-composer {
+            display: none;
         }
     </style>
 </head>
-<body class="bg-background text-on-background font-body-main antialiased min-h-screen flex flex-col">
+<body class="text-on-surface antialiased bg-surface-container-lowest selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 flex justify-center items-center h-16 px-gutter max-w-desktop mx-auto bg-background/80 backdrop-blur-md border-b border-outline-variant flat no shadows hidden md:flex">
-<div class="w-full flex justify-between items-center">
-<div class="text-headline-bold font-headline-bold text-primary dark:text-primary">FOZ</div>
-<div class="flex space-x-6">
-<button class="text-primary dark:text-primary hover:opacity-70 transition-opacity active:scale-95 transition-transform flex flex-col items-center">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<header class="bg-surface/80 dark:bg-surface/80 backdrop-blur-xl text-primary dark:text-primary-fixed-dim font-headline-md text-headline-md fixed top-0 w-full border-b border-on-surface/[0.06] dark:border-inverse-surface/[0.06] flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto z-50 transition-opacity active:scale-95 transition-transform hidden md:flex left-0 right-0 max-w-none px-4 md:px-lg">
+<div class="flex items-center space-x-md w-full max-w-container-max mx-auto justify-between">
+<div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-black text-primary dark:text-inverse-primary tracking-tighter hover:opacity-80 transition-opacity cursor-pointer" style="color: rgb(0, 0, 0);">FOZ</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
-<button class="text-outline dark:text-outline hover:opacity-70 transition-opacity active:scale-95 transition-transform flex flex-col items-center">
-<span class="material-symbols-outlined">search</span>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="help">help</span>
 </button>
-<button class="text-outline dark:text-outline hover:opacity-70 transition-opacity active:scale-95 transition-transform flex flex-col items-center">
-<span class="material-symbols-outlined">add_box</span>
-</button>
-<button class="text-outline dark:text-outline hover:opacity-70 transition-opacity active:scale-95 transition-transform flex flex-col items-center">
-<span class="material-symbols-outlined">favorite</span>
-</button>
-<button class="text-outline dark:text-outline hover:opacity-70 transition-opacity active:scale-95 transition-transform flex flex-col items-center">
-<span class="material-symbols-outlined">person</span>
-</button>
+<img alt="Current user profile avatar" class="w-8 h-8 rounded-full object-cover border border-on-surface/[0.06]" data-alt="A highly detailed close-up portrait of a modern professional in a minimalist setting. Bright, natural lighting highlights subtle facial features. The background is a clean, out-of-focus white. The overall mood is approachable, contemporary, and crisp, perfectly matching a high-end light-mode digital platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXBXvWH242yO84lw_x7NcjYeAmnm-5FTtzZl2BMsPgoUSzpdIIFNw3YRFTC2IgPlUyofE-qHa-rOPHb56kwGi--2Zzqa4NcJ5RUpX94T2W4NiAvqqKxbh3O3t4fdYqilFxjQ1_wXpvflnPpAckmuE3jxf9sca3Q9br31OAIKxcc4WJyRtXKqQA9ufQhQ9UlZLHX8Sqnmp7Q2Os5CojITPYgbZcF7IhlKNlw_aFOGoy0fvoWuZoEQdidCCxBp1gI0sEdDqW0f7vw6QM">
 </div>
 </div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed-dim font-label-bold text-label-bold border-r border-on-surface/[0.06] p-lg space-y-md z-40">
+<div class="mb-8 pt-16">
+<div class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FOZ</div>
+<div class="text-on-surface-variant text-label-sm mt-1">Community Forum</div>
+</div>
+<div class="space-y-sm flex-1">
+<a class="flex items-center space-x-md p-3 rounded-lg text-on-surface font-black bg-surface-container-low cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-on-surface" style="font-variation-settings: &quot;FILL&quot; 1;">Home</span>
+</a>
+<a class="flex items-center space-x-md p-3 rounded-lg text-secondary font-medium hover:bg-surface-container-low transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="">Search</span>
+</a>
+<a class="flex items-center space-x-md p-3 rounded-lg text-secondary font-medium hover:bg-surface-container-low transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="">New Post</span>
+</a>
+<a class="flex items-center space-x-md p-3 rounded-lg text-secondary font-medium hover:bg-surface-container-low transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="">Activity</span>
+</a>
+<a class="flex items-center space-x-md p-3 rounded-lg text-secondary font-medium hover:bg-surface-container-low transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="">Profile</span>
+</a>
+</div>
+<button class="w-full bg-on-surface text-surface-container-lowest rounded-full py-3 px-4 font-label-bold text-label-bold hover:opacity-90 transition-opacity active:scale-95 shadow-sm mt-auto">
+            New Thread
+        </button>
 </nav>
-<!-- Main Content Canvas -->
-<main class="flex-1 w-full max-w-desktop mx-auto mt-0 md:mt-16 mb-12 md:mb-0 px-container-padding py-6 flex flex-col gap-8">
-<!-- Section: Main Post -->
-<section class="flex gap-3">
-<!-- Avatar Column -->
+<!-- Main Content Area -->
+<main class="w-full md:pl-64 pt-4 md:pt-20 pb-24 md:pb-12 min-h-screen">
+<div class="w-full max-w-container-max mx-auto px-4 md:px-0">
+<!-- Mobile Header (Visible only on small screens) -->
+<div class="md:hidden flex justify-between items-center py-sm mb-md sticky top-0 bg-surface-container-lowest/90 backdrop-blur-md z-30 -mx-4 px-4 border-b border-on-surface/[0.06]">
+<img alt="Current user avatar" class="w-8 h-8 rounded-full object-cover border border-on-surface/[0.06]" data-alt="A highly detailed close-up portrait of a modern professional in a minimalist setting. Bright, natural lighting highlights subtle facial features. The background is a clean, out-of-focus white. The overall mood is approachable, contemporary, and crisp, perfectly matching a high-end light-mode digital platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP4BjwZKsmr__d5i9YM2shZIApoSjWdGsMwEV_yJJA_tkmPyEr9tsymkNxpZ1bVTGX2ej72A8RLUS53jLAbJ2bXdEXGIaRqtJZByjUBSIOpKPn_-75d3pSuRlK6hzNK0MG_3bdoYDezLGBPdQWMSIWoKbk-xuV-xizwWLGTnbWPu9fJzrMPwGXMtps4S9bAAxAInv9CVNfQPShUMgJNYBAIWAdDJ6HhzvmjefRWj3BkvWqaq-pIx4vYLNtZLOj1HptzTTG5JX0lsnq">
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-black text-primary tracking-tighter">FOZ</div>
+<div class="w-8 h-8 flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</div>
+</div>
+<!-- Composer Area -->
+<div class="border-b border-on-surface/[0.06] pb-lg mb-lg composer-focus relative bg-surface-container-lowest">
+<!-- Idle State (Initially visible) -->
+<div class="idle-composer flex items-center space-x-md px-2 cursor-text" tabindex="0">
+<img alt="Current user avatar" class="w-10 h-10 rounded-full object-cover border border-on-surface/[0.06]" data-alt="A highly detailed close-up portrait of a modern professional in a minimalist setting. Bright, natural lighting highlights subtle facial features. The background is a clean, out-of-focus white. The overall mood is approachable, contemporary, and crisp, perfectly matching a high-end light-mode digital platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCyf3htncR5lb9N-ZRBK5xzffuJXLggF4nguW0YB3kXB3HczFKUfP6fsPytCMkI_BCCnh3pmr5W3FQnVypDdjTktsnsLJJvG438iDDJFmCRSZKN2gaw66-o8FFlHScNQlUmCCU8EurezyuTYm1xd1jtSh_F9_egiloWGfk6zU1FA9YxT8F9SAC8gHjA9EaaCjH3C4KhJ4wk_8mKWvesAhOWBP0GGcC-yGaFppxkn3MI9zvuPep9kEQih-aTmsSanvjK23MrTcp6B02">
+<div class="flex-1 text-on-surface-variant font-body-lg text-body-lg">
+                        Start a discussion on FOZ...
+                    </div>
+</div>
+<!-- Active State (Hidden until focused) -->
+<div class="expanded-composer hidden pl-2 pr-2 pt-2">
+<div class="flex items-start space-x-md mb-md">
+<img alt="Current user avatar" class="w-10 h-10 rounded-full object-cover border border-on-surface/[0.06] shrink-0" data-alt="A highly detailed close-up portrait of a modern professional in a minimalist setting. Bright, natural lighting highlights subtle facial features. The background is a clean, out-of-focus white. The overall mood is approachable, contemporary, and crisp, perfectly matching a high-end light-mode digital platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHvHe336VkNNx3TgVLP552WwOmbW6Eq57ixEx5iIwtYmoPdgdGwjfUgD70XiUkNUzUbXjuc6z9s4K9MkMpSvaaqpQasVvv4GEa5Z2azZYKgcQQB56_u52zsuj_amVl5_qORUwuoDV9MjPnXS1Gj85bFjvGY3WmfOEyR0t6TlpW6_TbCXP7PNts7O47agMfNhtfS7c6R29_XISjHHsmYGOqt0UnGnL8VPvfcpY7HRMM3SqmwD8WL7zyuchXWuvhSITArB7LWUK84xAQ">
+<div class="flex-1 min-h-[100px]">
+<textarea class="w-full bg-transparent border-none p-0 focus:ring-0 resize-none font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/50 h-full min-h-[80px]" placeholder="What's happening in the community?"></textarea>
+</div>
+</div>
+<div class="flex justify-between items-center mt-2 border-t border-on-surface/[0.04] pt-sm">
+<div class="flex space-x-2 text-primary">
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="image">image</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="gif_box">gif_box</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="poll">poll</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="sentiment_satisfied">sentiment_satisfied</span>
+</button>
+</div>
+<div class="flex items-center space-x-md">
+<div class="relative w-6 h-6 flex items-center justify-center text-on-surface-variant/30">
+<!-- Character counter ring mockup -->
+<svg class="w-full h-full transform -rotate-90" viewBox="0 0 24 24">
+<circle cx="12" cy="12" fill="none" r="10" stroke="currentColor" stroke-width="2"></circle>
+<circle cx="12" cy="12" fill="none" r="10" stroke="#ba0035" stroke-dasharray="62.8" stroke-dashoffset="40" stroke-width="2"></circle>
+</svg>
+</div>
+<div class="w-[1px] h-6 bg-on-surface/[0.06]"></div>
+<button class="bg-on-surface text-surface-container-lowest rounded-full py-2 px-4 font-label-bold text-label-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+                                Post
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Feed -->
+<div class="flex flex-col">
+<!-- Post 1 (Active Actions) -->
+<article class="flex space-x-md py-lg border-b border-on-surface/[0.06] hover:bg-surface-container-lowest/50 transition-colors px-2">
 <div class="flex flex-col items-center shrink-0">
-<img class="w-avatar-size-sm h-avatar-size-sm rounded-full object-cover border border-surface-variant" data-alt="A high resolution, beautifully lit portrait of a young professional working in a dark, modern home office setting. The aesthetic is clean, minimalist, and heavily relies on deep blacks with soft, cool ambient lighting. The subject is focused and contemporary, perfectly fitting a modern tech or design context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgUe_fWrIliqDTdxtWLc0KRu5ZPTuc8FaUzza9hHTp3oPfX-56Ab1P0GvOh2v6N3pmELTW6zOfDsY6X-FcaL24RIVlJc0tRa3AU44a_RDS9pS94q7ushceJ-uZkN9Y2iDj0OGeq8LL1F37eP_LJ6RqCTNZu4SxCLq8_c50bqEIyPZHmWhFGhS51AHJ42CXYIo0e18wlqLOMgp9ycApJtveYApVnDEX2f_oBA1SvsmaxMVkY8NBEaWPOQ1r3k4Q4UN1_-GBpfKGnrFB">
+<img alt="Alex Rivera avatar" class="w-10 h-10 rounded-full object-cover border border-on-surface/[0.06]" data-alt="A bright, minimalist profile photo of a creative professional against a stark white background. High-key lighting emphasizes sharp details and modern style, perfect for a clean, editorial light-mode digital interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFSz_rVw-TJQUjvS6ZL8l96D3mMhGrOFAtx7mIMKcgODBom7lg6Z1Yn0sHa80rqhLBQzlx7_M8j-4LH-kjcY6zdoI2p-CPPLKCdRNtcQWXLeUm_4e2h8LYpoDH7bq0UvN-e0Wp44UdnphFguUL_T-0MIeQuL5xYgSDbZJoLt0w-lTLvJkTomEqY6D-vtGs9rvpx53XmwzC3g0349edn-I-xh2IN6GYYDrFmfdMvzZK0D7FkpfVUxdREwLsSZ3yG8xfvQus9xjDxEmr">
+<div class="w-[2px] bg-on-surface/[0.04] flex-1 my-xs rounded-full"></div>
 </div>
-<!-- Content Column -->
-<div class="flex flex-col flex-1 gap-2">
-<!-- Header -->
-<div class="flex items-center justify-between">
-<div class="flex items-baseline gap-2">
-<span class="font-label-sm text-label-sm text-on-surface">alex_tech</span>
-<span class="font-label-timestamp text-label-timestamp text-outline">2h</span>
+<div class="flex-1 pb-1">
+<div class="flex items-center space-x-xs mb-1">
+<span class="font-label-bold text-label-bold text-on-surface">Alex Rivera</span>
+<span class="font-body-md text-body-md text-on-surface-variant">@arivera</span>
+<span class="font-body-md text-body-md text-on-surface-variant">·</span>
+<span class="font-body-md text-body-md text-on-surface-variant">2h</span>
 </div>
-<button class="text-outline hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">more_horiz</span>
-</button>
+<div class="font-body-lg text-body-lg text-on-surface mb-sm leading-relaxed">
+                            Exploring the new grid layout possibilities in modern CSS. The level of control we have now compared to just a few years ago is incredible. Here's a quick mockup of a bento-style dashboard using purely native grid properties.
+                        </div>
+<div class="mb-sm rounded-xl overflow-hidden border border-on-surface/[0.06]">
+<img class="w-full h-auto object-cover max-h-[400px]" data-alt="A pristine, high-fidelity UI mockup of a bento-grid dashboard displayed against a bright white background. Soft, diffuse lighting casts minimal shadows, emphasizing the clean lines, rounded corners, and structural elegance of the modern digital design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeew7YuiSETlMsAospXD96mzzD3sWho98FN0iDeSTPal363qWjxBJawQFYY9_NcCwYvxrk5O8A9NMjFVuLNsZi4aDIHezhQ31-Nc58J9Vy3UggCSD240sCeYgMWpgeUxgEu94CvKr4ZbWwfgwF4LCA2AibggOH3Or4Q9ibU_J-o6aIF8mKaaPw3PqO_AKDNQ7uBZFdUHmC1d8vs8vzK_8b_UmQCbC-qnn_zmMLFQBPL58Snyu-NXTU57bMP_9mDITUCe-5IPcSeQba">
 </div>
-<!-- Body -->
-<p class="font-body-main text-body-main text-on-surface">Exploring the new minimalist UI for FOZ. What do you think?</p>
-<!-- Attached Media -->
-<div class="mt-2 rounded-xl overflow-hidden border border-surface-variant">
-<img class="w-full h-auto object-cover max-h-[400px]" data-alt="A sleek, modern desk setup in a dimly lit room, focusing on a high-end monitor displaying a dark-mode interface. The workspace is meticulously organized with minimalist peripherals, a small succulent plant, and subtle, ambient LED backlighting in cool blue tones. The overall vibe is premium, focused, and technologically advanced, fitting perfectly into a dark, immersive aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv4XuNKMJXx7DrloeMJbBLnNjyLfQzQj9kCeNaYcY-KoDRZPhZRNxTLiHK5WDH4ZYkV_OEsPkrRHw0mteI5x49eWTBFanFubnvyaYNEqGf8o7C9rLjhafnPqCzeye5_pM4MRmzMeqTme8bTcY6qhYpcgwUjDcOJsZwzNt917pimdi3FouyFnjUhgkqkt2YL-JtJPY9A4ZUYFSNeCOme78KONDSYVOzFRBytecYBtX5f4B76z2nfnYDe052KubnV7-SOqVwGVvUebWQ">
+<div class="flex items-center justify-between text-on-surface-variant mt-md max-w-[420px]">
+<button class="flex items-center space-x-1 hover:text-primary transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble_outline">chat_bubble_outline</span>
 </div>
-<!-- Action Bar (Default for Main Post) -->
-<div class="flex items-center gap-6 mt-3 text-outline">
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors group">
-<span class="material-symbols-outlined text-[20px] group-active:scale-90 transition-transform">favorite</span>
-<span class="font-label-sm text-label-sm">41</span>
+<span class="font-label-sm text-label-sm">48</span>
 </button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors group">
-<span class="material-symbols-outlined text-[20px] group-active:scale-90 transition-transform">chat_bubble</span>
-<span class="font-label-sm text-label-sm">12</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors group">
-<span class="material-symbols-outlined text-[20px] group-active:scale-90 transition-transform">repeat</span>
-<span class="font-label-sm text-label-sm">5</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors group ml-auto">
-<span class="material-symbols-outlined text-[20px] group-active:scale-90 transition-transform">share</span>
-</button>
+<button class="flex items-center space-x-1 text-[#00ba7c] transition-colors group">
+<div class="p-2 rounded-full bg-[#00ba7c]/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="repeat">repeat</span>
 </div>
+<span class="font-label-sm text-label-sm font-bold">12</span>
+</button>
+<button class="flex items-center space-x-1 text-primary transition-colors group">
+<div class="p-2 rounded-full bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
 </div>
-</section>
-<hr class="border-t border-surface-variant w-full">
-<!-- Section: Action Variants Showcase -->
-<section class="flex flex-col gap-6">
-<h2 class="font-headline-bold text-headline-bold text-on-surface mb-2">Action States</h2>
-<!-- Default State -->
-<div class="bg-surface-container-low p-4 rounded-xl border border-surface-variant flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline mb-2 uppercase tracking-wider">Default</span>
-<div class="flex items-center gap-6 text-outline">
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">favorite</span>
-<span class="font-label-sm text-label-sm">41</span>
+<span class="font-label-sm text-label-sm font-bold">1.2k</span>
 </button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
-<span class="font-label-sm text-label-sm">12</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">repeat</span>
-<span class="font-label-sm text-label-sm">5</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors ml-auto">
-<span class="material-symbols-outlined text-[20px]">share</span>
+<button class="flex items-center space-x-1 hover:text-primary transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="ios_share">ios_share</span>
+</div>
 </button>
 </div>
 </div>
-<!-- Liked State -->
-<div class="bg-surface-container-low p-4 rounded-xl border border-surface-variant flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline mb-2 uppercase tracking-wider">Liked</span>
-<div class="flex items-center gap-6 text-outline">
-<button class="flex items-center gap-1.5 text-error transition-colors">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
-<span class="font-label-sm text-label-sm">42</span>
+</article>
+<!-- Post 2 (Text only) -->
+<article class="flex space-x-md py-lg border-b border-on-surface/[0.06] hover:bg-surface-container-lowest/50 transition-colors px-2">
+<div class="flex flex-col items-center shrink-0">
+<img alt="Sam Taylor avatar" class="w-10 h-10 rounded-full object-cover border border-on-surface/[0.06]" data-alt="A clean, professional headshot of a designer on a solid light gray background. Even lighting highlights a sharp, modern appearance suitable for a minimalist corporate or social platform identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR9c3B3bF8aLh45UVu96FLPD2kwvt7tK401Tlex-SXNHEiwoUmdfVJyptGyrazY9Vyh5S_j8ffPAsemcG2srgZOND7AJ7ejKeku2IwJWGt_EfaecT9ijYvzzwU-3fpGD-yvkdP6EktuZnX1SvTfRmOgmz7C63VP45607Jx6N7Iy9Slzd66DVdHjNHTwfKiAPu6ibWq2K4fgpqUO9JZlX_JoQKq6G8p5pkom5Innii_vI5hcnqg6MJscu5uNCozv9eUQxMouL8iyyB0">
+</div>
+<div class="flex-1 pb-1">
+<div class="flex items-center space-x-xs mb-1">
+<span class="font-label-bold text-label-bold text-on-surface">Sam Taylor</span>
+<span class="font-body-md text-body-md text-on-surface-variant">@samt_design</span>
+<span class="font-body-md text-body-md text-on-surface-variant">·</span>
+<span class="font-body-md text-body-md text-on-surface-variant">4h</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface mb-sm leading-relaxed">
+                            Typography hierarchy is often the most overlooked aspect of junior portfolios. Don't rely on color alone to denote importance. Use weight, scale, and spatial relationships to guide the eye. A purely monochrome layout should still be legible and structurally sound.
+                        </div>
+<div class="flex items-center justify-between text-on-surface-variant mt-md max-w-[420px]">
+<button class="flex items-center space-x-1 hover:text-primary transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+</div>
+<span class="font-label-sm text-label-sm">156</span>
 </button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
-<span class="font-label-sm text-label-sm">12</span>
+<button class="flex items-center space-x-1 hover:text-[#00ba7c] transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-[#00ba7c]/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="repeat">repeat</span>
+</div>
+<span class="font-label-sm text-label-sm">34</span>
 </button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">repeat</span>
-<span class="font-label-sm text-label-sm">5</span>
+<button class="flex items-center space-x-1 hover:text-primary transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span>
+</div>
+<span class="font-label-sm text-label-sm">892</span>
 </button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors ml-auto">
-<span class="material-symbols-outlined text-[20px]">share</span>
+<button class="flex items-center space-x-1 hover:text-primary transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="ios_share">ios_share</span>
+</div>
 </button>
 </div>
 </div>
-<!-- Reposted State -->
-<div class="bg-surface-container-low p-4 rounded-xl border border-surface-variant flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline mb-2 uppercase tracking-wider">Reposted</span>
-<div class="flex items-center gap-6 text-outline">
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">favorite</span>
-<span class="font-label-sm text-label-sm">41</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
-<span class="font-label-sm text-label-sm">12</span>
-</button>
-<button class="flex items-center gap-1.5 text-[#00c853] transition-colors">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">repeat</span>
-<span class="font-label-sm text-label-sm">6</span>
-</button>
-<button class="flex items-center gap-1.5 hover:text-on-surface transition-colors ml-auto">
-<span class="material-symbols-outlined text-[20px]">share</span>
-</button>
+</article>
+</div>
+<div class="py-xl flex justify-center">
+<div class="w-6 h-6 border-2 border-on-surface/[0.2] border-t-primary rounded-full animate-spin"></div>
 </div>
 </div>
-</section>
 </main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-12 md:hidden bg-background dark:bg-background border-t border-outline-variant flat no shadows">
-<button class="text-primary dark:text-primary hover:bg-surface-container-low active:scale-90 transition-all w-full h-full flex justify-center items-center">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-</button>
-<button class="text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all w-full h-full flex justify-center items-center">
-<span class="material-symbols-outlined">search</span>
-</button>
-<button class="text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all w-full h-full flex justify-center items-center">
-<span class="material-symbols-outlined">add_box</span>
-</button>
-<button class="text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all w-full h-full flex justify-center items-center">
-<span class="material-symbols-outlined">favorite</span>
-</button>
-<button class="text-outline dark:text-outline hover:bg-surface-container-low active:scale-90 transition-all w-full h-full flex justify-center items-center">
-<span class="material-symbols-outlined">person</span>
-</button>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 w-full md:hidden bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-md text-primary dark:text-primary-fixed-dim font-label-sm text-label-sm border-t border-on-surface/[0.06] z-50 flex justify-around items-center px-4 pb-safe py-sm transition-all pb-6 pt-3">
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim active:bg-surface-container rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant active:bg-surface-container rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant active:bg-surface-container rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="">Post</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant active:bg-surface-container rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant active:bg-surface-container rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="">Profile</span>
+</a>
 </nav>
 </body></html>

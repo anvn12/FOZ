@@ -1,82 +1,96 @@
 ---
-name: Obsidian Flux
+name: FOZ Visual Language
 colors:
-  surface: '#141313'
-  surface-dim: '#141313'
-  surface-bright: '#3a3939'
-  surface-container-lowest: '#0e0e0e'
-  surface-container-low: '#1c1b1b'
-  surface-container: '#201f1f'
-  surface-container-high: '#2a2a2a'
-  surface-container-highest: '#353434'
-  on-surface: '#e5e2e1'
-  on-surface-variant: '#c4c7c8'
-  inverse-surface: '#e5e2e1'
-  inverse-on-surface: '#313030'
-  outline: '#8e9192'
-  outline-variant: '#444748'
-  surface-tint: '#c6c6c7'
-  primary: '#ffffff'
-  on-primary: '#2f3131'
-  primary-container: '#e2e2e2'
-  on-primary-container: '#636565'
-  inverse-primary: '#5d5f5f'
-  secondary: '#9ecaff'
-  on-secondary: '#003258'
-  secondary-container: '#0095f6'
-  on-secondary-container: '#002b4d'
-  tertiary: '#ffffff'
-  on-tertiary: '#2f3131'
-  tertiary-container: '#e2e2e2'
-  on-tertiary-container: '#636565'
-  error: '#ffb4ab'
-  on-error: '#690005'
-  error-container: '#93000a'
-  on-error-container: '#ffdad6'
-  primary-fixed: '#e2e2e2'
-  primary-fixed-dim: '#c6c6c7'
-  on-primary-fixed: '#1a1c1c'
-  on-primary-fixed-variant: '#454747'
-  secondary-fixed: '#d1e4ff'
-  secondary-fixed-dim: '#9ecaff'
-  on-secondary-fixed: '#001d36'
-  on-secondary-fixed-variant: '#00497d'
-  tertiary-fixed: '#e2e2e2'
-  tertiary-fixed-dim: '#c6c6c7'
-  on-tertiary-fixed: '#1a1c1c'
-  on-tertiary-fixed-variant: '#454747'
-  background: '#141313'
-  on-background: '#e5e2e1'
-  surface-variant: '#353434'
+  surface: '#f9f9f9'
+  surface-dim: '#dadada'
+  surface-bright: '#f9f9f9'
+  surface-container-lowest: '#ffffff'
+  surface-container-low: '#f3f3f3'
+  surface-container: '#eeeeee'
+  surface-container-high: '#e8e8e8'
+  surface-container-highest: '#e2e2e2'
+  on-surface: '#1b1b1b'
+  on-surface-variant: '#5c3f41'
+  inverse-surface: '#303030'
+  inverse-on-surface: '#f1f1f1'
+  outline: '#906f70'
+  outline-variant: '#e5bdbe'
+  surface-tint: '#be0037'
+  primary: '#ba0035'
+  on-primary: '#ffffff'
+  primary-container: '#e12149'
+  on-primary-container: '#fffbff'
+  inverse-primary: '#ffb3b6'
+  secondary: '#5f5e5e'
+  on-secondary: '#ffffff'
+  secondary-container: '#e2dfde'
+  on-secondary-container: '#636262'
+  tertiary: '#006a43'
+  on-tertiary: '#ffffff'
+  tertiary-container: '#008656'
+  on-tertiary-container: '#f6fff6'
+  error: '#ba1a1a'
+  on-error: '#ffffff'
+  error-container: '#ffdad6'
+  on-error-container: '#93000a'
+  primary-fixed: '#ffdada'
+  primary-fixed-dim: '#ffb3b6'
+  on-primary-fixed: '#40000c'
+  on-primary-fixed-variant: '#920028'
+  secondary-fixed: '#e5e2e1'
+  secondary-fixed-dim: '#c8c6c5'
+  on-secondary-fixed: '#1b1b1c'
+  on-secondary-fixed-variant: '#474746'
+  tertiary-fixed: '#7ffaba'
+  tertiary-fixed-dim: '#62dda0'
+  on-tertiary-fixed: '#002112'
+  on-tertiary-fixed-variant: '#005233'
+  background: '#f9f9f9'
+  on-background: '#1b1b1b'
+  surface-variant: '#e2e2e2'
 typography:
-  headline-bold:
+  headline-lg:
+    fontFamily: Inter
+    fontSize: 32px
+    fontWeight: '700'
+    lineHeight: '1.2'
+    letterSpacing: -0.02em
+  headline-md:
     fontFamily: Inter
     fontSize: 20px
     fontWeight: '700'
-    lineHeight: 24px
-    letterSpacing: -0.02em
-  body-main:
-    fontFamily: Inter
-    fontSize: 15px
-    fontWeight: '400'
-    lineHeight: 21px
+    lineHeight: '1.4'
     letterSpacing: -0.01em
-  body-secondary:
+  body-lg:
     fontFamily: Inter
-    fontSize: 15px
+    fontSize: 16px
     fontWeight: '400'
-    lineHeight: 20px
-  label-sm:
-    fontFamily: Inter
-    fontSize: 13px
-    fontWeight: '500'
-    lineHeight: 16px
-    letterSpacing: 0em
-  label-timestamp:
+    lineHeight: '1.5'
+    letterSpacing: '0'
+  body-md:
     fontFamily: Inter
     fontSize: 14px
     fontWeight: '400'
-    lineHeight: 18px
+    lineHeight: '1.5'
+    letterSpacing: '0'
+  label-bold:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: '600'
+    lineHeight: '1.2'
+    letterSpacing: '0'
+  label-sm:
+    fontFamily: Inter
+    fontSize: 12px
+    fontWeight: '500'
+    lineHeight: '1.2'
+    letterSpacing: 0.01em
+  headline-lg-mobile:
+    fontFamily: Inter
+    fontSize: 24px
+    fontWeight: '700'
+    lineHeight: '1.2'
+    letterSpacing: -0.02em
 rounded:
   sm: 0.25rem
   DEFAULT: 0.5rem
@@ -85,59 +99,82 @@ rounded:
   xl: 1.5rem
   full: 9999px
 spacing:
-  max-width-desktop: 700px
-  container-padding: 1rem
-  gutter: 12px
-  thread-line-width: 1.5px
-  avatar-size-lg: 48px
-  avatar-size-sm: 32px
+  base: 8px
+  xs: 4px
+  sm: 8px
+  md: 16px
+  lg: 24px
+  xl: 40px
+  container-max: 640px
+  gutter: 16px
 ---
 
 ## Brand & Style
-The design system is built for a high-velocity social forum, prioritizing content legibility and rapid-fire interactions. The aesthetic is **Modern Minimalism** with a focus on dark-mode immersion. It draws inspiration from contemporary social platforms, utilizing a "Content-First" philosophy where the UI recedes into the background to let user media and text lead the experience. 
 
-The emotional response is one of precision and sophistication—using high-contrast typography against a void-black canvas to create a premium, editorial feel for social discourse.
+The design system is rooted in **Modern Minimalism**, prioritizing content clarity and conversational flow over decorative elements. Inspired by high-end editorial layouts and contemporary social platforms, it leverages generous whitespace to reduce cognitive load and create a "breathable" community environment.
+
+The aesthetic is characterized by:
+- **Pristine Surfaces:** Utilizing absolute white backgrounds to maximize contrast and focus.
+- **Typography-First Hierarchy:** Using font weight and scale rather than color or boxes to organize information.
+- **Subtle Boundaries:** Using ultra-low opacity strokes instead of heavy shadows or fills to define structure.
+- **High-Energy Accents:** A singular, vibrant primary color used sparingly for high-intent actions and active states.
 
 ## Colors
-The palette is rooted in absolute black to maximize OLED efficiency and visual depth. 
 
-- **Monochromatic Core:** Pure White is reserved for high-priority information (body text, usernames). Grays are tiered by elevation: `#101010` for main feed items and `#1E1E1E` for elevated modals or hover states.
-- **Functional Accents:** Interaction states use highly saturated, punchy hues. Liked states use a vibrant Red-Pink, Reposts use a crisp Green, and primary actions (Follow, Links) use a clean Blue.
-- **Subtle Boundaries:** Borders use a low-contrast dark gray (`#262626`) to define structure without breaking the visual flow of the infinite scroll.
+The palette is strictly functional. The background is a clean `#FFFFFF`, providing the maximum possible canvas for content. 
+
+- **Primary (#FF3B5C):** A vibrant, energetic pink-red used for "Like" states, new post indicators, and primary call-to-action buttons.
+- **Text Primary (#000000):** Reserved for headlines and usernames to ensure immediate legibility.
+- **Text Secondary (#1E1E1E):** Used for post bodies and comments to provide a slightly softer reading experience than pure black.
+- **Borders:** A consistent `#000000` at `0.06` or `0.10` opacity is used to separate feed items without creating visual noise.
 
 ## Typography
-The system utilizes **Inter** for its neutral, systematic character. To achieve the modern "social" look, letter spacing is slightly tightened across all headlines and body text to create a more compact, intentional visual rhythm.
 
-- **Usernames:** Always rendered in `headline-bold` to establish clear identity.
-- **Body Copy:** Set at `15px` with a `1.4` line-height ratio to balance information density with readability.
-- **Hierarchy:** Use color (`#777777`) rather than weight to distinguish secondary information like timestamps and metadata.
+This design system uses **Inter** for all roles to maintain a systematic, utilitarian feel. The hierarchy relies on tight line heights for headlines and comfortable, airy line heights for body text.
+
+- **Headlines:** Use Bold (700) weights with slight negative letter spacing to create a modern "impact" look.
+- **Body Text:** Use Regular (400) weights. Paragraph spacing should be generous to accommodate long-form forum discussions.
+- **Usernames & Metadata:** Use Semibold (600) or Medium (500) for usernames to differentiate them from the surrounding body copy without needing color shifts.
 
 ## Layout & Spacing
-The layout follows a **Fixed-Width Centered** model for desktop, constraining the content to `700px` to maintain an optimal line length for reading threads. 
 
-- **The Feed:** Elements are stacked vertically with `0px` gap, separated by 1px borders.
-- **Threading:** A `1.5px` vertical line (`#262626`) connects avatars in a thread, visually anchoring the conversation flow.
-- **Responsive:** On mobile, the `700px` constraint relaxes to `100%` width with `16px` horizontal padding. The UI relies on consistent margins between the avatar column and the content column.
+The layout follows an **8px grid system**. The structure is intentionally narrow, mimicking mobile-first feed layouts even on desktop to ensure maximum readability and focus.
+
+- **Max Width:** The main content feed is constrained to `640px` and centered on the screen.
+- **Fluidity:** While the container is fixed-max, the internal elements use fluid widths with fixed `24px` horizontal padding on mobile.
+- **Vertical Rhythm:** Post cards are separated by a simple border or `1px` line, with `16px` to `24px` of vertical padding inside each card to ensure the text doesn't feel cramped.
 
 ## Elevation & Depth
-This design system avoids traditional box-shadows to maintain a sleek, flat aesthetic. 
 
-- **Tonal Layering:** Depth is communicated through color shifts. The background is `#000000`. Overlays, such as "See More" cards or input fields, use `#101010`.
-- **Borders as Dividers:** Fine 1px lines (`#262626`) serve as the primary structural tool.
-- **Active States:** Subtle brightness increases (shifting from `#101010` to `#1E1E1E`) are used for hover states on feed items.
+This design system avoids traditional shadows to maintain its minimalist aesthetic. Depth is achieved through **Tonal Layering** and **Line Work**:
+
+- **Level 0:** The main page background (`#FFFFFF`).
+- **Level 1:** Input fields and secondary buttons use a very light gray fill (`#F5F5F5`) to sit slightly "below" the surface or indicate interactivity.
+- **Outlines:** Instead of shadows, cards and sections are defined by a `1px` solid stroke at `6%` black opacity.
+- **Overlays:** Modals and menus use a heavy backdrop blur (Glassmorphism) with a `20px` to `40px` blur radius to maintain context while focusing the user.
 
 ## Shapes
-The shape language is "Soft-Organic." 
 
-- **Containers:** Main feed cards and input areas use a `12px` to `16px` radius.
-- **Avatars:** Strictly circular (50% radius) to contrast against the squarer layout elements.
-- **Interactive Elements:** Buttons and chips use a `pill` shape (fully rounded) to clearly distinguish them as tappable targets.
+The shape language is friendly and modern. 
+- **Standard Radius:** `12px` (rounded-md) for input fields and smaller containers.
+- **Large Radius:** `16px` (rounded-lg) for main thread cards and profile sections.
+- **Full Radius:** Buttons and tags use a pill-shape (circular ends) to contrast against the more structured content cards.
 
 ## Components
-- **Avatars:** High-fidelity images with a 1px inner stroke to ensure separation from dark backgrounds.
-- **Buttons:** 
-    - *Primary:* Pure white background with black text.
-    - *Secondary:* Transparent with a 1px border of `#262626`.
-- **Interaction Icons:** Sleek, 1.5pt weight outline icons. Upon activation (e.g., Liking), icons transition to a solid fill in their respective accent color.
-- **Thread Lines:** Vertical paths that align perfectly with the center of the avatar, terminating at the start of the final reply in a chain.
-- **Input Fields:** Minimalist containers using `#101010` background, white placeholder text (at 30% opacity), and no shadows.
+
+### Buttons
+- **Primary:** Pill-shaped, background `#000000`, text `#FFFFFF`. High contrast.
+- **Secondary:** Pill-shaped, border `1px solid #00000010`, background transparent.
+- **Accent/Active:** Use the Primary Red/Pink for specific "Follow" or "Like" actions.
+
+### Cards & Threads
+Cards have no background color (white) and no shadow. They are separated by a `1px` bottom border or contained within a `1px` border with `16px` corner radius. Internal padding is `16px` for mobile, `24px` for desktop.
+
+### Input Fields
+Inputs use a `12px` radius and a light gray background (`#F5F5F5`) with no border. On focus, the background stays the same but a `1px` black border appears.
+
+### Chips & Tags
+Small, pill-shaped elements with `#F5F5F5` background and `label-sm` typography. Used for categories or status indicators.
+
+### Navigation
+A centered, bottom-fixed navigation bar on mobile or a top-sticky bar on desktop. Icons are minimalist line-art with a `2px` stroke weight. Active states are indicated by the Primary Red/Pink.
