@@ -6,7 +6,7 @@
 
 1. Net Ninja's Youtube video of Spec Kit tutorial
 
-2. Microsodt Learn
+2. Microsoft Learn
 
 ## Contents
 
