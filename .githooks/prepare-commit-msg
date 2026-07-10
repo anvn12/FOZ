@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# prepare-commit-msg — Prompts the committer to log their Copilot Chat prompt.
+# If no AI was used, delete the [AI-PROMPT] line.
+#
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# Skip merge, squash, cherry-pick, amend, and command-line -m messages
+# (source = "merge" | "squash" | "commit" for amend, "message" for -m)
+case "$COMMIT_SOURCE" in
+    merge|squash|commit|message)
+        exit 0
+        ;;
+esac
+
+# Prepend the AI prompt template
+TMPFILE=$(mktemp)
+{
+    echo "[AI-PROMPT] <paste your Copilot Chat prompt here, or DELETE THIS LINE if no AI was used>"
+    echo ""
+    cat "$COMMIT_MSG_FILE"
+} > "$TMPFILE"
+
+mv "$TMPFILE" "$COMMIT_MSG_FILE"

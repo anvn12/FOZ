@@ -64,3 +64,20 @@ FOZ/
 ├── .env.example                    # Template for environment variables
 └── README.md                       # Project documentation
 ```
+
+## Team AI Usage Logging
+
+This project tracks AI-assisted code changes to maintain transparency across the team.
+
+- **Pi users:** The `ai-usage-log` skill auto-logs your sessions to `ai-logs/<your-name>.md`.
+- **Copilot Chat users (VS Code):** Git hooks prompt you to paste your Copilot prompt when committing. If you delete the line, nothing is logged.
+
+### One-time setup for Copilot Chat users
+
+After cloning, run:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This enables the commit-message hooks that handle logging. No further action needed.
