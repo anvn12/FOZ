@@ -161,7 +161,7 @@ Build 3.0 (Final) - End of Sprint 5: The final, polished build deployed to the p
 
 Author: Nguyễn Hải Trọng
 
-Reviewer: Võ An Phú
+Reviewer and Editor: Võ An Phú
 
 ### Version 1.0
 
@@ -452,7 +452,7 @@ sequenceDiagram
 
 ## C - Spec Kit Initialization
 
-*Performed by: Võ An Phú | Reviewed by: Nguyễn Hải Trọng*
+*Performed by: Võ An Phú | Reviewed and Edited by: Nguyễn Hải Trọng*
 
 All required Spec Kit artifacts are located in the following path: `./speckit-artifacts/` and are organized as in our `/src` folder.
 
@@ -464,7 +464,7 @@ The Spec Kit training was writing a brief summary about what they have learned f
 
 Author: Nguyễn Tuấn An
 
-Reviewer: Phạm Đinh Gia Khánh
+Reviewer and Editor: Phạm Đinh Gia Khánh
 
 ### AI Usage Report
 
