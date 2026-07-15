@@ -2,6 +2,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useAuthStore } from "./stores/auth";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { ChangePasswordPage } from "./pages/ChangePasswordPage";
 import { useLogout } from "./api/auth";
 
 export function App() {
@@ -37,6 +38,7 @@ export function App() {
         <Route path="/" element={<HomePlaceholder />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/change-password" element={<ChangePasswordPage />} />
       </Routes>
     </div>
   );
@@ -47,7 +49,12 @@ function HomePlaceholder() {
   return (
     <div>
       {user ? (
-        <p>Welcome, {user.email}.</p>
+        <p>
+          Welcome, {user.email}.{" "}
+          <Link to="/change-password" className="text-blue-600 hover:underline">
+            Change password
+          </Link>
+        </p>
       ) : (
         <p>
           <Link to="/register" className="text-blue-600 hover:underline">

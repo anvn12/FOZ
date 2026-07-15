@@ -92,6 +92,7 @@ async function issueFullSession(user: {
 }): Promise<Session> {
   const issued = issueRefreshToken(env.REFRESH_TTL_DAYS);
   await createRefreshSession({
+    id: issued.id,
     userAccountId: user.id,
     tokenHash: hashRefreshSecret(issued.secret),
     expiresAt: issued.expiresAt,
@@ -147,6 +148,7 @@ export async function refresh(cookie: RefreshCookie): Promise<Session> {
   await revokeRefreshSession(session.id);
   const issued = issueRefreshToken(env.REFRESH_TTL_DAYS);
   await createRefreshSession({
+    id: issued.id,
     userAccountId: user.id,
     tokenHash: hashRefreshSecret(issued.secret),
     expiresAt: issued.expiresAt,

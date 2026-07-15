@@ -1,5 +1,5 @@
 import { eq, and, isNull, gt } from "drizzle-orm";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { db } from "#backend/db/client.js";
 import { userAccounts, profiles, refreshSessions } from "#backend/db/schema/index.js";
 
@@ -54,7 +54,7 @@ export async function updatePasswordHash(id: string, passwordHash: string) {
 export type IssuedRefresh = { id: string; secret: string; expiresAt: Date };
 
 export function issueRefreshToken(ttlDays: number): IssuedRefresh {
-  const id = randomBytes(16).toString("hex");
+  const id = randomUUID();
   const secret = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000);
   return { id, secret, expiresAt };
@@ -65,6 +65,7 @@ export function hashRefreshSecret(secret: string): string {
 }
 
 export async function createRefreshSession(args: {
+  id: string;
   userAccountId: string;
   tokenHash: string;
   expiresAt: Date;

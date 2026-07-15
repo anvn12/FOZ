@@ -21,3 +21,11 @@
 - New: `src/backend/__tests__/integration/auth.register.test.ts`, `src/backend/api/auth/auth.service.test.ts`
 - Modified: `src/backend/env.ts` (test-mode override of DATABASE_URL from TEST_DATABASE_URL), `src/backend/__tests__/setup.ts` (force foz_test DB), `src/backend/__tests__/integration/auth.setup.ts` (clearDb truncates all FK-referencing tables), `src/backend/db/migrations/0001_initial.sql` and `0002_refresh_sessions.sql` (added `DEFAULT gen_random_uuid()` to id columns), `specs/002-user-auth/tasks.md` (Phase 3 checkboxes)
 - Infra: docker compose up -d db, created `foz_test` db, applied both migrations to `foz_dev` and `foz_test`
+
+### 2026-07-15 21:21
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "go" — Phase 4 (US2 Sign In) for 002-user-auth
+**Files touched:**
+- New: `src/backend/__tests__/integration/auth.login.test.ts`
+- Modified: `src/backend/api/auth/auth.service.test.ts` (added 5 `login()` mocked-repo tests: happy + unknown-email + wrong-pw + 3 non-active statuses), `src/backend/lib/rate-limit.ts` (skip rate limit when `NODE_ENV === "test"` so the 10/15min cap doesn't break the test suite), `specs/002-user-auth/tasks.md` (Phase 4 checkboxes)

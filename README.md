@@ -1,5 +1,60 @@
 # FOZ
 
+## Authentication
+
+This repo includes a complete authentication slice (Phase 002) for the
+forum application.
+
+### Endpoints
+
+| Method | Path | Auth | Body | Returns |
+|---|---|---|---|---|
+| `POST` | `/auth/register` | guest | `{ email, password }` | `201` + `AuthResponse` + refresh cookie |
+| `POST` | `/auth/login` | guest | `{ email, password }` | `200` + `AuthResponse` + refresh cookie |
+| `POST` | `/auth/refresh` | none (uses refresh cookie) | — | `200` + `RefreshResponse` + rotated cookie |
+| `POST` | `/auth/logout` | Bearer access | — | `200` + cleared cookie |
+| `PATCH` | `/auth/password` | Bearer access | `{ currentPassword, newPassword }` | `200` |
+
+### Environment
+
+Copy `.env.example` to `.env` and fill in secrets. For tests, `.env.test` is
+used and `DATABASE_URL` is forced to the test database.
+
+### Running locally
+
+```sh
+docker compose up -d db
+# in another terminal
+npm run dev:be    # backend on :4000
+npm run dev:fe    # frontend on :5173 (proxies /auth to the backend)
+```
+
+### Running tests
+
+```sh
+docker compose up -d db
+npx tsc --noEmit
+npx vitest run
+```
+
+The DB schema is applied via the SQL files in `src/backend/db/migrations/`
+(0001_initial + 0002_refresh_sessions). Apply them with:
+
+```sh
+for f in src/backend/db/migrations/*.sql; do
+  docker exec -i foz_db psql -U foz -d foz_dev < "$f"
+done
+```
+
+### Notes
+
+- JWT access tokens live in client memory only (zustand); the refresh token
+  is an http-only `SameSite=Lax` cookie on `Path=/auth`.
+- The `rate-limit` middleware is a no-op when `NODE_ENV=test` so the test
+  suite isn't capped at 10 attempts/15min.
+- Email verification and forgotten-password reset are **out of scope** for
+  v1 — see `specs/002-user-auth/spec.md` (FR-016).
+
 ## Introduction
 
 This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.

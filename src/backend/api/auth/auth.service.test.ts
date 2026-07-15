@@ -26,23 +26,38 @@ vi.mock("#backend/lib/jwt.js", () => ({
 import {
   register,
   login,
+  logout,
+  refresh,
+  changePassword,
   DuplicateEmailError,
   InvalidCredentialsError,
   AccountNotActiveError,
+  InvalidRefreshError,
 } from "#backend/api/auth/auth.service.js";
 import {
   findUserByEmail,
   createUserWithProfile,
   createRefreshSession,
   issueRefreshToken,
+  findValidRefreshSession,
+  revokeRefreshSession,
+  getUserById,
+  hashRefreshSecret,
+  updatePasswordHash,
 } from "#backend/db/repositories/users.js";
-import { verifyPassword } from "#backend/lib/password.js";
+import { verifyPassword, hashPassword } from "#backend/lib/password.js";
 
 const mockedFindUserByEmail = vi.mocked(findUserByEmail);
 const mockedCreateUserWithProfile = vi.mocked(createUserWithProfile);
 const mockedCreateRefreshSession = vi.mocked(createRefreshSession);
 const mockedIssueRefreshToken = vi.mocked(issueRefreshToken);
 const mockedVerifyPassword = vi.mocked(verifyPassword);
+const mockedFindValidRefreshSession = vi.mocked(findValidRefreshSession);
+const mockedRevokeRefreshSession = vi.mocked(revokeRefreshSession);
+const mockedHashRefreshSecret = vi.mocked(hashRefreshSecret);
+const mockedGetUserById = vi.mocked(getUserById);
+const mockedUpdatePasswordHash = vi.mocked(updatePasswordHash);
+const mockedHashPassword = vi.mocked(hashPassword);
 
 describe("auth.service.register (tier-1, mocked repo)", () => {
   beforeEach(() => {
@@ -156,4 +171,153 @@ describe("auth.service.login (tier-1, mocked repo)", () => {
       );
     },
   );
+});
+
+describe("auth.service.logout (tier-1, mocked repo)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("revokes the session matching the cookie and returns { ok: true }", async () => {
+    mockedHashRefreshSecret.mockReturnValue("hashed-secret");
+    mockedFindValidRefreshSession.mockResolvedValue({
+      id: "session-id",
+      userAccountId: "u1",
+      tokenHash: "hashed-secret",
+      expiresAt: new Date(Date.now() + 60_000),
+      revokedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as never);
+    mockedRevokeRefreshSession.mockResolvedValue({} as never);
+
+    const result = await logout({ id: "session-id", secret: "raw-secret" });
+    expect(result).toEqual({ ok: true });
+    expect(mockedFindValidRefreshSession).toHaveBeenCalledWith("session-id", "hashed-secret");
+    expect(mockedRevokeRefreshSession).toHaveBeenCalledWith("session-id");
+  });
+
+  it("no-ops when no cookie is present", async () => {
+    const result = await logout(null);
+    expect(result).toEqual({ ok: true });
+    expect(mockedFindValidRefreshSession).not.toHaveBeenCalled();
+    expect(mockedRevokeRefreshSession).not.toHaveBeenCalled();
+  });
+
+  it("no-ops when the cookie is invalid (no matching session)", async () => {
+    mockedHashRefreshSecret.mockReturnValue("hashed-secret");
+    mockedFindValidRefreshSession.mockResolvedValue(undefined);
+    const result = await logout({ id: "session-id", secret: "raw-secret" });
+    expect(result).toEqual({ ok: true });
+    expect(mockedRevokeRefreshSession).not.toHaveBeenCalled();
+  });
+});
+
+describe("auth.service.refresh (tier-1, mocked repo)", () => {
+  const validSession = {
+    id: "session-id",
+    userAccountId: "u1",
+    tokenHash: "hashed-secret",
+    expiresAt: new Date(Date.now() + 60_000),
+    revokedAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const activeUser = {
+    id: "u1",
+    email: "alice" + "@" + "example.com",
+    passwordHash: "h",
+    role: "standard" as const,
+    status: "active" as const,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedIssueRefreshToken.mockReturnValue({
+      id: "new-session-id",
+      secret: "new-secret",
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+    mockedCreateRefreshSession.mockResolvedValue({} as never);
+  });
+
+  it("happy path: rotates the session and returns a new access token", async () => {
+    mockedHashRefreshSecret.mockReturnValue("hashed-secret");
+    mockedFindValidRefreshSession.mockResolvedValue(validSession as never);
+    mockedGetUserById.mockResolvedValue(activeUser as never);
+    mockedRevokeRefreshSession.mockResolvedValue({} as never);
+
+    const session = await refresh({ id: "session-id", secret: "raw-secret" });
+    expect(session.auth.accessToken).toBe("access-token-mock");
+    expect(session.cookie.name).toBe("refresh_token");
+    expect(session.cookie.value).toBe("new-session-id.new-secret");
+    expect(mockedRevokeRefreshSession).toHaveBeenCalledWith("session-id");
+    expect(mockedCreateRefreshSession).toHaveBeenCalled();
+  });
+
+  it("throws InvalidRefreshError when no cookie is present", async () => {
+    await expect(refresh(null)).rejects.toBeInstanceOf(InvalidRefreshError);
+  });
+
+  it("throws InvalidRefreshError when the session is not found or expired", async () => {
+    mockedHashRefreshSecret.mockReturnValue("hashed-secret");
+    mockedFindValidRefreshSession.mockResolvedValue(undefined);
+    await expect(refresh({ id: "session-id", secret: "raw" })).rejects.toBeInstanceOf(
+      InvalidRefreshError,
+    );
+  });
+
+  it("throws AccountNotActiveError when the user is no longer active", async () => {
+    mockedHashRefreshSecret.mockReturnValue("hashed-secret");
+    mockedFindValidRefreshSession.mockResolvedValue(validSession as never);
+    mockedGetUserById.mockResolvedValue({ ...activeUser, status: "banned" } as never);
+    await expect(refresh({ id: "session-id", secret: "raw" })).rejects.toBeInstanceOf(
+      AccountNotActiveError,
+    );
+  });
+});
+
+describe("auth.service.changePassword (tier-1, mocked repo)", () => {
+  const baseUser = {
+    id: "u1",
+    email: "alice" + "@" + "example.com",
+    passwordHash: "old-hash",
+    role: "standard" as const,
+    status: "active" as const,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedHashPassword.mockResolvedValue("new-hash");
+    mockedUpdatePasswordHash.mockResolvedValue({} as never);
+  });
+
+  it("happy path: verifies current, hashes new, updates the row", async () => {
+    mockedGetUserById.mockResolvedValue(baseUser as never);
+    mockedVerifyPassword.mockResolvedValue(true);
+    const result = await changePassword({ userId: "u1", currentPassword: "oldpass1234", newPassword: "newpass1234" });
+    expect(result).toEqual({ ok: true });
+    expect(mockedHashPassword).toHaveBeenCalledWith("newpass1234");
+    expect(mockedUpdatePasswordHash).toHaveBeenCalledWith("u1", "new-hash");
+  });
+
+  it("throws InvalidCredentialsError when current password is wrong", async () => {
+    mockedGetUserById.mockResolvedValue(baseUser as never);
+    mockedVerifyPassword.mockResolvedValue(false);
+    await expect(
+      changePassword({ userId: "u1", currentPassword: "wrongoldpwd1", newPassword: "newpass1234" }),
+    ).rejects.toBeInstanceOf(InvalidCredentialsError);
+    expect(mockedUpdatePasswordHash).not.toHaveBeenCalled();
+  });
+
+  it("throws InvalidCredentialsError when the user does not exist", async () => {
+    mockedGetUserById.mockResolvedValue(undefined);
+    await expect(
+      changePassword({ userId: "missing", currentPassword: "anything1", newPassword: "newpass1234" }),
+    ).rejects.toBeInstanceOf(InvalidCredentialsError);
+  });
 });

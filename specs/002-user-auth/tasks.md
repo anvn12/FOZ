@@ -150,14 +150,14 @@ valid access token returns 200 + clears the cookie; a subsequent
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T041 [P] [US3] Tier-2 integration test in `src/backend/__tests__/integration/auth.logout.test.ts`: signed-in logout returns 200 + `Set-Cookie` carries clear directives (`Max-Age=0` or expired `Expires`); a refresh attempt with the revoked cookie returns 401; logout without `requireAuth` returns 401
-- [ ] T042 [P] [US3] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `logout()` revokes the session; no-op for missing/expired cookie
+- [x] T041 [P] [US3] Tier-2 integration test in `src/backend/__tests__/integration/auth.logout.test.ts`: signed-in logout returns 200 + `Set-Cookie` carries clear directives (`Max-Age=0` or expired `Expires`); a refresh attempt with the revoked cookie returns 401; logout without `requireAuth` returns 401
+- [x] T042 [P] [US3] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `logout()` revokes the session; no-op for missing/expired cookie
 
 ### Implementation for User Story 3
 
-- [ ] T043 [US3] Implement `logout()` in `src/backend/api/auth/auth.service.ts`: read refresh cookie, look up + revoke the matching `refresh_sessions` row (if any), return `{ ok: true }`
-- [ ] T044 [US3] Wire `POST /auth/logout` in `src/backend/api/auth/routes.ts`: `requireAuth`, light rate limit, delegate to `auth.service.logout()`, clear the `refresh_token` cookie
-- [ ] T045 [P] [US3] Add `useLogout()` mutation in `src/frontend/src/api/auth.ts`; in `App.tsx`/a header component, render a "Sign out" button visible when the auth store has a `user`, which calls `useLogout`, awaits the response, then `clearSession()` + route to `/login`
+- [x] T043 [US3] Implement `logout()` in `src/backend/api/auth/auth.service.ts`: read refresh cookie, look up + revoke the matching `refresh_sessions` row (if any), return `{ ok: true }`
+- [x] T044 [US3] Wire `POST /auth/logout` in `src/backend/api/auth/routes.ts`: `requireAuth`, light rate limit, delegate to `auth.service.logout()`, clear the `refresh_token` cookie
+- [x] T045 [P] [US3] Add `useLogout()` mutation in `src/frontend/src/api/auth.ts`; in `App.tsx`/a header component, render a "Sign out" button visible when the auth store has a `user`, which calls `useLogout`, awaits the response, then `clearSession()` + route to `/login`
 
 **Checkpoint**: P1 lifecycle complete — register, sign in, sign out all
 work end-to-end and revoke the refresh session server-side.
@@ -177,14 +177,14 @@ A tampered cookie value returns 401 with no session restore.
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T046 [P] [US4] Tier-2 integration test in `src/backend/__tests__/integration/auth.refresh.test.ts`: happy path (200, new access token, new cookie with the same attributes as login, old session revoked), expired cookie (401), revoked cookie (401), tampered cookie value (401), account now `suspended` (403, cookie cleared)
-- [ ] T047 [P] [US4] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `refresh()` rotates (old session `revokedAt` set, new session row inserted), fails closed on any error
+- [x] T046 [P] [US4] Tier-2 integration test in `src/backend/__tests__/integration/auth.refresh.test.ts`: happy path (200, new access token, new cookie with the same attributes as login, old session revoked), expired cookie (401), revoked cookie (401), tampered cookie value (401), account now `suspended` (403, cookie cleared)
+- [x] T047 [P] [US4] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `refresh()` rotates (old session `revokedAt` set, new session row inserted), fails closed on any error
 
 ### Implementation for User Story 4
 
-- [ ] T048 [US4] Implement `refresh()` in `src/backend/api/auth/auth.service.ts`: read cookie, hash the secret part, `findValidRefreshSession(id, tokenHash)`, re-check `user.status === 'active'` (re-reads `UserAccount`), revoke old session, create new session, sign access, return `RefreshResponse` + new cookie payload; any failure clears the cookie and throws `InvalidRefreshError` (401) or `AccountNotActiveError` (403)
-- [ ] T049 [US4] Wire `POST /auth/refresh` in `src/backend/api/auth/routes.ts`: `authRateLimiter`, read cookie, delegate to `auth.service.refresh()`, set the rotated `refresh_token` cookie; on error clear the cookie
-- [ ] T050 [US4] Implement `silentRefresh()` in `src/frontend/src/stores/auth.ts` and call it once on app load in `src/frontend/src/main.tsx` via a `react-query` `useQuery` keyed on auth status; on success `setSession`, on 401 `clearSession` (so guests land on `/login`)
+- [x] T048 [US4] Implement `refresh()` in `src/backend/api/auth/auth.service.ts`: read cookie, hash the secret part, `findValidRefreshSession(id, tokenHash)`, re-check `user.status === 'active'` (re-reads `UserAccount`), revoke old session, create new session, sign access, return `RefreshResponse` + new cookie payload; any failure clears the cookie and throws `InvalidRefreshError` (401) or `AccountNotActiveError` (403)
+- [x] T049 [US4] Wire `POST /auth/refresh` in `src/backend/api/auth/routes.ts`: `authRateLimiter`, read cookie, delegate to `auth.service.refresh()`, set the rotated `refresh_token` cookie; on error clear the cookie
+- [x] T050 [US4] Implement `silentRefresh()` in `src/frontend/src/stores/auth.ts` and call it once on app load in `src/frontend/src/main.tsx` via a `react-query` `useQuery` keyed on auth status; on success `setSession`, on 401 `clearSession` (so guests land on `/login`)
 
 **Checkpoint**: P2 complete — refresh works; the FE silently restores
 sessions on return visits while invalid/expired/revoked cookies are
@@ -206,14 +206,14 @@ new password equal to current returns 422; new password too weak returns
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T051 [P] [US5] Tier-2 integration test in `src/backend/__tests__/integration/auth.password.test.ts`: happy path, wrong current (401), new = current (422), new too weak (422), missing access token (401); subsequent login uses the new password
-- [ ] T052 [P] [US5] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `changePassword()` verifies current, hashes + updates, throws the right errors
+- [x] T051 [P] [US5] Tier-2 integration test in `src/backend/__tests__/integration/auth.password.test.ts`: happy path, wrong current (401), new = current (422), new too weak (422), missing access token (401); subsequent login uses the new password
+- [x] T052 [P] [US5] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `changePassword()` verifies current, hashes + updates, throws the right errors
 
 ### Implementation for User Story 5
 
-- [ ] T053 [US5] Implement `changePassword()` in `src/backend/api/auth/auth.service.ts`: `verifyPassword(currentPassword, user.passwordHash)`, hash the new password, `updatePasswordHash(userId, newHash)`; throw `InvalidCredentialsError` (401) on mismatch; surface Zod errors (422) for new-password validation
-- [ ] T054 [US5] Wire `PATCH /auth/password` in `src/backend/api/auth/routes.ts`: `requireAuth`, `authRateLimiter`, `validateBody(ChangePasswordRequest)`, delegate to `auth.service.changePassword()`
-- [ ] T055 [P] [US5] Build `src/frontend/src/pages/ChangePasswordPage.tsx` (or a settings section): form with `currentPassword` + `newPassword` + confirm, Zod resolver, `useMutation` calling `PATCH /auth/password`; on success show a toast and (optional) prompt the user to sign in again
+- [x] T053 [US5] Implement `changePassword()` in `src/backend/api/auth/auth.service.ts`: `verifyPassword(currentPassword, user.passwordHash)`, hash the new password, `updatePasswordHash(userId, newHash)`; throw `InvalidCredentialsError` (401) on mismatch; surface Zod errors (422) for new-password validation
+- [x] T054 [US5] Wire `PATCH /auth/password` in `src/backend/api/auth/routes.ts`: `requireAuth`, `authRateLimiter`, `validateBody(ChangePasswordRequest)`, delegate to `auth.service.changePassword()`
+- [x] T055 [P] [US5] Build `src/frontend/src/pages/ChangePasswordPage.tsx` (or a settings section): form with `currentPassword` + `newPassword` + confirm, Zod resolver, `useMutation` calling `PATCH /auth/password`; on success show a toast and (optional) prompt the user to sign in again
 
 **Checkpoint**: All five user stories are independently functional;
 tier-1 + tier-2 tests pass and stay under the 500ms NFR.
@@ -225,13 +225,13 @@ tier-1 + tier-2 tests pass and stay under the 500ms NFR.
 **Purpose**: Tighten anything that touches every user story, fill gaps the
 constitution expects, and run the quickstart validation flow.
 
-- [ ] T056 [P] Central error-handler review in `src/backend/index.ts`: every `throw new ZodError` becomes 422 with `fields`; every `InvalidCredentialsError` is 401 with the single generic message; every `AccountNotActiveError` is 403 with the "not currently available" message; `DuplicateEmailError` is 409; `InvalidRefreshError` is 401. Confirm no error leaks a password hash, an access token, or a refresh token.
-- [ ] T057 [P] Security pass: confirm the `refresh_token` cookie is `httpOnly`, `SameSite=Lax`, `Path=/auth`, `Secure` in production; confirm the access token is never written to `localStorage`; confirm `Authorization: Bearer` is the only header carrying the access token; confirm `CORS_ORIGIN` is set to the FE origin and credentials are allowed only where needed
-- [ ] T058 [P] Rate-limit audit: `authRateLimiter` applied to register/login/refresh; ensure the limiter is keyed by IP + email (where applicable) and that it does not block legit users but does slow brute-force; document the threshold in a code comment (not a config — keep the standard middleware)
-- [ ] T059 [P] Logging audit: confirm access tokens, refresh tokens, password hashes, and passwords are **never** logged at any level; add a smoke test that POSTing register/login/logout/refresh/password produces no secret-bearing log lines
-- [ ] T060 [P] Accessibility pass on `RegisterPage.tsx`, `LoginPage.tsx`, and the sign-out button: labels associated to inputs, focus management on submit errors, keyboard-only navigation, color contrast on form errors; meets WCAG 2.1 AA per the constitution
-- [ ] T061 [P] Documentation updates: ensure `README.md` (or a new `docs/auth.md`) documents the auth flow at a high level, the env vars in `.env.example` carry inline comments, and `quickstart.md` (in this feature folder) still matches the actual run flow
-- [ ] T062 Run `quickstart.md` end-to-end against the dev DB; confirm tsc is clean, ESLint + Prettier pass, Vitest tier-1 + tier-2 pass under 500ms, and the FE can register + login + refresh + logout + change password
+- [x] T056 [P] Central error-handler review in `src/backend/index.ts`: every `throw new ZodError` becomes 422 with `fields`; every `InvalidCredentialsError` is 401 with the single generic message; every `AccountNotActiveError` is 403 with the "not currently available" message; `DuplicateEmailError` is 409; `InvalidRefreshError` is 401. Confirm no error leaks a password hash, an access token, or a refresh token.
+- [x] T057 [P] Security pass: confirm the `refresh_token` cookie is `httpOnly`, `SameSite=Lax`, `Path=/auth`, `Secure` in production; confirm the access token is never written to `localStorage`; confirm `Authorization: Bearer` is the only header carrying the access token; confirm `CORS_ORIGIN` is set to the FE origin and credentials are allowed only where needed
+- [x] T058 [P] Rate-limit audit: `authRateLimiter` applied to register/login/refresh; ensure the limiter is keyed by IP + email (where applicable) and that it does not block legit users but does slow brute-force; document the threshold in a code comment (not a config — keep the standard middleware)
+- [x] T059 [P] Logging audit: confirm access tokens, refresh tokens, password hashes, and passwords are **never** logged at any level; add a smoke test that POSTing register/login/logout/refresh/password produces no secret-bearing log lines
+- [x] T060 [P] Accessibility pass on `RegisterPage.tsx`, `LoginPage.tsx`, and the sign-out button: labels associated to inputs, focus management on submit errors, keyboard-only navigation, color contrast on form errors; meets WCAG 2.1 AA per the constitution
+- [x] T061 [P] Documentation updates: ensure `README.md` (or a new `docs/auth.md`) documents the auth flow at a high level, the env vars in `.env.example` carry inline comments, and `quickstart.md` (in this feature folder) still matches the actual run flow
+- [x] T062 Run `quickstart.md` end-to-end against the dev DB; confirm tsc is clean, ESLint + Prettier pass, Vitest tier-1 + tier-2 pass under 500ms, and the FE can register + login + refresh + logout + change password
 
 ---
 
