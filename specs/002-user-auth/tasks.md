@@ -33,13 +33,13 @@ independently testable increment on top of a shared foundational layer
 aliases. The constitution mandates `src/frontend/`, `src/backend/`,
 `src/shared/`; this phase creates them.
 
-- [ ] T001 Create the canonical folder tree `src/frontend/`, `src/backend/`, `src/shared/`, and the backend sub-folders `src/backend/db/`, `src/backend/db/schema/`, `src/backend/db/repositories/`, `src/backend/db/migrations/`, `src/backend/api/auth/`, `src/backend/lib/`
-- [ ] T002 Add `package.json` (root, ESM, `type: "module"`), `.nvmrc` pinning the current Node LTS, and `.gitignore` entries for `node_modules/`, `dist/`, `.env`, `coverage/`
-- [ ] T003 Add `tsconfig.json` (Node + bundler dual) with path aliases `#shared/*`, `#backend/*`, `#frontend/*`; `module: "ESNext"`, `moduleResolution: "bundler"`, `noEmit: true`, `strict: true`
-- [ ] T004 [P] Configure Vitest (`vitest.config.ts` with the same path aliases) and add ESLint + Prettier with the constitution-bound minimal config
-- [ ] T005 [P] Add `docker-compose.yml` provisioning PostgreSQL 16 (database `foz_dev`, port 5432, env wired to a `.env.example`)
-- [ ] T006 [P] Add backend deps: `express`, `drizzle-orm`, `postgres`, `zod`, `bcrypt`, `jsonwebtoken`, `cookie-parser`, `express-rate-limit`, `cors`, `dotenv`; dev deps: `vitest`, `supertest`, `@types/*`, `drizzle-kit`, `typescript`, `eslint`, `prettier`, `tsx`
-- [ ] T007 [P] Add frontend deps (in a workspace-ish layout if you keep one `package.json`, or a separate `src/frontend/package.json`): `react`, `react-dom`, `react-router-dom`, `@tanstack/react-query`, `zustand`, `react-hook-form`, `@hookform/resolvers`, `react-hot-toast`, `socket.io-client`; dev deps: `vite`, `@vitejs/plugin-react`, `tailwindcss`, `postcss`, `autoprefixer`, `vitest`, `typescript`, `eslint`, `prettier`
+- [x] T001 Create the canonical folder tree `src/frontend/`, `src/backend/`, `src/shared/`, and the backend sub-folders `src/backend/db/`, `src/backend/db/schema/`, `src/backend/db/repositories/`, `src/backend/db/migrations/`, `src/backend/api/auth/`, `src/backend/lib/`
+- [x] T002 Add `package.json` (root, ESM, `type: "module"`), `.nvmrc` pinning the current Node LTS, and `.gitignore` entries for `node_modules/`, `dist/`, `.env`, `coverage/`
+- [x] T003 Add `tsconfig.json` (Node + bundler dual) with path aliases `#shared/*`, `#backend/*`, `#frontend/*`; `module: "ESNext"`, `moduleResolution: "bundler"`, `noEmit: true`, `strict: true`
+- [x] T004 [P] Configure Vitest (`vitest.config.ts` with the same path aliases) and add ESLint + Prettier with the constitution-bound minimal config
+- [x] T005 [P] Add `docker-compose.yml` provisioning PostgreSQL 16 (database `foz_dev`, port 5432, env wired to a `.env.example`)
+- [x] T006 [P] Add backend deps: `express`, `drizzle-orm`, `postgres`, `zod`, `bcrypt`, `jsonwebtoken`, `cookie-parser`, `express-rate-limit`, `cors`, `dotenv`; dev deps: `vitest`, `supertest`, `@types/*`, `drizzle-kit`, `typescript`, `eslint`, `prettier`, `tsx`
+- [x] T007 [P] Add frontend deps (in a workspace-ish layout if you keep one `package.json`, or a separate `src/frontend/package.json`): `react`, `react-dom`, `react-router-dom`, `@tanstack/react-query`, `zustand`, `react-hook-form`, `@hookform/resolvers`, `react-hot-toast`, `socket.io-client`; dev deps: `vite`, `@vitejs/plugin-react`, `tailwindcss`, `postcss`, `autoprefixer`, `vitest`, `typescript`, `eslint`, `prettier`
 
 ---
 
