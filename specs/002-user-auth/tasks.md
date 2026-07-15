@@ -67,13 +67,13 @@ the data layer, and the shared contracts live here.
 - [ ] T020 Create `src/backend/api/auth/auth.service.ts` exporting the orchestration functions: `register(input)` (hash → create user+profile+session → sign access → return AuthResponse + refresh cookie payload), `login(input)` (lookup → verifyPassword → status check → create session → sign), `refresh(refreshCookie)` (verify session → revoke + rotate → sign), `logout(refreshCookie)` (revoke session), `changePassword(userId, currentPassword, newPassword)` (verify current → hash new → update)
 - [ ] T021 Create `src/backend/api/auth/routes.ts` mounting the auth router at `/auth` with the five endpoints (`POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, `PATCH /password`), each with Zod validation, the rate limiter, the right middleware (`requireGuest` for register/login, `requireAuth` for logout/password, none for refresh), and the correct cookie behavior (see `contracts/auth-api.md`)
 - [ ] T022 Create `src/backend/index.ts` (Express app): `cookieParser()`, `express.json()`, `cors(env.CORS_ORIGIN)`, mount `/auth` router, a `/health` 200, and the central error-handling middleware that maps the auth errors (`InvalidCredentialsError`, `AccountNotActiveError`, `InvalidRefreshError`) to the standard error envelope (422/401/403/409)
-- [ ] T023 [P] Create `src/frontend/stores/auth.ts` (zustand) holding `{ accessToken, user, status }` and actions `setSession({ user, accessToken })`, `clearSession()`, `silentRefresh()` (calls `/auth/refresh` once on app load)
-- [ ] T024 [P] Create `src/frontend/api/auth.ts` exporting `register(input)`, `login(input)`, `logout()`, `refresh()` fetch wrappers + `useRegister()`, `useLogin()`, `useLogout()` `@tanstack/react-query` mutations
-- [ ] T025 [P] Create the Vite/React shell: `src/frontend/index.html`, `src/frontend/src/main.tsx`, `src/frontend/src/App.tsx` (router with `/login`, `/register`, `/` placeholder), `src/frontend/vite.config.ts` (path aliases), `tailwind.config.js` + `postcss.config.js`
+- [ ] T023 [P] Create `src/frontend/src/stores/auth.ts` (zustand) holding `{ accessToken, user, status }` and actions `setSession({ user, accessToken })`, `clearSession()`, `silentRefresh()` (calls `/auth/refresh` once on app load)
+- [ ] T024 [P] Create `src/frontend/src/api/auth.ts` exporting `register(input)`, `login(input)`, `logout()`, `refresh()` fetch wrappers + `useRegister()`, `useLogin()`, `useLogout()` `@tanstack/react-query` mutations
+- [ ] T025 [P] Create the Vite/React shell: `src/frontend/index.html`, `src/frontend/src/main.tsx`, `src/frontend/src/App.tsx` (router with `/login`, `/register`, `/` placeholder), `src/frontend/vite.config.ts` (path aliases), `src/frontend/tailwind.config.js` + `src/frontend/postcss.config.js`
 - [ ] T026 [P] Add Vitest test scaffolding: `src/backend/__tests__/setup.ts` (loads `dotenv` test env, sets up a transactional test DB helper that truncates between tests), `src/backend/__tests__/fixtures/users.ts` (factory), and a `vitest.config.ts` test path pattern
 - [ ] T027 Tier-1 unit tests (no DB): `src/backend/lib/password.test.ts` (hash/verify round-trip; wrong password rejected; constant-time compare holds), `src/backend/lib/jwt.test.ts` (sign/verify round-trip; tampered token rejected; expired token rejected), `src/shared/schemas/auth.test.ts` (each Zod DTO accepts valid + rejects invalid cases; `ChangePasswordRequest` rejects `newPassword === currentPassword`)
-- [ ] T028 Tier-2 integration test fixture: `src/backend/__tests__/integration/auth.setup.ts` boots the Express `app` from `src/backend/index.ts` via `supertest` against the test DB; helper `clearDb()` truncates `refresh_sessions`, `profiles`, `user_accounts` in FK-safe order between tests
-- [ ] T029 Confirm `tsc --noEmit` is clean across the workspace and Vitest tier-1 (`npm test -- --run --project=unit`) is green; this is the foundation checkpoint before any user story work
+- [ ] T028 Tier-2 integration test fixture: `src/backend/__tests__/integration/auth.setup.ts` boots the Express `app` from `src/backend/index.ts` via `supertest` against the test DB; helper `clearDb()` truncates `refresh_sessions`, `profiles`, `user_accounts` in FK-safe order between tests; helper `expectFastResponse(res, maxMs = 500)` for SC-005; companion `src/backend/__tests__/integration/auth.gating.test.ts` asserts that every member-only endpoint (`POST /auth/logout`, `PATCH /auth/password`) returns 401 with no access token, that `POST /auth/refresh` returns 401 with no cookie, and that `POST /auth/refresh` returns 403 + clears the cookie for a `banned` user with a valid cookie (SC-006)
+- [ ] T029 Confirm `tsc --noEmit` is clean across the workspace and Vitest tier-1 (`npm test -- --run --project=unit`) is green; each tier-2 auth test MUST also assert response time < 500ms via `expectFastResponse(res)` (SC-005); this is the foundation checkpoint before any user story work
 
 **Checkpoint**: Foundation ready — Drizzle query layer exists, shared DTOs
 exist, auth lib utilities are unit-tested, and the Express app boots with
@@ -96,7 +96,7 @@ email and password returns 201 with an `AuthResponse` and a
 
 > Write tests FIRST; ensure they FAIL before implementation.
 
-- [ ] T030 [P] [US1] Tier-2 integration test in `src/backend/__tests__/integration/auth.register.test.ts`: happy path (201, body, cookie, DB row counts), duplicate email (409), weak password (422), invalid email (422), generic error envelope shape
+- [ ] T030 [P] [US1] Tier-2 integration test in `src/backend/__tests__/integration/auth.register.test.ts`: happy path (201, body, cookie, DB row counts, response time under 2000ms for SC-001), duplicate email (409), weak password (422), invalid email (422), generic error envelope shape, and `Set-Cookie` attributes (`httpOnly`, `sameSite: 'lax'`, `path: '/auth'`, `secure` only when `NODE_ENV === 'production'`)
 - [ ] T031 [P] [US1] Tier-1 test in `src/backend/api/auth/auth.service.test.ts` (mocked repo): `register()` returns AuthResponse, issues a refresh session, throws on duplicate email
 
 ### Implementation for User Story 1
@@ -124,7 +124,7 @@ unknown email returns the same 401 as wrong password (no enumeration).
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T036 [P] [US2] Tier-2 integration test in `src/backend/__tests__/integration/auth.login.test.ts`: happy path, wrong password (401 + generic message), unknown email (401 + same message), `suspended` status (403), `banned` status (403), `pending` status treated as not-active (403)
+- [ ] T036 [P] [US2] Tier-2 integration test in `src/backend/__tests__/integration/auth.login.test.ts`: happy path (response time under 2000ms for SC-002), wrong password (401 + generic message), unknown email (401 + same message), `suspended` status (403), `banned` status (403), `pending` status treated as not-active (403), and `Set-Cookie` attributes match register
 - [ ] T037 [P] [US2] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `login()` throws `InvalidCredentialsError` for both wrong-password and unknown-email; throws `AccountNotActiveError` for non-`active`; success path issues a refresh session and access token
 
 ### Implementation for User Story 2
@@ -150,7 +150,7 @@ valid access token returns 200 + clears the cookie; a subsequent
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T041 [P] [US3] Tier-2 integration test in `src/backend/__tests__/integration/auth.logout.test.ts`: signed-in logout returns 200 + `Set-Cookie` clears; a refresh attempt with the revoked cookie returns 401; logout without `requireAuth` returns 401
+- [ ] T041 [P] [US3] Tier-2 integration test in `src/backend/__tests__/integration/auth.logout.test.ts`: signed-in logout returns 200 + `Set-Cookie` carries clear directives (`Max-Age=0` or expired `Expires`); a refresh attempt with the revoked cookie returns 401; logout without `requireAuth` returns 401
 - [ ] T042 [P] [US3] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `logout()` revokes the session; no-op for missing/expired cookie
 
 ### Implementation for User Story 3
@@ -177,7 +177,7 @@ A tampered cookie value returns 401 with no session restore.
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T046 [P] [US4] Tier-2 integration test in `src/backend/__tests__/integration/auth.refresh.test.ts`: happy path (200, new access token, new cookie, old session revoked), expired cookie (401), revoked cookie (401), tampered cookie value (401), account now `suspended` (403, cookie cleared)
+- [ ] T046 [P] [US4] Tier-2 integration test in `src/backend/__tests__/integration/auth.refresh.test.ts`: happy path (200, new access token, new cookie with the same attributes as login, old session revoked), expired cookie (401), revoked cookie (401), tampered cookie value (401), account now `suspended` (403, cookie cleared)
 - [ ] T047 [P] [US4] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `refresh()` rotates (old session `revokedAt` set, new session row inserted), fails closed on any error
 
 ### Implementation for User Story 4

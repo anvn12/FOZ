@@ -126,13 +126,20 @@ src/
 │   │   └── rate-limit.ts        # auth rate-limiter config
 │   └── env.ts                  # Zod-validated env (reseats JWT_SECRET, REFRESH_SECRET, bcrypt rounds, cookie ttl)
 └── frontend/
-    ├── stores/
-    │   └── auth.ts              # zustand store: accessToken, user; login/logout/refresh actions
-    ├── api/
-    │   └── auth.ts              # fetch wrappers calling the auth endpoints (react-query mutations)
-    └── pages/
-        ├── RegisterPage.tsx     # react-hook-form + Zod-resolver
-        └── LoginPage.tsx
+    ├── index.html
+    ├── vite.config.ts
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    └── src/
+        ├── main.tsx
+        ├── App.tsx
+        ├── stores/
+        │   └── auth.ts              # zustand store: accessToken, user; login/logout/refresh actions
+        ├── api/
+        │   └── auth.ts              # fetch wrappers calling the auth endpoints (react-query mutations)
+        └── pages/
+            ├── RegisterPage.tsx     # react-hook-form + Zod-resolver
+            └── LoginPage.tsx
 ```
 
 > Note: the existing repo currently has `backend/db/schema/*.ts` as TS

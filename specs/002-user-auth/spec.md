@@ -8,6 +8,11 @@
 
 **Input**: User description: "I want to implement Authentication, I already have a db schema but no query layer yet"
 
+## Clarifications
+
+### Session 2026-07-15
+- Q: Password strength policy → A: A (NIST 800-63B-style: ≥8 chars minimum, no required character class, check against known-breached passwords where feasible; no max length beyond a sane upper bound).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Register an Account (Priority: P1)
@@ -175,7 +180,11 @@ and can immediately sign in with the new password but not the old one.
   already associated with an account, without revealing which field failed.
 - **FR-003**: The system MUST validate the email format and enforce a
   minimum password strength at the ingress boundary, rejecting weak
-  submissions before any account is created.
+  submissions before any account is created. The strength rule is:
+  minimum 8 characters, no required character class, no arbitrary
+  upper-length cap beyond a sane safety bound, and (where feasible) a
+  check against a known-breached-password list; weak submissions are
+  rejected with a per-field validation message.
 - **FR-004**: The system MUST let returning members sign in with their
   email and password and recognize them as signed in on success.
 - **FR-005**: The system MUST reject sign-in for incorrect credentials
@@ -183,7 +192,10 @@ and can immediately sign in with the new password but not the old one.
   the password was wrong.
 - **FR-006**: The system MUST prevent sign-in for accounts whose status is
   not currently permitted (e.g., suspended or banned), with a message
-  that explains the account is not available.
+  that explains the account is not available. A change in account status
+  (e.g., suspension) MUST take effect at the next authenticated API
+  request and on the next refresh attempt; the visitor's status is
+  re-evaluated on every authenticated call, not only at sign-in.
 - **FR-007**: The system MUST let signed-in members sign out, immediately
   ending their session on that device.
 - **FR-008**: The system MUST provide a long-lived, revocable refresh
@@ -191,7 +203,9 @@ and can immediately sign in with the new password but not the old one.
   re-entering their password, while short-lived access credentials
   authorize individual actions.
 - **FR-009**: The system MUST reject expired, tampered, or revoked refresh
-  credentials and never restore a session from them.
+  credentials and never restore a session from them. A refresh attempt
+  for an account whose status is no longer `active` MUST be rejected (and
+  the refresh cookie cleared) without issuing a new session.
 - **FR-010**: The system MUST restrict every member-only action to
   authenticated, permitted-status users, treating guests and blocked
   accounts as unauthorized and prompting guests to sign in.
@@ -201,9 +215,14 @@ and can immediately sign in with the new password but not the old one.
 - **FR-012**: The system MUST slow repeated sign-in and registration
   attempts from the same source to deter credential abuse, without
   permanently locking out legitimate users.
-- **FR-013**: The system MUST treat the visitor's role at sign-in time as
-  the basis for what actions are available to them (Standard User and
-  above can perform member actions; guests cannot).
+- **FR-013**: The system MUST treat the visitor's effective role and
+  account status, evaluated by the API on every authenticated request,
+  as the basis for which actions are available to them. Standard User and
+  above can perform member actions; guests and accounts whose status is
+  not currently permitted cannot. A change in role or status (e.g.,
+  promotion, suspension) takes effect for that visitor at the next
+  authenticated request, without requiring explicit sign-out and
+  re-sign-in.
 - **FR-014**: The system MUST store only an irreversible hash of each
   password and MUST NEVER store, display, or log plain-text passwords or
   other secrets.
@@ -274,8 +293,11 @@ and can immediately sign in with the new password but not the old one.
   session concept to support long-lived sign-in.
 - A single device's sign-out ends only that session in v1; global "sign
   out everywhere" is a reasonable future enhancement but not required here.
-- Password-strength rules follow industry-standard minimums for a web
-  forum (a reasonable minimum length and not appearing in known breached
-  lists where feasible); exact thresholds are a planning detail.
+- Password strength follows NIST 800-63B-style rules: minimum 8
+  characters, no required character class, no arbitrary upper cap, and
+  a breached-list check where feasible (clarified 2026-07-15; see
+  Clarifications section). Email is normalized to lowercase before
+  storage and lookup so `Alice@…` and `alice@…` are the same account
+  (case-insensitive uniqueness).
 - Rate limiting on sign-in and registration uses standard, project-level
   throttling applied to costly/abuse-prone endpoints per the constitution.
