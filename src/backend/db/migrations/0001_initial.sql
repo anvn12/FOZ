@@ -1,5 +1,5 @@
 CREATE TABLE user_accounts (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text NOT NULL UNIQUE,
   password_hash text NOT NULL,
   role text NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE user_accounts (
 );
 
 CREATE TABLE profiles (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_account_id uuid NOT NULL UNIQUE REFERENCES user_accounts(id) ON DELETE CASCADE,
   display_name text NOT NULL,
   bio text,
@@ -21,7 +21,7 @@ CREATE TABLE profiles (
 );
 
 CREATE TABLE posts (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   author_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE RESTRICT,
   body text NOT NULL,
   visibility_state text NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE comments (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   post_id uuid NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   author_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE RESTRICT,
   parent_comment_id uuid REFERENCES comments(id) ON DELETE CASCADE,
@@ -44,7 +44,7 @@ CREATE TABLE comments (
 );
 
 CREATE TABLE reactions (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_account_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE CASCADE,
   target_type text NOT NULL,
   target_id uuid NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE reactions (
 );
 
 CREATE TABLE role_history (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_account_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE CASCADE,
   previous_role text NOT NULL,
   new_role text NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE role_history (
 );
 
 CREATE TABLE reports (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   reporter_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE CASCADE,
   subject_type text NOT NULL,
   subject_id uuid NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE reports (
 );
 
 CREATE TABLE moderation_reviews (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id uuid NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
   reviewed_by uuid NOT NULL REFERENCES user_accounts(id) ON DELETE RESTRICT,
   outcome text NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE moderation_reviews (
 );
 
 CREATE TABLE post_summaries (
-  id uuid PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   post_id uuid NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   summary_text text NOT NULL,
   provider_name text NOT NULL,

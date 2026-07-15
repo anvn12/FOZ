@@ -96,15 +96,15 @@ email and password returns 201 with an `AuthResponse` and a
 
 > Write tests FIRST; ensure they FAIL before implementation.
 
-- [ ] T030 [P] [US1] Tier-2 integration test in `src/backend/__tests__/integration/auth.register.test.ts`: happy path (201, body, cookie, DB row counts, response time under 2000ms for SC-001), duplicate email (409), weak password (422), invalid email (422), generic error envelope shape, and `Set-Cookie` attributes (`httpOnly`, `sameSite: 'lax'`, `path: '/auth'`, `secure` only when `NODE_ENV === 'production'`)
-- [ ] T031 [P] [US1] Tier-1 test in `src/backend/api/auth/auth.service.test.ts` (mocked repo): `register()` returns AuthResponse, issues a refresh session, throws on duplicate email
+- [x] T030 [P] [US1] Tier-2 integration test in `src/backend/__tests__/integration/auth.register.test.ts`: happy path (201, body, cookie, DB row counts, response time under 2000ms for SC-001), duplicate email (409), weak password (422), invalid email (422), generic error envelope shape, and `Set-Cookie` attributes (`httpOnly`, `sameSite: 'lax'`, `path: '/auth'`, `secure` only when `NODE_ENV === 'production'`)
+- [x] T031 [P] [US1] Tier-1 test in `src/backend/api/auth/auth.service.test.ts` (mocked repo): `register()` returns AuthResponse, issues a refresh session, throws on duplicate email
 
 ### Implementation for User Story 1
 
-- [ ] T032 [US1] Implement `register()` in `src/backend/api/auth/auth.service.ts` (depends on T020 skeleton): hash password, call `createUserWithProfile`, create refresh session, sign access, return `AuthResponse` + refresh cookie payload; surfaces a `DuplicateEmailError` mapped to 409 by the central error handler
-- [ ] T033 [US1] Wire `POST /auth/register` in `src/backend/api/auth/routes.ts` (depends on T021, T032): `requireGuest`, `authRateLimiter`, `validateBody(RegisterRequest)`, delegate to `auth.service.register()`, set the `refresh_token` cookie (http-only, `SameSite=Lax`, `Path=/auth`, `Secure` per env)
-- [ ] T034 [P] [US1] Build `src/frontend/src/pages/RegisterPage.tsx` with `react-hook-form` + `zodResolver(RegisterRequest)`; on success call `useRegister` and `setSession`; toast on error
-- [ ] T035 [US1] Add `src/frontend/src/router.tsx` (or extend App.tsx) so the `/register` route renders `RegisterPage` and the successful register navigates to `/` (gated placeholder)
+- [x] T032 [US1] Implement `register()` in `src/backend/api/auth/auth.service.ts` (depends on T020 skeleton): hash password, call `createUserWithProfile`, create refresh session, sign access, return `AuthResponse` + refresh cookie payload; surfaces a `DuplicateEmailError` mapped to 409 by the central error handler
+- [x] T033 [US1] Wire `POST /auth/register` in `src/backend/api/auth/routes.ts` (depends on T021, T032): `requireGuest`, `authRateLimiter`, `validateBody(RegisterRequest)`, delegate to `auth.service.register()`, set the `refresh_token` cookie (http-only, `SameSite=Lax`, `Path=/auth`, `Secure` per env)
+- [x] T034 [P] [US1] Build `src/frontend/src/pages/RegisterPage.tsx` with `react-hook-form` + `zodResolver(RegisterRequest)`; on success call `useRegister` and `setSession`; toast on error
+- [x] T035 [US1] Add `src/frontend/src/router.tsx` (or extend App.tsx) so the `/register` route renders `RegisterPage` and the successful register navigates to `/` (gated placeholder)
 
 **Checkpoint**: At this point, User Story 1 is fully functional: a brand-new
 visitor can register, receive a session, and the FE shows them as signed in.
