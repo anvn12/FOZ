@@ -6,12 +6,14 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: [
-      "src/backend/__tests__/unit/**/*.test.ts",
+      "src/backend/lib/**/*.test.ts",
+      "src/backend/api/**/*.test.ts",
       "src/backend/__tests__/integration/**/*.test.ts",
+      "src/shared/**/*.test.ts",
     ],
     setupFiles: ["src/backend/__tests__/setup.ts"],
+    fileParallelism: false,
     pool: "forks",
-    poolOptions: { forks: { singleFork: true } },
     testTimeout: 5000,
   },
   resolve: {

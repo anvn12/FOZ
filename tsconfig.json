@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2023"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
@@ -16,7 +16,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "isolatedModules": true,
+    "jsx": "react-jsx",
     "types": ["node", "vitest/globals"],
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "#shared/*": ["src/shared/*"],
