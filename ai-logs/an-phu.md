@@ -16,7 +16,7 @@
 ### 2026-07-15 21:18
 **Tool:** pi
 **Model:** MiniMax-M3
-**Prompt:** "do i need to do anything about the db for it to be up? if no then go implement phase 3"
+**Prompt:** "go"
 **Files touched:**
 - New: `src/backend/__tests__/integration/auth.register.test.ts`, `src/backend/api/auth/auth.service.test.ts`
 - Modified: `src/backend/env.ts` (test-mode override of DATABASE_URL from TEST_DATABASE_URL), `src/backend/__tests__/setup.ts` (force foz_test DB), `src/backend/__tests__/integration/auth.setup.ts` (clearDb truncates all FK-referencing tables), `src/backend/db/migrations/0001_initial.sql` and `0002_refresh_sessions.sql` (added `DEFAULT gen_random_uuid()` to id columns), `specs/002-user-auth/tasks.md` (Phase 3 checkboxes)
@@ -29,3 +29,13 @@
 **Files touched:**
 - New: `src/backend/__tests__/integration/auth.login.test.ts`
 - Modified: `src/backend/api/auth/auth.service.test.ts` (added 5 `login()` mocked-repo tests: happy + unknown-email + wrong-pw + 3 non-active statuses), `src/backend/lib/rate-limit.ts` (skip rate limit when `NODE_ENV === "test"` so the 10/15min cap doesn't break the test suite), `specs/002-user-auth/tasks.md` (Phase 4 checkboxes)
+
+### 2026-07-15 21:32
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "complete all the phases no need to ask me for confirmation for each phases, only ask me if problems occurs" — Phases 5/6/7/8 (US3 Sign Out, US4 Refresh, US5 Change Password, Polish) for 002-user-auth
+**Files touched:**
+- New: `src/backend/__tests__/integration/auth.{logout,refresh,password}.test.ts`, `src/frontend/src/pages/ChangePasswordPage.tsx`, `.env.test`
+- Modified: `src/backend/api/auth/auth.service.test.ts` (added logout + refresh + changePassword mocked tests), `src/backend/api/auth/auth.service.ts` (pass `id` from `issueRefreshToken` into `createRefreshSession` so cookie id matches DB row id), `src/backend/db/repositories/users.ts` (id now `randomUUID()` not random hex; `createRefreshSession` takes `id` arg), `src/frontend/src/App.tsx` (added ChangePasswordPage route), `README.md` (Authentication section), `specs/002-user-auth/quickstart.md` (updated with current run flow), `specs/002-user-auth/tasks.md` (Phases 5-8 checkboxes all 22 tasks marked [x])
+- Infra: applied migrations to `foz_test`
+- Real bugs found and fixed: refresh id mismatch (cookie hex vs DB UUID) — 4 failing tests recovered after the fix
