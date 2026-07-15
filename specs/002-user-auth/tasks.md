@@ -124,14 +124,14 @@ unknown email returns the same 401 as wrong password (no enumeration).
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T036 [P] [US2] Tier-2 integration test in `src/backend/__tests__/integration/auth.login.test.ts`: happy path (response time under 2000ms for SC-002), wrong password (401 + generic message), unknown email (401 + same message), `suspended` status (403), `banned` status (403), `pending` status treated as not-active (403), and `Set-Cookie` attributes match register
-- [ ] T037 [P] [US2] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `login()` throws `InvalidCredentialsError` for both wrong-password and unknown-email; throws `AccountNotActiveError` for non-`active`; success path issues a refresh session and access token
+- [x] T036 [P] [US2] Tier-2 integration test in `src/backend/__tests__/integration/auth.login.test.ts`: happy path (response time under 2000ms for SC-002), wrong password (401 + generic message), unknown email (401 + same message), `suspended` status (403), `banned` status (403), `pending` status treated as not-active (403), and `Set-Cookie` attributes match register
+- [x] T037 [P] [US2] Tier-1 test in `src/backend/api/auth/auth.service.test.ts`: `login()` throws `InvalidCredentialsError` for both wrong-password and unknown-email; throws `AccountNotActiveError` for non-`active`; success path issues a refresh session and access token
 
 ### Implementation for User Story 2
 
-- [ ] T038 [US2] Implement `login()` in `src/backend/api/auth/auth.service.ts`: lookup by email, `verifyPassword`, status check (only `active` allowed), create refresh session, sign access, return `AuthResponse` + refresh cookie payload; both lookup-fail and verifyPassword-fail throw the **same** `InvalidCredentialsError` (no enumeration)
-- [ ] T039 [US2] Wire `POST /auth/login` in `src/backend/api/auth/routes.ts`: `requireGuest`, `authRateLimiter`, `validateBody(LoginRequest)`, delegate to `auth.service.login()`, set the `refresh_token` cookie
-- [ ] T040 [P] [US2] Build `src/frontend/src/pages/LoginPage.tsx` mirroring `RegisterPage.tsx` with `LoginRequest`; on success `setSession` and route to `/`
+- [x] T038 [US2] Implement `login()` in `src/backend/api/auth/auth.service.ts`: lookup by email, `verifyPassword`, status check (only `active` allowed), create refresh session, sign access, return `AuthResponse` + refresh cookie payload; both lookup-fail and verifyPassword-fail throw the **same** `InvalidCredentialsError` (no enumeration)
+- [x] T039 [US2] Wire `POST /auth/login` in `src/backend/api/auth/routes.ts`: `requireGuest`, `authRateLimiter`, `validateBody(LoginRequest)`, delegate to `auth.service.login()`, set the `refresh_token` cookie
+- [x] T040 [P] [US2] Build `src/frontend/src/pages/LoginPage.tsx` mirroring `RegisterPage.tsx` with `LoginRequest`; on success `setSession` and route to `/`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 both work; a returning
 member with no session can sign in, and a brand-new visitor can register.
