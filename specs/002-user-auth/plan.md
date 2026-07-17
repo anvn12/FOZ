@@ -26,8 +26,8 @@ rate-limit middleware (e.g. `express-rate-limit`), Vitest. Frontend auth state
 via `zustand` + `@tanstack/react-query`; forms via `react-hook-form`; toasts
 via `react-hot-toast`.
 
-**Storage**: PostgreSQL 16 (existing schema in `backend/db/migrations/0001_initial.sql`
-+ `backend/db/schema/*.ts`). New `refresh_sessions` table via a new Drizzle
+**Storage**: PostgreSQL 16 (existing schema in `src/backend/db/migrations/0001_initial.sql`
++ `src/backend/db/schema/*.ts`). New `refresh_sessions` table via a new Drizzle
 migration.
 
 **Testing**: Vitest — tier-1 pure unit tests (password hash/compare, token
@@ -62,7 +62,7 @@ guest-vs-member at the API. No E2E tests.
   and calls the API. ✅
 - **II. Enforced Folder Structure** — All new files live under
   `src/backend/` (routes, services, repository, middleware), `src/shared/`
-  (DTOs), and `src/frontend/` (auth store, pages). `backend/db/schema/*.ts`
+  (DTOs), and `src/frontend/` (auth store, pages). `src/backend/db/schema/*.ts`
   Drizzle objects replace the interface-only files in place. ✅
 - **III. Clean Code & Reusability** — Backend errors flow through the central
   Express error middleware; no inline swallowing. Repository functions are
@@ -142,8 +142,8 @@ src/
             └── LoginPage.tsx
 ```
 
-> Note: the existing repo currently has `backend/db/schema/*.ts` as TS
-> interfaces and a hand-written `backend/db/migrations/0001_initial.sql`.
+> Note: the existing repo currently has `src/backend/db/schema/*.ts` as TS
+> interfaces and a hand-written `src/backend/db/migrations/0001_initial.sql`.
 > This feature promotes the schema files to real Drizzle `pgTable` objects
 > and uses `drizzle-kit` for the **new** `refresh_sessions` migration; the
 > existing `0001_initial.sql` is treated as the baseline (imported as a
@@ -158,7 +158,7 @@ this feature contributes; auth routes/services/middleware sit on the
 
 See [research.md](./research.md) for full findings. Key decisions:
 
-- Promote `backend/db/schema/users.ts` from interface-only to real Drizzle
+- Promote `src/backend/db/schema/users.ts` from interface-only to real Drizzle
   `pgTable` objects aligned with `0001_initial.sql`, and add a new
   `refresh_sessions` table for revocable refresh tokens.
 - JWT access (15min, client memory) + refresh (7day, http-only

@@ -1,7 +1,7 @@
 # Data Model: User Authentication
 
 This feature reuses the existing entities defined in
-`backend/db/schema/users.ts` / `roles.ts` and the shared enums in
+`src/backend/db/schema/users.ts` / `roles.ts` and the shared enums in
 `shared/schema-enums.ts`, and introduces **one new entity**: `RefreshSession`.
 Existing column names follow `0001_initial.sql` (snake_case DB columns mapped
 to the Drizzle schema).

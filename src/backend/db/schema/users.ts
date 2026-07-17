@@ -6,7 +6,7 @@ import {
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { accountRoles, accountStatuses } from "../../../../shared/schema-enums.js";
+import { accountRoles, accountStatuses } from "#shared/schema-enums";
 
 export const userAccounts = pgTable(
   "user_accounts",

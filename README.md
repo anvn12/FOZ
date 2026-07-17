@@ -106,15 +106,19 @@ The target audience is general **web** users seeking online community spaces. Th
 ```Plaintext
 FOZ/
 ├── src/                            # Source code
-│   ├── frontend/ 
-│   └── backend/
+│   ├── frontend/                   # Vite + React
+│   ├── backend/                    # Express + Drizzle
+│   └── shared/                     # Zod schemas + shared enums (source of truth)
 ├── docs/                           # Documentation
-│   ├── meeting-minutes/
-│   ├── .md                         # General documentation (e.g., project proposal, team contract)
 │   ├── PA/                         # Project Assignments
-│   │   └── PA1/
-│   │       └── .md
-|   └── references/                 # Reference materials (e.g., UI design inspirations)
+│   ├── Techstack/                  # Tech stack rationale (FE + BE)
+│   ├── meeting-minutes/
+│   ├── references/                 # Reference apps/sites the team studied
+│   ├── ui-designs/                 # Visual design references (Figma exports, etc.)
+│   ├── ideas/                      # Design notes / drafts
+│   └── *.md                        # General docs (project proposal, team contract, etc.)
+├── specs/                          # SpecKit specs (one dir per feature)
+├── ai-logs/                        # AI usage logs (one file per team member)
 ├── tests/                          # Test plan, test cases, test reports
 ├── .env.example                    # Template for environment variables
 └── README.md                       # Project documentation
