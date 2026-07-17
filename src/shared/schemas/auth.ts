@@ -49,6 +49,7 @@ export type AuthResponse = z.infer<typeof AuthResponse>;
 
 export const RefreshResponse = z.object({
   accessToken: z.string(),
+  user: AuthResponse.shape.user,
 });
 export type RefreshResponse = z.infer<typeof RefreshResponse>;
 

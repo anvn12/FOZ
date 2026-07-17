@@ -21,10 +21,19 @@ export class ApiError extends Error {
 }
 
 async function call<T>(path: string, init: RequestInit): Promise<T> {
+  // Inject the access token from the store if we have one. Endpoints that
+  // don't need it (register, login, refresh) just ignore the header.
+  const token = useAuthStore.getState().accessToken;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(init.headers as Record<string, string> | undefined),
+  };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
   const res = await fetch(path, {
     ...init,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(init.headers ?? {}) },
+    headers,
   });
   if (!res.ok) {
     const env = (await res.json().catch(() => null)) as ErrorEnvelope | null;

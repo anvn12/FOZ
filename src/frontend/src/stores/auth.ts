@@ -36,8 +36,8 @@ export async function silentRefresh(fetchImpl: typeof fetch = fetch): Promise<bo
       useAuthStore.getState().clearSession();
       return false;
     }
-    const data = (await res.json()) as { accessToken: string };
-    useAuthStore.getState().setAccessToken(data.accessToken);
+    const data = (await res.json()) as { accessToken: string; user: AuthUser };
+    useAuthStore.getState().setSession({ user: data.user, accessToken: data.accessToken });
     return true;
   } catch {
     useAuthStore.getState().clearSession();

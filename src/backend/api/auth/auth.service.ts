@@ -11,6 +11,7 @@ import {
   createRefreshSession,
   findValidRefreshSession,
   revokeRefreshSession,
+  toPublicUser,
   type PublicUser,
 } from "#backend/db/repositories/users.js";
 import type { AuthResponse, RefreshResponse } from "#shared/schemas/auth.js";
@@ -155,7 +156,7 @@ export async function refresh(cookie: RefreshCookie): Promise<Session> {
   });
   const accessToken = signAccessToken({ sub: user.id, role: user.role, status: user.status });
   return {
-    auth: { accessToken },
+    auth: { accessToken, user: toPublicUser(user) },
     cookie: {
       name: REFRESH_COOKIE_NAME,
       value: refreshCookiePayload(issued),

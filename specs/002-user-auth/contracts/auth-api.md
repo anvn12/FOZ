@@ -50,7 +50,7 @@ refresh cookie). Called automatically by the frontend auth layer on
 - **Auth**: none (uses the refresh cookie, not the access token).
 - **Rate-limited**: yes.
 - **Request body**: none. Reads the `refresh_token` cookie.
-- **200 OK** body (`RefreshResponse`): `{ accessToken: string }`.
+- **200 OK** body (`RefreshResponse`): `{ accessToken: string, user: { id, email, role, status } }`.
 - **Side effects**: rotates the refresh cookie (old session revoked, new
   session row created).
 - **Errors**:

@@ -29,6 +29,8 @@ describe("POST /auth/refresh (US4)", () => {
     expect(res.status).toBe(200);
     expect(typeof res.body.accessToken).toBe("string");
     expect(res.body.accessToken.length).toBeGreaterThan(0);
+    expect(res.body.user).toMatchObject({ role: "standard", status: "active" });
+    expect(typeof res.body.user.email).toBe("string");
     expectFastResponse(res, 500);
 
     const setCookie = res.headers["set-cookie"];
