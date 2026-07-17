@@ -39,3 +39,14 @@
 - Modified: `src/backend/api/auth/auth.service.test.ts` (added logout + refresh + changePassword mocked tests), `src/backend/api/auth/auth.service.ts` (pass `id` from `issueRefreshToken` into `createRefreshSession` so cookie id matches DB row id), `src/backend/db/repositories/users.ts` (id now `randomUUID()` not random hex; `createRefreshSession` takes `id` arg), `src/frontend/src/App.tsx` (added ChangePasswordPage route), `README.md` (Authentication section), `specs/002-user-auth/quickstart.md` (updated with current run flow), `specs/002-user-auth/tasks.md` (Phases 5-8 checkboxes all 22 tasks marked [x])
 - Infra: applied migrations to `foz_test`
 - Real bugs found and fixed: refresh id mismatch (cookie hex vs DB UUID) — 4 failing tests recovered after the fix
+
+### 2026-07-15 13:04
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "all" — file structure cleanup: consolidate references/, UI designs/, ideas/ into docs/
+**Files touched:**
+- Moved: `references/` → `docs/references/` (36 files, `git mv`)
+- Moved: `UI designs/` → `docs/ui-designs/` (50 files, `git mv` — note: had a space in the name)
+- Moved: `ideas/` → `docs/ideas/` (1 file: `ai-usage-log.md` — a design doc for the AI log skill, not a stale draft as I initially said)
+- Updated: `README.md` "File Structure" tree (added `src/shared/`, `docs/PA/`, `docs/Techstack/`, `docs/ui-designs/`, `docs/ideas/`, `specs/`, `ai-logs/`)
+- Result: 87 files renamed, file history preserved, tsc + 58/58 tests still green

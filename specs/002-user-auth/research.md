@@ -2,9 +2,9 @@
 
 ## Decision 1: Promote the schema files to real Drizzle `pgTable` objects
 
-- **Decision**: Convert `backend/db/schema/*.ts` from interface-only type
+- **Decision**: Convert `src/backend/db/schema/*.ts` from interface-only type
   files into Drizzle `pgTable` definitions that exactly match the existing
-  `backend/db/migrations/0001_initial.sql`, then add the query layer on top.
+  `src/backend/db/migrations/0001_initial.sql`, then add the query layer on top.
 - **Rationale**: The user noted "no query layer yet." The schema files
   today are TS interfaces; they describe the shape but cannot be queried.
   Drizzle is the binding ORM, so the right move is to make the schema files

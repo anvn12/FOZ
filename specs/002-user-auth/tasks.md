@@ -22,7 +22,7 @@ independently testable increment on top of a shared foundational layer
 ## Path Conventions
 
 - **Web app** per constitution: `src/backend/`, `src/frontend/`, `src/shared/`
-- Schema baseline migration stays in place at `backend/db/migrations/0001_initial.sql` (the imported baseline)
+- Schema baseline migration stays in place at `src/backend/db/migrations/0001_initial.sql` (the imported baseline)
 - New Drizzle migrations emit under `src/backend/db/migrations/`
 
 ---
@@ -57,7 +57,7 @@ the data layer, and the shared contracts live here.
 - [x] T010 [P] Create `src/backend/lib/jwt.ts` exporting `signAccessToken({ sub, role, status })` and `verifyAccessToken(token)`; reads `env.JWT_ACCESS_SECRET` and `env.JWT_ACCESS_TTL_MIN`; throws on invalid/expired
 - [x] T011 [P] Create `src/backend/lib/rate-limit.ts` exporting a configured `authRateLimiter` (express-rate-limit, default 5 attempts / 15 min / IP+email composite key for login/register/refresh)
 - [x] T012 Create `src/backend/db/client.ts` exporting the `drizzle()` instance bound to a `postgres(env.DATABASE_URL)` client; expose the raw `db` and the `pg` client for transactions
-- [x] T013 Create `src/backend/db/schema/users.ts` as real Drizzle `pgTable` objects for `user_accounts` and `profiles` (moved from the old `backend/db/schema/users.ts` and converted from interfaces to typed tables; column names mirror `backend/db/migrations/0001_initial.sql`)
+- [x] T013 Create `src/backend/db/schema/users.ts` as real Drizzle `pgTable` objects for `user_accounts` and `profiles` (moved from the old `src/backend/db/schema/users.ts` and converted from interfaces to typed tables; column names mirror `src/backend/db/migrations/0001_initial.sql`)
 - [x] T014 Create `src/backend/db/schema/refresh-sessions.ts` as a Drizzle `pgTable` for `refresh_sessions` with `id`, `userAccountId` (FK→`user_accounts.id` ON DELETE CASCADE, indexed), `tokenHash` (indexed), `expiresAt`, `revokedAt`, `createdAt`, `updatedAt` (see `data-model.md`)
 - [x] T015 Create `src/backend/db/schema/index.ts` re-exporting `users` and `refresh-sessions`; update `drizzle.config.ts` to point at `./src/backend/db/schema/index.ts` and out to `./src/backend/db/migrations`
 - [x] T016 Seed the Drizzle migration snapshot so `0001_initial.sql` is the imported baseline (add a `meta/_journal.json` entry + `meta/0001_snapshot.json` matching the current schema), then run `npx drizzle-kit generate` to emit **only** `0002_refresh_sessions.sql` (and its `meta/0002_*.json`); apply both `0001` and `0002` to the dev DB
