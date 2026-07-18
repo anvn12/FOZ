@@ -68,3 +68,10 @@
 **Prompt:** "both npx drizzle-kti commands returns Invalid input Please specify a 'dbCredentials' param in config..."
 **Files touched:** `drizzle.config.ts` (added `import "dotenv/config"` and `dbCredentials: { url: process.env.DATABASE_URL ?? "..." }` block)
 - Verified: `drizzle-kit check` passes, `drizzle-kit studio` starts and listens on :4983
+
+### 2026-07-15 13:15
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "go edit the readme to guide other devs how to use db GUI"
+**Files touched:** `README.md` — added a "Working with the database" section between Authentication and Introduction (121 lines). Covers: starting the DB, applying migrations, Drizzle Studio (web GUI) with troubleshooting table, psql CLI with a useful-queries cookbook, schema migration workflow.
+- Committed as `7dc04ee docs(readme): add 'Working with the database' dev guide`
