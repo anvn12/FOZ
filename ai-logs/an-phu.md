@@ -61,3 +61,10 @@
 - Modified: `src/backend/db/schema/users.ts` (import now uses `#shared/schema-enums` alias), 5 spec docs (paths updated from `backend/db/` to `src/backend/db/`), `.specify/extensions/git/git-config.yml` (turned off `after_implement` auto-commit), `ai-logs/an-phu.md`
 - Result: tsc clean, 58/58 tests pass, committed as `5a13a5d chore(repo): consolidate to canonical src/ layout`
 - Picked "turn auto-commit off" over "make the message meaningful": static config messages are inherently generic (the script can't know what changed), so the only way to get informative messages is to write them per-commit. Going forward, the assistant will write the commit messages explicitly.
+
+### 2026-07-15 13:11
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "both npx drizzle-kti commands returns Invalid input Please specify a 'dbCredentials' param in config..."
+**Files touched:** `drizzle.config.ts` (added `import "dotenv/config"` and `dbCredentials: { url: process.env.DATABASE_URL ?? "..." }` block)
+- Verified: `drizzle-kit check` passes, `drizzle-kit studio` starts and listens on :4983
