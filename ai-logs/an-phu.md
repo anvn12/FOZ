@@ -61,3 +61,39 @@
 - Modified: `src/backend/db/schema/users.ts` (import now uses `#shared/schema-enums` alias), 5 spec docs (paths updated from `backend/db/` to `src/backend/db/`), `.specify/extensions/git/git-config.yml` (turned off `after_implement` auto-commit), `ai-logs/an-phu.md`
 - Result: tsc clean, 58/58 tests pass, committed as `5a13a5d chore(repo): consolidate to canonical src/ layout`
 - Picked "turn auto-commit off" over "make the message meaningful": static config messages are inherently generic (the script can't know what changed), so the only way to get informative messages is to write them per-commit. Going forward, the assistant will write the commit messages explicitly.
+
+### 2026-07-15 13:11
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "both npx drizzle-kti commands returns Invalid input Please specify a 'dbCredentials' param in config..."
+**Files touched:** `drizzle.config.ts` (added `import "dotenv/config"` and `dbCredentials: { url: process.env.DATABASE_URL ?? "..." }` block)
+- Verified: `drizzle-kit check` passes, `drizzle-kit studio` starts and listens on :4983
+
+### 2026-07-15 13:15
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "go edit the readme to guide other devs how to use db GUI"
+**Files touched:** `README.md` — added a "Working with the database" section between Authentication and Introduction (121 lines). Covers: starting the DB, applying migrations, Drizzle Studio (web GUI) with troubleshooting table, psql CLI with a useful-queries cookbook, schema migration workflow.
+- Committed as `7dc04ee docs(readme): add 'Working with the database' dev guide`
+
+### 2026-07-15 13:25
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "never commit ai-log, change the agents.md or any thign that would make future agents only log but never git commit ai log"
+**Files touched:**
+- `AGENTS.md` — added a new IRON RULE: "NEVER git add or commit anything under ai-logs/." (with a note that finding yourself about to commit one is a bug)
+- `.gitignore` — appended `ai-logs/` so the directory is ignored
+- `ai-logs/{.gitkeep,an-phu.md,shiki.md}` — `git rm -r --cached` to untrack the 3 previously-committed log files; local copies preserved (74 lines and 137 lines of conversation history now live locally only)
+- Committed as `9b7205f chore(repo): untrack ai-logs/ + codify the no-commit rule`
+- This entry itself is NOT committed — per the new rule, future agents will append to the local file only.
+
+### 2026-07-15 13:35
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "no what i mean is, the agent cant git add the ai-log without the user permission, not liek this"
+**Files touched:**
+- `AGENTS.md` — replaced the "NEVER commit" IRON RULE with one that requires explicit user permission before committing the log. The log can be committed if the user asks, but never on the agent's own initiative.
+- `.gitignore` — removed the `ai-logs/` line and its comment (added in the previous turn)
+- `ai-logs/{.gitkeep,an-phu.md,shiki.md}` — force-added back to the index with `git add -f` to restore the tracked state from before `9b7205f`. Without this, the "commit on explicit request" path wouldn't work because the files would stay untracked after the previous untrack.
+- Committed as `53aa73e chore(repo): require user permission before committing ai-logs/`
+- This entry is NOT committed — the new rule says the agent should not commit the log without explicit user permission, and the user has not asked me to commit it.
