@@ -55,6 +55,127 @@ done
 - Email verification and forgotten-password reset are **out of scope** for
   v1 — see `specs/002-user-auth/spec.md` (FR-016).
 
+## Working with the database
+
+The local Postgres runs in Docker as the `foz_db` container. Two databases
+are created in it: `foz_dev` (for the app) and `foz_test` (for the test
+suite). Migrations live as raw SQL files under `src/backend/db/migrations/`
+and are applied manually (no auto-apply on `docker compose up`).
+
+### Start the DB
+
+```sh
+docker compose up -d db
+```
+
+That's it. The DB is reachable on `localhost:5432` with the credentials
+from `.env` (`foz` / `foz` / `foz_dev`).
+
+### Apply the schema (one-time per fresh DB)
+
+```sh
+# Dev DB
+for f in src/backend/db/migrations/*.sql; do
+  docker exec -i foz_db psql -U foz -d foz_dev < "$f"
+done
+
+# Test DB (used by `npx vitest run`)
+docker exec -i foz_db psql -U foz -d postgres -c "CREATE DATABASE foz_test;"
+for f in src/backend/db/migrations/*.sql; do
+  docker exec -i foz_db psql -U foz -d foz_test < "$f"
+done
+```
+
+### Option A — Drizzle Studio (web GUI)
+
+The repo ships with a `drizzle.config.ts` that's already wired up to read
+`DATABASE_URL` from `.env`. To browse the data in a web UI:
+
+```sh
+# 1. in one terminal, start the local Drizzle Kit server
+npx drizzle-kit studio
+
+# 2. in your browser, open the URL it prints
+#    (usually https://local.drizzle.studio/ — same address works)
+```
+
+The browser connects to the local server on `localhost:4983`, which queries
+the DB via the URL in `.env`. You'll see all 10 tables (`user_accounts`,
+`profiles`, `posts`, `comments`, `reactions`, `role_history`, `reports`,
+`moderation_reviews`, `post_summaries`, `refresh_sessions`) with row
+counts, schema, and inline edit support.
+
+**Troubleshooting**
+
+| Symptom | Fix |
+|---|---|
+| "Invalid input: Please specify a 'dbCredentials' param in config" | `drizzle.config.ts` is missing the block — verify the file is the version committed in `fix(drizzle): add dbCredentials to drizzle.config.ts`. |
+| "Connecting to the Drizzle Kit on localhost:4983" hangs | You didn't start the local server in step 1. |
+| "Drizzle Kit: failed to connect to database" | DB isn't running. `docker compose up -d db`, then verify with `docker exec -i foz_db pg_isready -U foz`. |
+| Port 4983 already in use | `npx drizzle-kit studio --port 4984`. |
+
+### Option B — psql (CLI)
+
+For ad-hoc queries, the CLI is faster than opening a browser tab. The
+container has psql installed; exec into it:
+
+```sh
+# interactive shell
+docker exec -it foz_db psql -U foz -d foz_dev
+
+# one-off query
+docker exec -i foz_db psql -U foz -d foz_dev -c "SELECT * FROM user_accounts;"
+```
+
+Useful queries:
+
+```sql
+-- list tables
+\dt
+
+-- describe a table
+\d user_accounts
+
+-- pretty-print wide rows
+\x
+
+-- see all users (without the password hash)
+SELECT id, email, role, status, created_at
+FROM user_accounts
+ORDER BY created_at DESC LIMIT 20;
+
+-- see all active refresh sessions
+SELECT rs.id, u.email, substring(rs.token_hash, 1, 12) AS hash_prefix,
+       rs.expires_at, rs.revoked_at
+FROM refresh_sessions rs
+JOIN user_accounts u ON u.id = rs.user_account_id
+ORDER BY rs.created_at DESC;
+
+-- flip a user to suspended (test the mid-session status re-check on /auth/refresh)
+UPDATE user_accounts
+SET status = 'suspended', updated_at = now()
+WHERE email = '[email protected]';
+
+-- factory reset
+TRUNCATE TABLE refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE;
+```
+
+If you have psql installed locally and prefer not to go through Docker:
+
+```sh
+PGPASSWORD=foz psql -h localhost -U foz -d foz_dev
+```
+
+### Schema migrations
+
+Migrations are plain SQL files in `src/backend/db/migrations/`, applied
+manually. The Drizzle TypeScript schema (`src/backend/db/schema/*.ts`) is
+the source of truth for queries; the SQL is the source of truth for table
+layout. When you change a table, edit both — add a new `000N_*.sql` file
+for the migration, and update the matching `pgTable` in TS. The two
+`.specify/scripts/bash/setup-*.sh` scripts are unrelated; they don't apply
+migrations automatically.
+
 ## Introduction
 
 This project is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
