@@ -141,3 +141,8 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# AI usage logs — local audit trail only, never committed.
+# The skill writes to ai-logs/<user>.md; the file lives outside the
+# repo's history so the conversation record never leaks into a commit.
+ai-logs/
