@@ -9,25 +9,75 @@ forum application.
 
 | Method | Path | Auth | Body | Returns |
 |---|---|---|---|---|
-| `POST` | `/auth/register` | guest | `{ email, password }` | `201` + `AuthResponse` + refresh cookie |
-| `POST` | `/auth/login` | guest | `{ email, password }` | `200` + `AuthResponse` + refresh cookie |
-| `POST` | `/auth/refresh` | none (uses refresh cookie) | — | `200` + `RefreshResponse` + rotated cookie |
-| `POST` | `/auth/logout` | Bearer access | — | `200` + cleared cookie |
-| `PATCH` | `/auth/password` | Bearer access | `{ currentPassword, newPassword }` | `200` |
+| `POST` | `/api/v1/auth/register` | guest | `{ email, password }` | `201` + `AuthResponse` + refresh cookie |
+| `POST` | `/api/v1/auth/login` | guest | `{ email, password }` | `200` + `AuthResponse` + refresh cookie |
+| `POST` | `/api/v1/auth/refresh` | none (uses refresh cookie) | — | `200` + `RefreshResponse` + rotated cookie |
+| `POST` | `/api/v1/auth/logout` | Bearer access | — | `200` + cleared cookie |
+| `PATCH` | `/api/v1/auth/password` | Bearer access | `{ currentPassword, newPassword }` | `200` |
 
-### Environment
+### First-time setup
 
-Copy `.env.example` to `.env` and fill in secrets. For tests, `.env.test` is
-used and `DATABASE_URL` is forced to the test database.
+Prerequisites: Node v24 (see `.nvmrc`; use `nvm use` / `fnm use`) and Docker.
+
+1. Install dependencies:
+   ```sh
+   npm i
+   ```
+
+2. Create `.env` from the template and change `JWT_ACCESS_SECRET`:
+   ```sh
+   cp .env.example .env
+   # edit .env: set JWT_ACCESS_SECRET to a random string of >= 16 chars
+   ```
+   For tests, `.env.test` is used and `DATABASE_URL` is forced to the test
+   database via `TEST_DATABASE_URL`.
+
+3. Start the local Postgres:
+   ```sh
+   docker compose up -d db
+   ```
+
+4. Apply the schema to the dev DB (one-time per fresh DB):
+   ```sh
+   for f in src/backend/db/migrations/*.sql; do
+     docker exec -i foz_db psql -U foz -d foz_dev < "$f"
+   done
+   ```
+
+5. (Optional, for `npx vitest run`) Create and migrate the test DB:
+   ```sh
+   docker exec -i foz_db psql -U foz -d postgres -c "CREATE DATABASE foz_test;"
+   for f in src/backend/db/migrations/*.sql; do
+     docker exec -i foz_db psql -U foz -d foz_test < "$f"
+   done
+   ```
+
+> If `npm run dev:be` prints `Invalid environment configuration` and exits
+> instead of `foz api listening on :4000`, your `.env` is missing or has an
+> invalid value (most often a `JWT_ACCESS_SECRET` shorter than 16 chars).
 
 ### Running locally
 
 ```sh
-docker compose up -d db
-# in another terminal
-npm run dev:be    # backend on :4000
-npm run dev:fe    # frontend on :5173 (proxies /auth to the backend)
+npm run dev:be    # backend on :4000 (prints "foz api listening on :4000")
+npm run dev:fe    # frontend on :5173 (proxies /api/v1/auth to the backend)
 ```
+
+### Adding a new API route
+
+All API endpoints live under `/api/v1`. This prefix is applied once in
+`src/backend/index.ts` via an `apiRouter` mounted with
+`app.use("/api/v1", apiRouter)`. To add a new resource:
+
+1. Create `src/backend/api/<resource>/routes.ts` exporting a `Router()`.
+2. Mount it on `apiRouter` in `src/backend/index.ts` **without** the prefix:
+   ```ts
+   import { userRouter } from "#backend/api/users/routes.js";
+   apiRouter.use("/users", userRouter);   // → /api/v1/users
+   ```
+
+Do not write `/api/v1` manually on sub-routers — it's inherited. Routes that
+must not be versioned (e.g. `/health`) are mounted directly on `app`.
 
 ### Running tests
 
@@ -49,7 +99,7 @@ done
 ### Notes
 
 - JWT access tokens live in client memory only (zustand); the refresh token
-  is an http-only `SameSite=Lax` cookie on `Path=/auth`.
+  is an http-only `SameSite=Lax` cookie on `Path=/api/v1/auth`.
 - The `rate-limit` middleware is a no-op when `NODE_ENV=test` so the test
   suite isn't capped at 10 attempts/15min.
 - Email verification and forgotten-password reset are **out of scope** for
