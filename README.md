@@ -27,6 +27,8 @@ Prerequisites: Node v24 (see `.nvmrc`; use `nvm use` / `fnm use`) and Docker.
 ./setup.bat
 ```
 
+Then, edit `.env` to set `JWT_ACCESS_SECRET` to whatever you prefer (or just use the default).
+
 #### Linux / macOS
 
 ```bash
@@ -34,15 +36,22 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-> If `npm run dev:be` prints `Invalid environment configuration` and exits
-> instead of `foz api listening on :4000`, your `.env` is missing or has an
-> invalid value (most often a `JWT_ACCESS_SECRET` shorter than 16 chars).
+Then, edit `.env` to set `JWT_ACCESS_SECRET` to whatever you prefer (or just use the default).
 
 ### Running locally
 
-```sh
-npm run dev:be    # backend on :4000 (prints "foz api listening on :4000")
-npm run dev:fe    # frontend on :5173 (proxies /api/v1/auth to the backend)
+*Disable the postgres service on your host if it uses port 5432, then run:*
+
+#### Windows
+
+```powershell
+./start.bat
+```
+#### Linux / macOS
+
+```bash
+chmod +x start.sh
+./start.sh
 ```
 
 ### Adding a new API route
