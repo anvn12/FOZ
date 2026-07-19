@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 export async function silentRefresh(fetchImpl: typeof fetch = fetch): Promise<boolean> {
   useAuthStore.getState().setRefreshing();
   try {
-    const res = await fetchImpl("/auth/refresh", { method: "POST", credentials: "include" });
+    const res = await fetchImpl("/api/v1/auth/refresh", { method: "POST", credentials: "include" });
     if (!res.ok) {
       useAuthStore.getState().clearSession();
       return false;

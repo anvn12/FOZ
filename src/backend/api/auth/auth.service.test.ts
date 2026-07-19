@@ -96,7 +96,7 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
     expect(session.cookie.value).toBe("id-123.secret-456");
     expect(session.cookie.options.httpOnly).toBe(true);
     expect(session.cookie.options.sameSite).toBe("lax");
-    expect(session.cookie.options.path).toBe("/auth");
+    expect(session.cookie.options.path).toBe("/api/v1/auth");
   });
 
   it("throws DuplicateEmailError when the email is already taken", async () => {

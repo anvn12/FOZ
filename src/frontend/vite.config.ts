@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/auth": "http://localhost:4000",
+      "/api/v1/auth": "http://localhost:4000", 
       "/health": "http://localhost:4000",
     },
   },
