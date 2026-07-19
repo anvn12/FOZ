@@ -33,6 +33,9 @@ Prerequisites: Node v24 (see `.nvmrc`; use `nvm use` / `fnm use`) and Docker.
    database via `TEST_DATABASE_URL`.
 
 3. Start the local Postgres:
+
+   *Disable the postgres service on your host if it's running, then run:*
+   
    ```sh
    docker compose up -d db
    ```
