@@ -1,4 +1,4 @@
-import express, { type Express, type NextFunction, type Request, type Response } from "express";
+import express, { Router, type Express, type NextFunction, type Request, type Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ZodError } from "zod";
@@ -18,8 +18,13 @@ export function createApp(): Express {
     }),
   );
 
-  app.get("/health", (_req, res) => res.status(200).json({ ok: true }));
-  app.use("/auth", authRouter);
+  // Mount all API routes under /api/v1. Add new sub-routers here — no need
+  // to write the prefix on each one.
+  const apiRouter = Router();
+  apiRouter.use("/auth", authRouter);
+  app.use("/api/v1", apiRouter);
+
+  app.get("api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND", message: "Not found" } });

@@ -65,7 +65,7 @@ export function refreshCookieOptions() {
     httpOnly: true,
     sameSite: "lax" as const,
     secure: env.COOKIE_SECURE,
-    path: "/auth",
+    path: "/api/v1/auth",
     maxAge: env.REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000,
   };
 }
@@ -75,7 +75,7 @@ export function clearRefreshCookieOptions() {
     httpOnly: true,
     sameSite: "lax" as const,
     secure: env.COOKIE_SECURE,
-    path: "/auth",
+    path: "/api/v1/auth",
     maxAge: 0,
   };
 }

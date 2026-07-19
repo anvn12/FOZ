@@ -48,29 +48,29 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
 }
 
 export function register(input: RegisterRequest) {
-  return call<AuthResponse>("/auth/register", {
+  return call<AuthResponse>("/api/v1/auth/register", {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
 export function login(input: LoginRequest) {
-  return call<AuthResponse>("/auth/login", {
+  return call<AuthResponse>("/api/v1/auth/login", {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
 export function logout() {
-  return call<{ ok: true }>("/auth/logout", { method: "POST" });
+  return call<{ ok: true }>("/api/v1/auth/logout", { method: "POST" });
 }
 
 export function refresh() {
-  return call<RefreshResponse>("/auth/refresh", { method: "POST" });
+  return call<RefreshResponse>("/api/v1/auth/refresh", { method: "POST" });
 }
 
 export function changePassword(input: ChangePasswordRequest) {
-  return call<{ ok: true }>("/auth/password", {
+  return call<{ ok: true }>("/api/v1/auth/password", {
     method: "PATCH",
     body: JSON.stringify(input),
   });

@@ -10,7 +10,7 @@ async function seedUser(status: "active" | "suspended" | "banned" | "pending" = 
   const email = uniqueEmail();
   const password = uniquePassword();
   // Register first to get a properly hashed password.
-  const res = await getAgent().post("/auth/register").send({ email, password });
+  const res = await getAgent().post("/api/v1/auth/register").send({ email, password });
   expect(res.status).toBe(201);
   // Then flip the status if needed.
   if (status !== "active") {
@@ -19,7 +19,7 @@ async function seedUser(status: "active" | "suspended" | "banned" | "pending" = 
   return { email, password };
 }
 
-describe("POST /auth/login (US2)", () => {
+describe("POST /api/v1/auth/login (US2)", () => {
   beforeEach(async () => {
     await clearDb();
   });
@@ -27,7 +27,7 @@ describe("POST /auth/login (US2)", () => {
   it("happy path: 200 + cookie + accessToken, <2000ms, <500ms", async () => {
     const { email, password } = await seedUser("active");
     const t0 = Date.now();
-    const res = await getAgent().post("/auth/login").send({ email, password });
+    const res = await getAgent().post("/api/v1/auth/login").send({ email, password });
     const elapsed = Date.now() - t0;
 
     expect(res.status).toBe(200);
@@ -42,12 +42,12 @@ describe("POST /auth/login (US2)", () => {
     expect(raw).toMatch(/refresh_token=/);
     expect(raw).toMatch(/HttpOnly/i);
     expect(raw).toMatch(/SameSite=Lax/i);
-    expect(raw).toMatch(/Path=\/auth/i);
+    expect(raw).toMatch(/Path=\/api\/v1\/auth/i);
   });
 
   it("wrong password returns 401 with a single generic message (no field disclosure)", async () => {
     const { email } = await seedUser("active");
-    const res = await getAgent().post("/auth/login").send({ email, password: "wrong-password-1" });
+    const res = await getAgent().post("/api/v1/auth/login").send({ email, password: "wrong-password-1" });
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe("INVALID_CREDENTIALS");
     expect(res.body.error.message).toBe("Invalid email or password");
@@ -57,7 +57,7 @@ describe("POST /auth/login (US2)", () => {
 
   it("unknown email returns 401 with the same generic message (no enumeration)", async () => {
     const res = await getAgent()
-      .post("/auth/login")
+      .post("/api/v1/auth/login")
       .send({ email: "nobody_" + Date.now() + "@nowhere.io", password: "anypassword1" });
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe("INVALID_CREDENTIALS");
@@ -68,7 +68,7 @@ describe("POST /auth/login (US2)", () => {
     "non-active status (%s) returns 403 with 'not currently available'",
     async (status) => {
       const { email, password } = await seedUser(status);
-      const res = await getAgent().post("/auth/login").send({ email, password });
+      const res = await getAgent().post("/api/v1/auth/login").send({ email, password });
       expect(res.status).toBe(403);
       expect(res.body.error.code).toBe("ACCOUNT_NOT_ACTIVE");
       expect(res.body.error.message).toBe("Your account is not currently available");

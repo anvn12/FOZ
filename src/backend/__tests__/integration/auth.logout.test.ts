@@ -5,7 +5,7 @@ import { uniqueEmail, uniquePassword } from "../fixtures/users.js";
 async function registerAndGetCookie(): Promise<{ accessToken: string; refreshCookie: string }> {
   const email = uniqueEmail();
   const password = uniquePassword();
-  const res = await getAgent().post("/auth/register").send({ email, password });
+  const res = await getAgent().post("/api/v1/auth/register").send({ email, password });
   expect(res.status).toBe(201);
   const cookie = (res.headers["set-cookie"] ?? []) as string | string[];
   const refreshCookie: string = Array.isArray(cookie)
@@ -17,7 +17,7 @@ async function registerAndGetCookie(): Promise<{ accessToken: string; refreshCoo
   };
 }
 
-describe("POST /auth/logout (US3)", () => {
+describe("POST /api/v1/auth/logout (US3)", () => {
   beforeEach(async () => {
     await clearDb();
   });
@@ -25,7 +25,7 @@ describe("POST /auth/logout (US3)", () => {
   it("signed-in logout returns 200, clears the cookie, and revokes the refresh session", async () => {
     const { accessToken, refreshCookie } = await registerAndGetCookie();
     const res = await getAgent()
-      .post("/auth/logout")
+      .post("/api/v1/auth/logout")
       .set("Authorization", `Bearer ${accessToken}`)
       .set("Cookie", refreshCookie);
 
@@ -42,19 +42,19 @@ describe("POST /auth/logout (US3)", () => {
   it("a refresh attempt with the revoked cookie returns 401", async () => {
     const { accessToken, refreshCookie } = await registerAndGetCookie();
     const logoutRes = await getAgent()
-      .post("/auth/logout")
+      .post("/api/v1/auth/logout")
       .set("Authorization", `Bearer ${accessToken}`)
       .set("Cookie", refreshCookie);
     expect(logoutRes.status).toBe(200);
 
     const refreshRes = await getAgent()
-      .post("/auth/refresh")
+      .post("/api/v1/auth/refresh")
       .set("Cookie", refreshCookie);
     expect(refreshRes.status).toBe(401);
   });
 
   it("logout without requireAuth returns 401", async () => {
-    const res = await getAgent().post("/auth/logout").send({});
+    const res = await getAgent().post("/api/v1/auth/logout").send({});
     expect(res.status).toBe(401);
   });
 });
