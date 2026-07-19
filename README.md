@@ -19,41 +19,20 @@ forum application.
 
 Prerequisites: Node v24 (see `.nvmrc`; use `nvm use` / `fnm use`) and Docker.
 
-1. Install dependencies:
-   ```sh
-   npm i
-   ```
+*Disable the postgres service on your host if it uses port 5432, then run:*
 
-2. Create `.env` from the template and change `JWT_ACCESS_SECRET`:
-   ```sh
-   cp .env.example .env
-   # edit .env: set JWT_ACCESS_SECRET to a random string of >= 16 chars
-   ```
-   For tests, `.env.test` is used and `DATABASE_URL` is forced to the test
-   database via `TEST_DATABASE_URL`.
+#### Windows
 
-3. Start the local Postgres:
+```powershell
+./setup.bat
+```
 
-   *Disable the postgres service on your host if it's running, then run:*
-   
-   ```sh
-   docker compose up -d db
-   ```
+#### Linux / macOS
 
-4. Apply the schema to the dev DB (one-time per fresh DB):
-   ```sh
-   for f in src/backend/db/migrations/*.sql; do
-     docker exec -i foz_db psql -U foz -d foz_dev < "$f"
-   done
-   ```
-
-5. (Optional, for `npx vitest run`) Create and migrate the test DB:
-   ```sh
-   docker exec -i foz_db psql -U foz -d postgres -c "CREATE DATABASE foz_test;"
-   for f in src/backend/db/migrations/*.sql; do
-     docker exec -i foz_db psql -U foz -d foz_test < "$f"
-   done
-   ```
+```bash
+chmod +x setup.sh
+./setup.sh
+```
 
 > If `npm run dev:be` prints `Invalid environment configuration` and exits
 > instead of `foz api listening on :4000`, your `.env` is missing or has an
