@@ -6,11 +6,12 @@ import { ZodError } from "zod";
 import { env } from "#backend/env.js";
 import { authRouter } from "#backend/api/auth/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
+import { profileRouter } from "#backend/api/profile/routes.js";
 
 export function createApp(): Express {
   const app = express();
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "32kb" }));
+  app.use(express.json({ limit: "4mb" }));
   app.use(cookieParser());
   app.use(
     cors({
@@ -23,6 +24,7 @@ export function createApp(): Express {
   // to write the prefix on each one.
   const apiRouter = Router();
   apiRouter.use("/auth", authRouter);
+  apiRouter.use("/profiles", profileRouter);
   app.use("/api/v1", apiRouter);
 
   app.get("api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
@@ -35,6 +37,14 @@ export function createApp(): Express {
   // thrown errors into HTTP responses; services throw typed errors, this
   // maps them. Add new mapping arms as new AuthError subclasses appear.
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    if (typeof err === "object" && err !== null && "status" in err && err.status === 413) {
+      return res.status(413).json({
+        error: {
+          code: "PAYLOAD_TOO_LARGE",
+          message: "Request payload exceeds size limit (max 2MB for avatar)",
+        },
+      });
+    }
     if (err instanceof ZodError) {
       const fields: Record<string, string> = {};
       for (const issue of err.issues) {
