@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * Centered content stream shell shared by the auth pages.
@@ -16,16 +17,17 @@ export function AuthShell({
   );
 }
 
-/** FOZ wordmark — monochrome, used where the design reference places a logo. */
+/** FOZ wordmark — monochrome, links home. Used where the design reference places a logo. */
 export function FozLogo({ className = "" }: { className?: string }) {
   return (
-    <div
-      className={`flex select-none items-center justify-center ${className}`}
-      aria-label="FOZ"
+    <Link
+      to="/"
+      aria-label="FOZ — back to home"
+      className={`flex select-none items-center justify-center transition-opacity hover:opacity-70 ${className}`}
     >
       <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-[-0.06em] md:font-headline-lg md:text-headline-lg">
         FOZ
       </span>
-    </div>
+    </Link>
   );
 }
