@@ -31,4 +31,4 @@
 
 ## Notes
 
-- Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`
+- Validated after the scope refinement: post creation, post deletion, media attachments, and chained posts are explicitly owned by feature 005 and excluded here. All checklist items pass; the specification is ready for `/speckit.plan`.
