@@ -7,7 +7,7 @@
 
 ### 2026-07-15 21:11
 **Tool:** pi  
-**Model:** MiniMax-M3  
+**Model:** glm 5.2  
 **Prompt:** "go implement the next phase" — Phase 2 (Foundational) for 002-user-auth  
 **Files touched:**
 - New: `src/backend/env.ts`, `src/backend/lib/{password,jwt,rate-limit}.ts`, `src/backend/db/client.ts`, `src/backend/db/schema/{users,refresh-sessions,index}.ts`, `src/backend/db/migrations/0002_refresh_sessions.sql`, `src/backend/db/migrations/meta/_journal.json`, `src/shared/schemas/auth.ts`, `src/backend/api/auth/{middleware,auth.service,routes}.ts`, `src/backend/index.ts`, `src/frontend/src/stores/auth.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/{index.html,vite.config.ts,tailwind.config.js,postcss.config.js}`, `src/frontend/src/{main,App}.tsx`, `src/frontend/src/index.css`, `src/frontend/src/vite-env.d.ts`, `src/frontend/src/pages/{LoginPage,RegisterPage}.tsx`, `src/backend/__tests__/{setup.ts,fixtures/users.ts,integration/auth.setup.ts,integration/auth.gating.test.ts}`, `src/backend/lib/{password,jwt}.test.ts`, `src/shared/schemas/auth.test.ts`
@@ -84,3 +84,18 @@
 - TDD red phase for Search & Discovery (Vision §5.4). Endpoint: `GET /search?q=&type=posts|users|all`. Guest-accessible, posts match `body` (case-insensitive substring, exclude `lifecycle_state!='active'` & `visibility_state='hidden'`), users match `display_name` only (exclude `status!='active'`), cursor pagination `{items, nextCursor}`, <500ms (Vision §6 NFR). 12 tests, all fail with 404 as expected (no implementation yet).
 
 **Files touched:** `src/backend/__tests__/integration/search.test.ts` (new)
+
+### 2026-07-20 11:35
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "use the code, designs in /home/shiki/FOZ/docs/ui-designs/authentication to implement in /home/shiki/FOZ/src/frontend"
+**Files touched:** `src/frontend/index.html`, `src/frontend/src/index.css`, `src/frontend/src/App.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/pages/ChangePasswordPage.tsx`, `src/frontend/src/components/AuthShell.tsx` (new), `src/frontend/src/components/Field.tsx` (new), `src/frontend/src/components/PasswordInput.tsx` (new), `src/frontend/src/components/LogoutDialog.tsx` (new)
+- Implemented FOZ design system (Strict Minimalism / monochrome, Inter, tonal layering) as a Tailwind v4 `@theme` (colors, type scale with line-height/tracking/weight, container + spacing tokens). Rebuilt auth UIs from the design refs, wired to the existing email/password API: login (centered shell, password toggle), register (security-details aesthetic + client-only confirm-password refine, stripped before API call), change-password, and a logout confirmation modal. Redesigned App home with a top app bar + branded landing/state. Skipped design-only fields/flows with no API backing (username/name/bio/link, avatar upload, Instagram import, forgot-password link, 2-step profile wizard) — YAGNI.
+- Verified: `tsc --noEmit` clean, `vite build` succeeds; checked generated CSS contains the custom tokens/utilities.
+
+### 2026-07-20 11:42
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "add a \"back\" button or make the word FOZ takes you to the home page in the sign in the register and login page"
+**Files touched:** `src/frontend/src/components/AuthShell.tsx` (FozLogo now renders as a Link to "/" with hover dim; touches login, register, change-password via shared component)
+- Verified: `tsc --noEmit` clean, `vite build` green.
