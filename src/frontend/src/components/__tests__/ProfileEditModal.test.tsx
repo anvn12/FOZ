@@ -76,7 +76,7 @@ describe("ProfileEditModal Component", () => {
           displayName: "Alice Updated",
           bio: "Initial bio",
           location: "Oakland",
-          website: "alice.com",
+          website: "https://alice.com",
         })
       );
     });
