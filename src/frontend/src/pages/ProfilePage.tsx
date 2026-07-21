@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useProfile } from "#frontend/api/profile";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ProfileEditModal } from "#frontend/components/ProfileEditModal.js";
@@ -49,6 +49,14 @@ export function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
+      {/* Back button */}
+      <div className="mb-6">
+        <Link to="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-950 transition font-semibold text-sm">
+          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
       {/* Header Profile Section */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 pb-8 border-b border-zinc-100">
         <div className="flex-1 min-w-0 space-y-3">

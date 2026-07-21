@@ -4,7 +4,6 @@ import { useAuthStore } from "./stores/auth";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ChangePasswordPage } from "./pages/ChangePasswordPage";
-import { useLogout } from "./api/auth";
 import { ProfilePage } from "./pages/ProfilePage";
 import { useProfile } from "./api/profile";
 
@@ -30,36 +29,6 @@ export function App() {
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <header className="mb-6 flex items-center justify-between border-b border-zinc-100 pb-4">
-        <Link to="/" className="text-xl font-bold tracking-tight text-zinc-950">
-          FOZ
-        </Link>
-        {user ? (
-          <div className="flex items-center gap-4">
-            <Link to={`/profiles/${user.id}`} className="flex items-center gap-2 text-zinc-700 hover:text-zinc-950 font-medium">
-              <ProfileNavBarAvatar userId={user.id} />
-              <span>Profile</span>
-            </Link>
-            <button
-              type="button"
-              onClick={() => logout.mutate()}
-              className="rounded border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-100 font-semibold cursor-pointer"
-            >
-              Sign out
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-3 text-sm">
-            <Link to="/login" className="text-zinc-700 hover:underline">
-              Sign in
-            </Link>
-            <Link to="/register" className="text-zinc-700 hover:underline">
-              Create account
-            </Link>
-          </div>
-        )}
-      </header>
     <div className="min-h-screen bg-surface-container-lowest text-on-background">
       <Routes>
         <Route
@@ -100,14 +69,23 @@ function Home({
           FOZ
         </Link>
         {user ? (
-          <button
-            type="button"
-            onClick={onAccount}
-            aria-label="Account"
-            className="text-primary transition-opacity hover:opacity-70"
-          >
-            <span className="material-symbols-outlined">account_circle</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              to={`/profiles/${user.id}`}
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:opacity-85 transition"
+              aria-label="Profile"
+            >
+              <ProfileNavBarAvatar userId={user.id} />
+            </Link>
+            <button
+              type="button"
+              onClick={onAccount}
+              aria-label="Account"
+              className="text-primary transition-opacity hover:opacity-70"
+            >
+              <span className="material-symbols-outlined">account_circle</span>
+            </button>
+          </div>
         ) : (
           <Link to="/login" className="text-primary transition-opacity hover:opacity-70">
             <span className="material-symbols-outlined">account_circle</span>
@@ -125,6 +103,13 @@ function Home({
               Signed in as {user.email}.
             </p>
             <div className="flex flex-col gap-3">
+              <Link
+                to={`/profiles/${user.id}`}
+                className="flex items-center justify-between rounded-xl border border-outline-variant px-4 py-4 text-primary transition-colors hover:bg-surface-container-low"
+              >
+                <span className="font-label-md text-label-md">My profile</span>
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              </Link>
               <Link
                 to="/change-password"
                 className="flex items-center justify-between rounded-xl border border-outline-variant px-4 py-4 text-primary transition-colors hover:bg-surface-container-low"
