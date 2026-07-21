@@ -104,3 +104,15 @@
 **Model:** Gemini 3.5 Flash
 **Prompt:** "/07-speckit.implement"
 **Files touched:** `src/frontend/src/App.tsx`, `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/components/ComposeModal.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+### 2026-07-21 22:41
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/02-speckit.specify fix the current home page UI as screenshot. I want to move main content (posts) into center. Remove right bar where \"Reserved for notifications & trends\". Change create button when click to display a notification \"Post creation coming soon\", not the dialog."
+**Files touched:** `specs/009-homepage-ui/spec.md`, `specs/009-homepage-ui/checklists/requirements.md`
+
+### 2026-07-21 22:49
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/07-speckit.implement "
+**Files touched:** `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`, `src/frontend/src/components/ComposeModal.tsx`, `specs/009-homepage-ui/tasks.md`

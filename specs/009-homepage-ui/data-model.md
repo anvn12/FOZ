@@ -16,15 +16,8 @@ The homepage queries state from the existing `useAuthStore` to check authenticat
   - `isMoreMenuOpen`: `boolean` - Controls the floating dropdown above the "More" button in the Left Sidebar.
 - **Mobile Navigation Drawer**:
   - `isMobileDrawerOpen`: `boolean` - Controls the slide-up drawer bottom-sheet.
-- **Compose Modal Trigger**:
-  - `isComposeOpen`: `boolean` - Controls the visibility of the `ComposeModal` component.
-
-### 2. `ComposeModal.tsx`
-- **Text input**:
-  - `bodyText`: `string` - Bind to textarea input.
-- **Character Counter**:
-  - Max length: `5,000` characters.
-  - Calculated inline: `bodyText.length`.
+- **Create Action State**:
+  - Toast notification `"Post creation coming soon"` is triggered on clicking the "Create" button. No component state is required.
 
 ## Mock Data Shapes
 

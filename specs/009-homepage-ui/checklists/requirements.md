@@ -31,4 +31,4 @@
 
 ## Notes
 
-- All checks have passed successfully. The specification does not contain any [NEEDS CLARIFICATION] markers.
+- Checked and validated on 2026-07-21 after updating the spec to center the main content feed, remove the right sidebar, and update the "Create" button behavior to show "Post creation coming soon". All checks passed.

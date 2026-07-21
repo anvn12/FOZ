@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
 import { LogoutDialog } from "#frontend/components/LogoutDialog";
-import { ComposeModal } from "#frontend/components/ComposeModal";
 import { toast } from "react-hot-toast";
 
 interface FeedPost {
@@ -90,7 +89,6 @@ export function HomePage() {
   const [posts, setPosts] = useState<FeedPost[]>(INITIAL_POSTS);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-  const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
   const handleProtectedClick = (e: React.MouseEvent, path?: string) => {
@@ -106,11 +104,7 @@ export function HomePage() {
 
   const handleCreateClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-    setIsComposeOpen(true);
+    toast("Post creation coming soon");
   };
 
   const handleAddPost = (bodyText: string) => {
@@ -276,123 +270,89 @@ export function HomePage() {
         {/* ======================================= */}
         {/* MAIN CONTENT AREA: Centered Feed        */}
         {/* ======================================= */}
-        <main className="flex-1 max-w-2xl w-full ml-0 md:ml-20 md:ml-24 lg:mr-[360px] pt-[60px] md:pt-0 min-h-screen border-r border-outline-variant pb-20">
-          {/* Top Sticky Header */}
-          <header className="sticky top-0 md:top-0 bg-surface/90 backdrop-blur-md z-40 flex justify-center items-center h-14 border-b border-outline-variant">
-            <h1 className="text-[17px] font-semibold text-primary">Home</h1>
-          </header>
+        <div className="flex-1 w-full flex justify-center md:pl-24">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen border-r md:border-x border-outline-variant pb-20">
+            {/* Top Sticky Header */}
+            <header className="sticky top-0 md:top-0 bg-surface/90 backdrop-blur-md z-40 flex justify-center items-center h-14 border-b border-outline-variant">
+              <h1 className="text-[17px] font-semibold text-primary">Home</h1>
+            </header>
 
-          {/* Feed Container */}
-          <div className="flex flex-col divide-y divide-outline-variant">
-            {posts.map((post) => (
-              <article key={post.id} className="p-4 hover:bg-surface-container-low/30 transition-colors">
-                <div className="flex items-start gap-3">
-                  {/* Avatar column */}
-                  <div className="flex-shrink-0 relative">
-                    {post.author.avatarUrl ? (
-                      <img alt={post.author.displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={post.author.avatarUrl} />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center text-white text-xs font-semibold">
-                        {post.author.displayName.charAt(0).toUpperCase()}
+            {/* Feed Container */}
+            <div className="flex flex-col divide-y divide-outline-variant">
+              {posts.map((post) => (
+                <article key={post.id} className="p-4 hover:bg-surface-container-low/30 transition-colors">
+                  <div className="flex items-start gap-3">
+                    {/* Avatar column */}
+                    <div className="flex-shrink-0 relative">
+                      {post.author.avatarUrl ? (
+                        <img alt={post.author.displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={post.author.avatarUrl} />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center text-white text-xs font-semibold">
+                          {post.author.displayName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-1 text-[15px]">
+                          <Link to={`/profiles/${post.author.id}`} className="font-semibold hover:underline text-primary">
+                            {post.author.displayName}
+                          </Link>
+                          {post.category && (
+                            <>
+                              <span className="text-outline text-xs">
+                                <i className="fa-solid fa-chevron-right mx-1 text-[10px]"></i>
+                              </span>
+                              <span className="font-semibold text-primary">{post.category}</span>
+                            </>
+                          )}
+                          <span className="text-secondary text-[14px] ml-1">· {post.createdAt}</span>
+                        </div>
                       </div>
-                    )}
+                      <div className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary">
+                        {post.body}
+                      </div>
+
+                      {/* Image attachments */}
+                      {post.attachmentUrl && (
+                        <div className="mt-3 rounded-2xl overflow-hidden border border-outline-variant">
+                          <img alt="Post media" className="w-full h-auto object-cover max-h-[500px]" src={post.attachmentUrl} />
+                        </div>
+                      )}
+
+                      {/* Reaction Row */}
+                      <div className="mt-3 flex items-center gap-6 text-outline">
+                        <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
+                          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                          </svg>
+                          {post.likesCount > 0 && <span className="text-[13px]">{post.likesCount.toLocaleString()}</span>}
+                        </button>
+                        <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
+                          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                          </svg>
+                          {post.repliesCount > 0 && <span className="text-[13px]">{post.repliesCount.toLocaleString()}</span>}
+                        </button>
+                        <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
+                          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M17 1l4 4-4 4"></path>
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                            <path d="M7 23l-4-4 4-4"></path>
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                          </svg>
+                          {post.repostsCount > 0 && <span className="text-[13px]">{post.repostsCount.toLocaleString()}</span>}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  {/* Content details */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1 text-[15px]">
-                        <Link to={`/profiles/${post.author.id}`} className="font-semibold hover:underline text-primary">
-                          {post.author.displayName}
-                        </Link>
-                        {post.category && (
-                          <>
-                            <span className="text-outline text-xs">
-                              <i className="fa-solid fa-chevron-right mx-1 text-[10px]"></i>
-                            </span>
-                            <span className="font-semibold text-primary">{post.category}</span>
-                          </>
-                        )}
-                        <span className="text-secondary text-[14px] ml-1">· {post.createdAt}</span>
-                      </div>
-                    </div>
-                    <div className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary">
-                      {post.body}
-                    </div>
-
-                    {/* Image attachments */}
-                    {post.attachmentUrl && (
-                      <div className="mt-3 rounded-2xl overflow-hidden border border-outline-variant">
-                        <img alt="Post media" className="w-full h-auto object-cover max-h-[500px]" src={post.attachmentUrl} />
-                      </div>
-                    )}
-
-                    {/* Reaction Row */}
-                    <div className="mt-3 flex items-center gap-6 text-outline">
-                      <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
-                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                        {post.likesCount > 0 && <span className="text-[13px]">{post.likesCount.toLocaleString()}</span>}
-                      </button>
-                      <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
-                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                        </svg>
-                        {post.repliesCount > 0 && <span className="text-[13px]">{post.repliesCount.toLocaleString()}</span>}
-                      </button>
-                      <button className="flex items-center gap-1.5 hover:text-primary transition-colors group">
-                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M17 1l4 4-4 4"></path>
-                          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                          <path d="M7 23l-4-4 4-4"></path>
-                          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                        </svg>
-                        {post.repostsCount > 0 && <span className="text-[13px]">{post.repostsCount.toLocaleString()}</span>}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </main>
-
-        {/* ======================================= */}
-        {/* DESKTOP: Right Sidebar                  */}
-        {/* ======================================= */}
-        <aside className="hidden lg:block fixed right-0 top-0 bottom-0 w-[360px] p-6 bg-surface border-l border-outline-variant z-40">
-          <div className="h-full flex flex-col justify-start pt-16">
-            {!user ? (
-              <div className="rounded-2xl border border-outline-variant p-6 bg-surface-container-lowest">
-                <h2 className="font-headline-md text-headline-md mb-2 text-primary">A quieter place to talk</h2>
-                <p className="text-secondary font-body-md text-body-md mb-6 leading-relaxed">
-                  FOZ is a threads-style community forum. Create an account or sign in to join the conversation.
-                </p>
-                <div className="flex flex-col gap-3">
-                  <Link
-                    to="/register"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-label-md text-label-md text-on-primary transition-opacity hover:opacity-90"
-                  >
-                    Create account
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="flex w-full items-center justify-center rounded-xl border border-outline-variant py-3 font-label-md text-label-md text-primary transition-colors hover:bg-surface-container-low"
-                  >
-                    Log in
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              // Empty/reserved sidebar area for authenticated user
-              <div className="text-outline text-center py-10 font-label-md text-label-md">
-                Reserved for notifications & trends
-              </div>
-            )}
-          </div>
-        </aside>
+                </article>
+              ))}
+            </div>
+          </main>
+        </div>
 
         {/* ======================================= */}
         {/* MOBILE: Bottom Navigation Bar           */}
@@ -421,12 +381,6 @@ export function HomePage() {
       {/* ======================================= */}
       {/* DIALOGS: Compose Modal & Logout Dialog  */}
       {/* ======================================= */}
-      <ComposeModal 
-        isOpen={isComposeOpen} 
-        onClose={() => setIsComposeOpen(false)} 
-        onAddPost={handleAddPost} 
-      />
-
       <LogoutDialog
         user={user}
         open={isLogoutOpen}

@@ -6,6 +6,7 @@ import { renderWithProviders } from "../../test/utils.js";
 import { HomePage } from "../HomePage.js";
 import { useAuthStore } from "#frontend/stores/auth";
 import * as profileApi from "../../api/profile.js";
+import { toast } from "react-hot-toast";
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -21,6 +22,15 @@ vi.mock("react-router-dom", async () => {
 vi.mock("../../api/profile.js", () => ({
   useProfile: vi.fn(),
 }));
+
+// Mock react-hot-toast
+vi.mock("react-hot-toast", () => {
+  const toastMock = vi.fn();
+  return {
+    toast: toastMock,
+    default: toastMock,
+  };
+});
 
 describe("HomePage Component", () => {
   beforeEach(() => {
@@ -57,7 +67,7 @@ describe("HomePage Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
-  it("should remove Log in button and allow authenticated user to open compose modal", async () => {
+  it("should remove Log in button and trigger coming soon toast for authenticated user on Create click", async () => {
     useAuthStore.setState({
       user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
       accessToken: "mock-token",
@@ -75,21 +85,24 @@ describe("HomePage Component", () => {
       fireEvent.click(firstCreateBtn);
     }
 
-    // Compose modal should be visible
-    expect(screen.getByText("New Post")).toBeDefined();
+    // Verify toast is triggered
+    expect(toast).toHaveBeenCalledWith("Post creation coming soon");
+  });
 
-    // Fill post
-    const textarea = screen.getByPlaceholderText("What's happening?");
-    fireEvent.change(textarea, { target: { value: "Hello world from vitest!" } });
+  it("should trigger coming soon toast for guest clicking Create button without redirecting", () => {
+    useAuthStore.setState({ user: null, accessToken: null });
+    renderWithProviders(<HomePage />);
 
-    // Submit
-    const postBtn = screen.getByRole("button", { name: "Post" });
-    fireEvent.click(postBtn);
+    // Click create button
+    const createBtns = screen.getAllByLabelText("Create");
+    const firstCreateBtn = createBtns[0];
+    if (firstCreateBtn) {
+      fireEvent.click(firstCreateBtn);
+    }
 
-    // Verify post prepended in feed
-    await waitFor(() => {
-      expect(screen.getByText("Hello world from vitest!")).toBeDefined();
-    });
+    // Verify toast is triggered directly without redirection
+    expect(toast).toHaveBeenCalledWith("Post creation coming soon");
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it("should open LogoutDialog when clicking Log out button", async () => {

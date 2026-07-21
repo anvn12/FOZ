@@ -2,12 +2,11 @@
 
 ## Decisions & Rationale
 
-### 1. Responsive Layout Strategy (Mobile-First CSS Grid)
-- **Decision**: Use Tailwind's responsive breakpoints (`md:`, `lg:`) to control the display grid.
-  - Viewport < 768px (Mobile): Main feed takes 100% width, sidebars hidden. Top App Bar is `fixed`, Bottom Navigation is `fixed`.
-  - Viewport >= 768px && < 1024px (Tablet): Left Sidebar becomes visible (`md:flex`), Right Sidebar remains hidden. Fixed bars are hidden.
-  - Viewport >= 1024px (Desktop): Right Sidebar becomes visible (`lg:block`). Left Sidebar expands slightly.
-- **Rationale**: Keeps responsive styling unified in a single HTML file template (mimicking `code.html` behavior) without using JavaScript viewport listeners, ensuring maximum CSS rendering speed.
+### 1. Responsive Layout Strategy (Mobile-First Centered Layout)
+- **Decision**: Use Tailwind's responsive layout tools to support two primary views:
+  - Viewport < 768px (Mobile): Main feed takes 100% width, Left Sidebar hidden. Top App Bar is `fixed`, Bottom Navigation is `fixed`.
+  - Viewport >= 768px (Desktop/Tablet): Left Sidebar is visible (`fixed left-0 w-24`). Right Sidebar is removed completely. The Main Feed is centered inside the remaining screen space. This is achieved by placing `<main>` inside a `flex justify-center` wrapper with `md:pl-24` padding to prevent overlapping the fixed sidebar.
+- **Rationale**: Keeps responsive layout simple, centered, and visually balanced on all viewports without requiring custom grid calculations or JavaScript resize listeners.
 
 ### 2. Mobile Drawer Slide-Up Animation
 - **Decision**: Implement the slide-up Bottom Navigation Drawer using standard Tailwind utility classes for absolute positioning, combined with local React state (`isOpen`).
@@ -19,14 +18,14 @@
 - **Decision**: Implement a custom React hook `useOutsideClick` or an inline ref click listener to dismiss the desktop "More" dropdown and the mobile drawer overlay when a user clicks outside the element boundary.
 - **Rationale**: Ensures accessible and expected modal-dismissal UX behavior.
 
-### 4. Compose Modal Overlay state
-- **Decision**: Manage the visibility of `ComposeModal` using simple component state (`[isComposeOpen, setIsComposeOpen]`) passed as a prop from the HomePage context, rather than a global store.
-- **Rationale**: Keeps component cohesion high and avoids unnecessary state storage complexity.
+### 4. Decommitting Compose Modal for Toast Notification Placeholder
+- **Decision**: The specifications mandate that the "Create" button displays a `"Post creation coming soon"` toast notification rather than opening a dialog. Therefore, the `ComposeModal` component is decommitted and removed from `HomePage.tsx`.
+- **Rationale**: Reduces client-side complexity, bundle size, and potential bugs for an out-of-scope feature.
 
 ## Alternatives Considered
 
 ### Swapping Tailwind v4 for a Material Web Component library
 - **Rejected**: The FOZ Constitution Principle V mandates styling exclusively via Tailwind CSS config. Installing third-party libraries (e.g., Radix, MUI) violates this and increases bundle size. Custom Tailwind-styled components are highly lightweight.
 
-### Separate Desktop and Mobile Page Components
-- **Rejected**: Creating separate components like `DesktopHomePage.tsx` and `MobileHomePage.tsx` increases code duplication. A unified markup utilizing CSS media queries fits standard responsive practices and is cleaner to maintain.
+### Centering Feed on the Entire Viewport (Ignoring Sidebar Width)
+- **Rejected**: If the main feed is centered on the absolute viewport width on medium/tablet viewports, it overlaps with the left navigation sidebar. Adding `md:pl-24` padding ensures centering is relative to the remaining screen space, preventing overlap.
