@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useLogout } from "#frontend/api/auth";
+import { useProfile } from "#frontend/api/profile";
 import type { AuthUser } from "#frontend/stores/auth";
 
 /**
  * Confirmation modal for logging out (per FOZ "log out" design):
- * blurred backdrop, monochrome avatar, confirm + cancel.
+ * blurred backdrop, monochrome avatar/profile picture, confirm + cancel.
  */
 export function LogoutDialog({
   user,
@@ -16,6 +17,7 @@ export function LogoutDialog({
   onClose: () => void;
 }) {
   const logout = useLogout();
+  const { data: profile } = useProfile(user?.id ?? "");
 
   useEffect(() => {
     if (!open) return;
@@ -42,9 +44,23 @@ export function LogoutDialog({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Avatar */}
-        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface-container">
-          <span className="material-symbols-outlined text-4xl text-secondary">person</span>
-        </div>
+        {profile?.avatarUrl ? (
+          <img
+            src={profile.avatarUrl}
+            alt={profile.displayName || user?.email || "User profile"}
+            className="mb-4 h-20 w-20 rounded-full object-cover border border-outline-variant shadow-sm"
+          />
+        ) : (
+          <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface-container">
+            {profile?.displayName ? (
+              <span className="text-2xl font-semibold text-secondary">
+                {profile.displayName.charAt(0).toUpperCase()}
+              </span>
+            ) : (
+              <span className="material-symbols-outlined text-4xl text-secondary">person</span>
+            )}
+          </div>
+        )}
 
         {/* Identity & prompt */}
         <div className="mb-8">
