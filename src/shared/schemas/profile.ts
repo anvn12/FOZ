@@ -21,7 +21,11 @@ const websiteSchema = z
     } catch (_) {
       return false;
     }
-  }, "Invalid website URL format");
+  }, "Invalid website URL format")
+  .transform((val) => {
+    if (!val) return null;
+    return val.match(/^https?:\/\//i) ? val : `https://${val}`;
+  });
 
 export const UpdateProfileRequest = z.object({
   displayName: z
