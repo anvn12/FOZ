@@ -93,3 +93,26 @@
 **Model:** Gemini 3.5 Flash
 **Prompt:** "help me fix error in app.tsx, i resolved the conflict from previous merge but it leads to errors"
 **Files touched:** `src/frontend/src/App.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+### 2026-07-21 22:35
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/02-speckit.specify I want to create home page UI for my app, the design can be found in home folder. I have designed for mobile and destop layout (unified), make sure to implement both so that the web is responsive. When logged in, remove the log in button, add "Log out" button (red text) inside the hamburger menu below the "Report a problem" "
+
+### 2026-07-21 22:35
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/App.tsx`, `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/components/ComposeModal.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+### 2026-07-21 22:41
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/02-speckit.specify fix the current home page UI as screenshot. I want to move main content (posts) into center. Remove right bar where \"Reserved for notifications & trends\". Change create button when click to display a notification \"Post creation coming soon\", not the dialog."
+**Files touched:** `specs/009-homepage-ui/spec.md`, `specs/009-homepage-ui/checklists/requirements.md`
+
+### 2026-07-21 22:49
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "/07-speckit.implement "
+**Files touched:** `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`, `src/frontend/src/components/ComposeModal.tsx`, `specs/009-homepage-ui/tasks.md`
