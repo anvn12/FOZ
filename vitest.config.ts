@@ -4,14 +4,22 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   test: {
     globals: true,
-    environment: "node",
+    environmentMatchGlobs: [
+      ["src/backend/**/*.test.ts", "node"],
+      ["src/frontend/src/**/*.test.{ts,tsx}", "jsdom"],
+      ["src/shared/**/*.test.ts", "node"],
+    ],
     include: [
       "src/backend/lib/**/*.test.ts",
       "src/backend/api/**/*.test.ts",
       "src/backend/__tests__/integration/**/*.test.ts",
       "src/shared/**/*.test.ts",
+      "src/frontend/src/**/*.test.{ts,tsx}",
     ],
-    setupFiles: ["src/backend/__tests__/setup.ts"],
+    setupFiles: [
+      "src/backend/__tests__/setup.ts",
+      "src/frontend/src/test/setup.ts",
+    ],
     fileParallelism: false,
     pool: "forks",
     testTimeout: 5000,
