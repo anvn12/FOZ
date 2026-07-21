@@ -12,13 +12,13 @@ async function registerAndGetToken(email = "user@example.com"): Promise<{ access
   };
 }
 
-async function createTestPost(accessToken: string, content = "Hello forum!") {
+async function createTestPost(accessToken: string, bodyText = "Hello forum!") {
   const res = await getAgent()
     .post("/api/v1/posts")
     .set("Authorization", `Bearer ${accessToken}`)
-    .send({ content });
+    .send({ body: bodyText });
   expect(res.status).toBe(201);
-  return res.body.post;
+  return res.body;
 }
 
 describe("User Interactions - Comments API Integration Tests", () => {
@@ -33,7 +33,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
 
       const res = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
-        .send({ content: "Unauthorized comment" });
+        .send({ body: "Unauthorized comment" });
 
       expect(res.status).toBe(401);
     });
@@ -46,12 +46,12 @@ describe("User Interactions - Comments API Integration Tests", () => {
       const res = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${commenter.accessToken}`)
-        .send({ content: "I totally agree!" });
+        .send({ body: "I totally agree!" });
 
       expect(res.status).toBe(201);
-      expect(res.body.comment.content).toBe("I totally agree!");
-      expect(res.body.comment.authorId).toBe(commenter.userId);
-      expect(res.body.comment.postId).toBe(post.id);
+      expect(res.body.body).toBe("I totally agree!");
+      expect(res.body.authorId).toBe(commenter.userId);
+      expect(res.body.postId).toBe(post.id);
     });
 
     it("should allow nested comment replies (parentCommentId)", async () => {
@@ -63,27 +63,27 @@ describe("User Interactions - Comments API Integration Tests", () => {
       const commentRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${userA.accessToken}`)
-        .send({ content: "Parent comment" });
-      const parentCommentId = commentRes.body.comment.id;
+        .send({ body: "Parent comment" });
+      const parentCommentId = commentRes.body.id;
 
       // Nested reply
       const replyRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${userB.accessToken}`)
-        .send({ content: "Reply to parent", parentCommentId });
+        .send({ body: "Reply to parent", parentCommentId });
 
       expect(replyRes.status).toBe(201);
-      expect(replyRes.body.comment.parentCommentId).toBe(parentCommentId);
+      expect(replyRes.body.parentCommentId).toBe(parentCommentId);
     });
 
-    it("should return 422 if comment content is empty", async () => {
+    it("should return 422 if comment body is empty", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
       const res = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
-        .send({ content: "" });
+        .send({ body: "" });
 
       expect(res.status).toBe(422);
       expect(res.body.error.code).toBe("VALIDATION");
@@ -96,7 +96,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
       const res = await getAgent()
         .post(`/api/v1/posts/${nonExistentId}/comments`)
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ content: "Ghost comment" });
+        .send({ body: "Ghost comment" });
 
       expect(res.status).toBe(404);
     });
@@ -110,14 +110,14 @@ describe("User Interactions - Comments API Integration Tests", () => {
       await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
-        .send({ content: "First comment" });
+        .send({ body: "First comment" });
 
       const res = await getAgent().get(`/api/v1/posts/${post.id}/comments`);
 
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body.comments)).toBe(true);
-      expect(res.body.comments.length).toBe(1);
-      expect(res.body.comments[0].content).toBe("First comment");
+      expect(Array.isArray(res.body.items)).toBe(true);
+      expect(res.body.items.length).toBe(1);
+      expect(res.body.items[0].body).toBe("First comment");
     });
   });
 
@@ -129,14 +129,15 @@ describe("User Interactions - Comments API Integration Tests", () => {
       const commentRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
-        .send({ content: "Comment to delete" });
-      const commentId = commentRes.body.comment.id;
+        .send({ body: "Comment to delete" });
+      const commentId = commentRes.body.id;
 
       const delRes = await getAgent()
         .delete(`/api/v1/comments/${commentId}`)
         .set("Authorization", `Bearer ${user.accessToken}`);
 
       expect(delRes.status).toBe(200);
+      expect(delRes.body.ok).toBe(true);
     });
 
     it("should return 403 if another user tries to delete the comment", async () => {
@@ -147,10 +148,10 @@ describe("User Interactions - Comments API Integration Tests", () => {
       const commentRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${author.accessToken}`)
-        .send({ content: "Protected comment" });
+        .send({ body: "Protected comment" });
 
       const delRes = await getAgent()
-        .delete(`/api/v1/comments/${commentRes.body.comment.id}`)
+        .delete(`/api/v1/comments/${commentRes.body.id}`)
         .set("Authorization", `Bearer ${stranger.accessToken}`);
 
       expect(delRes.status).toBe(403);

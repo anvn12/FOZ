@@ -12,13 +12,13 @@ async function registerAndGetToken(email = "user@example.com"): Promise<{ access
   };
 }
 
-async function createTestPost(accessToken: string, content = "Hello forum!") {
+async function createTestPost(accessToken: string, bodyText = "Hello forum!") {
   const res = await getAgent()
     .post("/api/v1/posts")
     .set("Authorization", `Bearer ${accessToken}`)
-    .send({ content });
+    .send({ body: bodyText });
   expect(res.status).toBe(201);
-  return res.body.post;
+  return res.body;
 }
 
 describe("User Interactions - Likes/Reactions API Integration Tests", () => {
@@ -26,36 +26,36 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
     await clearDb();
   });
 
-  describe("POST /api/v1/posts/:postId/like - Toggle Post Like", () => {
+  describe("POST / DELETE /api/v1/posts/:postId/reaction - Toggle Post Reaction", () => {
     it("should return 401 if user is not logged in", async () => {
       const author = await registerAndGetToken("author@example.com");
       const post = await createTestPost(author.accessToken);
 
-      const res = await getAgent().post(`/api/v1/posts/${post.id}/like`);
+      const res = await getAgent().post(`/api/v1/posts/${post.id}/reaction`);
 
       expect(res.status).toBe(401);
     });
 
-    it("should allow a user to like and unlike a post (toggle)", async () => {
+    it("should allow a user to like and unlike a post (reaction)", async () => {
       const { accessToken } = await registerAndGetToken();
       const post = await createTestPost(accessToken, "Like me");
 
-      // Step 1: Like
+      // Step 1: Like (POST)
       const likeRes = await getAgent()
-        .post(`/api/v1/posts/${post.id}/like`)
+        .post(`/api/v1/posts/${post.id}/reaction`)
         .set("Authorization", `Bearer ${accessToken}`);
 
       expect(likeRes.status).toBe(200);
-      expect(likeRes.body.liked).toBe(true);
+      expect(likeRes.body.active).toBe(true);
       expect(likeRes.body.likeCount).toBe(1);
 
-      // Step 2: Toggle (Unlike)
+      // Step 2: Unlike (DELETE)
       const unlikeRes = await getAgent()
-        .post(`/api/v1/posts/${post.id}/like`)
+        .delete(`/api/v1/posts/${post.id}/reaction`)
         .set("Authorization", `Bearer ${accessToken}`);
 
       expect(unlikeRes.status).toBe(200);
-      expect(unlikeRes.body.liked).toBe(false);
+      expect(unlikeRes.body.active).toBe(false);
       expect(unlikeRes.body.likeCount).toBe(0);
     });
 
@@ -65,11 +65,11 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
       const post = await createTestPost(userA.accessToken);
 
       await getAgent()
-        .post(`/api/v1/posts/${post.id}/like`)
+        .post(`/api/v1/posts/${post.id}/reaction`)
         .set("Authorization", `Bearer ${userA.accessToken}`);
 
       const resB = await getAgent()
-        .post(`/api/v1/posts/${post.id}/like`)
+        .post(`/api/v1/posts/${post.id}/reaction`)
         .set("Authorization", `Bearer ${userB.accessToken}`);
 
       expect(resB.status).toBe(200);
@@ -77,7 +77,7 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
     });
   });
 
-  describe("POST /api/v1/comments/:commentId/like - Toggle Comment Like", () => {
+  describe("POST / DELETE /api/v1/comments/:commentId/reaction - Toggle Comment Reaction", () => {
     it("should allow a user to like and unlike a comment", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
@@ -85,15 +85,24 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
       const commentRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
-        .send({ content: "Great comment" });
-      const commentId = commentRes.body.comment.id;
+        .send({ body: "Great comment" });
+      const commentId = commentRes.body.id;
 
+      // Like comment
       const likeRes = await getAgent()
-        .post(`/api/v1/comments/${commentId}/like`)
+        .post(`/api/v1/comments/${commentId}/reaction`)
         .set("Authorization", `Bearer ${user.accessToken}`);
 
       expect(likeRes.status).toBe(200);
-      expect(likeRes.body.liked).toBe(true);
+      expect(likeRes.body.active).toBe(true);
+
+      // Unlike comment
+      const unlikeRes = await getAgent()
+        .delete(`/api/v1/comments/${commentId}/reaction`)
+        .set("Authorization", `Bearer ${user.accessToken}`);
+
+      expect(unlikeRes.status).toBe(200);
+      expect(unlikeRes.body.active).toBe(false);
     });
   });
 });
