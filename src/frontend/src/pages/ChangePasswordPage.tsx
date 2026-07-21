@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ChangePasswordRequest } from "#shared/schemas/auth";
 import { useChangePassword, ApiError } from "#frontend/api/auth";
+import { AuthShell, FozLogo } from "#frontend/components/AuthShell";
+import { PasswordInput } from "#frontend/components/PasswordInput";
 
 export function ChangePasswordPage() {
   const navigate = useNavigate();
@@ -16,62 +18,96 @@ export function ChangePasswordPage() {
   } = useForm<ChangePasswordRequest>({ resolver: zodResolver(ChangePasswordRequest) });
 
   return (
-    <form
-      onSubmit={handleSubmit((values) => {
-        change.mutate(values, {
-          onSuccess: () => {
-            toast.success("Password updated");
-            reset();
-            navigate("/");
-          },
-          onError: (err) => {
-            if (err instanceof ApiError) {
-              toast.error(err.message);
-            } else {
-              toast.error("Something went wrong");
-            }
-          },
-        });
-      })}
-      className="space-y-4"
-    >
-      <h1 className="text-2xl font-semibold">Change password</h1>
-      <div>
-        <label htmlFor="currentPassword" className="block text-sm font-medium">
-          Current password
-        </label>
-        <input
-          id="currentPassword"
-          type="password"
-          autoComplete="current-password"
-          {...field("currentPassword")}
-          className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
-        />
-        {errors.currentPassword && (
-          <p className="mt-1 text-sm text-red-600">{errors.currentPassword.message}</p>
-        )}
+    <AuthShell>
+      <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col items-center">
+        <header className="mb-10 w-full text-center md:mt-12">
+          <FozLogo className="mb-2" />
+          <span className="mb-6 block font-label-md text-label-md uppercase tracking-widest text-secondary">
+            Account
+          </span>
+          <h1 className="mb-2 font-headline-lg-mobile text-headline-lg-mobile text-primary md:font-headline-lg md:text-headline-lg">
+            Change password
+          </h1>
+          <p className="font-body-md text-body-md text-secondary">
+            Choose a new password for your account.
+          </p>
+        </header>
+
+        <form
+          onSubmit={handleSubmit((values) => {
+            change.mutate(values, {
+              onSuccess: () => {
+                toast.success("Password updated");
+                reset();
+                navigate("/");
+              },
+              onError: (err) =>
+                toast.error(err instanceof ApiError ? err.message : "Something went wrong"),
+            });
+          })}
+          className="w-full space-y-6"
+          noValidate
+        >
+          <div className="space-y-1.5">
+            <label
+              htmlFor="currentPassword"
+              className="block px-1 font-label-md text-label-md text-primary"
+            >
+              Current password
+            </label>
+            <PasswordInput
+              id="currentPassword"
+              autoComplete="current-password"
+              placeholder="Current password"
+              invalid={Boolean(errors.currentPassword)}
+              registration={field("currentPassword")}
+            />
+            {errors.currentPassword && (
+              <p className="px-1 text-label-sm text-error">{errors.currentPassword.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="newPassword"
+              className="block px-1 font-label-md text-label-md text-primary"
+            >
+              New password
+            </label>
+            <PasswordInput
+              id="newPassword"
+              autoComplete="new-password"
+              placeholder="Create a new password"
+              invalid={Boolean(errors.newPassword)}
+              registration={field("newPassword")}
+            />
+            {errors.newPassword ? (
+              <p className="px-1 text-label-sm text-error">{errors.newPassword.message}</p>
+            ) : (
+              <p className="px-1 text-label-sm text-outline">
+                At least 8 characters; must differ from current.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-label-md text-label-md text-on-primary transition-colors hover:bg-inverse-surface disabled:opacity-50"
+          >
+            {isSubmitting ? "Updating…" : "Update password"}
+            {!isSubmitting && (
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            )}
+          </button>
+        </form>
       </div>
-      <div>
-        <label htmlFor="newPassword" className="block text-sm font-medium">
-          New password
-        </label>
-        <input
-          id="newPassword"
-          type="password"
-          autoComplete="new-password"
-          {...field("newPassword")}
-          className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
-        />
-        {errors.newPassword && <p className="mt-1 text-sm text-red-600">{errors.newPassword.message}</p>}
-        <p className="mt-1 text-xs text-zinc-500">At least 8 characters; must differ from current.</p>
-      </div>
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded bg-zinc-900 px-3 py-2 text-white hover:bg-zinc-800 disabled:opacity-50"
-      >
-        Update password
-      </button>
-    </form>
+
+      <footer className="pb-8 pt-8 text-center">
+        <Link to="/" className="font-body-md text-body-md text-secondary hover:text-primary">
+          Back to home
+        </Link>
+      </footer>
+    </AuthShell>
   );
 }
