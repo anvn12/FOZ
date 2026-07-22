@@ -1,0 +1,3 @@
+-- No-op migration.
+-- The posts, comments, and reactions tables are already defined in 0001_initial.sql.
+-- This file exists to keep the feature scaffolding aligned with the task plan.

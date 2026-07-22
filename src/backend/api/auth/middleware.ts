@@ -37,6 +37,22 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
   }
 };
 
+/** Attach an active viewer when a valid bearer token is supplied, without blocking public reads. */
+export const optionalAuth: RequestHandler = async (req, _res, next) => {
+  const match = (req.header("authorization") ?? "").match(/^Bearer\s+(.+)$/i);
+  if (!match?.[1]) return next();
+  try {
+    const payload = verifyAccessToken(match[1]);
+    const user = await getUserById(payload.sub);
+    if (user?.status === "active") {
+      (req as AuthedRequest).user = { id: user.id, role: user.role, status: user.status };
+    }
+  } catch {
+    // Public reads deliberately remain available when a stale token is present.
+  }
+  next();
+};
+
 export const requireGuest: RequestHandler = (req, res, next) => {
   const header = req.header("authorization") ?? "";
   if (header && /^Bearer\s+.+$/i.test(header)) {
