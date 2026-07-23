@@ -1,15 +1,15 @@
 # Table of Contents
 
-1. [A - How to add Table of Contents](#A%20-%20How%20to%20add%20Table%20of%20Contents)
-	1. [1. Requirements](#1.%20Requirements)
-		1. [1.1. How to export to PDF](#1.1.%20How%20to%20export%20to%20PDF)
-2. [B - Export to PDF](#B%20-%20Export%20to%20PDF)
-	1. [1. Requirements](#1.%20Requirements)
-		1. [1.1 How to export to PDF](#1.1%20How%20to%20export%20to%20PDF)
-3. [C - Diagram example](#C%20-%20Diagram%20example)
-	1. [1. Diagram rules](#1.%20Diagram%20rules)
-4. [D - Image example](#D%20-%20Image%20example)
-	1. [1. Insert image rule](#1.%20Insert%20image%20rule)
+1. [A - How to add Table of Contents](#a---how-to-add-table-of-contents)
+	1. [1. Requirements](#1-requirements)
+		1. [1.1. How to export to PDF](#11-how-to-export-to-pdf)
+2. [B - Export to PDF](#b---export-to-pdf)
+	1. [1. Requirements](#1-requirements)
+		1. [1.1 How to export to PDF](#11-how-to-export-to-pdf)
+3. [C - Diagram example](#c---diagram-example)
+	1. [1. Diagram rules](#1-diagram-rules)
+4. [D - Image example](#d---image-example)
+	1. [1. Insert image rule](#1-insert-image-rule)
 
 # A - How to add Table of Contents
 
