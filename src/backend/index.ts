@@ -10,6 +10,7 @@ import { commentRouter } from "#backend/api/comments/routes.js";
 import { reactionRouter } from "#backend/api/reactions/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
 import { profileRouter } from "#backend/api/profile/routes.js";
+import { searchRouter } from "#backend/api/search/routes.js";
 
 export function createApp(): Express {
   const app = express();
@@ -31,6 +32,7 @@ export function createApp(): Express {
   apiRouter.use("/", commentRouter);
   apiRouter.use("/", reactionRouter);
   apiRouter.use("/profiles", profileRouter);
+  apiRouter.use("/search", searchRouter);
   app.use("/api/v1", apiRouter);
 
   app.get("/api/v1/health", (_req, res) => res.status(200).json({ ok: true }));

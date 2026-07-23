@@ -7,6 +7,7 @@ import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { SearchPage } from "./pages/SearchPage";
 import { useAuthStore } from "./stores/auth";
 
 export function App() {
@@ -18,6 +19,7 @@ export function App() {
     <div className="min-h-screen bg-surface-container-lowest text-on-background">
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/feed" element={<FeedPage {...interactionProps} />} />
         <Route path="/posts/:postId" element={<PostDetailRoute {...interactionProps} />} />
         <Route path="/login" element={<LoginPage />} />
