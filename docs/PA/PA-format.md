@@ -1,8 +1,8 @@
 # Table of Contents
 
-1. [A - How to add Table of Contents](#a---how-to-add-table-of-contents)
+1. [A - How to add Table of Contents](#A%20-%20How%20to%20add%20Table%20of%20Contents)
 	1. [1. Requirements](#1.%20Requirements)
-		1. [1.1 How to export to PDF](#1.1%20How%20to%20export%20to%20PDF)
+		1. [1.1. How to export to PDF](#1.1.%20How%20to%20export%20to%20PDF)
 2. [B - Export to PDF](#B%20-%20Export%20to%20PDF)
 	1. [1. Requirements](#1.%20Requirements)
 		1. [1.1 How to export to PDF](#1.1%20How%20to%20export%20to%20PDF)
@@ -15,7 +15,7 @@
 
 *Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
 
-##  1. <a name='Requirements'></a>1. Requirements
+## 1. Requirements
 
 Install Obsidian
 
@@ -23,7 +23,7 @@ Install Plugin "Table of Contents"
 
 Plugin settings -> enable "Markdown links"
 
-###  1.1. <a name='HowtoexporttoPDF'></a>1.1 How to export to PDF
+### 1.1. How to export to PDF
 
 ==Delete all Table of Contents (Including title) -> CTRL P -> TABLE OF CONTENTS==
 
@@ -31,7 +31,7 @@ Plugin settings -> enable "Markdown links"
 
 *Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
 
-##  2. <a name='Requirements-1'></a>1. Requirements
+## 1. Requirements
 
 Install Obsidian
 
@@ -39,7 +39,7 @@ Install Plugin **"Better export PDF"**
 
 Use default format
 
-###  2.1. <a name='HowtoexporttoPDF-1'></a>1.1 How to export to PDF
+### 1.1 How to export to PDF
 
 ==CTRL P -> Better export PDF: Export current file to PDF==
 
@@ -47,7 +47,7 @@ Use default format
 
 *Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
 
-##  3. <a name='Diagramrules'></a>1. Diagram rules
+## 1. Diagram rules
 
 Diagram must be drawn using Mermaid.
 
@@ -69,7 +69,7 @@ flowchart TD
 
 *Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
 
-##  4. <a name='Insertimagerule'></a>1. Insert image rule
+## 1. Insert image rule
 
 Insert as markdown format `![Name](image link)`
 
