@@ -37,6 +37,7 @@ CREATE TABLE comments (
   author_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE RESTRICT,
   parent_comment_id uuid REFERENCES comments(id) ON DELETE CASCADE,
   body text NOT NULL,
+  visibility_state text NOT NULL,
   lifecycle_state text NOT NULL,
   deleted_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -50,6 +51,7 @@ CREATE TABLE reactions (
   target_id uuid NOT NULL,
   reaction_kind text NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (user_account_id, target_type, target_id, reaction_kind)
 );
 

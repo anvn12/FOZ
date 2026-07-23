@@ -2,7 +2,32 @@
 
 FOZ is a web-based forum application focused on fundamental community discussions. Its value lies in providing a simple, intuitive platform where users can easily ask questions, share knowledge, and connect over shared interests without navigating overly complex interfaces.
 
----
+## Table of Contents
+
+1. [📖 Introduction & Overview](#-introduction--overview)
+	1. [Target Users and Environments](#target-users-and-environments)
+	2. [Key Features](#key-features)
+	3. [User Roles & Permissions](#user-roles--permissions)
+	4. [Functional Groups](#functional-groups)
+2. [🛠️ Getting Started & Setup](#-getting-started--setup)
+	1. [Prerequisites](#prerequisites)
+	2. [First-Time Setup](#first-time-setup)
+		1. [Windows](#windows)
+		2. [Linux / macOS](#linux--macos)
+		3. [Post-setup Steps](#post-setup-steps)
+	3. [Running the System Locally](#running-the-system-locally)
+		1. [Windows](#windows)
+		2. [Linux / macOS](#linux--macos)
+3. [🗄️ Working with the Database](#-working-with-the-database)
+	1. [Applying Schema Migrations](#applying-schema-migrations)
+	2. [Option A — Drizzle Studio (Web GUI)](#option-a--drizzle-studio-web-gui)
+	3. [Option B — psql (CLI)](#option-b--psql-cli)
+4. [🧪 Testing](#-testing)
+5. [💻 Development & Architecture](#-development--architecture)
+	1. [File Structure](#file-structure)
+	2. [API Routing Convention](#api-routing-convention)
+	3. [Authentication API Endpoints](#authentication-api-endpoints)
+6. [🤖 Team AI Usage Logging](#-team-ai-usage-logging)
 
 ## 📖 Introduction & Overview
 

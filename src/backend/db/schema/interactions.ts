@@ -1,0 +1,77 @@
+import {
+  pgTable,
+  type AnyPgColumn,
+  uuid,
+  text,
+  timestamp,
+  index,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+import { contentLifecycleStates, contentVisibilityStates, reactionKinds } from "#shared/schema-enums.js";
+import { userAccounts } from "./users.js";
+
+export const posts = pgTable(
+  "posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => userAccounts.id, { onDelete: "restrict" }),
+    body: text("body").notNull(),
+    visibilityState: text("visibility_state", { enum: contentVisibilityStates }).notNull(),
+    lifecycleState: text("lifecycle_state", { enum: contentLifecycleStates }).notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("idx_posts_author_id").on(t.authorId)],
+);
+
+export const comments = pgTable(
+  "comments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => userAccounts.id, { onDelete: "restrict" }),
+    parentCommentId: uuid("parent_comment_id").references((): AnyPgColumn => comments.id, {
+      onDelete: "cascade",
+    }),
+    body: text("body").notNull(),
+    visibilityState: text("visibility_state", { enum: contentVisibilityStates }).notNull(),
+    lifecycleState: text("lifecycle_state", { enum: contentLifecycleStates }).notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("idx_comments_post_id").on(t.postId), index("idx_comments_parent_comment_id").on(t.parentCommentId)],
+);
+
+export const reactions = pgTable(
+  "reactions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userAccountId: uuid("user_account_id")
+      .notNull()
+      .references(() => userAccounts.id, { onDelete: "cascade" }),
+    targetType: text("target_type", { enum: ["post", "comment"] }).notNull(),
+    targetId: uuid("target_id").notNull(),
+    reactionKind: text("reaction_kind", { enum: reactionKinds }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("idx_reactions_target").on(t.targetType, t.targetId),
+    uniqueIndex("reactions_user_target_kind_idx").on(t.userAccountId, t.targetType, t.targetId, t.reactionKind),
+  ],
+);
+
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;
+export type Comment = typeof comments.$inferSelect;
+export type NewComment = typeof comments.$inferInsert;
+export type Reaction = typeof reactions.$inferSelect;
+export type NewReaction = typeof reactions.$inferInsert;
