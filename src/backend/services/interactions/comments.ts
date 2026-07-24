@@ -2,7 +2,7 @@ import type { CreateCommentRequest, UpdateCommentRequest } from "#shared/schemas
 import { db } from "#backend/db/client.js";
 import { comments } from "#backend/db/schema/interactions.js";
 import { and, eq, isNull } from "drizzle-orm";
-import { getCommentById, getPostById, listCommentsForPost, countReactionsForTarget, getReaction } from "#backend/db/repositories/interactions.js";
+import { getCommentById, getPostById, listCommentsForPost, countReactionsForTarget, getReaction, listCommentsByAuthor } from "#backend/db/repositories/interactions.js";
 
 export async function createComment(args: { authorId: string; postId: string } & CreateCommentRequest) {
   const post = await getPostById(args.postId);
@@ -63,6 +63,19 @@ export async function listComments(postId: string, viewerId?: string) {
   const post = await getPostById(postId);
   if (!post || post.visibilityState !== "public" || post.deletedAt) throw new Error("POST_NOT_FOUND");
   const rows = await listCommentsForPost(postId);
+  const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean }>;
+  for (const row of rows) {
+    enriched.push({
+      ...row,
+      likeCount: await countReactionsForTarget("comment", row.id),
+      liked: viewerId ? Boolean(await getReaction({ userAccountId: viewerId, targetType: "comment", targetId: row.id })) : false,
+    });
+  }
+  return enriched;
+}
+
+export async function listAuthorComments(authorId: string, viewerId?: string) {
+  const rows = await listCommentsByAuthor(authorId);
   const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean }>;
   for (const row of rows) {
     enriched.push({

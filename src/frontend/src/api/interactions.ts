@@ -60,6 +60,14 @@ export function useToggleReaction() {
   return useMutation({ mutationFn: toggleReaction });
 }
 
+export function toggleRepost(postId: string, active: boolean) {
+  return call<{ ok: true } | PostResponse>(`/api/v1/posts/${postId}/repost`, { method: active ? "DELETE" : "POST" });
+}
+
+export function useToggleRepost() {
+  return useMutation({ mutationFn: (args: { postId: string; active: boolean }) => toggleRepost(args.postId, args.active) });
+}
+
 export function createPost(input: CreatePostRequest) {
   return call<PostResponse>("/api/v1/posts", { method: "POST", body: JSON.stringify(input) });
 }
@@ -68,8 +76,9 @@ export function deletePost(postId: string) {
   return call<{ ok: true }>(`/api/v1/posts/${postId}`, { method: "DELETE" });
 }
 
-export function listPosts() {
-  return call<{ items: Array<PostResponse & { likeCount: number; liked: boolean }> }>("/api/v1/posts", {
+export function listPosts(authorId?: string) {
+  const url = authorId ? `/api/v1/posts?authorId=${authorId}` : "/api/v1/posts";
+  return call<{ items: Array<PostResponse & { likeCount: number; liked: boolean }> }>(url, {
     method: "GET",
   });
 }
@@ -94,6 +103,12 @@ export function deleteComment(commentId: string) {
 
 export function listComments(postId: string) {
   return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(`/api/v1/posts/${postId}/comments`, {
+    method: "GET",
+  });
+}
+
+export function listUserComments(authorId: string) {
+  return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(`/api/v1/comments?authorId=${authorId}`, {
     method: "GET",
   });
 }

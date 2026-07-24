@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SearchPage } from "./pages/SearchPage";
+import { PostPage } from "./pages/PostPage";
 import { useAuthStore } from "./stores/auth";
 
 export function App() {
@@ -21,7 +22,7 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/feed" element={<FeedPage {...interactionProps} />} />
-        <Route path="/posts/:postId" element={<PostDetailRoute {...interactionProps} />} />
+        <Route path="/posts/:postId" element={<PostPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
@@ -32,7 +33,4 @@ export function App() {
   );
 }
 
-function PostDetailRoute(props: React.ComponentProps<typeof FeedPage>) {
-  const { postId = "" } = useParams();
-  return <FeedPage {...props} postId={postId} />;
-}
+

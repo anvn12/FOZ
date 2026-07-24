@@ -6,13 +6,32 @@ export const postIdSchema = z.string().uuid();
 export const commentIdSchema = z.string().uuid();
 export const reactionTargetTypeSchema = z.enum(["post", "comment"]);
 
-export const createPostRequestSchema = z.object({
-  body: trimmedText,
+export const attachmentSchema = z.object({
+  fileUrl: z.string(),
+  fileType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  fileSize: z.number().int().max(5 * 1024 * 1024, "File size exceeds 5MB limit"),
 });
+
+export const singlePostInputSchema = z.object({
+  content: z.string().trim().max(5000, "Content is too long").optional(),
+  parentId: postIdSchema.optional(),
+  repostOfId: postIdSchema.optional(),
+  attachments: z.array(attachmentSchema).max(4, "Maximum 4 attachments allowed").optional(),
+}).refine(data => data.content || (data.attachments && data.attachments.length > 0) || data.repostOfId, {
+  message: "Post must have either content, attachments, or be a repost",
+});
+
+export const createPostRequestSchema = z.union([
+  singlePostInputSchema,
+  z.object({
+    posts: z.array(singlePostInputSchema).min(1).max(10)
+  })
+]);
+
 export type CreatePostRequest = z.infer<typeof createPostRequestSchema>;
 
 export const updatePostRequestSchema = z.object({
-  body: trimmedText,
+  content: trimmedText,
 });
 export type UpdatePostRequest = z.infer<typeof updatePostRequestSchema>;
 
@@ -35,14 +54,30 @@ export const reactionResponseSchema = z.object({
 });
 export type ReactionResponse = z.infer<typeof reactionResponseSchema>;
 
+export const postAttachmentResponseSchema = z.object({
+  id: z.string().uuid(),
+  fileUrl: z.string(),
+  fileType: z.string(),
+  fileSize: z.number().int(),
+});
+
 export const postResponseSchema = z.object({
   id: z.string().uuid(),
   authorId: z.string().uuid(),
-  body: z.string(),
+  content: z.string().nullable(),
+  parentId: z.string().uuid().nullable(),
+  repostOfId: z.string().uuid().nullable().optional(),
+  repostId: z.string().uuid().optional(),
+  repostedBy: z.object({
+    id: z.string().uuid(),
+    displayName: z.string()
+  }).optional(),
+  reposted: z.boolean().optional(),
   visibilityState: z.enum(["public", "hidden"]),
   lifecycleState: z.string(),
   createdAt: z.string(),
   updatedAt: z.string().optional(),
+  attachments: z.array(postAttachmentResponseSchema).optional(),
 });
 export type PostResponse = z.infer<typeof postResponseSchema>;
 

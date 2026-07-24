@@ -60,7 +60,7 @@ function SideNav({ onNewPost }: { onNewPost: () => void }) {
 }
 
 function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
-  const { data, isLoading } = useQuery({ queryKey: ["posts"], queryFn: listPosts });
+  const { data, isLoading } = useQuery({ queryKey: ["posts"], queryFn: () => listPosts() });
   const [draft, setDraft] = useState("");
   const queryClient = useQueryClient();
   const createMutation = useMutation({
@@ -76,7 +76,7 @@ function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
     <section className="border-b border-black/5 py-6">
       <div className="flex gap-4"><div className="avatar h-11 w-11 shrink-0">{initials(user?.email ?? "FOZ")}</div><div className="min-w-0 flex-1">
         <textarea id="post-composer" rows={draft ? 4 : 1} value={draft} onFocus={onNewPost} onChange={(event) => setDraft(event.target.value)} placeholder="Start a discussion on FOZ..." className="w-full resize-none bg-transparent pt-2 text-[17px] text-[#5c3f41] outline-none placeholder:text-[#5c3f41]" />
-        {draft && <div className="mt-3 flex items-center justify-between border-t border-black/5 pt-3"><span className="text-xs text-[#5c3f41]">{draft.length}/5000</span><button type="button" disabled={!draft.trim() || createMutation.isPending} onClick={() => createMutation.mutate({ body: draft })} className="rounded-full bg-[#1b1b1b] px-5 py-2 text-sm font-bold text-white disabled:opacity-40">Post</button></div>}
+        {draft && <div className="mt-3 flex items-center justify-between border-t border-black/5 pt-3"><span className="text-xs text-[#5c3f41]">{draft.length}/5000</span><button type="button" disabled={!draft.trim() || createMutation.isPending} onClick={() => createMutation.mutate({ content: draft })} className="rounded-full bg-[#1b1b1b] px-5 py-2 text-sm font-bold text-white disabled:opacity-40">Post</button></div>}
       </div></div>
     </section>
     {isLoading && <Loading />}
@@ -93,21 +93,21 @@ function FeedPost({ post, user }: { post: Post; user: Viewer }) {
   const enter = () => { if (!user) navigate("/login"); else reaction.mutate(); };
   return <article className="border-b border-black/5 px-2 py-7">
     <div className="flex gap-4"><Avatar id={post.authorId} /><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><div><span className="font-bold">{authorName(post.authorId, user)}</span><span className="ml-2 text-[#5c3f41]">@{shortId(post.authorId)} · {relativeTime(post.createdAt)}</span></div>{user?.id === post.authorId && <button type="button" onClick={() => confirm("Delete this post? This cannot be undone.") && remove.mutate()} aria-label="Delete post" className="text-[#ba0035]"><span className="material-symbols-outlined">delete</span></button>}</div>
-      <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.body}</Link>
-      <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]"><Action icon="chat_bubble" label="Comments" onClick={() => navigate(`/posts/${post.id}`)} /><Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} /><Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} /><Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.body }).catch(() => undefined)} /></div>
+      <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.content}</Link>
+      <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]"><Action icon="chat_bubble" label="Comments" onClick={() => navigate(`/posts/${post.id}`)} /><Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} /><Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} /><Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.content || "" }).catch(() => undefined)} /></div>
     </div></div>
   </article>;
 }
 
 function ThreadDetail({ postId, user, onAccount }: { postId: string; user: Viewer; onAccount: () => void }) {
-  const navigate = useNavigate(); const { data } = useQuery({ queryKey: ["posts"], queryFn: listPosts }); const post = data?.items.find((item) => item.id === postId);
+  const navigate = useNavigate(); const { data } = useQuery({ queryKey: ["posts"], queryFn: () => listPosts() }); const post = data?.items?.find((item) => item.id === postId);
   const commentsQuery = useQuery({ queryKey: ["comments", postId], queryFn: () => listComments(postId), enabled: Boolean(post) });
   const [draft, setDraft] = useState(""); const [replyTo, setReplyTo] = useState<Comment | null>(null); const queryClient = useQueryClient();
   const create = useMutation({ mutationFn: () => createComment(postId, { body: draft, ...(replyTo ? { parentCommentId: replyTo.id } : {}) }), onSuccess: async () => { setDraft(""); setReplyTo(null); await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); toast.success("Reply posted."); }, onError: showError });
   const roots = useMemo(() => (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId), [commentsQuery.data]);
   if (!post && data) return <p className="px-4 py-20 text-center">This post is no longer available.</p>;
   return <><header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-black/5 bg-[#f9f9f9]/90 px-4 backdrop-blur"><button type="button" onClick={() => navigate("/")} className="icon-button" aria-label="Back"><span className="material-symbols-outlined">arrow_back</span></button><Link to="/" className="text-[30px] font-black tracking-[-0.08em]">FOZ</Link><button type="button" onClick={user ? onAccount : () => navigate("/login")} className="icon-button" aria-label="Account"><span className="material-symbols-outlined">settings</span></button></header>
-    {post ? <article className="border-b border-black/5 px-4 py-7"><div className="flex gap-3"><Avatar id={post.authorId} /><div><p className="font-bold">{authorName(post.authorId, user)}</p><p className="text-sm text-[#6a6161]">@{shortId(post.authorId)} · {relativeTime(post.createdAt)}</p></div></div><p className="mt-5 whitespace-pre-wrap text-[18px] leading-8">{post.body}</p><div className="mt-5 border-t border-black/5 pt-3"><Action icon="chat_bubble" count={commentsQuery.data?.items.length ?? 0} label="Comments" onClick={() => undefined} /></div></article> : <Loading />}
+    {post ? <article className="border-b border-black/5 px-4 py-7"><div className="flex gap-3"><Avatar id={post.authorId} /><div><p className="font-bold">{authorName(post.authorId, user)}</p><p className="text-sm text-[#6a6161]">@{shortId(post.authorId)} · {relativeTime(post.createdAt)}</p></div></div><p className="mt-5 whitespace-pre-wrap text-[18px] leading-8">{post.content}</p><div className="mt-5 border-t border-black/5 pt-3"><Action icon="chat_bubble" count={commentsQuery.data?.items.length ?? 0} label="Comments" onClick={() => undefined} /></div></article> : <Loading />}
     <section className="px-4 py-2">{roots.map((comment) => <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />)}</section>
     <form onSubmit={(event) => { event.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="fixed inset-x-0 bottom-0 z-30 border-t border-black/5 bg-white/95 p-3 backdrop-blur"><div className="mx-auto flex max-w-[640px] items-center gap-3">{replyTo && <button type="button" onClick={() => setReplyTo(null)} className="text-xs text-[#ba0035]">Replying to {shortId(replyTo.authorId)} ×</button>}<input value={draft} onFocus={() => !user && navigate("/login")} onChange={(event) => setDraft(event.target.value)} placeholder={replyTo ? "Write a reply..." : "Reply to this post..."} className="min-w-0 flex-1 rounded-full bg-[#f3f3f3] px-5 py-3 outline-none"/><button type="submit" disabled={!draft.trim() || create.isPending} className="font-bold text-[#ba0035] disabled:opacity-40">Post</button></div></form>
   </>;

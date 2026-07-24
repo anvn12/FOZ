@@ -3,6 +3,7 @@ import {
   type AnyPgColumn,
   uuid,
   text,
+  integer,
   timestamp,
   index,
   uniqueIndex,
@@ -17,14 +18,20 @@ export const posts = pgTable(
     authorId: uuid("author_id")
       .notNull()
       .references(() => userAccounts.id, { onDelete: "restrict" }),
-    body: text("body").notNull(),
+    content: text("content"),
+    parentId: uuid("parent_id").references((): AnyPgColumn => posts.id, { onDelete: "cascade" }),
+    repostOfId: uuid("repost_of_id").references((): AnyPgColumn => posts.id, { onDelete: "cascade" }),
     visibilityState: text("visibility_state", { enum: contentVisibilityStates }).notNull(),
     lifecycleState: text("lifecycle_state", { enum: contentLifecycleStates }).notNull(),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("idx_posts_author_id").on(t.authorId)],
+  (t) => [
+    index("idx_posts_author_id").on(t.authorId),
+    index("idx_posts_parent_id").on(t.parentId),
+    index("idx_posts_repost_of_id").on(t.repostOfId),
+  ],
 );
 
 export const comments = pgTable(
@@ -69,8 +76,25 @@ export const reactions = pgTable(
   ],
 );
 
+export const postAttachments = pgTable(
+  "post_attachments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    fileUrl: text("file_url").notNull(),
+    fileType: text("file_type").notNull(),
+    fileSize: integer("file_size").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("idx_post_attachments_post_id").on(t.postId)],
+);
+
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
+export type PostAttachment = typeof postAttachments.$inferSelect;
+export type NewPostAttachment = typeof postAttachments.$inferInsert;
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;

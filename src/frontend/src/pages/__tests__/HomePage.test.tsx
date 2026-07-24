@@ -67,7 +67,7 @@ describe("HomePage Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
-  it("should remove Log in button and trigger coming soon toast for authenticated user on Create click", async () => {
+  it("should remove Log in button and open CreatePostModal for authenticated user on Create click", async () => {
     useAuthStore.setState({
       user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
       accessToken: "mock-token",
@@ -85,11 +85,12 @@ describe("HomePage Component", () => {
       fireEvent.click(firstCreateBtn);
     }
 
-    // Verify toast is triggered
-    expect(toast).toHaveBeenCalledWith("Post creation coming soon");
+    // Verify modal is opened
+    expect(screen.getByText("Create Post")).toBeDefined();
+    expect(screen.getByPlaceholderText("Start a discussion on FOZ...")).toBeDefined();
   });
 
-  it("should trigger coming soon toast for guest clicking Create button without redirecting", () => {
+  it("should redirect guest to login when clicking Create button", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage />);
 
@@ -100,9 +101,8 @@ describe("HomePage Component", () => {
       fireEvent.click(firstCreateBtn);
     }
 
-    // Verify toast is triggered directly without redirection
-    expect(toast).toHaveBeenCalledWith("Post creation coming soon");
-    expect(mockNavigate).not.toHaveBeenCalled();
+    // Verify it redirects
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
   it("should open LogoutDialog when clicking Log out button", async () => {

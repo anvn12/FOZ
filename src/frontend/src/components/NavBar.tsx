@@ -4,6 +4,7 @@ import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
 import { LogoutDialog } from "#frontend/components/LogoutDialog";
 import { toast } from "react-hot-toast";
+import { CreatePostModal } from "#frontend/components/CreatePostModal";
 
 // Internal helper — renders the user's avatar (or a placeholder) in the nav bar.
 function ProfileNavBarAvatar({ userId }: { userId: string }) {
@@ -48,9 +49,11 @@ export function NavBar() {
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   // Determine which nav icon is active based on current route.
   const isHomeActive = location.pathname === "/";
+  const isSearchActive = location.pathname === "/search";
   const isProfileActive = location.pathname.startsWith("/profiles/");
 
   const handleProtectedClick = (e: React.MouseEvent, path?: string) => {
@@ -66,7 +69,11 @@ export function NavBar() {
 
   const handleCreateClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    toast("Post creation coming soon");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setIsCreateOpen(true);
   };
 
   return (
@@ -103,7 +110,9 @@ export function NavBar() {
 
           <Link
             to="/search"
-            className="p-3 rounded-xl hover:bg-surface-container-low transition-colors group text-outline hover:text-primary"
+            className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors group ${
+              isSearchActive ? "text-primary" : "text-outline hover:text-primary"
+            }`}
             aria-label="Search"
           >
             <svg
@@ -306,8 +315,8 @@ export function NavBar() {
             home
           </span>
         </Link>
-        <Link to="/search" className="text-outline hover:text-primary p-2" aria-label="Search">
-          <span className="material-symbols-outlined">search</span>
+        <Link to="/search" className={`p-2 ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"}`} aria-label="Search">
+          <span className={`material-symbols-outlined ${isSearchActive ? "font-bold" : ""}`} style={isSearchActive ? { fontVariationSettings: "'FILL' 1" } : {}}>search</span>
         </Link>
         <button
           onClick={handleCreateClick}
@@ -336,6 +345,10 @@ export function NavBar() {
         user={user}
         open={isLogoutOpen}
         onClose={() => setIsLogoutOpen(false)}
+      />
+      <CreatePostModal 
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
       />
     </>
   );
