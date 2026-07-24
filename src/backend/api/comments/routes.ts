@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { optionalAuth, requireAuth, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { createCommentRequestSchema, updateCommentRequestSchema } from "#shared/schemas/interactions.js";
-import { createComment, updateCommentBody, deleteComment, listComments } from "#backend/services/interactions/comments.js";
+import { createComment, updateCommentBody, deleteComment, listComments, listAuthorComments } from "#backend/services/interactions/comments.js";
 
 export const commentRouter = Router();
 
@@ -34,6 +34,18 @@ commentRouter.get("/posts/:postId/comments", optionalAuth, async (req: AuthedReq
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
+    next(err);
+  }
+});
+
+commentRouter.get("/comments", optionalAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const authorId = req.query.authorId as string | undefined;
+    if (!authorId) {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: "authorId is required" } });
+    }
+    return res.status(200).json({ items: await listAuthorComments(authorId, req.user?.id) });
+  } catch (err) {
     next(err);
   }
 });

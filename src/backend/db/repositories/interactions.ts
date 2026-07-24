@@ -12,8 +12,10 @@ export async function getCommentById(id: string) {
   return row;
 }
 
-export async function listPosts() {
-  return db.select().from(posts).where(and(eq(posts.visibilityState, "public"), isNull(posts.deletedAt)));
+export async function listPosts(authorId?: string) {
+  const conditions = [eq(posts.visibilityState, "public"), isNull(posts.deletedAt)];
+  if (authorId) conditions.push(eq(posts.authorId, authorId));
+  return db.select().from(posts).where(and(...conditions));
 }
 
 export async function listCommentsForPost(postId: string) {
@@ -21,6 +23,14 @@ export async function listCommentsForPost(postId: string) {
     .select()
     .from(comments)
     .where(and(eq(comments.postId, postId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)));
+}
+
+export async function listCommentsByAuthor(authorId: string) {
+  return db
+    .select()
+    .from(comments)
+    .where(and(eq(comments.authorId, authorId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)))
+    .orderBy(comments.createdAt);
 }
 
 export async function countReactionsForTarget(targetType: "post" | "comment", targetId: string) {

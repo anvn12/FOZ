@@ -11,12 +11,12 @@ vi.mock("../../api/profile.js", () => ({
 }));
 
 describe("LogoutDialog Component", () => {
-  const mockUser = {
-    id: "user-123",
-    email: "user@example.com",
-    role: "standard",
-    status: "active",
-  };
+    const mockUser: any = {
+      id: "test-user-id",
+      email: "test@example.com",
+      role: "standard" as any,
+      status: "active",
+    };
 
   const mockOnClose = vi.fn();
 
