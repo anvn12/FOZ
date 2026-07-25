@@ -1,19 +1,321 @@
 # Table of Contents
 
-1. [A - How to add Table of Contents](#a---how-to-add-table-of-contents)
-	1. [1. Requirements](#1-requirements)
-		1. [1.1. How to export to PDF](#11-how-to-export-to-pdf)
-2. [B - Export to PDF](#b---export-to-pdf)
-	1. [1. Requirements](#1-requirements)
-		1. [1.1 How to export to PDF](#11-how-to-export-to-pdf)
-3. [C - Diagram example](#c---diagram-example)
-	1. [1. Diagram rules](#1-diagram-rules)
-4. [D - Image example](#d---image-example)
-	1. [1. Insert image rule](#1-insert-image-rule)
+- [A - Revised Project Plan](#a---revised-project-plan)
+	- [1. Introduction](#1-introduction)
+	- [2. Project Overview](#2-project-overview)
+	- [3. Project Organization](#3-project-organization)
+		- [3.1 Team Structure and Member Roles](#31-team-structure-and-member-roles)
+		- [3.2 Risk Management](#32-risk-management)
+	- [4. Project Plan](#4-project-plan)
+		- [4.1 Completed Sprint (Sprint 1 - PA1, Sprint 2 - PA2)](#41-completed-sprint-sprint-1---pa1-sprint-2---pa2)
+			- [4.1.1 Sprint 1 - PA1](#411-sprint-1---pa1)
+			- [4.1.2 Sprint 2 - PA2](#412-sprint-2---pa2)
+		- [4.2 Upcoming Sprint (Sprint 3 - PA3)](#42-upcoming-sprint-sprint-3---pa3)
+		- [4.3 Future Sprints (Sprint 4 - PA4, Sprint 5 - PA5)](#43-future-sprints-sprint-4---pa4-sprint-5---pa5)
+			- [4.3.1 Planned Tasks](#431-planned-tasks)
+		- [4.4 Schedule](#44-schedule)
+		- [4.5 Build Plan](#45-build-plan)
+- [B - Detailed Vision Document](#b---detailed-vision-document)
+	- [Version 1.3](#version-13)
+		- [Vision (Small Project)](#vision-small-project)
+		- [1. Introduction](#1-introduction)
+			- [1.1. References](#11-references)
+		- [2. Positioning](#2-positioning)
+			- [2.1. Problem Statement](#21-problem-statement)
+			- [2.2. Product Position Statement](#22-product-position-statement)
+		- [3. Stakeholder and User Descriptions](#3-stakeholder-and-user-descriptions)
+			- [3.1. Stakeholder Summary](#31-stakeholder-summary)
+			- [3.2. User Summary](#32-user-summary)
+			- [3.3. User Environment](#33-user-environment)
+			- [3.4. Summary of Key Stakeholder or User Needs](#34-summary-of-key-stakeholder-or-user-needs)
+			- [3.5. Alternatives and Competition](#35-alternatives-and-competition)
+		- [4. Product Overview](#4-product-overview)
+			- [4.1. Product Perspective](#41-product-perspective)
+			- [4.2. Assumptions and Dependencies](#42-assumptions-and-dependencies)
+			- [4.3. Scope Boundaries](#43-scope-boundaries)
+		- [5. Product Features](#5-product-features)
+			- [Key Workflows (Mermaid Diagrams)](#key-workflows-mermaid-diagrams)
+		- [6. Non-Functional Requirements](#6-non-functional-requirements)
+- [C - Use-Case Model](#c---use-case-model)
+	- [1. Authentication & Profile Management](#1-authentication--profile-management)
+	- [2. Core Forum Interactions & AI Feature](#2-core-forum-interactions--ai-feature)
+	- [3. Administration & Moderation](#3-administration--moderation)
+- [D - Use-Case Specification](#d---use-case-specification)
+	- [Revision History](#revision-history)
+- [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
+	- [1. Sign Up](#1-sign-up)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Email Already Exists](#221-email-already-exists)
+			- [2.2.2 Weak Password](#222-weak-password)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Log In](#use-case-specification-log-in)
+	- [1. Log In](#1-log-in)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Invalid Credentials](#221-invalid-credentials)
+			- [2.2.2 Account Suspended](#222-account-suspended)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Log Out](#use-case-specification-log-out)
+	- [1. Log Out](#1-log-out)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Session Already Expired](#221-session-already-expired)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
+	- [1. Manage Profile](#1-manage-profile)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Invalid Input Format](#221-invalid-input-format)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Change Password](#use-case-specification-change-password)
+	- [1. Change Password](#1-change-password)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Incorrect Current Password](#221-incorrect-current-password)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
+	- [1. Change Avatar](#1-change-avatar)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 File Too Large](#221-file-too-large)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
+	- [1. Browse Feed](#1-browse-feed)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 No Posts Available](#221-no-posts-available)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Search Content](#use-case-specification-search-content)
+	- [1. Search Content](#1-search-content)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Empty Query](#221-empty-query)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
+	- [1. View Post Details](#1-view-post-details)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Post Removed or Hidden](#221-post-removed-or-hidden)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Create Post](#use-case-specification-create-post)
+	- [1. Create Post](#1-create-post)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Content Validation Error](#221-content-validation-error)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
+	- [1. Interact with Post](#1-interact-with-post)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
+	- [1. Leave Comment](#1-leave-comment)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Empty Comment](#221-empty-comment)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
+	- [1. Like/Unlike](#1-likeunlike)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
+	- [1. Request AI Summary](#1-request-ai-summary)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 AI Service Error](#221-ai-service-error)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
+	- [1. Delete Own Post](#1-delete-own-post)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 User Cancels Deletion](#221-user-cancels-deletion)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
+	- [1. Report Inappropriate Content](#1-report-inappropriate-content)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Content Already Reported by User](#221-content-already-reported-by-user)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
+	- [1. Review Reports](#1-review-reports)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 Escalation Required](#221-escalation-required)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
+	- [1. Forward Report to Admin](#1-forward-report-to-admin)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
+	- [1. Delete Any Content](#1-delete-any-content)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
+	- [1. Permanently Remove User](#1-permanently-remove-user)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
+	- [1. Assign Moderator Role](#1-assign-moderator-role)
+		- [1.1 Brief Description](#11-brief-description)
+	- [2. Flow of Events](#2-flow-of-events)
+		- [2.1 Basic Flow](#21-basic-flow)
+		- [2.2 Alternative Flows](#22-alternative-flows)
+			- [2.2.1 User is already a Moderator](#221-user-is-already-a-moderator)
+	- [3. Special Requirements](#3-special-requirements)
+	- [4. Preconditions](#4-preconditions)
+	- [5. Postconditions](#5-postconditions)
+	- [6. Extension Points](#6-extension-points)
+	- [7. Prototype Requirement](#7-prototype-requirement)
+- [E - Implement 1 Functional Group using Spec Kit (Authentication)](#e---implement-1-functional-group-using-spec-kit-authentication)
+	- [Submission Deliverables](#submission-deliverables)
+		- [1. Overview](#1-overview)
+		- [2. UI Layer](#2-ui-layer)
+		- [3. API & Logic Layer](#3-api--logic-layer)
+		- [4. Token Strategy](#4-token-strategy)
+		- [5. Data Persistence](#5-data-persistence)
+		- [6. Auth Flow Diagram](#6-auth-flow-diagram)
+		- [7. Token Storage Diagram](#7-token-storage-diagram)
+- [F - AI Usage Report and Weekly Report](#f---ai-usage-report-and-weekly-report)
+	- [AI Usage Report](#ai-usage-report)
+		- [Declaration of No AI Use](#declaration-of-no-ai-use)
+		- [AI Usage Notes](#ai-usage-notes)
+		- [Weekly Report](#weekly-report)
+			- [Sprint Planning](#sprint-planning)
+			- [Scrum Meetings](#scrum-meetings)
+			- [Sprint Review](#sprint-review)
+		- [Jira Board](#jira-board)
+
 
 # A - Revised Project Plan
 
-Work performed by: Nguyễn Hải Nam | Reviewed & Edited by: Nguyễn Tuấn An
+*Work performed by: Nguyễn Hải Nam | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
+
+All changes have been made compared to the PA2-2026 version can be found at: `Changes.md`
 
 ## 1. Introduction
 
@@ -173,6 +475,8 @@ ete all Table of Contents (Including title) -> CTRL P -> TABLE OF CONTENTS==
 
 *Work performed by: Nguyễn Hải Trọng | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
 
+All changes have been made compared to the PA2-2026 version can be found at: `Changes.md`
+
 ## Version 1.3
 
 | | |
@@ -192,13 +496,13 @@ ete all Table of Contents (Including title) -> CTRL P -> TABLE OF CONTENTS==
 The purpose of this Vision Document is to collect, analyze, and define the high-level needs and features of FOZ, a web-based forum application. It focuses on the capabilities required by the stakeholders and target users, providing a clear foundation for the project's scope. 
 
 #### 1.1. References
-* CS300 - Introduction to Software Engineering: PA1-2026 Guidelines.
-* CS300 - Introduction to Software Engineering: PA2-2026 Guidelines.
+
+* Introduction to Software Engineering: PA1-2026 Guidelines.
+* Introduction to Software Engineering: PA2-2026 Guidelines.
 * FOZ Project Proposal (PA1).
 * FOZ Existing App Survey (Reddit, Threads).
 
 ### 2. Positioning
-
 
 #### 2.1. Problem Statement
 
@@ -222,8 +526,8 @@ The purpose of this Vision Document is to collect, analyze, and define the high-
 
 ### 3. Stakeholder and User Descriptions
 
-
 #### 3.1. Stakeholder Summary
+
 | Name | Description | Responsibilities |
 | :--- | :--- | :--- |
 | **Project Manager** | Team leader (Nguyễn Tuấn An). | Facilitates meetings, tracks sprint progress in Jira, ensures deadlines are met, and oversees project delivery. |
@@ -231,6 +535,7 @@ The purpose of this Vision Document is to collect, analyze, and define the high-
 | **Instructors / TAs** | Course evaluators. | Monitors project progress, provides feedback, and evaluates the final product against course requirements. |
 
 #### 3.2. User Summary
+
 | Name | Description | Responsibilities |
 | :--- | :--- | :--- |
 | **Guest** | Unauthenticated visitors. | Read-only access: can view profiles, read posts, and see comments. Cannot post, like, report, or trigger the AI Post Summarize (TL;DR) feature. Any write interaction prompts the authentication flow. |
@@ -239,11 +544,12 @@ The purpose of this Vision Document is to collect, analyze, and define the high-
 | **Administrator** | Highest level of system access. | Full control via the admin dashboard: can permanently ban users, delete content, and assign Moderator roles. All actions are performed through the application UI, not direct database access. |
 
 #### 3.3. User Environment
+
 FOZ is designed as a web-first application, ensuring maximum accessibility across various devices without the need for dedicated app installations.
-* **Supported Devices:** Desktop computers, laptops, tablets, and mobile smartphones. The UI is fully responsive and adapts to screen sizes ranging from 320px (mobile) to 4K displays.
-* **Operating Systems:** Platform-agnostic (Windows, macOS, Linux, iOS, Android).
-* **Supported Browsers:** Modern web browsers with JavaScript enabled, including Google Chrome (v90+), Safari (v14+), Microsoft Edge (v90+), and Mozilla Firefox (v88+).
-* **Network Requirements:** Requires an active broadband, 4G, or 5G internet connection for real-time interactions, uploading images and videos, and fetching dynamic feeds. Offline mode is not supported.
+- **Supported Devices:** Desktop computers, laptops, tablets, and mobile smartphones. The UI is fully responsive and adapts to screen sizes ranging from 320px (mobile) to 4K displays.
+- **Operating Systems:** Platform-agnostic (Windows, macOS, Linux, iOS, Android).
+- **Supported Browsers:** Modern web browsers with JavaScript enabled, including Google Chrome (v90+), Safari (v14+), Microsoft Edge (v90+), and Mozilla Firefox (v88+).
+- **Network Requirements:** Requires an active broadband, 4G, or 5G internet connection for real-time interactions, uploading images and videos, and fetching dynamic feeds. Offline mode is not supported.
 
 #### 3.4. Summary of Key Stakeholder or User Needs
 
@@ -255,25 +561,26 @@ FOZ is designed as a web-first application, ensuring maximum accessibility acros
 
 #### 3.5. Alternatives and Competition
 Based on our PA1 survey and market analysis, FOZ competes in the community discussion space against several established platforms:
-* **Threads:** Features a very clean UI and smooth cross-platform authentication (via Instagram). However, it leans heavily towards micro-blogging and aggressive algorithm recommendations rather than structured, topic-based forum discussions. FOZ focuses on chronological/engagement-based feeds without intrusive algorithmic manipulation.
-* **Reddit:** Excels in community categorization and deep, nested discussions. However, its interface can be highly cluttered and overwhelming for casual users, and its strict karma/rules system acts as a high barrier to entry. FOZ bridges this gap by offering the deep discussion capabilities of Reddit (nested comments) but with a minimalist, accessible UI similar to Threads.
-
+- **Threads:** Features a very clean UI and smooth cross-platform authentication (via Instagram). However, it leans heavily towards micro-blogging and aggressive algorithm recommendations rather than structured, topic-based forum discussions. FOZ focuses on chronological/engagement-based feeds without intrusive algorithmic manipulation.
+- **Reddit:** Excels in community categorization and deep, nested discussions. However, its interface can be highly cluttered and overwhelming for casual users, and its strict karma/rules system acts as a high barrier to entry. FOZ bridges this gap by offering the deep discussion capabilities of Reddit (nested comments) but with a minimalist, accessible UI similar to Threads.
 
 ### 4. Product Overview
-
 
 #### 4.1. Product Perspective
 FOZ is an independent, self-contained web application. It acts as a centralized hub for community interactions, requiring only a modern web browser to access. The system will integrate with a third-party AI service (such as the OpenAI API or Gemini API) strictly to power the "Post Summarize" feature.
 
 #### 4.2. Assumptions and Dependencies
-* **Internet Connection:** The application requires a stable internet connection to fetch real-time discussions.
-* **AI API Availability:** The TL;DR feature depends on external AI providers. To mitigate quota exhaustion or outages, the backend supports a fallback provider chain so that a single provider failure does not disable the feature.
-* **Modern Browsers:** It is assumed that users are operating modern web browsers with JavaScript enabled.
+
+- **Internet Connection:** The application requires a stable internet connection to fetch real-time discussions.
+- **AI API Availability:** The TL;DR feature depends on external AI providers. To mitigate quota exhaustion or outages, the backend supports a fallback provider chain so that a single provider failure does not disable the feature.
+- **Modern Browsers:** It is assumed that users are operating modern web browsers with JavaScript enabled.
 
 
 #### 4.3. Scope Boundaries
-* **In-scope:** A web-based application covering the functional groups defined in [§5 Product Features](#5-product-features) — Authentication, Profile Management, Post Creation (text, images, video), Feed Generation, User Interactions, Search & Discovery, Administration & Moderation, and Post Summarize (TL;DR).
-* **Out-of-scope:** Native mobile applications (iOS/Android), real-time chat channels, push notifications, and complex personalized recommendation algorithms.
+
+- **In-scope:** A web-based application covering the functional groups defined in [5. Product Features](#5-product-features)
+ — Authentication, Profile Management, Post Creation (text, images, video), Feed Generation, User Interactions, Search & Discovery, Administration & Moderation, and Post Summarize (TL;DR).
+- **Out-of-scope:** Native mobile applications (iOS/Android), real-time chat channels, push notifications, and complex personalized recommendation algorithms.
 
 ### 5. Product Features 
 
@@ -312,6 +619,7 @@ Authenticated users can edit profile information, change passwords, and update a
 #### Key Workflows (Mermaid Diagrams)
 
 **Workflow 1: User Authentication & Post Creation**
+
 ```mermaid
 flowchart TD
     A[User clicks Create Post] --> B{Is Authenticated?}
@@ -327,7 +635,9 @@ flowchart TD
     H -- Yes --> J[Save to Database]
     J --> K[Redirect to New Post Page]
 ```
+
 **Workflow 2: AI Post Summarize (TL;DR)**
+
 ```mermaid
 sequenceDiagram
     actor User
@@ -345,6 +655,7 @@ sequenceDiagram
 ```
 
 **Workflow 3: User Reports a Post, Comment, or User**
+
 ```mermaid
 sequenceDiagram
     actor User
@@ -362,6 +673,7 @@ sequenceDiagram
 ```
 
 **Workflow 4: Moderator Reviews Reports & Escalates Critical Cases**
+
 ```mermaid
 sequenceDiagram
     actor Moderator
@@ -385,6 +697,7 @@ sequenceDiagram
 ```
 
 **Workflow 5: Admin Acts on Escalated Reports**
+
 ```mermaid
 sequenceDiagram
     actor Admin
@@ -412,31 +725,36 @@ sequenceDiagram
 ### 6. Non-Functional Requirements
 
 **Performance Requirements**
-* The application's initial page load time must be < 2 seconds on a standard broadband connection. Frontend routing between pages should feel instantaneous (< 200ms).
-* Backend API response times for standard queries (fetching feeds, creating posts, querying comments) must be < 500 milliseconds.
-* The system architecture must support at least 100 concurrent users interacting with the platform simultaneously without noticeable performance degradation.
+
+- The application's initial page load time must be < 2 seconds on a standard broadband connection. Frontend routing between pages should feel instantaneous (< 200ms).
+- Backend API response times for standard queries (fetching feeds, creating posts, querying comments) must be < 500 milliseconds.
+- The system architecture must support at least 100 concurrent users interacting with the platform simultaneously without noticeable performance degradation.
 
 **Security Requirements**
-* All user passwords must be securely hashed and salted (using bcrypt or argon2) before being stored in the PostgreSQL database.
-* All client-server communications must be encrypted using HTTPS (TLS 1.2 or higher).
-* All user input must be strictly validated server-side using robust schema validation and output-encoded to prevent Cross-Site Scripting (XSS) and SQL injection attacks.
-* Authentication sessions must be managed via secure, HttpOnly, SameSite cookies with JWT tokens to prevent Cross-Site Request Forgery (CSRF).
-* API endpoints, especially the AI Post Summarize (TL;DR) and authentication routes, must be rate-limited per user/IP to prevent brute-force attacks, quota abuse, and cost escalation.
-* User data (profiles, posts, comments) must be stored securely. Users must be able to delete their account and associated content. The system must not share personal data with third parties beyond what is required for core functionality.
+
+- All user passwords must be securely hashed and salted (using bcrypt or argon2) before being stored in the PostgreSQL database.
+- All client-server communications must be encrypted using HTTPS (TLS 1.2 or higher).
+- All user input must be strictly validated server-side using robust schema validation and output-encoded to prevent Cross-Site Scripting (XSS) and SQL injection attacks.
+- Authentication sessions must be managed via secure, HttpOnly, SameSite cookies with JWT tokens to prevent Cross-Site Request Forgery (CSRF).
+- API endpoints, especially the AI Post Summarize (TL;DR) and authentication routes, must be rate-limited per user/IP to prevent brute-force attacks, quota abuse, and cost escalation.
+- User data (profiles, posts, comments) must be stored securely. Users must be able to delete their account and associated content. The system must not share personal data with third parties beyond what is required for core functionality.
 
 **Reliability & Availability Requirements**
-* The system should target a 99.9% uptime for core features (viewing and creating posts).
-* If the external AI provider is unavailable or rate-limited, the TL;DR feature must degrade gracefully with a clear error message in the UI, without affecting the rest of the application's functionality.
-* The application must log critical errors and key moderation actions (bans, content removal, report escalations) to support system monitoring, debugging, and incident review.
+
+- The system should target a 99.9% uptime for core features (viewing and creating posts).
+- If the external AI provider is unavailable or rate-limited, the TL;DR feature must degrade gracefully with a clear error message in the UI, without affecting the rest of the application's functionality.
+- The application must log critical errors and key moderation actions (bans, content removal, report escalations) to support system monitoring, debugging, and incident review.
 
 **Platform & Usability Requirements**
-* The UI must be implemented using responsive design principles, ensuring it renders correctly and maintains high usability across mobile, tablet, and desktop viewports.
-* The application must be rigorously tested and confirmed functional on the latest stable versions of Google Chrome, Safari, Mozilla Firefox, and Microsoft Edge.
-* The platform should follow WCAG basic guidelines, including proper semantic HTML, alt-text for media attachments, and sufficient color contrast ratios to accommodate visually impaired users.
-* All interactive elements must be keyboard-navigable. The application should support screen readers via proper ARIA attributes and semantic HTML structure.
-* Core actions (create a post, comment, search, generate TL;DR) must be highly intuitive, allowing a new authenticated user to complete them successfully without any external training, tutorials, or documentation.
+
+- The UI must be implemented using responsive design principles, ensuring it renders correctly and maintains high usability across mobile, tablet, and desktop viewports.
+- The application must be rigorously tested and confirmed functional on the latest stable versions of Google Chrome, Safari, Mozilla Firefox, and Microsoft Edge.
+- The platform should follow WCAG basic guidelines, including proper semantic HTML, alt-text for media attachments, and sufficient color contrast ratios to accommodate visually impaired users.
+- All interactive elements must be keyboard-navigable. The application should support screen readers via proper ARIA attributes and semantic HTML structure.
+- Core actions (create a post, comment, search, generate TL;DR) must be highly intuitive, allowing a new authenticated user to complete them successfully without any external training, tutorials, or documentation.
 
 # C - Use-Case Model
+
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam*
 
 Based on the requirements documented in the Vision Document, the system's use cases are modeled below using Mermaid syntax[cite: 10]. To ensure clarity and maintainability, the comprehensive system is divided into three logical diagrams based on functional groups.
@@ -444,9 +762,9 @@ Based on the requirements documented in the Vision Document, the system's use ca
 ## 1. Authentication & Profile Management
 This diagram covers the fundamental access and identity management functionalities.
 
-* **Actors:** Guest, Standard User.
-* **Generalization:** `Standard User` inherits baseline viewing capabilities from `Guest`.
-* **Relationships:** `Change Password` and `Change Avatar` are optional extensions of the `Manage Profile` use case.
+- **Actors:** Guest, Standard User.
+- **Generalization:** `Standard User` inherits baseline viewing capabilities from `Guest`.
+- **Relationships:** `Change Password` and `Change Avatar` are optional extensions of the `Manage Profile` use case.
 
 ```mermaid
 flowchart LR
@@ -480,12 +798,12 @@ flowchart LR
 ## 2. Core Forum Interactions & AI Feature
 This diagram illustrates the primary value proposition of the forum, including post creation, interaction, discovery, and the AI capability.
 
-* **Actors:** Guest, Standard User.
+- **Actors:** Guest, Standard User.
 
-* **Relationships:**
-    * `Leave Comment` and `Like/Unlike` optionally extend the general `Interact with Post` use case.
+- **Relationships:**
+    - `Leave Comment` and `Like/Unlike` optionally extend the general `Interact with Post` use case.
 
-    * `Request AI Summary` extends the `View Post Details` use case, representing the on-demand "Post Summarize (TL;DR)" feature.
+    - `Request AI Summary` extends the `View Post Details` use case, representing the on-demand "Post Summarize (TL;DR)" feature.
 
 ``` mermaid
 flowchart LR
@@ -1682,3 +2000,133 @@ flowchart LR
 ```
 
 # F - AI Usage Report and Weekly Report 
+
+Author: Nguyễn Tuấn An
+
+Reviewer and Editor: Phạm Đinh Gia Khánh
+
+## AI Usage Report
+
+### Declaration of No AI Use
+
+We declare that no AI tools were used in peer review tasks.
+
+### AI Usage Notes
+
+AI Usage Report of each member can be found in folder: `./AI Usage Report/`
+
+### Weekly Report
+
+#### Sprint Planning
+
+=========== 12/7, Sprint 3 planning ===============
+
+Team members present:
+
+- Nguyễn Tuấn An
+- Nguyễn Hải Nam
+- Nguyễn Hải Trọng
+- Phạm Đinh Gia Khánh
+- Võ An Phú
+
+Team members absent: None
+
+Reports:
+
+- Nguyễn Tuấn An:
+  - List all possible tasks for PA3 and for project development process, getting ideas from the team members to make sure all tasks are covered.
+  - Estimate time for each task and assign them to team members.
+
+Actions:
+
+- All team members agreed to the tasks and their assignments.
+
+Summary of the meeting:
+
+- The team has finalized the list of tasks for the sprint, including both PA3 and project development process tasks. All team members have agreed on their assignments and estimated time for each task.
+
+#### Scrum Meetings
+
+=========== 20/7, Scrum 1 ===============
+
+Nguyễn Tuấn An
+
+1. Assigned work to team members, fixed and wrote setup scripts, wrote test cases for post creation functional group, implemented profile management functional group, set up spec kit for antigravity.
+2. Test profile management functional group with the test cases written by Trong, write F AI Usage Report and Weekly Report, review A Revised Project Plan.
+3. My work has been delayed due to error in system setup, running out of AI token.
+
+Nguyễn Hải Nam
+1. Implement user interactions
+2. Write Revised Project Plan and Write test case for feed generation
+3. I can not complete my tasks on time due to personal circumstances and delays from other dependencies within the team.
+
+Nguyễn Hải Trọng
+1. Write Use-Case Model
+2. Write test cases for profile management, Implement Post Creation, Write Use-Case Specification, Update Vision Document based on TA's feedback
+3. None
+
+Phạm Đinh Gia Khánh
+1. None
+2. User interaction testcases, implement search, unify UI design, review D report
+3. I missed the deadline of some tasks because had to take some exams, as well as I got the deadline wrong
+
+Võ An Phú
+1. Full drizzle schema + query layer, project scaffold, Speckit - AuthN backend + frontend, wrote 12 test cases for search
+2. Review document B and F, make video for E (AuthN)
+3. There was a conflict with parsing and pathing due to different setup configurations.
+
+=========== 25/7, Scrum 2 ===============
+
+Nguyễn Tuấn An
+1. Tested profile management, created home page UI, designed moderator UI, fixed log out dialog not showing profile picture, set up PA report format, reviewed project plan, wrote AI Usage Report and Weekly Report, reviewed demo video for report, gathered report materials and submitted report. 
+2. Plan for PA4, assign tasks to team members.
+3. None
+
+Nguyễn Hải Nam
+1. Feed Generation test cases, Write Revised Project Plan with changes.md
+2. Waiting tasks for PA4
+3. None
+
+Nguyễn Hải Trọng
+1. Write test cases for profile management, Implement Post Creation and related features in the user posts, Fix user interactions, Write Use-Case Specification, Update Vision Document based on TA's feedback
+2. Waiting tasks for PA4
+3. None
+
+Phạm Đinh Gia Khánh
+1. User interaction testcases, implement search, unify UI design, review D report
+2. Waiting tasks for PA4
+3. None
+
+Võ An Phú
+1. Implemented FE UI(LoginPage, RegisterPage), wire them to exisiting /auth endpoitns, Make video and write report for E (authN), reviewed B, reviewed F
+2. Waiting for tasks in PA4
+3. None
+
+#### Sprint Review
+
+=========== 25/7, Sprint review ===============
+
+Team members present:
+
+- Nguyễn Tuấn An
+- Nguyễn Hải Nam
+- Nguyễn Hải Trọng
+- Phạm Đinh Gia Khánh
+- Võ An Phú
+
+Team members absent: None
+
+What went well: the quality of tasks is good.
+
+What went wrong: some tasks were delayed.
+
+What problems and what caused the problems: commitment to tasks was not strong.
+
+What can be done differently in the next sprint to improve: team members should be more disciplined and committed to their tasks.
+
+What lessons we could learn: the importance of discipline and commitment to tasks.
+
+### Jira Board
+
+![Jira Board 1](./images/jira1.png)
+![Jira Board 2](./images/jira2.png)
