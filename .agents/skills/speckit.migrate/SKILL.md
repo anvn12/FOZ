@@ -1,5 +1,5 @@
 ---
-name: speckit.migrate
+name: speckit-migrate
 description: Migrate existing projects into the speckit structure by generating spec.md, plan.md, and tasks.md from existing code.
 version: 1.0.0
 depends-on: []

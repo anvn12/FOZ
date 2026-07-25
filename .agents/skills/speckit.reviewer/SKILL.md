@@ -1,5 +1,5 @@
 ---
-name: speckit.reviewer
+name: speckit-reviewer
 description: Perform code review with actionable feedback and suggestions.
 version: 1.0.0
 depends-on: []

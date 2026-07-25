@@ -1,5 +1,5 @@
 ---
-name: speckit.tester
+name: speckit-tester
 description: Execute tests, measure coverage, and report results.
 version: 1.0.0
 depends-on: []

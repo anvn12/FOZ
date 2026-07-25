@@ -1,5 +1,5 @@
 ---
-name: speckit.diff
+name: speckit-diff
 description: Compare two versions of a spec or plan to highlight changes.
 version: 1.0.0
 depends-on: []

@@ -1,5 +1,5 @@
 ---
-name: speckit.checker
+name: speckit-checker
 description: Run static analysis tools and aggregate results.
 version: 1.0.0
 depends-on: []
