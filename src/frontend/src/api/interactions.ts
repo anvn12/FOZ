@@ -6,6 +6,7 @@ import type {
   PostResponse,
   CommentResponse,
   ReactionResponse,
+  CreateReportRequest,
 } from "#shared/schemas/interactions";
 import type { ErrorEnvelope } from "#shared/schemas/auth";
 import { useAuthStore } from "#frontend/stores/auth";
@@ -112,3 +113,11 @@ export function listUserComments(authorId: string) {
     method: "GET",
   });
 }
+
+export function reportPost(postId: string, input: CreateReportRequest) {
+  return call<{ id: string; status: string }>(`/api/v1/posts/${postId}/report`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+

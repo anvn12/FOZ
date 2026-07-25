@@ -8,7 +8,7 @@ import {
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { contentLifecycleStates, contentVisibilityStates, reactionKinds } from "#shared/schema-enums.js";
+import { contentLifecycleStates, contentVisibilityStates, reactionKinds, reportStatuses, reportSubjectTypes, reportReasonTypes } from "#shared/schema-enums.js";
 import { userAccounts } from "./users.js";
 
 export const posts = pgTable(
@@ -74,6 +74,27 @@ export const reactions = pgTable(
     index("idx_reactions_target").on(t.targetType, t.targetId),
     uniqueIndex("reactions_user_target_kind_idx").on(t.userAccountId, t.targetType, t.targetId, t.reactionKind),
   ],
+);
+
+export const reports = pgTable(
+  "reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    reporterId: uuid("reporter_id")
+      .notNull()
+      .references(() => userAccounts.id, { onDelete: "restrict" }),
+    targetType: text("target_type", { enum: reportSubjectTypes }).notNull(),
+    targetId: uuid("target_id").notNull(),
+    reasonType: text("reason_type", { enum: reportReasonTypes }).notNull(),
+    details: text("details"),
+    status: text("status", { enum: reportStatuses }).notNull().default("open"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("reports_target_idx").on(t.targetType, t.targetId),
+    index("reports_status_idx").on(t.status),
+  ]
 );
 
 export const postAttachments = pgTable(
