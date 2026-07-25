@@ -10,7 +10,7 @@
 		- [4.1 Completed Sprint (Sprint 1 - PA1, Sprint 2 - PA2)](#41-completed-sprint-sprint-1---pa1-sprint-2---pa2)
 			- [4.1.1 Sprint 1 - PA1](#411-sprint-1---pa1)
 			- [4.1.2 Sprint 2 - PA2](#412-sprint-2---pa2)
-		- [4.2 Upcoming Sprint (Sprint 3 - PA3)](#42-upcoming-sprint-sprint-3---pa3)
+		- [4.2 Current Sprint (Sprint 3 - PA3)](#42-current-sprint-sprint-3---pa3)
 		- [4.3 Future Sprints (Sprint 4 - PA4, Sprint 5 - PA5)](#43-future-sprints-sprint-4---pa4-sprint-5---pa5)
 			- [4.3.1 Planned Tasks](#431-planned-tasks)
 		- [4.4 Schedule](#44-schedule)
@@ -410,7 +410,7 @@ corresponding to one PA and lasting 2-3 weeks.
 
   - However, the authentication was delayed due to technical difficulties with the database and system setup.
 
-### 4.2 Upcoming Sprint (Sprint 3 - PA3)
+### 4.2 Current Sprint (Sprint 3 - PA3)
 
 - **Main Goal:**
   - Initialize the database.
