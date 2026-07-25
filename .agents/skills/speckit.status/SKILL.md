@@ -1,5 +1,5 @@
 ---
-name: speckit.status
+name: speckit-status
 description: Display a dashboard showing feature status, completion percentage, and blockers.
 version: 1.0.0
 depends-on: []

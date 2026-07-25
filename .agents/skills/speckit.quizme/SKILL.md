@@ -1,5 +1,5 @@
 ---
-name: speckit.quizme
+name: speckit-quizme
 description: Challenge the specification with Socratic questioning to identify logical gaps, unhandled edge cases, and robustness issues.
 handoffs: 
   - label: Clarify Spec Requirements
