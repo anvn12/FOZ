@@ -1981,9 +1981,7 @@ flowchart LR
 
 # F - AI Usage Report and Weekly Report 
 
-Author: Nguyễn Tuấn An
-
-Reviewer and Editor: Phạm Đinh Gia Khánh
+*Work performed by: Nguyễn Tuấn An | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
 
 ## AI Usage Report
 
@@ -1993,7 +1991,7 @@ We declare that no AI tools were used in peer review tasks.
 
 ### AI Usage Notes
 
-AI Usage Report of each member can be found in folder: `./AI Usage Report/`
+AI Usage Report of each member can be found in folder: `ai-logs/`
 
 ### Weekly Report
 
@@ -2108,5 +2106,5 @@ What lessons we could learn: the importance of discipline and commitment to task
 
 ### Jira Board
 
-![Jira Board 1](./images/jira1.png)
+![Jira Board 1|697](./images/jira1.png)
 ![Jira Board 2](./images/jira2.png)
