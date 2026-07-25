@@ -42,255 +42,255 @@
 	- [3. Administration & Moderation](#3-administration--moderation)
 - [D - Use-Case Specification](#d---use-case-specification)
 	- [Revision History](#revision-history)
-- [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
-	- [1. Sign Up](#1-sign-up)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Email Already Exists](#221-email-already-exists)
-			- [2.2.2 Weak Password](#222-weak-password)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Log In](#use-case-specification-log-in)
-	- [1. Log In](#1-log-in)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Invalid Credentials](#221-invalid-credentials)
-			- [2.2.2 Account Suspended](#222-account-suspended)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Log Out](#use-case-specification-log-out)
-	- [1. Log Out](#1-log-out)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Session Already Expired](#221-session-already-expired)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
-	- [1. Manage Profile](#1-manage-profile)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Invalid Input Format](#221-invalid-input-format)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Change Password](#use-case-specification-change-password)
-	- [1. Change Password](#1-change-password)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Incorrect Current Password](#221-incorrect-current-password)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
-	- [1. Change Avatar](#1-change-avatar)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 File Too Large](#221-file-too-large)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
-	- [1. Browse Feed](#1-browse-feed)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 No Posts Available](#221-no-posts-available)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Search Content](#use-case-specification-search-content)
-	- [1. Search Content](#1-search-content)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Empty Query](#221-empty-query)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
-	- [1. View Post Details](#1-view-post-details)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Post Removed or Hidden](#221-post-removed-or-hidden)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Create Post](#use-case-specification-create-post)
-	- [1. Create Post](#1-create-post)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Content Validation Error](#221-content-validation-error)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
-	- [1. Interact with Post](#1-interact-with-post)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
-	- [1. Leave Comment](#1-leave-comment)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Empty Comment](#221-empty-comment)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
-	- [1. Like/Unlike](#1-likeunlike)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
-	- [1. Request AI Summary](#1-request-ai-summary)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 AI Service Error](#221-ai-service-error)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
-	- [1. Delete Own Post](#1-delete-own-post)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 User Cancels Deletion](#221-user-cancels-deletion)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
-	- [1. Report Inappropriate Content](#1-report-inappropriate-content)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Content Already Reported by User](#221-content-already-reported-by-user)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
-	- [1. Review Reports](#1-review-reports)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 Escalation Required](#221-escalation-required)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
-	- [1. Forward Report to Admin](#1-forward-report-to-admin)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
-	- [1. Delete Any Content](#1-delete-any-content)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
-	- [1. Permanently Remove User](#1-permanently-remove-user)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
-- [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
-	- [1. Assign Moderator Role](#1-assign-moderator-role)
-		- [1.1 Brief Description](#11-brief-description)
-	- [2. Flow of Events](#2-flow-of-events)
-		- [2.1 Basic Flow](#21-basic-flow)
-		- [2.2 Alternative Flows](#22-alternative-flows)
-			- [2.2.1 User is already a Moderator](#221-user-is-already-a-moderator)
-	- [3. Special Requirements](#3-special-requirements)
-	- [4. Preconditions](#4-preconditions)
-	- [5. Postconditions](#5-postconditions)
-	- [6. Extension Points](#6-extension-points)
-	- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
+		- [1. Sign Up](#1-sign-up)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Email Already Exists](#221-email-already-exists)
+				- [2.2.2 Weak Password](#222-weak-password)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Log In](#use-case-specification-log-in)
+		- [1. Log In](#1-log-in)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Invalid Credentials](#221-invalid-credentials)
+				- [2.2.2 Account Suspended](#222-account-suspended)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Log Out](#use-case-specification-log-out)
+		- [1. Log Out](#1-log-out)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Session Already Expired](#221-session-already-expired)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
+		- [1. Manage Profile](#1-manage-profile)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Invalid Input Format](#221-invalid-input-format)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Change Password](#use-case-specification-change-password)
+		- [1. Change Password](#1-change-password)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Incorrect Current Password](#221-incorrect-current-password)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
+		- [1. Change Avatar](#1-change-avatar)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 File Too Large](#221-file-too-large)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
+		- [1. Browse Feed](#1-browse-feed)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 No Posts Available](#221-no-posts-available)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Search Content](#use-case-specification-search-content)
+		- [1. Search Content](#1-search-content)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Empty Query](#221-empty-query)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
+		- [1. View Post Details](#1-view-post-details)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Post Removed or Hidden](#221-post-removed-or-hidden)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Create Post](#use-case-specification-create-post)
+		- [1. Create Post](#1-create-post)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Content Validation Error](#221-content-validation-error)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
+		- [1. Interact with Post](#1-interact-with-post)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
+		- [1. Leave Comment](#1-leave-comment)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Empty Comment](#221-empty-comment)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
+		- [1. Like/Unlike](#1-likeunlike)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
+		- [1. Request AI Summary](#1-request-ai-summary)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 AI Service Error](#221-ai-service-error)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
+		- [1. Delete Own Post](#1-delete-own-post)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 User Cancels Deletion](#221-user-cancels-deletion)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
+		- [1. Report Inappropriate Content](#1-report-inappropriate-content)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Content Already Reported by User](#221-content-already-reported-by-user)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
+		- [1. Review Reports](#1-review-reports)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 Escalation Required](#221-escalation-required)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
+		- [1. Forward Report to Admin](#1-forward-report-to-admin)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
+		- [1. Delete Any Content](#1-delete-any-content)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
+		- [1. Permanently Remove User](#1-permanently-remove-user)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
+	- [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
+		- [1. Assign Moderator Role](#1-assign-moderator-role)
+			- [1.1 Brief Description](#11-brief-description)
+		- [2. Flow of Events](#2-flow-of-events)
+			- [2.1 Basic Flow](#21-basic-flow)
+			- [2.2 Alternative Flows](#22-alternative-flows)
+				- [2.2.1 User is already a Moderator](#221-user-is-already-a-moderator)
+		- [3. Special Requirements](#3-special-requirements)
+		- [4. Preconditions](#4-preconditions)
+		- [5. Postconditions](#5-postconditions)
+		- [6. Extension Points](#6-extension-points)
+		- [7. Prototype Requirement](#7-prototype-requirement)
 - [E - Implement 1 Functional Group using Spec Kit (Authentication)](#e---implement-1-functional-group-using-spec-kit-authentication)
 	- [Submission Deliverables](#submission-deliverables)
 		- [1. Overview](#1-overview)
@@ -310,12 +310,11 @@
 			- [Sprint Review](#sprint-review)
 		- [Jira Board](#jira-board)
 
-
 # A - Revised Project Plan
 
 *Work performed by: Nguyễn Hải Nam | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
 
-All changes have been made compared to the PA2-2026 version can be found at: `Changes.md`
+All changes have been made compared to the PA2-2026 version can be found at: `changes.md`
 
 ## 1. Introduction
 
@@ -475,7 +474,7 @@ ete all Table of Contents (Including title) -> CTRL P -> TABLE OF CONTENTS==
 
 *Work performed by: Nguyễn Hải Trọng | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
 
-All changes have been made compared to the PA2-2026 version can be found at: `Changes.md`
+All changes have been made compared to the PA2-2026 version can be found at: `changes.md`
 
 ## Version 1.3
 
@@ -578,8 +577,7 @@ FOZ is an independent, self-contained web application. It acts as a centralized 
 
 #### 4.3. Scope Boundaries
 
-- **In-scope:** A web-based application covering the functional groups defined in [5. Product Features](#5-product-features)
- — Authentication, Profile Management, Post Creation (text, images, video), Feed Generation, User Interactions, Search & Discovery, Administration & Moderation, and Post Summarize (TL;DR).
+- **In-scope:** A web-based application covering the functional groups defined in `5. Product Features` — Authentication, Profile Management, Post Creation (text, images, video), Feed Generation, User Interactions, Search & Discovery, Administration & Moderation, and Post Summarize (TL;DR).
 - **Out-of-scope:** Native mobile applications (iOS/Android), real-time chat channels, push notifications, and complex personalized recommendation algorithms.
 
 ### 5. Product Features 
@@ -755,7 +753,7 @@ sequenceDiagram
 
 # C - Use-Case Model
 
-*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam | Edited by: Nguyễn Hải Nam*
 
 Based on the requirements documented in the Vision Document, the system's use cases are modeled below using Mermaid syntax[cite: 10]. To ensure clarity and maintainability, the comprehensive system is divided into three logical diagrams based on functional groups.
 
@@ -887,22 +885,22 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | 19/Jul/2026 | 1.0 | Initial draft: Documented all 21 Use-Case Specifications covering Auth, Core Interactions, and Moderation. | Nguyễn Hải Trọng |
 
-# Use-Case Specification: Sign Up
+## Use-Case Specification: Sign Up
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-01
 
-## 1. Sign Up
+### 1. Sign Up
 * **Use-Case ID:** UC-01
 * **Actor(s):** Guest
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 This use case allows an unauthenticated guest to create a new user account and profile on the FOZ platform using their email and a secure password.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the Guest navigates to the Registration page.
 2. The user enters a valid email address and a strong password.
 3. The user clicks "Create account".
@@ -913,54 +911,54 @@ This use case allows an unauthenticated guest to create a new user account and p
 8. The system issues an access token and a refresh token (saved in `refresh_sessions`).
 9. The system redirects the user to the Home Feed.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Email Already Exists
+##### 2.2.1 Email Already Exists
 1. If at step 5, the email exists in the database.
 2. The system aborts the registration.
 3. The system displays a generic error: "An account with this email already exists".
 4. The flow resumes at step 2.
 
-#### 2.2.2 Weak Password
+##### 2.2.2 Weak Password
 1. If at step 4, the password is less than 8 characters.
 2. The system highlights the field with "Password must be at least 8 characters".
 3. The flow resumes at step 2.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Security:** Passwords must be hashed via bcrypt with a minimum cost of 12. Plaintext passwords must never be logged.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user must be a Guest (unauthenticated).
 
-## 5. Postconditions
+### 5. Postconditions
 * A new user account and profile are saved in the database. The user is signed in.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):**
     ![](<./Prototype requirement/UC01-1.png>)
 * **Screen 2 (Alt Flow):**
     ![](<./Prototype requirement/UC01-2.png>)
 
 
-# Use-Case Specification: Log In
+## Use-Case Specification: Log In
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-02
 
-## 1. Log In
+### 1. Log In
 * **Use-Case ID:** UC-02
 * **Actor(s):** Guest
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 This use case describes how a registered Guest accesses their account by providing valid credentials.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the Guest navigates to the Login page.
 2. The user enters their email and password, then clicks "Sign In".
 3. The system finds the user in `user_accounts` and verifies the password hash.
@@ -968,99 +966,99 @@ This use case describes how a registered Guest accesses their account by providi
 5. The system issues an Access Token and sets a Refresh Token cookie.
 6. The system redirects the user to the Home Feed.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Invalid Credentials
+##### 2.2.1 Invalid Credentials
 1. If at step 3, the email is not found or the password does not match.
 2. The system displays: "Invalid email or password".
 3. The flow resumes at step 2.
 
-#### 2.2.2 Account Suspended
+##### 2.2.2 Account Suspended
 1. If at step 4, the account status is `suspended` or `banned`.
 2. The system displays: "Your account is not currently available."
 3. The use case ends.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Rate Limiting:** Maximum 10 attempts per 15 minutes to prevent brute-force attacks.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is unauthenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * The user is authenticated and an active session is recorded in `refresh_sessions`.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):**
    ![](<./Prototype requirement/UC02-1.png>)
 * **Screen 2 (Alt Flow):**
   ![](<./Prototype requirement/UC02-2.png>)
 
 
-# Use-Case Specification: Log Out
+## Use-Case Specification: Log Out
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-03
 
-## 1. Log Out
+### 1. Log Out
 * **Use-Case ID:** UC-03
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to securely end their active session on the current device.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user clicks the "Sign out" button.
 2. The system reads the refresh cookie to identify the current session.
 3. The system updates the `revoked_at` timestamp in the `refresh_sessions` table for that session.
 4. The system clears the local access token and the refresh cookie from the browser.
 5. The system redirects the user to the Login page.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Session Already Expired
+##### 2.2.1 Session Already Expired
 1. If at step 2, the session token is already expired or invalid.
 2. The system proceeds to step 4 without database updates.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user must be authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * The user is signed out and redirected to a public page.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC03-1.png>)
 
 
 
-# Use-Case Specification: Manage Profile
+## Use-Case Specification: Manage Profile
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-04
 
-## 1. Manage Profile
+### 1. Manage Profile
 * **Use-Case ID:** UC-04
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows the user to update their public-facing information such as display name, bio, location, and website.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user navigates to "Edit Profile".
 2. The system retrieves current data from the `profiles` table.
 3. The user edits text fields (Display Name, Bio, Location, Website) and clicks "Save".
@@ -1068,48 +1066,46 @@ Allows the user to update their public-facing information such as display name, 
 5. The system updates the `profiles` table and the `updated_at` timestamp.
 6. The system displays a success message.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Invalid Input Format
+##### 2.2.1 Invalid Input Format
 1. If at step 4, the website URL is invalid.
 2. The system displays an error below the website field.
 3. The flow resumes at step 3.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * Profile data is updated in the database.
 
-## 6. Extension Points
+### 6. Extension Points
 * **Change Password:** Extended via UC-05.
 * **Change Avatar:** Extended via UC-06.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):**
   ![](<./Prototype requirement/UC04-1.png>)
 
-
-
-# Use-Case Specification: Change Password
+## Use-Case Specification: Change Password
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-05
 
-## 1. Change Password
+### 1. Change Password
 * **Use-Case ID:** UC-05
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to change their password securely by verifying their current password.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case extends UC-04 when the user selects "Change password".
 2. The user enters their current password, a new password, and confirms the new password.
 3. The user clicks "Update password".
@@ -1118,48 +1114,46 @@ Allows an authenticated user to change their password securely by verifying thei
 6. The system hashes the new password and updates `user_accounts`.
 7. The system displays a success toast message and redirects to home.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Incorrect Current Password
+##### 2.2.1 Incorrect Current Password
 1. If at step 4, the current password does not match.
 2. The system displays "Invalid credentials".
 3. The flow resumes at step 2.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Security:** The new password must not be identical to the old password.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * The user's password hash is updated.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC05-1.png>)
   **Change Password will be in Settings**
 
-
-
-# Use-Case Specification: Change Avatar
+## Use-Case Specification: Change Avatar
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-06
 
-## 1. Change Avatar
+### 1. Change Avatar
 * **Use-Case ID:** UC-06
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to upload a new profile picture.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case extends UC-04 when the user clicks the "Upload picture" icon.
 2. The user selects an image file from their device.
 3. The system validates the file type and size.
@@ -1167,186 +1161,178 @@ Allows an authenticated user to upload a new profile picture.
 5. The system updates the `avatar_url` in the `profiles` table.
 6. The system refreshes the avatar display on the UI.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 File Too Large
+##### 2.2.1 File Too Large
 1. If at step 3, the file exceeds the 5MB limit.
 2. The system aborts the upload and displays "File size exceeds 5MB".
 3. The flow resumes at step 1.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Space:** Image uploads must be limited to 5MB to conserve server storage.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * The new avatar is visible publicly on the user's profile.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC06-1.png>)
 
-
-
-# Use-Case Specification: Browse Feed
+## Use-Case Specification: Browse Feed
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-07
 
-## 1. Browse Feed
+### 1. Browse Feed
 * **Use-Case ID:** UC-07
 * **Actor(s):** Guest, Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows users to view a dynamic timeline of forum posts sorted by recent engagement metrics or chronological order.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user navigates to the application's homepage.
 2. The system queries the `posts` table for content with `visibility_state = 'public'` and `lifecycle_state = 'active'`.
 3. The system sorts the posts based on engagement algorithms (e.g., recent comment velocity, likes).
 4. The system displays the feed with post titles, author avatars, and interaction counts.
 5. The user scrolls to load more posts (pagination).
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 No Posts Available
+##### 2.2.1 No Posts Available
 1. If at step 2, the database returns no posts.
 2. The system displays a "No discussions found. Be the first to post!" placeholder.
 3. The use case ends.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Performance:** The initial feed must load in `< 2 seconds`.
 
-## 4. Preconditions
+### 4. Preconditions
 * None.
 
-## 5. Postconditions
+### 5. Postconditions
 * None.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC07-1.png>)
 
-
-
-# Use-Case Specification: Search Content
+## Use-Case Specification: Search Content
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-08
 
-## 1. Search Content
+### 1. Search Content
 * **Use-Case ID:** UC-08
 * **Actor(s):** Guest, Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows users to search for specific discussion topics, posts, or user profiles using keywords.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user enters a keyword into the search bar and presses Enter.
 2. The system sends the query to the backend.
 3. The backend searches the `posts` (body/title) and `profiles` (display_name) tables for matches.
 4. The system filters out content that is deleted, hidden, or authored by banned users.
 5. The system displays a categorized list of results (Posts, Users).
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Empty Query
+##### 2.2.1 Empty Query
 1. If at step 2, the search query is empty or just whitespace.
 2. The system displays "Please enter a search term." and halts the request.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Performance:** Search queries must resolve in `< 500ms`.
 
-## 4. Preconditions
+### 4. Preconditions
 * None.
 
-## 5. Postconditions
+### 5. Postconditions
 * None.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC08-1.png>)
 
-
-
-# Use-Case Specification: View Post Details
+## Use-Case Specification: View Post Details
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-09
 
-## 1. View Post Details
+### 1. View Post Details
 * **Use-Case ID:** UC-09
 * **Actor(s):** Guest, Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows a user to read the full body of a post along with its entire nested comment thread.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user clicks on a post from the feed or search results.
 2. The system queries the `posts` and `comments` tables matching the Post ID.
 3. The system formats the comment tree hierarchically.
 4. The system displays the full post content, author details, and comments.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Post Removed or Hidden
+##### 2.2.1 Post Removed or Hidden
 1. If at step 2, the post's `lifecycle_state` is `removed_by_moderation`.
 2. The system displays: "This post has been removed by moderators."
 3. The use case ends.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * The post ID must be valid.
 
-## 5. Postconditions
+### 5. Postconditions
 * None.
 
-## 6. Extension Points
+### 6. Extension Points
 * **Request AI Summary:** Extended via UC-14.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
 
-
-
-# Use-Case Specification: Create Post
+## Use-Case Specification: Create Post
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-10
 
-## 1. Create Post
+### 1. Create Post
 * **Use-Case ID:** UC-10
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to publish a new text-based post to initiate a discussion.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user clicks "Create Post".
 2. The system displays an editor.
 3. The user types the content and clicks "Submit".
@@ -1354,90 +1340,86 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 5. The system saves the record in the `posts` table (lifecycle_state: `active`).
 6. The system redirects to the new post's detail page.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Content Validation Error
+##### 2.2.1 Content Validation Error
 1. If at step 4, the post body is empty.
 2. The system highlights the text area with an error.
 3. The flow resumes at step 3.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Security:** Inputs must be sanitized against XSS.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is authenticated and their account status is `active`.
 
-## 5. Postconditions
+### 5. Postconditions
 * A new record exists in the `posts` table.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC10-1.png>)
 
-
-
-# Use-Case Specification: Interact with Post
+## Use-Case Specification: Interact with Post
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-11
 
-## 1. Interact with Post
+### 1. Interact with Post
 * **Use-Case ID:** UC-11
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Acts as the generalized use case for users engaging with a post via various actions.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when an authenticated user opens a post.
 2. The system presents interaction buttons (Like, Reply, Report, Repost).
 3. The user selects an interaction option.
 4. The system triggers the specific extended workflow.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 * Not applicable (handled by extending use cases).
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * The user is authenticated. Post is active.
 
-## 5. Postconditions
+### 5. Postconditions
 * None.
 
-## 6. Extension Points
+### 6. Extension Points
 * **Leave Comment:** Extended via UC-12.
 * **Like/Unlike:** Extended via UC-13.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC11-1.png>)
 
-
-
-# Use-Case Specification: Leave Comment
+## Use-Case Specification: Leave Comment
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-12
 
-## 1. Leave Comment
+### 1. Leave Comment
 * **Use-Case ID:** UC-12
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to reply to a post or to another comment.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-11 when the user clicks "Reply".
 2. The system opens a small text input field.
 3. The user types their comment and clicks "Post Reply".
@@ -1445,88 +1427,86 @@ Allows an authenticated user to reply to a post or to another comment.
 5. The system inserts a record into the `comments` table, mapping `post_id` and optionally `parent_comment_id`.
 6. The system updates the UI to show the new comment inline.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Empty Comment
+##### 2.2.1 Empty Comment
 1. If at step 4 the comment is empty.
 2. The system disables the "Post Reply" button.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * A new comment is persisted to the database.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC12-1.png>)
 
-
-
-# Use-Case Specification: Like/Unlike
+## Use-Case Specification: Like/Unlike
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-13
 
-## 1. Like/Unlike
+### 1. Like/Unlike
 * **Use-Case ID:** UC-13
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows a user to toggle an appreciation metric on a post or comment.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-11 when the user clicks the "Heart/Like" icon.
 2. The system checks the `reactions` table to see if a record already exists for this `user_account_id` and `target_id`.
 3. If no record exists, the system inserts a new reaction (`reaction_kind: 'like'`) and increments the counter visually.
 4. If a record exists, the system deletes it (Unlike) and decrements the counter.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 * None.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Performance:** Reaction toggles should feel instantaneous (optimistic UI updates).
 
-## 4. Preconditions
+### 4. Preconditions
 * User is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * The `reactions` table is updated.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC13-1.png>)
 
 
 
-# Use-Case Specification: Request AI Summary
+## Use-Case Specification: Request AI Summary
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-14
 
-## 1. Request AI Summary
+### 1. Request AI Summary
 * **Use-Case ID:** UC-14
 * **Actor(s):** Guest, Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Generates an AI-powered TL;DR of a lengthy post and its comments for quick reading.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-09 when the user clicks "Generate TL;DR".
 2. The system checks the `post_summaries` table for a recently cached summary.
 3. If not cached, the system fetches the post text and top comments.
@@ -1534,138 +1514,138 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
 5. The AI returns the summary.
 6. The system caches the result in `post_summaries` and displays it in a modal.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 AI Service Error
+##### 2.2.1 AI Service Error
 1. If at step 5 the AI API times out or errors.
 2. The system displays: "AI Summary is currently unavailable."
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Performance:** AI generation must complete in `< 5 seconds`.
 
-## 4. Preconditions
+### 4. Preconditions
 * The post must have sufficient text/comments to summarize.
 
-## 5. Postconditions
+### 5. Postconditions
 * A cached summary is stored in the database.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC14-1.png>)
 
 
 
-# Use-Case Specification: Delete Own Post
+## Use-Case Specification: Delete Own Post
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-15
 
-## 1. Delete Own Post
+### 1. Delete Own Post
 * **Use-Case ID:** UC-15
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows a user to permanently remove a post they authored.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when the user clicks the "Delete" option on their own post.
 2. The system displays a confirmation dialog.
 3. The user confirms the deletion.
 4. The system updates the post's `lifecycle_state` to `hidden` or sets `deleted_at` timestamp in the `posts` table (soft delete).
 5. The system removes the post from the feed and redirects the user home.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 User Cancels Deletion
+##### 2.2.1 User Cancels Deletion
 1. If at step 3 the user clicks "Cancel".
 2. The dialog closes and no database changes are made.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User is authenticated and is the `author_id` of the post.
 
-## 5. Postconditions
+### 5. Postconditions
 * The post is marked deleted and hidden from public view.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC15-1.png>)
 
 
 
-# Use-Case Specification: Report Inappropriate Content
+## Use-Case Specification: Report Inappropriate Content
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-16
 
-## 1. Report Inappropriate Content
+### 1. Report Inappropriate Content
 * **Use-Case ID:** UC-16
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows users to flag posts or comments that violate community guidelines.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when a user clicks "Report" on a piece of content.
 2. The system displays a modal with a list of reporting reasons (e.g., Spam, Harassment).
 3. The user selects a reason and clicks "Submit Report".
 4. The system records the data in the `reports` table (status: `open`).
 5. The system displays a "Thank you for your report" toast.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Content Already Reported by User
+##### 2.2.1 Content Already Reported by User
 1. If at step 4, a report from this `reporter_id` for this `subject_id` already exists.
 2. The system ignores the duplicate and displays "You have already reported this content."
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User is authenticated.
 
-## 5. Postconditions
+### 5. Postconditions
 * A new row is added to the `reports` table.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC16-1.png>)
 
 
 
-# Use-Case Specification: Review Reports
+## Use-Case Specification: Review Reports
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-17
 
-## 1. Review Reports
+### 1. Review Reports
 * **Use-Case ID:** UC-17
 * **Actor(s):** Moderator, Administrator
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows elevated users to view and take action on content flagged by the community.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when a Moderator opens the Moderation Dashboard.
 2. The system queries the `reports` table where status is `open`.
 3. The moderator selects a report to review the flagged content.
@@ -1673,131 +1653,131 @@ Allows elevated users to view and take action on content flagged by the communit
 5. The system updates the report status to `closed`.
 6. The system logs the action in the `moderation_reviews` table.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 Escalation Required
+##### 2.2.1 Escalation Required
 1. Handled by extension point UC-18.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User role must be `moderator` or `administrator`.
 
-## 5. Postconditions
+### 5. Postconditions
 * Report status is updated and a moderation review is logged.
 
-## 6. Extension Points
+### 6. Extension Points
 * **Forward Report to Admin:** Extended via UC-18.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC17-1.png>)
 
 
 
-# Use-Case Specification: Forward Report to Admin
+## Use-Case Specification: Forward Report to Admin
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-18
 
-## 1. Forward Report to Admin
+### 1. Forward Report to Admin
 * **Use-Case ID:** UC-18
 * **Actor(s):** Moderator
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows a Moderator to escalate severe violations to an Administrator.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-17 when a Moderator reviews a highly sensitive report.
 2. The Moderator clicks "Escalate to Admin" and optionally adds notes.
 3. The system updates the `reports` table status to `escalated`.
 4. The system logs the escalation in the `moderation_reviews` table.
 5. The report is moved to the Admin-only queue.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 * None.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User role is `moderator`.
 
-## 5. Postconditions
+### 5. Postconditions
 * Report status is updated to escalated.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC18-1.png>)
 
 
 
-# Use-Case Specification: Delete Any Content
+## Use-Case Specification: Delete Any Content
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-19
 
-## 1. Delete Any Content
+### 1. Delete Any Content
 * **Use-Case ID:** UC-19
 * **Actor(s):** Administrator
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an Administrator to instantly and permanently remove any post or comment from the database.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when an Admin views any content.
 2. The Admin selects the "Force Delete" override option.
 3. The Admin confirms the deletion.
 4. The system updates the `lifecycle_state` to `removed_by_administration` in the `posts` or `comments` table.
 5. The content is immediately scrubbed from all public feeds.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 * None.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User role MUST be `administrator`.
 
-## 5. Postconditions
+### 5. Postconditions
 * Content is permanently removed from public view.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC19-1.png>)
 
 
 
-# Use-Case Specification: Permanently Remove User
+## Use-Case Specification: Permanently Remove User
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-20
 
-## 1. Permanently Remove User
+### 1. Permanently Remove User
 * **Use-Case ID:** UC-20
 * **Actor(s):** Administrator
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an Administrator to ban a user and optionally purge all their data from the system.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when an Admin opens a user's profile.
 2. The Admin clicks "Ban User".
 3. The Admin selects whether to keep or wipe the user's past content.
@@ -1806,43 +1786,43 @@ Allows an Administrator to ban a user and optionally purge all their data from t
 6. The system revokes all active `refresh_sessions` for that user.
 7. The user is forcibly logged out and cannot re-authenticate.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 * None.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * **Data Integrity:** If data wipe is selected, cascading deletes must properly handle foreign keys to prevent orphan records.
 
-## 4. Preconditions
+### 4. Preconditions
 * User role MUST be `administrator`.
 
-## 5. Postconditions
+### 5. Postconditions
 * The target account is banned and active sessions are destroyed.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC20-1.png>)
 
 
 
-# Use-Case Specification: Assign Moderator Role
+## Use-Case Specification: Assign Moderator Role
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-21
 
-## 1. Assign Moderator Role
+### 1. Assign Moderator Role
 * **Use-Case ID:** UC-21
 * **Actor(s):** Administrator
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an Administrator to elevate a Standard User to a Moderator.
 
-## 2. Flow of Events
+### 2. Flow of Events
 
-### 2.1 Basic Flow
+#### 2.1 Basic Flow
 1. The use case begins when an Admin views a Standard User's profile or account settings.
 2. The Admin selects "Change Role" and chooses "Moderator".
 3. The Admin confirms the action.
@@ -1850,25 +1830,25 @@ Allows an Administrator to elevate a Standard User to a Moderator.
 5. The system records the transition in the `role_history` table (previous_role: `standard`, new_role: `moderator`).
 6. The target user gains moderator privileges upon their next API request.
 
-### 2.2 Alternative Flows
+#### 2.2 Alternative Flows
 
-#### 2.2.1 User is already a Moderator
+##### 2.2.1 User is already a Moderator
 1. If at step 2 the user's role is already `moderator`.
 2. The system disables the "Make Moderator" button.
 
-## 3. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 4. Preconditions
+### 4. Preconditions
 * User role MUST be `administrator`. Target user must be `active`.
 
-## 5. Postconditions
+### 5. Postconditions
 * Target user role is elevated. History is logged in `role_history`.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement 
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):**
   ![](<./Prototype requirement/UC21-1.png>)
   **The Admin will assign Moderator role in the User Management**
