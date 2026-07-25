@@ -27,3 +27,7 @@ export type SummaryState = (typeof summaryStates)[number];
 
 export const reportSubjectTypes = ["post", "comment", "user"] as const;
 export type ReportSubjectType = (typeof reportSubjectTypes)[number];
+
+export const reportReasonTypes = ["harassment", "spam", "inappropriate", "other"] as const;
+export type ReportReasonType = (typeof reportReasonTypes)[number];
+

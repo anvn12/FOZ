@@ -46,6 +46,14 @@ export const updateCommentRequestSchema = z.object({
 });
 export type UpdateCommentRequest = z.infer<typeof updateCommentRequestSchema>;
 
+import { reportReasonTypes } from "../schema-enums.js";
+
+export const createReportRequestSchema = z.object({
+  reasonType: z.enum(reportReasonTypes),
+  details: z.string().trim().max(1000, "Details are too long").optional(),
+});
+export type CreateReportRequest = z.infer<typeof createReportRequestSchema>;
+
 export const reactionResponseSchema = z.object({
   active: z.boolean(),
   targetType: reactionTargetTypeSchema,
