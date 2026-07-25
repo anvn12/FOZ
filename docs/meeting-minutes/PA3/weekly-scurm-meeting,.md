@@ -46,3 +46,6 @@ Nguyễn Hải Trọng
 Phạm Đinh Gia Khánh
 
 Võ An Phú
+1. Implemented FE UI(LoginPage, RegisterPage), wire them to exisiting /auth endpoitns, Make video and write report for E (authN), reviewed B, reviewed F
+2. Waiting for tasks in pa4
+3. None
