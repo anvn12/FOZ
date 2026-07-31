@@ -1,306 +1,273 @@
-<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<!DOCTYPE html><html class="h-full" lang="en"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Post Review - FOZ Admin</title>
+<title>Moderation Queue - Post Review</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "tertiary-fixed-dim": "#ddc39d",
-                      "surface-container": "#eceef0",
-                      "surface-bright": "#f7f9fb",
-                      "on-secondary-container": "#fefcff",
-                      "secondary": "#0058be",
-                      "error": "#ba1a1a",
-                      "inverse-on-surface": "#eff1f3",
-                      "on-tertiary-fixed-variant": "#564427",
-                      "tertiary-fixed": "#fadfb8",
-                      "tertiary": "#1e1200",
-                      "on-error-container": "#93000a",
-                      "on-tertiary": "#ffffff",
-                      "surface-container-highest": "#e0e3e5",
-                      "on-background": "#191c1e",
-                      "secondary-fixed": "#d8e2ff",
-                      "on-primary-fixed": "#111c2d",
-                      "error-container": "#ffdad6",
-                      "outline-variant": "#c5c6cd",
-                      "secondary-container": "#2170e4",
-                      "inverse-surface": "#2d3133",
-                      "on-surface-variant": "#45474c",
-                      "on-secondary-fixed": "#001a42",
-                      "on-primary-container": "#8590a6",
-                      "surface-container-high": "#e6e8ea",
-                      "surface-variant": "#e0e3e5",
-                      "status-warning": "#F59E0B",
-                      "on-secondary-fixed-variant": "#004395",
-                      "primary": "#091426",
-                      "surface-dim": "#d8dadc",
-                      "surface-elevated": "#FFFFFF",
-                      "outline": "#75777d",
-                      "status-info": "#0EA5E9",
-                      "inverse-primary": "#bcc7de",
-                      "primary-fixed-dim": "#bcc7de",
-                      "status-success": "#10B981",
-                      "on-tertiary-container": "#a38c6a",
-                      "secondary-fixed-dim": "#adc6ff",
-                      "on-tertiary-fixed": "#271902",
-                      "background": "#f7f9fb",
-                      "primary-fixed": "#d8e3fb",
-                      "surface": "#f7f9fb",
-                      "primary-container": "#1e293b",
-                      "on-secondary": "#ffffff",
-                      "on-primary": "#ffffff",
-                      "surface-tint": "#545f73",
-                      "on-surface": "#191c1e",
-                      "status-critical": "#E11D48",
-                      "border-subtle": "#E2E8F0",
-                      "tertiary-container": "#35260c",
-                      "surface-container-low": "#f2f4f6",
-                      "on-primary-fixed-variant": "#3c475a",
-                      "surface-container-lowest": "#ffffff",
-                      "on-error": "#ffffff"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "spacing": {
-                      "gutter": "1rem",
-                      "stack-sm": "0.5rem",
-                      "stack-lg": "1.5rem",
-                      "container-max": "1440px",
-                      "stack-xs": "0.25rem",
-                      "margin-page": "2rem",
-                      "stack-md": "1rem"
-              },
-              "fontFamily": {
-                      "headline-sm": ["Hanken Grotesk"],
-                      "headline-md": ["Hanken Grotesk"],
-                      "code-sm": ["JetBrains Mono"],
-                      "label-caps": ["Inter"],
-                      "display-lg": ["Hanken Grotesk"],
-                      "body-sm": ["Inter"],
-                      "body-lg": ["Inter"],
-                      "body-md": ["Inter"]
-              },
-              "fontSize": {
-                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                      "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                      "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
-                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
-              }
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#54647a",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-container": "#ecedf7",
+                        "secondary-container": "#d0e1fb",
+                        "surface": "#f9f9ff",
+                        "inverse-on-surface": "#eff0fa",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-variant": "#e1e2ec",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-container-highest": "#e1e2ec",
+                        "on-tertiary-fixed": "#002113",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#adc6ff",
+                        "primary-container": "#2170e4",
+                        "secondary": "#505f76",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-surface": "#2e3038",
+                        "on-primary-fixed": "#001a42",
+                        "tertiary": "#006947",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#00855b",
+                        "on-tertiary-container": "#f5fff6",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary-fixed-dim": "#adc6ff",
+                        "outline-variant": "#c2c6d6",
+                        "on-primary-container": "#fefcff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d8d9e3",
+                        "on-surface": "#191b23",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#424754",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "surface-container-high": "#e6e7f2",
+                        "primary": "#0058be",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005ac2",
+                        "on-background": "#191b23",
+                        "outline": "#727785"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "1rem",
+                        "stack-lg": "2rem",
+                        "stack-sm": "0.5rem",
+                        "sidebar-width": "260px",
+                        "container-margin": "2rem",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-sm": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }],
+                        "headline-md-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
             }
-          }
         }
     </script>
+<style>
+        .shadow-level-1 { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); }
+        .shadow-level-2 { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .ai-border { border-left: 4px solid #0058be; }
+    </style>
 </head>
-<body class="bg-background text-on-surface font-body-md text-body-md h-screen overflow-hidden flex">
+<body class="bg-background text-on-background h-full font-body-md antialiased overflow-hidden flex">
 <!-- SideNavBar -->
-<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest h-screen w-60 fixed left-0 top-0 border-r border-outline-variant dark:border-outline-variant z-50">
-<div class="flex flex-col h-full py-stack-lg">
-<div class="px-gutter mb-8">
-<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">FOZ<div><span style="letter-spacing: 0.6px;" class="">Administrator</span></div></h1>
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface shadow-sm z-20 flex flex-col p-4 gap-2 border-r border-outline-variant md:block hidden">
+<div class="mb-6 px-4 py-2">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">FOZ Admin</h1>
+<p class="font-label-sm text-label-sm text-secondary">Enterprise Control</p>
 </div>
-<div class="flex-1 overflow-y-auto px-gutter space-y-2">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="/dashboard">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-body-md text-body-md">Dashboard</span>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 text-secondary hover:bg-surface-container-low rounded-lg px-4 py-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="">Dashboard</span>
 </a>
-<!-- Active Item: Moderation Queue -->
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary bg-surface-container-low dark:bg-surface-container-high transition-colors active:scale-95 duration-150" href="/moderation-queue">
-<span class="material-symbols-outlined" data-icon="rule" style="font-variation-settings: 'FILL' 1;">rule</span>
-<span class="font-body-md text-body-md">Moderation Queue</span>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 border-l-4 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="">Moderation Queue</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="/users">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span class="font-body-md text-body-md">User Management</span>
+<a class="flex items-center gap-3 text-secondary hover:bg-surface-container-low rounded-lg px-4 py-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+<span class="">User Management</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="/reports">
-<span class="material-symbols-outlined" data-icon="flag">flag</span>
-<span class="font-body-md text-body-md">Reports</span>
+<a class="flex items-center gap-3 text-secondary hover:bg-surface-container-low rounded-lg px-4 py-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">assessment</span>
+<span class="">Reports</span>
 </a>
-
-</div>
-<div class="px-gutter mt-auto pt-4 border-t border-outline-variant">
-
-<div class="mt-4 flex items-center gap-3">
-<img alt="Admin Profile" class="w-8 h-8 rounded-full object-cover bg-surface-variant" data-alt="A small, professional headshot of an administrator in a well-lit office setting. The style is crisp and modern corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuj2YCfeAjrHagtQIrho_U2vPnFPMThwoDIMo9FtrUfltmTabAoGMiiS9K3ueS3dLf-zk-Dr8bD3-N3K_LI9QEyir-REQw2xmGtQCjZdg4XcJAT3LxocehAFYg7UIEeKE5dyW72cNDLxMdtlwXmTSPla_LDjLmjQSGMamyhjFpMdzqBuTQvyLO0hHw3maWxyVYhnQPGoTIgY0AkFlmJxCt3dZ9ovEoxIEjnPbU-H4-HrCWakc0g5ZI">
-<div>
-<div class="font-body-sm text-body-sm font-semibold text-primary">Admin Central</div>
-<div class="font-code-sm text-code-sm text-on-surface-variant">Forum Moderator</div>
-</div>
-</div>
-</div>
-</div>
 </nav>
-<!-- Main Content Area -->
-<div class="flex-1 flex flex-col ml-60 bg-background h-screen overflow-hidden">
+</aside>
 <!-- TopNavBar -->
-<header class="bg-surface-container-lowest dark:bg-surface-container-lowest docked full-width top-0 sticky z-40 border-b border-outline-variant dark:border-outline-variant flex justify-between items-center h-16 px-gutter shrink-0">
-<!-- Breadcrumbs / Context -->
-<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
-<a class="hover:text-primary transition-colors" href="/moderation-queue">Moderation Queue</a>
-<span class="material-symbols-outlined text-[16px]">chevron_right</span>
-<span class="font-semibold text-primary">Post Review: #RP-8492</span>
-</div>
-<!-- Search & Actions -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-260px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-6 z-10 hidden md:flex">
 <div class="flex items-center gap-4">
-<div class="relative focus-within:ring-2 focus-within:ring-secondary rounded-DEFAULT">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-<input class="pl-9 pr-4 py-1.5 bg-surface-container-low border border-border-subtle rounded-DEFAULT text-body-sm font-body-sm w-64 focus:outline-none focus:border-secondary" placeholder="Search report ID..." type="text">
+<!-- Breadcrumbs -->
+<nav class="flex items-center text-sm font-body-md text-secondary">
+<a class="hover:text-primary transition-colors" href="#">Moderation Queue</a>
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<span class="font-bold text-on-surface">Post Review: #RP-8492</span>
+</nav>
 </div>
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-all rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 cursor-pointer active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
 </button>
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-all rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 cursor-pointer active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined">help</span>
 </button>
-<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A small, professional headshot of an administrator in a well-lit office setting. The style is crisp and modern corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB41TNRRU1vxGeWQy5_qk6n0dTuOkmXrvDantf8kKEubYgPIgyxVeLqXQGfyZ5jMZ2Dakn-W0pmR2fn5heoYc4Tnt6TyfRPsd7s906OZJ3bxKEqMZSIraYDaXSy2-QKBaueHw24s2898hjBzON7NYCWQb6eaWAnSktoSkbvyLtDVFI2mZytNKFEELOiRHWTnQ_Lt736hyTWTeC7EPi1rWon7bN4YbshWlNAkggLBlLfeqWeXhpsxOeE">
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full ml-2 object-cover" data-alt="A small circular avatar placeholder image for the administrator profile, showing a generic professional silhouette or a minimalist icon against a solid background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIVf3PCwEfSa7DJ6_N0x1VHyXY-9Hg6AzSyEhX6Rs-LfJhpxWYehw-g6YYs3AMHPeyOukOb50P1MEYhaTgoVf1yP2HSry1gADff2G-f6P5zRFhGCdflj6_j7MmcDqmu0N70RsailjZ8CfHV7o94GePs-thGionp7weYzVU1pl02N3GDnqy8OE9gk2K55MIPJvAfJLi3tKgD5AibTlCdFi8zZxo1ZAzPtITTvYvZcQcsiEh2ySw1O5Saw">
 </div>
 </header>
-<!-- Page Content Scrollable -->
-<main class="flex-1 overflow-y-auto p-margin-page">
-<div class="max-w-[1440px] mx-auto grid grid-cols-12 gap-6 h-full">
-<!-- Left Column: Post Content & Comments -->
-<div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+<!-- Main Content Area -->
+<main class="ml-0 md:ml-[260px] pt-16 flex-1 h-full overflow-y-auto w-full bg-background relative">
+<div class="max-w-[1440px] mx-auto p-gutter pb-32">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left/Main Column -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
 <!-- AI Summary Card -->
-<div class="bg-surface-elevated border border-status-warning/30 rounded-lg p-stack-md flex gap-4 items-start relative overflow-hidden">
-<div class="absolute top-0 left-0 w-1 h-full bg-status-warning"></div>
-<div class="p-2 bg-status-warning/10 rounded-full text-status-warning flex-shrink-0 mt-1">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<div class="bg-secondary-container border border-primary-fixed-dim rounded-xl p-6 shadow-level-1 ai-border">
+<div class="flex items-start gap-3 mb-2">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">AI Post Summarize (TL;DR)</h2>
 </div>
-<div>
-<h3 class="font-label-caps text-label-caps text-status-warning mb-1 uppercase">AI Post Summarize (TL;DR)</h3>
-<p class="font-body-md text-body-md text-on-surface">The reported user posted a link to an external site that appears to be a phishing attempt targeting platform credentials. The surrounding text uses urgent language ("Action required immediately") typical of spam/scam campaigns. High confidence of malicious intent.</p>
+<p class="font-body-lg text-body-lg text-on-surface-variant ml-9">
+                            High confidence of phishing activity. The user is promoting an external link disguised as a legitimate crypto wallet update. Multiple reports flag this domain as malicious.
+                        </p>
 </div>
-</div>
-<!-- Main Post Review Card -->
-<div class="bg-surface-elevated border border-border-subtle rounded-lg flex flex-col">
-<!-- Header -->
-<div class="p-stack-md border-b border-border-subtle flex justify-between items-start bg-surface-bright rounded-t-lg">
-<div class="flex gap-4">
-<img alt="Reported User Avatar" class="w-12 h-12 rounded-full object-cover" data-alt="A generic avatar of a user profile, minimalist flat design style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3wx3PvdshT6wFogJ_g3SE2Iqozmg96t1vnsQGBVcFX9iHPghleqjP1Lh8sQurLlgUQo2vWJWMOgSKGkUgARu8ePlgHLbZPY0NGSIzpqcg-OfwmEyRatfa-7NMiHkzVUPI0XDcHGcc3y8IdwxjwfQ1zYp1muT63saOKt8od3KoEgtoAJ-cPpm4EvYtGFGsb6vAp3kXeBmvH1wA8PjS5kI9D1hUjOgazYBI0tPe397rnenRJOEPsJ9C">
-<div>
-<div class="flex items-center gap-2">
-<span class="font-headline-sm text-headline-sm text-primary">@crypto_king_99</span>
-<span class="px-2 py-0.5 bg-error-container text-on-error-container rounded-full font-label-caps text-[10px] uppercase tracking-wider">Reported User</span>
-</div>
-<div class="font-code-sm text-code-sm text-on-surface-variant mt-1">Posted: Oct 24, 2023, 14:32 UTC • IP: 192.168.1.144</div>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<span class="px-3 py-1 bg-surface-container text-on-surface-variant border border-outline-variant rounded-DEFAULT font-label-caps text-label-caps flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">flag</span>
-                                    3 Reports
-                                </span>
-</div>
-</div>
-<!-- Content Body -->
-<div class="p-stack-lg bg-surface-container-lowest">
-<div class="p-4 bg-surface-container-low border-l-4 border-outline-variant rounded-r-DEFAULT mb-6">
-<p class="font-body-lg text-body-lg text-on-surface whitespace-pre-wrap">🚨 URGENT: All users must verify their wallets immediately due to the recent security breach! 🚨
-
-If you do not verify within 24 hours, your account will be temporarily suspended to protect your assets.
-
-Click here to verify now: <a class="text-secondary-container underline" href="#">http://secure-verify-auth-portal.com/login</a>
-
-Do not share this link. Stay safe!</p>
-</div>
-<!-- Attached Image (simulated) -->
-<div class="mt-4 border border-border-subtle rounded-lg overflow-hidden max-w-md">
-<img class="w-full h-auto object-cover border-b border-border-subtle" data-alt="A screenshot of a fake security alert popup, designed to look like a legitimate system warning but with clear signs of being a phishing attempt." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRHafB706xTlzp9iSrjwm_SmuZte1AegGTkKBwK3BdJs2GKKlmGDC9S_Lc_hNsYSptKeCGsX0nMJ1gE75bR2WOvWQW82wXm7dl3psnTfa3ecM2pMTmezq8FL6inkE_N9qxsHUmmbDv6y-9yx6WbwmPra_6qdgM6kZg0Zcn6dmXhVoIZ75_3TteUprQoo7Bnf4CJIKjeRX3IEVvknNg7H2hzKyZ5VaBjsSoNk7ZzrpCpkHW9SLb0C7C">
-<div class="bg-surface-bright p-2 text-center font-code-sm text-code-sm text-on-surface-variant flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[16px]">image</span> attached_alert.png
+<!-- Reported Content Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-level-1 border border-outline-variant flex flex-col gap-6">
+<div class="flex justify-between items-start border-b border-surface-dim pb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-primary">
+                                    CK
                                 </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">@crypto_king_99</h3>
+<p class="font-label-md text-label-md text-secondary">IP: 192.168.1.105 • Joined: 2 weeks ago</p>
 </div>
 </div>
-<!-- Footer Actions -->
-<div class="p-stack-md border-t border-border-subtle bg-surface-bright rounded-b-lg flex justify-end gap-3"><div class="flex flex-col w-full gap-4">
-<div class="flex justify-between items-center border-b border-border-subtle pb-4">
-<div class="flex flex-col">
-<span class="text-label-caps font-label-caps text-on-surface-variant uppercase">Moderator Triage</span>
-<div class="flex gap-2 mt-2">
-<button class="px-4 py-2 border border-status-success text-status-success bg-surface-elevated hover:bg-status-success/10 rounded-DEFAULT font-label-caps text-label-caps transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[16px]">check_circle</span> Safe
+<span class="font-label-md text-label-md text-secondary">Oct 24, 2023 - 14:32 UTC</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface">
+<p class="mb-4">URGENT: Verify your wallets now to claim the new airdrop before it expires! Click here to connect your wallet securely:</p>
+<p class="mb-4">
+<a class="text-error font-bold underline bg-error-container px-1 py-0.5 rounded" href="#">http://secure-wallet-update-auth.com/verify</a>
+</p>
+<p class="">Don't miss out on this once-in-a-lifetime opportunity!</p>
+</div>
+<div class="mt-4 border border-outline-variant rounded-lg overflow-hidden bg-surface-container relative group">
+<!-- Included User Image -->
+<img alt="Screenshot of the reported post" class="w-full h-auto object-cover max-h-64" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCpFusuAu7_rf0uE_h6QTUMJeiICfO5LunMZQ3ce6BqhFD3VmBXNCr30i2K1KFl6VOgcFHXAutkIvNQmNSOQlUFOsvjLKpn4uoKdAED_v3YRHyRsV0NRzpS_KJII0RaA3Zw0kyF_Q9s6gz--oDkmzBkm_0blWt4Wy3BJXriubwuJs1TxGZuiDxnP8gE1PdmtTWm6wO_bfoXEyfaEnoXVhlqXJVi5sfdcsal0CJXocpFDzV_swur5J4KJ3K3ytvHJycyvA">
+<div class="absolute inset-0 bg-on-surface bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+<button class="bg-surface text-on-surface px-4 py-2 rounded-lg font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined">fullscreen</span>
+                                    View Full Screenshot
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Report Information) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-level-1 border border-outline-variant h-full">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-6 border-b border-surface-dim pb-2 flex items-center justify-between">
+                            User Reports
+                            <span class="bg-error-container text-on-error-container font-label-md px-2 py-1 rounded-full">4 Reports</span>
+</h2>
+<div class="flex flex-col gap-4">
+<!-- Report Item -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-surface-dim">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-secondary">@user_102</span>
+<span class="bg-error-container text-error text-[10px] font-bold px-2 py-0.5 rounded uppercase">Phishing/Scam</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">This link asked for my seed phrase. Definitely a scam.</p>
+<div class="text-right mt-1 font-label-sm text-secondary">10 mins ago</div>
+</div>
+<!-- Report Item -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-surface-dim">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-secondary">@alert_bot</span>
+<span class="bg-surface-dim text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded uppercase">Spam</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">User has posted this identical message in 5 different channels.</p>
+<div class="text-right mt-1 font-label-sm text-secondary">15 mins ago</div>
+</div>
+<!-- Report Item -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-surface-dim">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-secondary">@mod_helper</span>
+<span class="bg-error-container text-error text-[10px] font-bold px-2 py-0.5 rounded uppercase">Phishing/Scam</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Domain is newly registered and flagged on blacklists.</p>
+<div class="text-right mt-1 font-label-sm text-secondary">22 mins ago</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 md:left-[260px] right-0 bg-surface border-t border-outline-variant shadow-level-2 p-4 flex flex-col md:flex-row justify-between items-center gap-4 z-30">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-secondary uppercase mr-2">Moderator Triage:</span>
+<button class="px-4 py-2 bg-surface border border-outline-variant text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+                    Pending
                 </button>
-<button class="px-4 py-2 border border-status-warning text-status-warning bg-surface-elevated hover:bg-status-warning/10 rounded-DEFAULT font-label-caps text-label-caps transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[16px]">pending</span> Pending
-                </button>
-<button class="px-4 py-2 border border-status-critical text-status-critical bg-surface-elevated hover:bg-status-critical/10 rounded-DEFAULT font-label-caps text-label-caps transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[16px]">delete</span> Remove
+<button class="px-4 py-2 bg-surface border border-outline-variant text-tertiary font-label-md rounded-lg hover:bg-tertiary-container hover:text-on-tertiary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                    Safe
                 </button>
 </div>
-</div>
-<div class="h-12 w-px bg-border-subtle mx-2"></div>
-<div class="flex flex-col items-end">
-<span class="text-label-caps font-label-caps text-on-surface-variant uppercase">Admin Terminal Actions</span>
-<div class="flex gap-2 mt-2">
-<button class="px-4 py-2 border border-border-subtle text-on-surface bg-surface-elevated hover:bg-surface-container-low rounded-DEFAULT font-label-caps text-label-caps transition-colors">Remove Post</button>
-<button class="px-4 py-2 bg-status-critical text-on-error rounded-DEFAULT font-label-caps text-label-caps flex items-center gap-2 hover:bg-on-error-container transition-colors shadow-sm">
-<span class="material-symbols-outlined text-[16px]">block</span> Ban User
+<div class="flex items-center gap-2 border-t md:border-t-0 md:border-l border-outline-variant pt-4 md:pt-0 md:pl-4">
+<span class="font-label-md text-secondary uppercase mr-2">Terminal Actions:</span>
+<button class="px-4 py-2 bg-error text-on-error font-label-md rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm">delete</span>
+                    Remove Post
                 </button>
-<button class="px-4 py-2 border border-status-critical text-status-critical bg-surface-elevated hover:bg-status-critical/10 rounded-DEFAULT font-label-caps text-label-caps transition-colors">Remove User</button>
-</div>
-</div>
-</div>
-<div class="flex justify-end">
-<button class="px-4 py-2 text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps">Dismiss Report</button>
-</div>
-</div></div>
-</div>
-</div>
-<!-- Right Column: Metadata & Sidebar -->
-<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-<!-- Report Details -->
-<div class="bg-surface-elevated border border-border-subtle rounded-lg flex flex-col">
-<div class="p-stack-md border-b border-border-subtle">
-<h3 class="font-headline-sm text-headline-sm text-primary">Report Information</h3>
-</div>
-<div class="p-0">
-<!-- Reporter 1 -->
-<div class="p-stack-md border-b border-border-subtle hover:bg-surface-bright transition-colors">
-<div class="flex justify-between items-start mb-2">
-<div class="font-body-sm text-body-sm font-semibold text-primary">@truth_seeker</div>
-<div class="font-code-sm text-code-sm text-on-surface-variant">10 mins ago</div>
-</div>
-<div class="flex items-center gap-2 mb-2">
-<span class="px-2 py-0.5 bg-error-container/50 text-status-critical border border-status-critical/20 rounded-DEFAULT font-label-caps text-[10px] uppercase">Phishing/Scam</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant italic">"This is clearly a fake link trying to steal logins. Account looks like a bot."</p>
-</div>
-<!-- Reporter 2 -->
-<div class="p-stack-md border-b border-border-subtle hover:bg-surface-bright transition-colors">
-<div class="flex justify-between items-start mb-2">
-<div class="font-body-sm text-body-sm font-semibold text-primary">@mod_helper</div>
-<div class="font-code-sm text-code-sm text-on-surface-variant">15 mins ago</div>
-</div>
-<div class="flex items-center gap-2 mb-2">
-<span class="px-2 py-0.5 bg-error-container/50 text-status-critical border border-status-critical/20 rounded-DEFAULT font-label-caps text-[10px] uppercase">Spam</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant italic">"Spamming this same link across multiple threads."</p>
-</div>
-</div>
-</div>
-</div>
+<button class="px-4 py-2 bg-surface border border-error text-error font-label-md rounded-lg hover:bg-error-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">person_off</span>
+                    Ban User
+                </button>
+<button class="px-4 py-2 bg-surface border border-error text-error font-label-md rounded-lg hover:bg-error-container transition-colors flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm">person_remove</span>
+    Delete User
+</button></div>
 </div>
 </main>
-</div>
-
-
-
-
 
 
 </body></html>
