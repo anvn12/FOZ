@@ -4,6 +4,10 @@ import { createPostRequestSchema } from "#shared/schemas/interactions.js";
 import { createPost, deletePost, listPostFeed, updatePostBody, createRepost, removeRepost } from "#backend/services/interactions/posts.js";
 import { createReport } from "#backend/services/interactions/reports.js";
 import { createReportRequestSchema } from "#shared/schemas/interactions.js";
+import { getOrGeneratePostSummary } from "#backend/services/post-summary.service.js";
+import { summaryRateLimiter } from "#backend/lib/rate-limit.js";
+
+
 
 export const postRouter = Router();
 
@@ -99,6 +103,7 @@ postRouter.delete("/:postId/repost", requireAuth, async (req: AuthedRequest, res
     next(err);
   }
 });
+
 postRouter.post("/:postId/report", requireAuth, validateBody(createReportRequestSchema), async (req: AuthedRequest, res, next) => {
   try {
     if (!req.user) {
@@ -114,3 +119,38 @@ postRouter.post("/:postId/report", requireAuth, validateBody(createReportRequest
     next(err);
   }
 });
+
+postRouter.get("/:postId/summary", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
+  try {
+    const postId = req.params.postId as string;
+    const result = await getOrGeneratePostSummary(postId, false);
+    return res.status(200).json({
+      success: true,
+      cached: result.cached,
+      summary: result.summary,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+    }
+    next(err);
+  }
+});
+
+postRouter.post("/:postId/summary/refresh", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
+  try {
+    const postId = req.params.postId as string;
+    const result = await getOrGeneratePostSummary(postId, true);
+    return res.status(200).json({
+      success: true,
+      cached: result.cached,
+      summary: result.summary,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+    }
+    next(err);
+  }
+});
+

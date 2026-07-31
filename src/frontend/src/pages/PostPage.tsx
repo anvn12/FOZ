@@ -16,6 +16,8 @@ import { NavBar } from "#frontend/components/NavBar";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { useProfile } from "#frontend/api/profile";
 
+import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
+
 function showError(error: Error) { toast.error(error.message || "Something went wrong. Please try again."); }
 
 export function PostPage() {
@@ -65,6 +67,10 @@ export function PostPage() {
                 <div className="border-b border-outline-variant border-4">
                   <FeedPostItem post={post} />
                 </div>
+                <div className="px-4">
+                  <PostSummaryCard postId={post.id} />
+                </div>
+
                 
                 <div className="pb-20 divide-y divide-outline-variant">
                   {roots.map((comment) => (

@@ -1,13 +1,13 @@
 ---
 name: ai-usage-log
-description: Automatically logs AI-assisted code changes to ai-logs/<username>.md at the repository root. Each team member gets their own log file named after their GitHub login. Activates after any response where source code files were modified. Use in every coding session.
+description: Automatically logs AI-assisted code and specification changes to ai-logs/<username>.md at the repository root. Each team member gets their own log file named after their GitHub login. Activates after any response where source code or SpecKit files were modified. Use in every coding session.
 ---
 
 # AI Usage Log
 
 ## Instructions
 
-After each response where you modified source code files (e.g. `.js`, `.ts`, `.jsx`, `.tsx`, `.py`, `.html`, `.css`, `.scss`, `.go`, `.rs`, `.java`, `.c`, `.cpp`, `.h`, `.php`, `.rb`, `.sql`), append an entry to the team log file.
+After each response where you modified source code files (e.g. `.js`, `.ts`, `.jsx`, `.tsx`, `.py`, `.html`, `.css`, `.scss`, `.go`, `.rs`, `.java`, `.c`, `.cpp`, `.h`, `.php`, `.rb`, `.sql`, `.json`) OR SpecKit design & specification files (e.g. `specs/*`, `spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `checklists/*`, `contracts/*`), append an entry to the team log file.
 
 ### Determine the log location (do this every time)
 
@@ -15,11 +15,15 @@ After each response where you modified source code files (e.g. `.js`, `.ts`, `.j
 2. **Find the user's GitHub name** — run `gh api user --jq .login` to get the GitHub login. If `gh` is unavailable or unauthenticated, fall back to `git config user.name` and sanitize it: lowercase, replace spaces with hyphens (e.g. `Shiki Rei` → `shiki-rei`).
 3. **The log file is always** `<repo-root>/ai-logs/<username>.md`. Create the `ai-logs/` directory at the repo root if it does not exist.
 
+### What to log
+- Any turn that creates or modifies source code files (`src/`, `lib/`, `tests/`, etc.)
+- Any turn that creates or modifies SpecKit workflow files and feature specs (`specs/*`, `spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `checklists/*`, `contracts/*`)
+- Any prompt/reply turn during `/speckit.specify`, `/speckit.clarify`, `/speckit.plan`, `/speckit.tasks`, `/speckit.implement`, etc.
+
 ### What to skip
-- Read-only sessions (no file modifications at all)
-- `.md` files in `docs/`, `ai-logs/`, or `ideas/`
-- Non-code files (images, videos, lockfiles, `.env`, etc.)
-- Changes that are only to `README.md` or documentation
+- Read-only sessions (no file modifications at all, e.g. `/speckit.analyze` read-only reports)
+- `.md` files in `docs/`, `ai-logs/`, or `ideas/` (unless part of a turn modifying code/specs)
+- Changes that are strictly limited to `README.md`
 
 ### Log entry format
 
@@ -43,3 +47,4 @@ After each response where you modified source code files (e.g. `.js`, `.ts`, `.j
 - Use paths relative to the repo root.
 - Do not log this skill's own logging activity (do not include the log file itself in the files touched list).
 - If the agent cannot determine a username (no git repo, no gh, no git config), skip logging rather than guessing.
+

@@ -13,3 +13,15 @@ export const authRateLimiter: RequestHandler =
         legacyHeaders: false,
         message: { error: { code: "RATE_LIMITED", message: "Too many requests, slow down." } },
       });
+
+export const summaryRateLimiter: RequestHandler =
+  process.env.NODE_ENV === "test"
+    ? noop
+    : rateLimit({
+        windowMs: 1 * 60 * 1000,
+        limit: 10,
+        standardHeaders: "draft-7",
+        legacyHeaders: false,
+        message: { error: { code: "RATE_LIMITED", message: "Too many summary requests, please try again in a minute." } },
+      });
+
