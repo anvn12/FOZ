@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: Post Summarize (TL;DR) API
+  version: 1.0.0
+  description: Endpoints for generating, fetching, and refreshing AI post summaries.
+paths:
+  /api/v1/posts/{postId}/summary:
+    get:
+      summary: Get or generate post summary
+      description: Returns existing cached summary if present. If no summary exists, generates a new summary using the 4:3:3 comment sampling ratio.
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Summary retrieved or generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostSummaryResponse'
+        '404':
+          description: Post not found
+        '503':
+          description: AI summarization service unavailable
+
+  /api/v1/posts/{postId}/summary/refresh:
+    post:
+      summary: Manually refresh post summary
+      description: Forces a re-sampling of comments (4:3:3 ratio) and generates an updated summary via LLM API, replacing the cached version.
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Summary refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostSummaryResponse'
+        '404':
+          description: Post not found
+        '503':
+          description: AI summarization service unavailable
+
+components:
+  schemas:
+    PostSummaryResponse:
+      type: object
+      required:
+        - success
+        - summary
+        - cached
+      properties:
+        success:
+          type: boolean
+        cached:
+          type: boolean
+        summary:
+          type: object
+          required:
+            - id
+            - postId
+            - postSnapshot
+            - keyHighlights
+            - sentiment
+            - commentCount
+            - createdAt
+            - updatedAt
+          properties:
+            id:
+              type: string
+              format: uuid
+            postId:
+              type: string
+              format: uuid
+            postSnapshot:
+              type: string
+            keyHighlights:
+              type: array
+              items:
+                type: string
+            sentiment:
+              type: string
+            commentCount:
+              type: integer
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time

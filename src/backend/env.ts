@@ -20,6 +20,7 @@ const schema = z.object({
   BCRYPT_COST: z.coerce.number().int().min(4).max(15).default(12),
   COOKIE_SECURE: boolish,
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
+  AI_API_KEY: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -177,3 +177,65 @@
 **Prompt:** "post creation function is currently not working. Help me fix it. For more detail, when i post, the server response: {"error":{"code":"INTERNAL","message":"Internal server error"}}, and in the terminal it says: foz api listening on :4000 unhandled error: DrizzleQueryError..."
 **Files touched:** `src/backend/db/migrations/0001_initial.sql`, `src/backend/db/migrations/0004_fix_schema_alignments.sql`, `src/backend/__tests__/integration/search.test.ts`, `src/backend/__tests__/integration/interaction.likes.test.ts`, `src/backend/__tests__/integration/interaction.comments.test.ts`
 
+### 2026-07-31 09:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify Based on @[d:\FOZ\docs\00 - Old-PA-docs\1B. Project Proposal.md], create Post Summerize (TL:DR) functional group. That function uses LLMs API to summerize about 10 selected comments on the ratio: most liked, most replied, recent (define the suitable ratio for me)"
+**Files touched:** `specs/011-post-summarize/spec.md`, `specs/011-post-summarize/checklists/requirements.md`
+
+### 2026-07-31 09:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "b"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/011-post-summarize/plan.md`, `specs/011-post-summarize/research.md`, `specs/011-post-summarize/data-model.md`, `specs/011-post-summarize/contracts/post-summary-api.yaml`, `specs/011-post-summarize/quickstart.md`
+
+### 2026-07-31 09:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/011-post-summarize/tasks.md`
+
+### 2026-07-31 09:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/post-summary.ts`, `src/shared/schemas/index.ts`, `src/shared/schemas/post-summary.test.ts`, `src/backend/db/schema/interactions.ts`, `src/backend/db/migrations/0005_post_summaries_columns.sql`, `src/backend/env.ts`, `src/backend/services/ai-summarizer.ts`, `src/backend/api/posts/__tests__/ai-summarizer.test.ts`, `src/backend/db/repositories/post-summary.repository.ts`, `src/backend/api/posts/__tests__/post-summary-repository.test.ts`, `src/backend/services/post-summary.service.ts`, `src/backend/api/posts/routes.ts`, `src/backend/api/posts/__tests__/summary-routes.test.ts`, `src/frontend/src/api/post-summary.ts`, `src/frontend/src/components/PostSummaryCard.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/backend/api/posts/__tests__/comment-sampling-dedup.test.ts`, `src/backend/api/posts/__tests__/post-summary-fallbacks.test.ts`, `src/backend/lib/rate-limit.ts`, `specs/011-post-summarize/tasks.md`
+
+### 2026-07-31 10:04
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix the skill ai-usage-log"
+**Files touched:** `.agents/skills/ai-usage-log/SKILL.md`
+
+### 2026-07-31 10:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "in my TL;DR (post summarize function), i dont see anywhere to fill in my API key, also i dont see any guideline about how to setup those api key. Add that."
+**Files touched:** `.env.example`, `.env`, `README.md`, `specs/011-post-summarize/quickstart.md`
+
+### 2026-07-31 10:10
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "I cannot use summarization: Internal server error"
+**Files touched:** `src/backend/db/migrations/0005_post_summaries_columns.sql`, `src/backend/services/ai-summarizer.ts`
+
+
+
