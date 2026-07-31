@@ -254,3 +254,9 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "In comments UI, the box for input comment is now at the bottom, so that when there are more comments, it's pushed and overflow. Change it to the top of other comments (below the TL;DR button)"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-07-31 10:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the displayed time of the post and comments is not reflecting the time people created. Fix it (align with the created time, show approximately time, not accurate time like 1:00:01 but more like 1h ago)"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`

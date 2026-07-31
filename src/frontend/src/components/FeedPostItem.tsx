@@ -8,12 +8,36 @@ import { ReportModal } from "./ReportModal";
 import { useAuthStore } from "#frontend/stores/auth";
 import { deletePost } from "#frontend/api/interactions";
 
-export function formatRelativeTime(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return "Just now";
-  if (hours < 24) return `${hours}h`;
-  return `${Math.floor(hours / 24)}d`;
+export function formatRelativeTime(dateInput: string | number | Date | null | undefined): string {
+  if (!dateInput) return "Just now";
+  const time = new Date(dateInput).getTime();
+  if (isNaN(time)) return "Just now";
+
+  const diffMs = Date.now() - time;
+  if (diffMs < 45_000) {
+    return "Just now";
+  }
+
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 60) {
+    return `${minutes}m ago`;
+  }
+  if (hours < 24) {
+    return `${hours}h ago`;
+  }
+  if (days < 30) {
+    return `${days}d ago`;
+  }
+  const months = Math.floor(days / 30);
+  if (months < 12) {
+    return `${months}mo ago`;
+  }
+  const years = Math.floor(days / 365);
+  return `${years}y ago`;
 }
 
 export function FeedPostItem({ post }: { post: any }) {
