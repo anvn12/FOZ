@@ -81,6 +81,7 @@ export const postResponseSchema = z.object({
     displayName: z.string()
   }).optional(),
   reposted: z.boolean().optional(),
+  commentCount: z.number().int().nonnegative().optional(),
   visibilityState: z.enum(["public", "hidden"]),
   lifecycleState: z.string(),
   createdAt: z.string(),
