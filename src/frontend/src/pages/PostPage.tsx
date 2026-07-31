@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -38,7 +38,6 @@ export function PostPage() {
   const commentsQuery = useQuery({ queryKey: ["comments", postId], queryFn: () => listComments(postId), enabled: Boolean(post) });
 
   const [draft, setDraft] = useState("");
-  const [commentFocused, setCommentFocused] = useState(false);
   const queryClient = useQueryClient();
 
   const create = useMutation({
@@ -80,32 +79,60 @@ export function PostPage() {
 
                   {/* Comment Input */}
                   <div className="px-4 py-3 border-b border-outline-variant bg-surface">
-                    <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
-                      <input
-                        value={draft}
-                        onFocus={() => { if (!user) { navigate("/login"); return; } setCommentFocused(true); }}
-                        onChange={(e) => setDraft(e.target.value)}
-                        placeholder="Add a comment..."
-                        className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
-                      />
-                      {(commentFocused || draft.trim()) && (
-                        <>
+                    <form onSubmit={(e) => e.preventDefault()} className="w-full">
+                      <div className="relative w-full bg-surface-container rounded-2xl px-4 py-2.5 transition-all focus-within:ring-1 focus-within:ring-outline min-h-[44px]">
+                        <textarea
+                          rows={1}
+                          value={draft}
+                          onFocus={() => { if (!user) navigate("/login"); }}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setDraft(val);
+                            const el = e.target;
+                            // Only expand when there are actual newline characters
+                            if (val.includes("\n")) {
+                              el.style.height = "auto";
+                              el.style.height = `${Math.min(el.scrollHeight, 168)}px`;
+                            } else {
+                              el.style.height = "";
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (!draft.trim()) {
+                              setDraft("");
+                              e.target.style.height = "";
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.stopPropagation();
+                            }
+                          }}
+                          placeholder="Add a comment..."
+                          className="w-full bg-transparent p-0 pr-10 outline-none border-0 text-sm leading-[20px] resize-none max-h-[168px] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-black/40 [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.2)_transparent]"
+                        />
+                        {draft.trim() && (
                           <button
                             type="button"
-                            onClick={() => { setDraft(""); setCommentFocused(false); }}
-                            className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
+                            onClick={(e) => {
+                              if (!user) return navigate("/login");
+                              if (draft.trim()) {
+                                create.mutate();
+                                setDraft("");
+                                const textarea = e.currentTarget.parentElement?.querySelector("textarea");
+                                if (textarea) textarea.style.height = "";
+                              }
+                            }}
+                            disabled={create.isPending}
+                            className="absolute right-2.5 bottom-2 flex h-7 w-7 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition-opacity disabled:opacity-40"
+                            aria-label="Comment"
                           >
-                            Cancel
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-white">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+                            </svg>
                           </button>
-                          <button
-                            type="submit"
-                            disabled={!draft.trim() || create.isPending}
-                            className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
-                          >
-                            Comment
-                          </button>
-                        </>
-                      )}
+                        )}
+                      </div>
                     </form>
                   </div>
 
@@ -137,8 +164,27 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
   const [body, setBody] = useState(comment.body);
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyDraft, setReplyDraft] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMenu]);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [wasEdited, setWasEdited] = useState(false);
   const { data: profile } = useProfile(comment.authorId);
   const displayName = profile?.displayName || `Member ${comment.authorId.slice(0, 4)}`;
+
+  const isEdited = wasEdited || Boolean(
+    comment.updatedAt && new Date(comment.updatedAt).getTime() - new Date(comment.createdAt).getTime() > 1000
+  );
 
   const react = useMutation({
     mutationFn: () => toggleReaction({ targetType: "comment", targetId: comment.id, active: liked }),
@@ -154,6 +200,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     mutationFn: () => updateComment(comment.id, { body }),
     onSuccess: async () => {
       setEditing(false);
+      setWasEdited(true);
       await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
     },
     onError: showError
@@ -203,17 +250,57 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
         </div>
 
         <div className="min-w-0 flex-1 pt-3 pb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-[14px]">
-              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 text-[14px] min-w-0">
+              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[160px] sm:max-w-[240px]">
                 {displayName}
               </Link>
-              <span className="text-secondary ml-1">· {formatRelativeTime(comment.createdAt)}</span>
+              <span className="text-secondary ml-1 shrink-0">· {formatRelativeTime(comment.createdAt)}</span>
+              {isEdited && <span className="text-secondary text-[12px] font-normal ml-0.5 shrink-0">(Edited)</span>}
             </div>
             {user?.id === comment.authorId && (
-              <div className="flex gap-2">
-                <button onClick={() => setEditing(true)} className="text-secondary hover:text-primary"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
-                <button onClick={() => confirm("Delete this comment?") && remove.mutate()} className="text-red-500 hover:text-red-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
+              <div className="relative" ref={menuRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowMenu((prev) => !prev)}
+                  className="p-1 rounded-full text-secondary hover:text-primary hover:bg-surface-container transition-colors"
+                  aria-label="Comment options"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                  </svg>
+                </button>
+
+                {showMenu && (
+                  <div className="absolute right-0 top-full mt-1 z-20 min-w-[120px] rounded-xl border border-outline-variant bg-surface-container-lowest py-1 shadow-lg">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMenu(false);
+                        setEditing(true);
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-surface-container-low transition-colors"
+                    >
+                      <svg className="w-4 h-4 text-secondary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMenu(false);
+                        setShowDeleteDialog(true);
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                    >
+                      <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -238,6 +325,12 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
               {likeCount > 0 && <span className="text-[13px]">{likeCount}</span>}
             </button>
             <button
+              onMouseDown={(e) => {
+                if (showReplyBox && !replyDraft.trim()) {
+                  e.preventDefault();
+                  setShowReplyBox(false);
+                }
+              }}
               onClick={() => act(() => { setShowReplyBox((prev) => !prev); setReplyDraft(""); })}
               className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${showReplyBox ? "text-primary" : "hover:text-primary"}`}
             >
@@ -250,31 +343,60 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
           {/* Inline reply box */}
           {showReplyBox && (
             <div className="mt-2 mb-1">
-              <form
-                onSubmit={(e) => { e.preventDefault(); if (replyDraft.trim()) reply.mutate(); }}
-                className="flex items-center gap-2"
-              >
-                <input
-                  autoFocus
-                  value={replyDraft}
-                  onChange={(e) => setReplyDraft(e.target.value)}
-                  placeholder="Write a reply..."
-                  className="flex-1 bg-surface-container rounded-full px-4 py-2 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => { setShowReplyBox(false); setReplyDraft(""); }}
-                  className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!replyDraft.trim() || reply.isPending}
-                  className="bg-primary text-on-primary px-4 py-2 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
-                >
-                  Reply
-                </button>
+              <form onSubmit={(e) => e.preventDefault()} className="w-full">
+                <div className="relative w-full bg-surface-container rounded-2xl px-3 py-2 transition-all focus-within:ring-1 focus-within:ring-outline min-h-[38px]">
+                  <textarea
+                    autoFocus
+                    rows={1}
+                    value={replyDraft}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setReplyDraft(val);
+                      const el = e.target;
+                      // Only expand when there are actual newline characters
+                      if (val.includes("\n")) {
+                        el.style.height = "auto";
+                        el.style.height = `${Math.min(el.scrollHeight, 168)}px`;
+                      } else {
+                        el.style.height = "";
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.stopPropagation();
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (!replyDraft.trim()) {
+                        setReplyDraft("");
+                        e.target.style.height = "";
+                        setShowReplyBox(false);
+                      }
+                    }}
+                    placeholder="Write a reply..."
+                    className="w-full bg-transparent p-0 pr-8 outline-none border-0 text-sm leading-[20px] resize-none max-h-[168px] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-black/40 [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.2)_transparent]"
+                  />
+                  {replyDraft.trim() && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        if (replyDraft.trim()) {
+                          reply.mutate();
+                          setReplyDraft("");
+                          const textarea = e.currentTarget.parentElement?.querySelector("textarea");
+                          if (textarea) textarea.style.height = "";
+                        }
+                      }}
+                      disabled={reply.isPending}
+                      className="absolute right-2 bottom-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition-opacity disabled:opacity-40"
+                      aria-label="Reply"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 text-white">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
           )}
@@ -306,6 +428,47 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
           <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} depth={MAX_DEPTH} />
         );
       })}
+
+      {/* Delete Comment Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          onClick={() => setShowDeleteDialog(false)}
+        >
+          <div
+            className="animate-foz-pop flex w-full max-w-[360px] flex-col rounded-3xl bg-surface-container-lowest p-6 text-center shadow-2xl border border-outline-variant"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/40 text-red-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-primary">Delete comment?</h3>
+            <p className="mt-1 text-sm text-secondary">This comment will be deleted permanently. This action cannot be undone.</p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteDialog(false);
+                  remove.mutate();
+                }}
+                disabled={remove.isPending}
+                className="w-full rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition-opacity hover:bg-red-700 disabled:opacity-50"
+              >
+                {remove.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteDialog(false)}
+                className="w-full rounded-xl border border-outline-variant bg-transparent py-3 text-sm font-semibold text-primary transition-colors hover:bg-surface-container-low"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -91,8 +91,8 @@ export function SearchPage() {
                             className="w-12 h-12 rounded-full object-cover border border-outline-variant/30" 
                             src={avatarSrc}
                           />
-                          <div className="flex flex-col flex-1">
-                            <span className="text-[16px] font-bold text-primary group-hover:underline">{profile.displayName}</span>
+                          <div className="flex flex-col flex-1 min-w-0">
+                            <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
                             {profile.bio && (
                               <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
                             )}
