@@ -28,6 +28,7 @@ export async function upsertPostSummary(data: Omit<NewPostSummary, "id" | "creat
       })
       .where(eq(postSummaries.id, existing.id))
       .returning();
+    if (!updated) throw new Error("Failed to update post summary");
     return updated;
   }
 
@@ -41,6 +42,7 @@ export async function upsertPostSummary(data: Omit<NewPostSummary, "id" | "creat
       commentCount: data.commentCount,
     })
     .returning();
+  if (!inserted) throw new Error("Failed to insert post summary");
   return inserted;
 }
 

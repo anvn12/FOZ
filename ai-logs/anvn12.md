@@ -248,3 +248,52 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "also fix the mobile home UI to align with the design@[d:\FOZ\docs\03 - UI-designs\home\foz_mobile_feed\new feed.png]  (currently the buttons are different from desktop version)"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-07-31 10:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "In comments UI, the box for input comment is now at the bottom, so that when there are more comments, it's pushed and overflow. Change it to the top of other comments (below the TL;DR button)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-07-31 10:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the displayed time of the post and comments is not reflecting the time people created. Fix it (align with the created time, show approximately time, not accurate time like 1:00:01 but more like 1h ago)"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+### 2026-07-31 11:11
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "now, the like, comment, repost buttons are not on straight line (vertically) because the post with the number is pushing the other buttons to the right side. Make it always on the straigt line whether it has number of not"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`
+
+### 2026-07-31 11:13
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "also in comments, the order of buttons must be like, then comment (just like the post). And they must be aligned too."
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the straight line on comments can be designed like this (ignore the content and other buttons)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:21
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the line should be from the original comment to its children (not that big gap). Also if the curved line is hard to implement, you can use the straight line. The line should be from center of the avatar to center of the other avatars"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:41
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "the line should be like a L shape as in folder structure line in README. The sub comment only works on 3 layer deeps (original -> reply1 -> reply2). IF there is more reply after layer 3, just point from it"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:57
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "add cancel button to the comment to post. When click on the box, the button \"Comment\" and \"Cancel\" are shown but the \"Comment\" is disabled, but only when content is type the \"Comment\" is enabled again allowing user to comment. Do the same thing with the reply (button reply acts like button \"comment\")"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
