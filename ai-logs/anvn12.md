@@ -290,3 +290,10 @@
 **Model:** Claude Sonnet 4.6 (Thinking)
 **Prompt:** "the line should be like a L shape as in folder structure line in README. The sub comment only works on 3 layer deeps (original -> reply1 -> reply2). IF there is more reply after layer 3, just point from it"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:57
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "add cancel button to the comment to post. When click on the box, the button \"Comment\" and \"Cancel\" are shown but the \"Comment\" is disabled, but only when content is type the \"Comment\" is enabled again allowing user to comment. Do the same thing with the reply (button reply acts like button \"comment\")"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+

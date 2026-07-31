@@ -31,27 +31,26 @@ export function PostPage() {
       feedRef.current.scrollTop += e.deltaY;
     }
   };
-  
+
   const { data: postsData, isLoading: isPostsLoading } = useQuery({ queryKey: ["posts"], queryFn: () => listPosts() });
   const post = postsData?.items?.find((item) => item.id === postId);
 
   const commentsQuery = useQuery({ queryKey: ["comments", postId], queryFn: () => listComments(postId), enabled: Boolean(post) });
-  
-  const [draft, setDraft] = useState(""); 
-  const [replyTo, setReplyTo] = useState<any | null>(null); 
+
+  const [draft, setDraft] = useState("");
+  const [commentFocused, setCommentFocused] = useState(false);
   const queryClient = useQueryClient();
-  
-  const create = useMutation({ 
-    mutationFn: () => createComment(postId, { body: draft, ...(replyTo ? { parentCommentId: replyTo.id } : {}) }), 
-    onSuccess: async () => { 
-      setDraft(""); 
-      setReplyTo(null); 
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); 
-      toast.success("Reply posted."); 
-    }, 
-    onError: showError 
+
+  const create = useMutation({
+    mutationFn: () => createComment(postId, { body: draft }),
+    onSuccess: async () => {
+      setDraft("");
+      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast.success("Comment posted.");
+    },
+    onError: showError
   });
-  
+
   const roots = useMemo(() => (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId), [commentsQuery.data]);
 
   return (
@@ -62,7 +61,7 @@ export function PostPage() {
           <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
             <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 gap-4 flex-shrink-0">
               <button onClick={() => navigate(-1)} className="hover:bg-surface-container rounded-full p-2 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
               <h1 className="text-[17px] font-semibold text-primary">Post</h1>
             </header>
@@ -81,30 +80,39 @@ export function PostPage() {
 
                   {/* Comment Input */}
                   <div className="px-4 py-3 border-b border-outline-variant bg-surface">
-                    {replyTo && (
-                      <div className="flex justify-between text-xs text-secondary mb-2 px-2">
-                        <span>Replying to comment...</span>
-                        <button onClick={() => setReplyTo(null)} className="hover:text-primary font-medium">Cancel</button>
-                      </div>
-                    )}
                     <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
-                      <input 
-                        value={draft} 
-                        onFocus={() => !user && navigate("/login")} 
-                        onChange={(e) => setDraft(e.target.value)} 
-                        placeholder={replyTo ? "Write a reply..." : "Post your reply..."} 
+                      <input
+                        value={draft}
+                        onFocus={() => { if (!user) { navigate("/login"); return; } setCommentFocused(true); }}
+                        onChange={(e) => setDraft(e.target.value)}
+                        placeholder="Add a comment..."
                         className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
                       />
-                      <button type="submit" disabled={!draft.trim() || create.isPending} className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-50 hover:opacity-90 transition-opacity">
-                        Reply
-                      </button>
+                      {(commentFocused || draft.trim()) && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => { setDraft(""); setCommentFocused(false); }}
+                            className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={!draft.trim() || create.isPending}
+                            className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
+                          >
+                            Comment
+                          </button>
+                        </>
+                      )}
                     </form>
                   </div>
 
                   {/* Comments List */}
                   <div className="divide-y divide-outline-variant">
                     {roots.map((comment) => (
-                      <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />
+                      <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} />
                     ))}
                     {roots.length === 0 && <div className="p-8 text-center text-outline">No comments yet. Be the first to reply!</div>}
                   </div>
@@ -120,46 +128,59 @@ export function PostPage() {
   );
 }
 
-function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: { comment: any; comments: any[]; user: any; postId: string; onReply: (comment: any) => void; depth?: number }) {
+function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment: any; comments: any[]; user: any; postId: string; depth?: number }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [liked, setLiked] = useState(comment.liked);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(comment.body);
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [replyDraft, setReplyDraft] = useState("");
   const { data: profile } = useProfile(comment.authorId);
   const displayName = profile?.displayName || `Member ${comment.authorId.slice(0, 4)}`;
 
-  const react = useMutation({ 
-    mutationFn: () => toggleReaction({ targetType: "comment", targetId: comment.id, active: liked }), 
-    onSuccess: async (result: any) => { 
-      setLiked(result.active); 
-      setLikeCount(result.likeCount); 
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); 
-    }, 
-    onError: showError 
+  const react = useMutation({
+    mutationFn: () => toggleReaction({ targetType: "comment", targetId: comment.id, active: liked }),
+    onSuccess: async (result: any) => {
+      setLiked(result.active);
+      setLikeCount(result.likeCount);
+      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+    onError: showError
   });
-  
-  const save = useMutation({ 
-    mutationFn: () => updateComment(comment.id, { body }), 
-    onSuccess: async () => { 
-      setEditing(false); 
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); 
-    }, 
-    onError: showError 
+
+  const save = useMutation({
+    mutationFn: () => updateComment(comment.id, { body }),
+    onSuccess: async () => {
+      setEditing(false);
+      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+    onError: showError
   });
-  
-  const remove = useMutation({ 
-    mutationFn: () => deleteComment(comment.id), 
-    onSuccess: async () => { 
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); 
-    }, 
-    onError: showError 
+
+  const remove = useMutation({
+    mutationFn: () => deleteComment(comment.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+    onError: showError
   });
-  
+
+  const reply = useMutation({
+    mutationFn: () => createComment(postId, { body: replyDraft, parentCommentId: comment.id }),
+    onSuccess: async () => {
+      setReplyDraft("");
+      setShowReplyBox(false);
+      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast.success("Reply posted.");
+    },
+    onError: showError
+  });
+
   const children = comments.filter((item) => item.parentCommentId === comment.id);
   const act = (callback: () => void) => user ? callback() : navigate("/login");
-  
+
   const MAX_DEPTH = 2;
   const paddingClass = depth === 0 ? "px-6 md:px-10" : "";
 
@@ -191,15 +212,15 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
             </div>
             {user?.id === comment.authorId && (
               <div className="flex gap-2">
-                <button onClick={() => setEditing(true)} className="text-secondary hover:text-primary"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-                <button onClick={() => confirm("Delete this comment?") && remove.mutate()} className="text-red-500 hover:text-red-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+                <button onClick={() => setEditing(true)} className="text-secondary hover:text-primary"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
+                <button onClick={() => confirm("Delete this comment?") && remove.mutate()} className="text-red-500 hover:text-red-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
               </div>
             )}
           </div>
 
           {editing ? (
             <div className="mt-2">
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary"/>
+              <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary" />
               <div className="mt-2 flex gap-3 text-sm font-semibold">
                 <button onClick={() => save.mutate()} disabled={!body.trim()} className="text-primary hover:opacity-80">Save</button>
                 <button onClick={() => { setBody(comment.body); setEditing(false); }} className="text-secondary hover:text-primary">Cancel</button>
@@ -212,16 +233,51 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
           <div className="mt-2 flex items-center gap-3 text-outline">
             <button onClick={() => act(() => react.mutate())} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {likeCount > 0 && <span className="text-[13px]">{likeCount}</span>}
             </button>
-            <button onClick={() => act(() => onReply(comment))} className="min-w-[54px] flex items-center gap-1.5 hover:text-primary transition-colors group">
+            <button
+              onClick={() => act(() => { setShowReplyBox((prev) => !prev); setReplyDraft(""); })}
+              className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${showReplyBox ? "text-primary" : "hover:text-primary"}`}
+            >
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
+
+          {/* Inline reply box */}
+          {showReplyBox && (
+            <div className="mt-2 mb-1">
+              <form
+                onSubmit={(e) => { e.preventDefault(); if (replyDraft.trim()) reply.mutate(); }}
+                className="flex items-center gap-2"
+              >
+                <input
+                  autoFocus
+                  value={replyDraft}
+                  onChange={(e) => setReplyDraft(e.target.value)}
+                  placeholder="Write a reply..."
+                  className="flex-1 bg-surface-container rounded-full px-4 py-2 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => { setShowReplyBox(false); setReplyDraft(""); }}
+                  className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!replyDraft.trim() || reply.isPending}
+                  className="bg-primary text-on-primary px-4 py-2 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
+                >
+                  Reply
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
@@ -239,7 +295,7 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
                 {!isLast && <div className="w-[2px] flex-1 bg-outline-variant/40" />}
               </div>
               <div className="flex-1 min-w-0">
-                <CommentBranch comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />
+                <CommentBranch comment={child} comments={comments} user={user} postId={postId} depth={depth + 1} />
               </div>
             </div>
           );
@@ -247,7 +303,7 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
 
         // At MAX_DEPTH: render flat with no additional indentation; depth stays pinned at MAX_DEPTH
         return (
-          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={MAX_DEPTH} />
+          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} depth={MAX_DEPTH} />
         );
       })}
     </div>
