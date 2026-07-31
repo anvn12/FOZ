@@ -248,3 +248,9 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "also fix the mobile home UI to align with the design@[d:\FOZ\docs\03 - UI-designs\home\foz_mobile_feed\new feed.png]  (currently the buttons are different from desktop version)"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-07-31 10:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "In comments UI, the box for input comment is now at the bottom, so that when there are more comments, it's pushed and overflow. Change it to the top of other comments (below the TL;DR button)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`

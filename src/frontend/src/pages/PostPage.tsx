@@ -71,20 +71,12 @@ export function PostPage() {
                   <PostSummaryCard postId={post.id} />
                 </div>
 
-                
-                <div className="pb-20 divide-y divide-outline-variant">
-                  {roots.map((comment) => (
-                    <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />
-                  ))}
-                  {roots.length === 0 && <div className="p-8 text-center text-outline">No comments yet. Be the first to reply!</div>}
-                </div>
-
                 {/* Comment Input */}
-                <div className="fixed bottom-0 md:bottom-auto w-full max-w-2xl bg-surface/95 backdrop-blur-md border-t border-outline-variant p-3 z-30">
+                <div className="px-4 py-3 border-b border-outline-variant bg-surface">
                   {replyTo && (
                     <div className="flex justify-between text-xs text-secondary mb-2 px-2">
                       <span>Replying to comment...</span>
-                      <button onClick={() => setReplyTo(null)} className="hover:text-primary">Cancel</button>
+                      <button onClick={() => setReplyTo(null)} className="hover:text-primary font-medium">Cancel</button>
                     </div>
                   )}
                   <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
@@ -93,12 +85,20 @@ export function PostPage() {
                       onFocus={() => !user && navigate("/login")} 
                       onChange={(e) => setDraft(e.target.value)} 
                       placeholder={replyTo ? "Write a reply..." : "Post your reply..."} 
-                      className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all"
+                      className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
                     />
-                    <button type="submit" disabled={!draft.trim() || create.isPending} className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold disabled:opacity-50">
+                    <button type="submit" disabled={!draft.trim() || create.isPending} className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-50 hover:opacity-90 transition-opacity">
                       Reply
                     </button>
                   </form>
+                </div>
+
+                {/* Comments List */}
+                <div className="pb-20 divide-y divide-outline-variant">
+                  {roots.map((comment) => (
+                    <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />
+                  ))}
+                  {roots.length === 0 && <div className="p-8 text-center text-outline">No comments yet. Be the first to reply!</div>}
                 </div>
               </>
             ) : (
