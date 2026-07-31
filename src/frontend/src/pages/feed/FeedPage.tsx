@@ -119,13 +119,72 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
   const save = useMutation({ mutationFn: () => updateComment(comment.id, { body }), onSuccess: async () => { setEditing(false); await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); }, onError: showError });
   const remove = useMutation({ mutationFn: () => deleteComment(comment.id), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); }, onError: showError }); const children = comments.filter((item) => item.parentCommentId === comment.id);
   const act = (callback: () => void) => user ? callback() : navigate("/login");
-  return <div className={depth ? "ml-5 border-l border-black/10 pl-4" : ""}><article className="py-5"><div className="flex gap-3"><Avatar id={comment.authorId} small /><div className="min-w-0 flex-1"><div className="flex items-center justify-between"><div><span className="font-bold">{authorName(comment.authorId, user)}</span><span className="ml-2 text-sm text-[#6a6161]">@{shortId(comment.authorId)} · {relativeTime(comment.createdAt)}</span></div>{user?.id === comment.authorId && <div className="flex gap-1"><button type="button" aria-label="Edit comment" onClick={() => setEditing(true)} className="icon-button"><span className="material-symbols-outlined text-[18px]">edit</span></button><button type="button" aria-label="Delete comment" onClick={() => confirm("Delete this comment?") && remove.mutate()} className="icon-button text-[#ba0035]"><span className="material-symbols-outlined text-[18px]">delete</span></button></div>}</div>
-    {editing ? <div className="mt-2"><textarea value={body} onChange={(event) => setBody(event.target.value)} className="w-full rounded-lg border border-black/10 p-3 outline-none"/><div className="mt-2 flex gap-3 text-sm font-bold"><button type="button" onClick={() => save.mutate()} disabled={!body.trim()}>Save</button><button type="button" onClick={() => { setBody(comment.body); setEditing(false); }}>Cancel</button></div></div> : <p className="mt-2 whitespace-pre-wrap leading-6">{comment.body}</p>}
-    <div className="mt-3 flex items-center gap-5 text-sm text-[#6a6161]"><Action icon="chat_bubble" label="Reply" onClick={() => act(() => onReply(comment))} /><Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like comment" onClick={() => act(() => react.mutate())} /></div></div></div></article>{children.map((child) => <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />)}</div>;
+  const MAX_DEPTH = 2;
+  return (
+    <div className={depth === 0 ? "px-4" : ""}>
+      {/* Parent row: avatar lane + content */}
+      <div className="flex gap-3">
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <div className="mt-3">
+            <Avatar id={comment.authorId} small />
+          </div>
+          {children.length > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-black/10" />}
+        </div>
+        <div className="min-w-0 flex-1 pt-3 pb-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="font-bold">{authorName(comment.authorId, user)}</span>
+              <span className="ml-2 text-sm text-[#6a6161]">@{shortId(comment.authorId)} · {relativeTime(comment.createdAt)}</span>
+            </div>
+            {user?.id === comment.authorId && (
+              <div className="flex gap-1">
+                <button type="button" aria-label="Edit comment" onClick={() => setEditing(true)} className="icon-button"><span className="material-symbols-outlined text-[18px]">edit</span></button>
+                <button type="button" aria-label="Delete comment" onClick={() => confirm("Delete this comment?") && remove.mutate()} className="icon-button text-[#ba0035]"><span className="material-symbols-outlined text-[18px]">delete</span></button>
+              </div>
+            )}
+          </div>
+          {editing ? (
+            <div className="mt-2"><textarea value={body} onChange={(event) => setBody(event.target.value)} className="w-full rounded-lg border border-black/10 p-3 outline-none"/><div className="mt-2 flex gap-3 text-sm font-bold"><button type="button" onClick={() => save.mutate()} disabled={!body.trim()}>Save</button><button type="button" onClick={() => { setBody(comment.body); setEditing(false); }}>Cancel</button></div></div>
+          ) : (
+            <p className="mt-2 whitespace-pre-wrap leading-6">{comment.body}</p>
+          )}
+          <div className="mt-3 flex items-center gap-3 text-sm text-[#6a6161]">
+            <Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like comment" onClick={() => act(() => react.mutate())} />
+            <Action icon="chat_bubble" label="Reply" onClick={() => act(() => onReply(comment))} />
+          </div>
+        </div>
+      </div>
+
+      {/* Child rows — ├──/└── connectors up to MAX_DEPTH; flat beyond */}
+      {children.map((child, idx) => {
+        const isLast = idx === children.length - 1;
+
+        if (depth < MAX_DEPTH) {
+          return (
+            <div key={child.id} className="flex gap-3">
+              <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+                <div className="w-[2px] h-7 flex-shrink-0 bg-black/10" />
+                <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-black/10" />
+                {!isLast && <div className="w-[2px] flex-1 bg-black/10" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <CommentBranch comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />
+              </div>
+            </div>
+          );
+        }
+
+        // At MAX_DEPTH: flat — no additional indentation, depth stays pinned
+        return (
+          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={MAX_DEPTH} />
+        );
+      })}
+    </div>
+  );
 }
 
 function Avatar({ id, small = false }: { id: string; small?: boolean }) { return <div className={`avatar shrink-0 ${small ? "h-8 w-8 text-[10px]" : "h-11 w-11"}`}>{initials(id)}</div>; }
-function Action({ icon, count, active, label, onClick }: { icon: string; count?: number; active?: boolean; label: string; onClick: () => void }) { return <button type="button" aria-label={label} onClick={onClick} className={`flex items-center gap-2 transition-colors hover:text-[#ba0035] ${active ? "text-[#ba0035]" : ""}`}><span className={`material-symbols-outlined text-[22px] ${active ? "icon-filled" : ""}`}>{icon}</span>{count !== undefined && <span className="text-sm">{count}</span>}</button>; }
+function Action({ icon, count, active, label, onClick }: { icon: string; count?: number; active?: boolean; label: string; onClick: () => void }) { return <button type="button" aria-label={label} onClick={onClick} className={`min-w-[54px] flex items-center gap-2 transition-colors hover:text-[#ba0035] ${active ? "text-[#ba0035]" : ""}`}><span className={`material-symbols-outlined text-[22px] ${active ? "icon-filled" : ""}`}>{icon}</span>{count !== undefined && <span className="text-sm">{count}</span>}</button>; }
 function Loading() { return <div className="py-16 text-center text-[#6a6161]">Loading discussions…</div>; }
 function initials(value: string) { return value.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase() || "F"; }
 function shortId(id: string) { return id.slice(0, 8); }

@@ -160,11 +160,15 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
   const children = comments.filter((item) => item.parentCommentId === comment.id);
   const act = (callback: () => void) => user ? callback() : navigate("/login");
   
+  const MAX_DEPTH = 2;
+  const paddingClass = depth === 0 ? "px-6 md:px-10" : "";
+
   return (
-    <div className={depth ? "ml-4 md:ml-8 border-l border-outline-variant pl-4 pt-3" : ""}>
-      <article className="px-6 md:px-10 py-4">
-        <div className="flex gap-3">
-          <div className="flex-shrink-0 mt-1">
+    <div className={paddingClass}>
+      {/* Parent row: avatar lane + content */}
+      <div className="flex gap-3">
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <div className="w-8 h-8 flex-shrink-0 mt-3">
             {profile?.avatarUrl ? (
               <img alt={displayName} className="w-8 h-8 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
             ) : (
@@ -173,49 +177,80 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
               </div>
             )}
           </div>
-          
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1 text-[14px]">
-                <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary">
-                  {displayName}
-                </Link>
-                <span className="text-secondary ml-1">· {formatRelativeTime(comment.createdAt)}</span>
-              </div>
-              
-              {user?.id === comment.authorId && (
-                <div className="flex gap-2">
-                  <button onClick={() => setEditing(true)} className="text-secondary hover:text-primary"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-                  <button onClick={() => confirm("Delete this comment?") && remove.mutate()} className="text-red-500 hover:text-red-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-                </div>
-              )}
+          {/* Spine line — only shown when children will use connector columns (depth < MAX_DEPTH) */}
+          {children.length > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-outline-variant/40" />}
+        </div>
+
+        <div className="min-w-0 flex-1 pt-3 pb-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1 text-[14px]">
+              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary">
+                {displayName}
+              </Link>
+              <span className="text-secondary ml-1">· {formatRelativeTime(comment.createdAt)}</span>
             </div>
-            
-            {editing ? (
-              <div className="mt-2">
-                <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary"/>
-                <div className="mt-2 flex gap-3 text-sm font-semibold">
-                  <button onClick={() => save.mutate()} disabled={!body.trim()} className="text-primary hover:opacity-80">Save</button>
-                  <button onClick={() => { setBody(comment.body); setEditing(false); }} className="text-secondary hover:text-primary">Cancel</button>
-                </div>
+            {user?.id === comment.authorId && (
+              <div className="flex gap-2">
+                <button onClick={() => setEditing(true)} className="text-secondary hover:text-primary"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+                <button onClick={() => confirm("Delete this comment?") && remove.mutate()} className="text-red-500 hover:text-red-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
               </div>
-            ) : (
-              <p className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary">{comment.body}</p>
             )}
-            
-            <div className="mt-2 flex items-center gap-5 text-sm text-outline">
-              <button onClick={() => act(() => onReply(comment))} className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </button>
-              <button onClick={() => act(() => react.mutate())} className={`flex items-center gap-1.5 transition-colors ${liked ? "text-red-500" : "hover:text-primary"}`}>
-                <svg className="w-4 h-4" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                {likeCount > 0 && <span>{likeCount}</span>}
-              </button>
+          </div>
+
+          {editing ? (
+            <div className="mt-2">
+              <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary"/>
+              <div className="mt-2 flex gap-3 text-sm font-semibold">
+                <button onClick={() => save.mutate()} disabled={!body.trim()} className="text-primary hover:opacity-80">Save</button>
+                <button onClick={() => { setBody(comment.body); setEditing(false); }} className="text-secondary hover:text-primary">Cancel</button>
+              </div>
             </div>
+          ) : (
+            <p className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary">{comment.body}</p>
+          )}
+
+          <div className="mt-2 flex items-center gap-3 text-outline">
+            <button onClick={() => act(() => react.mutate())} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {likeCount > 0 && <span className="text-[13px]">{likeCount}</span>}
+            </button>
+            <button onClick={() => act(() => onReply(comment))} className="min-w-[54px] flex items-center gap-1.5 hover:text-primary transition-colors group">
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
         </div>
-      </article>
-      {children.map((child) => <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />)}
+      </div>
+
+      {/* Child rows — ├──/└── connectors up to MAX_DEPTH; flat (no indent) beyond */}
+      {children.map((child, idx) => {
+        const isLast = idx === children.length - 1;
+
+        if (depth < MAX_DEPTH) {
+          // Normal tree connector row: adds one level of indentation
+          return (
+            <div key={child.id} className="flex gap-3">
+              <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+                <div className="w-[2px] h-7 flex-shrink-0 bg-outline-variant/40" />
+                <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
+                {!isLast && <div className="w-[2px] flex-1 bg-outline-variant/40" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <CommentBranch comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />
+              </div>
+            </div>
+          );
+        }
+
+        // At MAX_DEPTH: render flat with no additional indentation; depth stays pinned at MAX_DEPTH
+        return (
+          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={MAX_DEPTH} />
+        );
+      })}
     </div>
   );
 }
+
