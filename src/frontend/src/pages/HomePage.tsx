@@ -28,7 +28,7 @@ export function HomePage() {
         {/* MAIN CONTENT AREA: Centered Feed        */}
         {/* ======================================= */}
         <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen border-r md:border-x border-outline-variant pb-20">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20">
             {/* Top Sticky Header */}
             <header className="sticky top-0 md:top-0 bg-surface/90 backdrop-blur-md z-40 flex justify-center items-center h-14 border-b border-outline-variant">
               <h1 className="text-[17px] font-semibold text-primary">Home</h1>

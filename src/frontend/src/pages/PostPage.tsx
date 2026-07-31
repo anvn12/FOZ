@@ -52,7 +52,7 @@ export function PostPage() {
       <div className="w-full max-w-7xl flex relative justify-center">
         <NavBar />
         <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen border-r md:border-x border-outline-variant pb-24 relative">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-24 relative">
             <header className="sticky top-0 md:top-0 bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 border-b border-outline-variant gap-4">
               <button onClick={() => navigate(-1)} className="hover:bg-surface-container rounded-full p-2 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/></svg>

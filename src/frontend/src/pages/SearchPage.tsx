@@ -27,7 +27,7 @@ export function SearchPage() {
         {/* MAIN CONTENT AREA: Search Page          */}
         {/* ======================================= */}
         <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen border-r md:border-x border-outline-variant pb-20 relative">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20 relative">
             
             {/* Search Canvas Area */}
             <div className="px-6 py-10 flex flex-col gap-10">

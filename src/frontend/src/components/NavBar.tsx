@@ -78,6 +78,16 @@ export function NavBar() {
 
   return (
     <>
+      {/* DESKTOP/TABLET: Top Right Log in Button (when unauthenticated) */}
+      {!user && (
+        <Link
+          to="/login"
+          className="hidden md:inline-flex fixed top-4 right-6 z-50 bg-primary text-on-primary font-semibold text-sm px-6 py-2 rounded-full hover:opacity-90 transition-opacity shadow-sm"
+        >
+          Log in
+        </Link>
+      )}
+
       {/* ======================================= */}
       {/* DESKTOP/TABLET: Left Sidebar Navigation */}
       {/* ======================================= */}
