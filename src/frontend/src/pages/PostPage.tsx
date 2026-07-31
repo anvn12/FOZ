@@ -38,7 +38,6 @@ export function PostPage() {
   const commentsQuery = useQuery({ queryKey: ["comments", postId], queryFn: () => listComments(postId), enabled: Boolean(post) });
 
   const [draft, setDraft] = useState("");
-  const [commentFocused, setCommentFocused] = useState(false);
   const queryClient = useQueryClient();
 
   const create = useMutation({
@@ -80,31 +79,25 @@ export function PostPage() {
 
                   {/* Comment Input */}
                   <div className="px-4 py-3 border-b border-outline-variant bg-surface">
-                    <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
+                    <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="relative flex items-center w-full">
                       <input
                         value={draft}
-                        onFocus={() => { if (!user) { navigate("/login"); return; } setCommentFocused(true); }}
+                        onFocus={() => { if (!user) navigate("/login"); }}
                         onChange={(e) => setDraft(e.target.value)}
                         placeholder="Add a comment..."
-                        className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
+                        className="w-full bg-surface-container rounded-full pl-5 pr-11 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
                       />
-                      {(commentFocused || draft.trim()) && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => { setDraft(""); setCommentFocused(false); }}
-                            className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            type="submit"
-                            disabled={!draft.trim() || create.isPending}
-                            className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
-                          >
-                            Comment
-                          </button>
-                        </>
+                      {draft.trim() && (
+                        <button
+                          type="submit"
+                          disabled={create.isPending}
+                          className="absolute right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition-opacity disabled:opacity-40 flex-shrink-0"
+                          aria-label="Comment"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-white">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+                          </svg>
+                        </button>
                       )}
                     </form>
                   </div>
@@ -238,6 +231,12 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
               {likeCount > 0 && <span className="text-[13px]">{likeCount}</span>}
             </button>
             <button
+              onMouseDown={(e) => {
+                if (showReplyBox && !replyDraft.trim()) {
+                  e.preventDefault();
+                  setShowReplyBox(false);
+                }
+              }}
               onClick={() => act(() => { setShowReplyBox((prev) => !prev); setReplyDraft(""); })}
               className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${showReplyBox ? "text-primary" : "hover:text-primary"}`}
             >
@@ -252,29 +251,32 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
             <div className="mt-2 mb-1">
               <form
                 onSubmit={(e) => { e.preventDefault(); if (replyDraft.trim()) reply.mutate(); }}
-                className="flex items-center gap-2"
+                className="relative flex items-center w-full"
               >
                 <input
                   autoFocus
                   value={replyDraft}
                   onChange={(e) => setReplyDraft(e.target.value)}
+                  onBlur={() => {
+                    if (!replyDraft.trim()) {
+                      setShowReplyBox(false);
+                    }
+                  }}
                   placeholder="Write a reply..."
-                  className="flex-1 bg-surface-container rounded-full px-4 py-2 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
+                  className="w-full bg-surface-container rounded-full pl-4 pr-10 py-2 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
                 />
-                <button
-                  type="button"
-                  onClick={() => { setShowReplyBox(false); setReplyDraft(""); }}
-                  className="text-secondary hover:text-primary text-sm font-medium px-2 transition-colors flex-shrink-0"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!replyDraft.trim() || reply.isPending}
-                  className="bg-primary text-on-primary px-4 py-2 rounded-full font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity flex-shrink-0"
-                >
-                  Reply
-                </button>
+                {replyDraft.trim() && (
+                  <button
+                    type="submit"
+                    disabled={reply.isPending}
+                    className="absolute right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition-opacity disabled:opacity-40 flex-shrink-0"
+                    aria-label="Reply"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 text-white">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+                    </svg>
+                  </button>
+                )}
               </form>
             </div>
           )}

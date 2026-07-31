@@ -297,3 +297,17 @@
 **Prompt:** "add cancel button to the comment to post. When click on the box, the button \"Comment\" and \"Cancel\" are shown but the \"Comment\" is disabled, but only when content is type the \"Comment\" is enabled again allowing user to comment. Do the same thing with the reply (button reply acts like button \"comment\")"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
 
+### 2026-07-31 22:15
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Current comment UI buttons are too big so that they are overflow. Edit to: Remove cancel button, change the Comment and Reply button into the Icon in the first given image (the icon is inside the box, but the input content never touch that icon). When user type any character in the box, that icon shows. When the box is empty, that icon disappear (so that we dont need the cancel button)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 22:17
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "in reply box, when content is empty and user click other area, hide the box"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+
+
