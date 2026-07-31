@@ -231,11 +231,12 @@
 **Prompt:** "in my TL;DR (post summarize function), i dont see anywhere to fill in my API key, also i dont see any guideline about how to setup those api key. Add that."
 **Files touched:** `.env.example`, `.env`, `README.md`, `specs/011-post-summarize/quickstart.md`
 
-### 2026-07-31 10:10
+### 2026-07-31 10:22
 **Tool:** Antigravity
 **Model:** Gemini 3.6 Flash
-**Prompt:** "I cannot use summarization: Internal server error"
-**Files touched:** `src/backend/db/migrations/0005_post_summaries_columns.sql`, `src/backend/services/ai-summarizer.ts`
+**Prompt:** "currently, the post does not show the number of comments. Add it"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/backend/db/repositories/interactions.ts`, `src/backend/services/interactions/posts.ts`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
 
 
 

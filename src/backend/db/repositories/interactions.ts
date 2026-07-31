@@ -25,6 +25,14 @@ export async function listCommentsForPost(postId: string) {
     .where(and(eq(comments.postId, postId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)));
 }
 
+export async function countCommentsForPost(postId: string) {
+  const rows = await db
+    .select({ id: comments.id })
+    .from(comments)
+    .where(and(eq(comments.postId, postId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)));
+  return rows.length;
+}
+
 export async function listCommentsByAuthor(authorId: string) {
   return db
     .select()

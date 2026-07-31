@@ -2,7 +2,7 @@ import type { CreatePostRequest, UpdatePostRequest } from "#shared/schemas/inter
 import { db } from "#backend/db/client.js";
 import { posts, postAttachments } from "#backend/db/schema/interactions.js";
 import { and, eq, isNull } from "drizzle-orm";
-import { getPostById, listPosts, countReactionsForTarget, getReaction } from "#backend/db/repositories/interactions.js";
+import { getPostById, listPosts, countReactionsForTarget, countCommentsForPost, getReaction } from "#backend/db/repositories/interactions.js";
 import { getProfileByUserId } from "#backend/api/profile/profile.service.js";
 
 export async function createPost(authorId: string, input: CreatePostRequest) {
@@ -48,6 +48,7 @@ export async function createPost(authorId: string, input: CreatePostRequest) {
       
       createdPosts.push({
         ...postRow,
+        commentCount: 0,
         attachments,
       });
     }
@@ -145,6 +146,7 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
     enriched.push({
       ...postToEnrich,
       likeCount: await countReactionsForTarget("post", postToEnrich.id),
+      commentCount: await countCommentsForPost(postToEnrich.id),
       liked: viewerId ? Boolean(await getReaction({ userAccountId: viewerId, targetType: "post", targetId: postToEnrich.id })) : false,
       reposted,
       repostedBy: originalAuthor,
