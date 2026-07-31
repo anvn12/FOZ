@@ -318,32 +318,42 @@ export function NavBar() {
       <nav className="fixed bottom-0 left-0 right-0 h-[56px] border-t border-outline-variant bg-surface/90 backdrop-blur-xl z-50 flex justify-around items-center md:hidden">
         <Link
           to="/"
-          className={`p-2 ${isHomeActive ? "text-primary" : "text-outline hover:text-primary"}`}
+          className={`p-2 flex items-center justify-center ${isHomeActive ? "text-primary" : "text-outline opacity-70 hover:opacity-100 transition-colors"}`}
           aria-label="Home"
         >
-          <span className={`material-symbols-outlined ${isHomeActive ? "font-bold" : ""}`}>
+          <span className="material-symbols-outlined text-[28px]" style={isHomeActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
             home
           </span>
         </Link>
-        <Link to="/search" className={`p-2 ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"}`} aria-label="Search">
-          <span className={`material-symbols-outlined ${isSearchActive ? "font-bold" : ""}`} style={isSearchActive ? { fontVariationSettings: "'FILL' 1" } : {}}>search</span>
+        <Link 
+          to="/search" 
+          className={`p-2 flex items-center justify-center ${isSearchActive ? "text-primary" : "text-outline opacity-70 hover:opacity-100 transition-colors"}`} 
+          aria-label="Search"
+        >
+          <span className="material-symbols-outlined text-[28px]" style={isSearchActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
+            search
+          </span>
         </Link>
         <button
           onClick={handleCreateClick}
-          className="text-outline hover:text-primary p-2"
+          className="text-outline opacity-70 hover:opacity-100 transition-colors p-1"
           aria-label="Create"
         >
-          <span className="material-symbols-outlined">add_circle</span>
+          <div className="w-10 h-10 bg-surface-container-high rounded-lg border border-outline-variant flex items-center justify-center">
+            <span className="material-symbols-outlined text-[24px]">add</span>
+          </div>
         </button>
         <button
           onClick={(e) => handleProtectedClick(e, `/profiles/${user?.id}`)}
-          className={`p-2 ${isProfileActive ? "text-primary" : "text-outline hover:text-primary"}`}
+          className={`p-2 flex items-center justify-center ${isProfileActive ? "text-primary" : "text-outline opacity-70 hover:opacity-100 transition-colors"}`}
           aria-label="Profile"
         >
           {user ? (
             <ProfileNavBarAvatar userId={user.id} />
           ) : (
-            <span className="material-symbols-outlined">account_circle</span>
+            <span className="material-symbols-outlined text-[28px]" style={isProfileActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
+              person
+            </span>
           )}
         </button>
       </nav>
