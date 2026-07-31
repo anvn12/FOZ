@@ -8,12 +8,36 @@ import { ReportModal } from "./ReportModal";
 import { useAuthStore } from "#frontend/stores/auth";
 import { deletePost } from "#frontend/api/interactions";
 
-export function formatRelativeTime(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return "Just now";
-  if (hours < 24) return `${hours}h`;
-  return `${Math.floor(hours / 24)}d`;
+export function formatRelativeTime(dateInput: string | number | Date | null | undefined): string {
+  if (!dateInput) return "Just now";
+  const time = new Date(dateInput).getTime();
+  if (isNaN(time)) return "Just now";
+
+  const diffMs = Date.now() - time;
+  if (diffMs < 45_000) {
+    return "Just now";
+  }
+
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 60) {
+    return `${minutes}m ago`;
+  }
+  if (hours < 24) {
+    return `${hours}h ago`;
+  }
+  if (days < 30) {
+    return `${days}d ago`;
+  }
+  const months = Math.floor(days / 30);
+  if (months < 12) {
+    return `${months}mo ago`;
+  }
+  const years = Math.floor(days / 365);
+  return `${years}y ago`;
 }
 
 export function FeedPostItem({ post }: { post: any }) {
@@ -84,7 +108,7 @@ export function FeedPostItem({ post }: { post: any }) {
   };
   
   return (
-    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant">
+    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl">
       <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} postId={post.id} />
       {post.repostedBy && (
         <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold pl-12">
@@ -166,19 +190,22 @@ export function FeedPostItem({ post }: { post: any }) {
           )}
 
           {/* Reaction Row */}
-          <div className="mt-3 flex items-center gap-6 text-outline">
-            <button onClick={handleLike} className={`flex items-center gap-1.5 transition-colors group ${post.liked ? 'text-red-500' : 'hover:text-primary'}`}>
+          <div className="mt-3 flex items-center gap-3 text-outline">
+            <button onClick={handleLike} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${post.liked ? 'text-red-500' : 'hover:text-primary'}`}>
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={post.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               {post.likeCount > 0 && <span className="text-[13px]">{post.likeCount.toLocaleString()}</span>}
             </button>
-            <button onClick={handleComment} className="flex items-center gap-1.5 hover:text-primary transition-colors group">
+            <button onClick={handleComment} className="min-w-[54px] flex items-center gap-1.5 hover:text-primary transition-colors group">
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
+              {typeof post.commentCount === "number" && post.commentCount > 0 && (
+                <span className="text-[13px]">{post.commentCount.toLocaleString()}</span>
+              )}
             </button>
-            <button onClick={handleRepost} className={`flex items-center gap-1.5 transition-colors group ${post.reposted ? 'text-green-500' : 'hover:text-primary'}`}>
+            <button onClick={handleRepost} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${post.reposted ? 'text-green-500' : 'hover:text-primary'}`}>
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>

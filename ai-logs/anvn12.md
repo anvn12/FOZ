@@ -170,3 +170,130 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "fix the log out dialog not show user profile picture"
 **Files touched:** `src/frontend/src/components/LogoutDialog.tsx`, `src/frontend/src/components/__tests__/LogoutDialog.test.tsx`
+
+### 2026-07-31 09:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "post creation function is currently not working. Help me fix it. For more detail, when i post, the server response: {"error":{"code":"INTERNAL","message":"Internal server error"}}, and in the terminal it says: foz api listening on :4000 unhandled error: DrizzleQueryError..."
+**Files touched:** `src/backend/db/migrations/0001_initial.sql`, `src/backend/db/migrations/0004_fix_schema_alignments.sql`, `src/backend/__tests__/integration/search.test.ts`, `src/backend/__tests__/integration/interaction.likes.test.ts`, `src/backend/__tests__/integration/interaction.comments.test.ts`
+
+### 2026-07-31 09:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify Based on @[d:\FOZ\docs\00 - Old-PA-docs\1B. Project Proposal.md], create Post Summerize (TL:DR) functional group. That function uses LLMs API to summerize about 10 selected comments on the ratio: most liked, most replied, recent (define the suitable ratio for me)"
+**Files touched:** `specs/011-post-summarize/spec.md`, `specs/011-post-summarize/checklists/requirements.md`
+
+### 2026-07-31 09:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "b"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a"
+**Files touched:** `specs/011-post-summarize/spec.md`
+
+### 2026-07-31 09:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/011-post-summarize/plan.md`, `specs/011-post-summarize/research.md`, `specs/011-post-summarize/data-model.md`, `specs/011-post-summarize/contracts/post-summary-api.yaml`, `specs/011-post-summarize/quickstart.md`
+
+### 2026-07-31 09:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/011-post-summarize/tasks.md`
+
+### 2026-07-31 09:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/post-summary.ts`, `src/shared/schemas/index.ts`, `src/shared/schemas/post-summary.test.ts`, `src/backend/db/schema/interactions.ts`, `src/backend/db/migrations/0005_post_summaries_columns.sql`, `src/backend/env.ts`, `src/backend/services/ai-summarizer.ts`, `src/backend/api/posts/__tests__/ai-summarizer.test.ts`, `src/backend/db/repositories/post-summary.repository.ts`, `src/backend/api/posts/__tests__/post-summary-repository.test.ts`, `src/backend/services/post-summary.service.ts`, `src/backend/api/posts/routes.ts`, `src/backend/api/posts/__tests__/summary-routes.test.ts`, `src/frontend/src/api/post-summary.ts`, `src/frontend/src/components/PostSummaryCard.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/backend/api/posts/__tests__/comment-sampling-dedup.test.ts`, `src/backend/api/posts/__tests__/post-summary-fallbacks.test.ts`, `src/backend/lib/rate-limit.ts`, `specs/011-post-summarize/tasks.md`
+
+### 2026-07-31 10:04
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix the skill ai-usage-log"
+**Files touched:** `.agents/skills/ai-usage-log/SKILL.md`
+
+### 2026-07-31 10:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "in my TL;DR (post summarize function), i dont see anywhere to fill in my API key, also i dont see any guideline about how to setup those api key. Add that."
+**Files touched:** `.env.example`, `.env`, `README.md`, `specs/011-post-summarize/quickstart.md`
+
+### 2026-07-31 10:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "currently, the post does not show the number of comments. Add it"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/backend/db/repositories/interactions.ts`, `src/backend/services/interactions/posts.ts`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 10:33
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "@[d:\FOZ\docs\03 - UI-designs\home\foz_unified_feed\screen2.png] Fix the UI of home: it currently does not have the login button in the top right corner, and home title should not be in the box, the post section does not contain left and right borders"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+### 2026-07-31 10:36
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "also fix the mobile home UI to align with the design@[d:\FOZ\docs\03 - UI-designs\home\foz_mobile_feed\new feed.png]  (currently the buttons are different from desktop version)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-07-31 10:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "In comments UI, the box for input comment is now at the bottom, so that when there are more comments, it's pushed and overflow. Change it to the top of other comments (below the TL;DR button)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-07-31 10:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the displayed time of the post and comments is not reflecting the time people created. Fix it (align with the created time, show approximately time, not accurate time like 1:00:01 but more like 1h ago)"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+### 2026-07-31 11:11
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "now, the like, comment, repost buttons are not on straight line (vertically) because the post with the number is pushing the other buttons to the right side. Make it always on the straigt line whether it has number of not"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`
+
+### 2026-07-31 11:13
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "also in comments, the order of buttons must be like, then comment (just like the post). And they must be aligned too."
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the straight line on comments can be designed like this (ignore the content and other buttons)"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:21
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the line should be from the original comment to its children (not that big gap). Also if the curved line is hard to implement, you can use the straight line. The line should be from center of the avatar to center of the other avatars"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:41
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "the line should be like a L shape as in folder structure line in README. The sub comment only works on 3 layer deeps (original -> reply1 -> reply2). IF there is more reply after layer 3, just point from it"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-07-31 11:57
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "add cancel button to the comment to post. When click on the box, the button \"Comment\" and \"Cancel\" are shown but the \"Comment\" is disabled, but only when content is type the \"Comment\" is enabled again allowing user to comment. Do the same thing with the reply (button reply acts like button \"comment\")"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+

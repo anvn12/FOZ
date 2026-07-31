@@ -103,7 +103,15 @@ chmod +x setup.sh
 
 #### Post-setup Steps
 
-Create and configure your [.env](file:///d:/FOZ/.env) file (copied from [.env.example](file:///d:/FOZ/.env.example)) and set `JWT_ACCESS_SECRET` to your preferred secret key of at least 16 characters.
+1. Create and configure your [.env](file:///d:/FOZ/.env) file (copied from [.env.example](file:///d:/FOZ/.env.example)) and set `JWT_ACCESS_SECRET` to your preferred secret key of at least 16 characters.
+2. **AI Summarization Setup (Post Summarize TL;DR)**:
+   - Obtain a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+   - Add your API key to `.env`:
+     ```env
+     AI_API_KEY=AIzaSy...
+     ```
+   - *Note: If `AI_API_KEY` is left empty, the application uses an intelligent fallback summarizer without breaking UI capabilities.*
+
 
 ---
 
