@@ -24,6 +24,13 @@ export function PostPage() {
   const { postId = "" } = useParams();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const feedRef = React.useRef<HTMLDivElement>(null);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (feedRef.current && !feedRef.current.contains(e.target as Node)) {
+      feedRef.current.scrollTop += e.deltaY;
+    }
+  };
   
   const { data: postsData, isLoading: isPostsLoading } = useQuery({ queryKey: ["posts"], queryFn: () => listPosts() });
   const post = postsData?.items?.find((item) => item.id === postId);
@@ -48,12 +55,12 @@ export function PostPage() {
   const roots = useMemo(() => (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId), [commentsQuery.data]);
 
   return (
-    <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
-      <div className="w-full max-w-7xl flex relative justify-center">
+    <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
+      <div className="w-full max-w-7xl flex relative justify-center h-full">
         <NavBar />
-        <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-24 relative">
-            <header className="sticky top-0 md:top-0 bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 border-b border-outline-variant gap-4">
+        <div className="flex-1 w-full flex justify-center md:pl-24 h-full">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
+            <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 gap-4 flex-shrink-0">
               <button onClick={() => navigate(-1)} className="hover:bg-surface-container rounded-full p-2 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
@@ -63,44 +70,46 @@ export function PostPage() {
             {isPostsLoading ? (
               <div className="p-8 text-center text-outline">Loading...</div>
             ) : post ? (
-              <>
-                <div className="border-b border-outline-variant border-4">
-                  <FeedPostItem post={post} />
-                </div>
-                <div className="px-4">
-                  <PostSummaryCard postId={post.id} />
-                </div>
+              <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
+                <div ref={feedRef} className="flex-1 overflow-y-auto divide-y divide-outline-variant [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="border-b border-outline-variant">
+                    <FeedPostItem post={post} />
+                  </div>
+                  <div className="px-4">
+                    <PostSummaryCard postId={post.id} />
+                  </div>
 
-                {/* Comment Input */}
-                <div className="px-4 py-3 border-b border-outline-variant bg-surface">
-                  {replyTo && (
-                    <div className="flex justify-between text-xs text-secondary mb-2 px-2">
-                      <span>Replying to comment...</span>
-                      <button onClick={() => setReplyTo(null)} className="hover:text-primary font-medium">Cancel</button>
-                    </div>
-                  )}
-                  <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
-                    <input 
-                      value={draft} 
-                      onFocus={() => !user && navigate("/login")} 
-                      onChange={(e) => setDraft(e.target.value)} 
-                      placeholder={replyTo ? "Write a reply..." : "Post your reply..."} 
-                      className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
-                    />
-                    <button type="submit" disabled={!draft.trim() || create.isPending} className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-50 hover:opacity-90 transition-opacity">
-                      Reply
-                    </button>
-                  </form>
-                </div>
+                  {/* Comment Input */}
+                  <div className="px-4 py-3 border-b border-outline-variant bg-surface">
+                    {replyTo && (
+                      <div className="flex justify-between text-xs text-secondary mb-2 px-2">
+                        <span>Replying to comment...</span>
+                        <button onClick={() => setReplyTo(null)} className="hover:text-primary font-medium">Cancel</button>
+                      </div>
+                    )}
+                    <form onSubmit={(e) => { e.preventDefault(); if (!user) return navigate("/login"); if (draft.trim()) create.mutate(); }} className="flex items-center gap-3">
+                      <input 
+                        value={draft} 
+                        onFocus={() => !user && navigate("/login")} 
+                        onChange={(e) => setDraft(e.target.value)} 
+                        placeholder={replyTo ? "Write a reply..." : "Post your reply..."} 
+                        className="flex-1 bg-surface-container rounded-full px-5 py-2.5 outline-none focus:ring-1 focus:ring-outline transition-all text-sm"
+                      />
+                      <button type="submit" disabled={!draft.trim() || create.isPending} className="bg-primary text-on-primary px-5 py-2.5 rounded-full font-semibold text-sm disabled:opacity-50 hover:opacity-90 transition-opacity">
+                        Reply
+                      </button>
+                    </form>
+                  </div>
 
-                {/* Comments List */}
-                <div className="pb-20 divide-y divide-outline-variant">
-                  {roots.map((comment) => (
-                    <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />
-                  ))}
-                  {roots.length === 0 && <div className="p-8 text-center text-outline">No comments yet. Be the first to reply!</div>}
+                  {/* Comments List */}
+                  <div className="divide-y divide-outline-variant">
+                    {roots.map((comment) => (
+                      <CommentBranch key={comment.id} comment={comment} comments={commentsQuery.data?.items ?? []} user={user} postId={postId} onReply={setReplyTo} />
+                    ))}
+                    {roots.length === 0 && <div className="p-8 text-center text-outline">No comments yet. Be the first to reply!</div>}
+                  </div>
                 </div>
-              </>
+              </div>
             ) : (
               <div className="p-8 text-center text-outline">Post not found</div>
             )}
@@ -153,7 +162,7 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
   
   return (
     <div className={depth ? "ml-4 md:ml-8 border-l border-outline-variant pl-4 pt-3" : ""}>
-      <article className="p-4">
+      <article className="px-6 md:px-10 py-4">
         <div className="flex gap-3">
           <div className="flex-shrink-0 mt-1">
             {profile?.avatarUrl ? (

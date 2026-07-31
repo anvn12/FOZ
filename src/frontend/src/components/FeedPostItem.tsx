@@ -108,7 +108,7 @@ export function FeedPostItem({ post }: { post: any }) {
   };
   
   return (
-    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant">
+    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl">
       <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} postId={post.id} />
       {post.repostedBy && (
         <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold pl-12">

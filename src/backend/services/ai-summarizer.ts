@@ -17,9 +17,9 @@ export interface AISummarizerProvider {
 
 export class DefaultAISummarizerProvider implements AISummarizerProvider {
   async generateSummary(input: AISummarizerInput): Promise<AISummarizerOutput> {
-    const apiKey = env.AI_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+    const apiKey = (env.AI_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || "").trim();
 
-    if (apiKey) {
+    if (apiKey && process.env.NODE_ENV !== "test" && !apiKey.includes("your_") && apiKey.length > 10) {
       try {
         return await this.callLLM(apiKey, input);
       } catch (err) {
