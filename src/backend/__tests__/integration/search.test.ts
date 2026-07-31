@@ -35,7 +35,7 @@ async function insertPost(args: {
   const visibility = args.visibilityState ?? "public";
   const lifecycle = args.lifecycleState ?? "active";
   const rows = (await db.execute(sql`
-    INSERT INTO posts (author_id, body, visibility_state, lifecycle_state)
+    INSERT INTO posts (author_id, content, visibility_state, lifecycle_state)
     VALUES (${args.authorId}, ${args.body}, ${visibility}, ${lifecycle})
     RETURNING id, created_at
   `)) as Array<{ id: string; created_at: Date }>;
@@ -52,26 +52,26 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
 
   describe("access (Vision: 'all users')", () => {
     it("returns 200 without auth — guests can search", async () => {
-      const res = await getAgent().get("/search").query({ q: "anything" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "anything" });
       expect(res.status).toBe(200);
     });
   });
 
   describe("q validation", () => {
     it("missing q returns 422 with VALIDATION code", async () => {
-      const res = await getAgent().get("/search");
+      const res = await getAgent().get("/api/v1/search");
       expect(res.status).toBe(422);
       expect(res.body.error.code).toBe("VALIDATION");
     });
 
     it("empty q returns 422", async () => {
-      const res = await getAgent().get("/search").query({ q: "" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "" });
       expect(res.status).toBe(422);
       expect(res.body.error.code).toBe("VALIDATION");
     });
 
     it("q longer than 100 chars returns 422", async () => {
-      const res = await getAgent().get("/search").query({ q: "a".repeat(101) });
+      const res = await getAgent().get("/api/v1/search").query({ q: "a".repeat(101) });
       expect(res.status).toBe(422);
       expect(res.body.error.code).toBe("VALIDATION");
     });
@@ -79,7 +79,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
 
   describe("type validation", () => {
     it("invalid type returns 422", async () => {
-      const res = await getAgent().get("/search").query({ q: "x", type: "comments" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "x", type: "comments" });
       expect(res.status).toBe(422);
       expect(res.body.error.code).toBe("VALIDATION");
     });
@@ -91,7 +91,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       await insertPost({ authorId: userId, body: "Discussing FOZ roadmap" });
       await insertPost({ authorId: userId, body: "Unrelated content here" });
 
-      const res = await getAgent().get("/search").query({ q: "foz", type: "posts" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "foz", type: "posts" });
 
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body.items)).toBe(true);
@@ -107,7 +107,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       await insertPost({ authorId: userId, body: "hidden-post", visibilityState: "hidden" });
       await insertPost({ authorId: userId, body: "removed-admin-post", lifecycleState: "removed_by_administration" });
 
-      const res = await getAgent().get("/search").query({ q: "post", type: "posts" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "post", type: "posts" });
 
       expect(res.status).toBe(200);
       const bodies = res.body.items.map((it: { body: string }) => it.body);
@@ -123,7 +123,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       await registerUserWithDisplayName("AliceSmith");
       await registerUserWithDisplayName("BobJones");
 
-      const res = await getAgent().get("/search").query({ q: "ALICESMITH", type: "users" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "ALICESMITH", type: "users" });
 
       expect(res.status).toBe(200);
       expect(res.body.items).toHaveLength(1);
@@ -136,7 +136,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       // Bob's bio contains "Alice" — must not match when searching for "Alice".
       await setProfileBio(bobId, "I am friends with Alice");
 
-      const res = await getAgent().get("/search").query({ q: "Alice", type: "users" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "Alice", type: "users" });
 
       expect(res.status).toBe(200);
       const ids = res.body.items.map((it: { id: string }) => it.id);
@@ -151,7 +151,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       await setAccountStatus(suspendedId, "suspended");
       await setAccountStatus(bannedId, "banned");
 
-      const res = await getAgent().get("/search").query({ q: "One", type: "users" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "One", type: "users" });
 
       expect(res.status).toBe(200);
       const ids = res.body.items.map((it: { id: string }) => it.id);
@@ -168,7 +168,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       const { userId: bobId } = await registerUserWithDisplayName("Bob");
       await insertPost({ authorId: bobId, body: "Post about TargetUser topic" });
 
-      const res = await getAgent().get("/search").query({ q: "TargetUser", type: "all" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "TargetUser", type: "all" });
 
       expect(res.status).toBe(200);
       expect(res.body.items).toHaveLength(2);
@@ -191,7 +191,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       await insertPost({ authorId: userId, body: "target post for perf" });
 
       const t0 = Date.now();
-      const res = await getAgent().get("/search").query({ q: "target", type: "posts" });
+      const res = await getAgent().get("/api/v1/search").query({ q: "target", type: "posts" });
       const elapsed = Date.now() - t0;
 
       expect(res.status).toBe(200);

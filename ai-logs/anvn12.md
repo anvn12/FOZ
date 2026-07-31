@@ -170,3 +170,10 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "fix the log out dialog not show user profile picture"
 **Files touched:** `src/frontend/src/components/LogoutDialog.tsx`, `src/frontend/src/components/__tests__/LogoutDialog.test.tsx`
+
+### 2026-07-31 09:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "post creation function is currently not working. Help me fix it. For more detail, when i post, the server response: {"error":{"code":"INTERNAL","message":"Internal server error"}}, and in the terminal it says: foz api listening on :4000 unhandled error: DrizzleQueryError..."
+**Files touched:** `src/backend/db/migrations/0001_initial.sql`, `src/backend/db/migrations/0004_fix_schema_alignments.sql`, `src/backend/__tests__/integration/search.test.ts`, `src/backend/__tests__/integration/interaction.likes.test.ts`, `src/backend/__tests__/integration/interaction.comments.test.ts`
+
