@@ -23,7 +23,9 @@ CREATE TABLE profiles (
 CREATE TABLE posts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   author_id uuid NOT NULL REFERENCES user_accounts(id) ON DELETE RESTRICT,
-  body text NOT NULL,
+  content text NOT NULL,
+  parent_id uuid REFERENCES posts(id) ON DELETE CASCADE,
+  repost_of_id uuid REFERENCES posts(id) ON DELETE CASCADE,
   visibility_state text NOT NULL,
   lifecycle_state text NOT NULL,
   deleted_at timestamptz,

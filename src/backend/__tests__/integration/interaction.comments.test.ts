@@ -16,7 +16,7 @@ async function createTestPost(accessToken: string, bodyText = "Hello forum!") {
   const res = await getAgent()
     .post("/api/v1/posts")
     .set("Authorization", `Bearer ${accessToken}`)
-    .send({ body: bodyText });
+    .send({ content: bodyText });
   expect(res.status).toBe(201);
   return res.body;
 }
