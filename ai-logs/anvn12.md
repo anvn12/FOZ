@@ -719,3 +719,10 @@
 **Model:** Claude Sonnet 4.6 (Thinking)
 **Prompt:** "i mean this 3 dots on the post"
 **Files touched:** `src/frontend/src/components/FeedPostItem.tsx`
+
+### 2026-07-31 23:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add dialog when click delete post just like when delete comment (not alert)"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+

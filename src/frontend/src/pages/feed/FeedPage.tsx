@@ -88,15 +88,77 @@ function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
 function FeedPost({ post, user }: { post: Post; user: Viewer }) {
   const navigate = useNavigate(); const queryClient = useQueryClient();
   const [liked, setLiked] = useState(post.liked); const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const reaction = useMutation({ mutationFn: () => toggleReaction({ targetType: "post", targetId: post.id, active: liked }), onSuccess: async (result) => { setLiked(result.active); setLikeCount(result.likeCount); await queryClient.invalidateQueries({ queryKey: ["posts"] }); }, onError: showError });
   const remove = useMutation({ mutationFn: () => deletePost(post.id), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["posts"] }); toast.success("Post deleted."); }, onError: showError });
   const enter = () => { if (!user) navigate("/login"); else reaction.mutate(); };
-  return <article className="border-b border-black/5 px-2 py-7">
-    <div className="flex gap-4"><Avatar id={post.authorId} /><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><div><span className="font-bold">{authorName(post.authorId, user)}</span><span className="ml-2 text-[#5c3f41]">@{shortId(post.authorId)} · {relativeTime(post.createdAt)}</span></div>{user?.id === post.authorId && <button type="button" onClick={() => confirm("Delete this post? This cannot be undone.") && remove.mutate()} aria-label="Delete post" className="text-[#ba0035]"><span className="material-symbols-outlined">delete</span></button>}</div>
-      <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.content}</Link>
-      <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]"><Action icon="chat_bubble" count={post.commentCount} label="Comments" onClick={() => navigate(`/posts/${post.id}`)} /><Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} /><Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} /><Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.content || "" }).catch(() => undefined)} /></div>
-    </div></div>
-  </article>;
+  return (
+    <article className="border-b border-black/5 px-2 py-7">
+      <div className="flex gap-4">
+        <Avatar id={post.authorId} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <span className="font-bold">{authorName(post.authorId, user)}</span>
+              <span className="ml-2 text-[#5c3f41]">@{shortId(post.authorId)} · {relativeTime(post.createdAt)}</span>
+            </div>
+            {user?.id === post.authorId && (
+              <button type="button" onClick={() => setShowDeleteDialog(true)} aria-label="Delete post" className="text-[#ba0035]">
+                <span className="material-symbols-outlined">delete</span>
+              </button>
+            )}
+          </div>
+          <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.content}</Link>
+          <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]">
+            <Action icon="chat_bubble" count={post.commentCount} label="Comments" onClick={() => navigate(`/posts/${post.id}`)} />
+            <Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} />
+            <Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} />
+            <Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.content || "" }).catch(() => undefined)} />
+          </div>
+        </div>
+      </div>
+
+      {showDeleteDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          onClick={() => setShowDeleteDialog(false)}
+        >
+          <div
+            className="animate-foz-pop flex w-full max-w-[360px] flex-col rounded-3xl bg-white p-6 text-center shadow-2xl border border-black/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-black">Delete post?</h3>
+            <p className="mt-1 text-sm text-[#6a6161]">This post will be deleted permanently. This action cannot be undone.</p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteDialog(false);
+                  remove.mutate();
+                }}
+                disabled={remove.isPending}
+                className="w-full rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition-opacity hover:bg-red-700 disabled:opacity-50"
+              >
+                {remove.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteDialog(false)}
+                className="w-full rounded-xl border border-black/10 bg-transparent py-3 text-sm font-semibold text-black transition-colors hover:bg-black/5"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </article>
+  );
 }
 
 function ThreadDetail({ postId, user, onAccount }: { postId: string; user: Viewer; onAccount: () => void }) {
