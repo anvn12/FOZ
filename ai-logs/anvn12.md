@@ -726,3 +726,10 @@
 **Prompt:** "add dialog when click delete post just like when delete comment (not alert)"
 **Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
 
+### 2026-07-31 23:49
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "is the name is too long that can lead to some sort of overflow, just make it to "abc...""
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+

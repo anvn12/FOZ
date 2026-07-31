@@ -250,13 +250,13 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
         </div>
 
         <div className="min-w-0 flex-1 pt-3 pb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-[14px]">
-              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 text-[14px] min-w-0">
+              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[160px] sm:max-w-[240px]">
                 {displayName}
               </Link>
-              <span className="text-secondary ml-1">· {formatRelativeTime(comment.createdAt)}</span>
-              {isEdited && <span className="text-secondary text-[12px] font-normal ml-0.5">(Edited)</span>}
+              <span className="text-secondary ml-1 shrink-0">· {formatRelativeTime(comment.createdAt)}</span>
+              {isEdited && <span className="text-secondary text-[12px] font-normal ml-0.5 shrink-0">(Edited)</span>}
             </div>
             {user?.id === comment.authorId && (
               <div className="relative" ref={menuRef}>

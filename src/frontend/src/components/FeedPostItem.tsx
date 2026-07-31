@@ -172,9 +172,9 @@ export function FeedPostItem({ post }: { post: any }) {
       )}
 
       {post.repostedBy && (
-        <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold pl-12">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-          <Link to={`/profiles/${post.repostedBy.id}`} className="hover:underline hover:text-primary">
+        <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold pl-12 min-w-0">
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+          <Link to={`/profiles/${post.repostedBy.id}`} className="hover:underline hover:text-primary truncate">
             {post.repostedBy.displayName} reposted
           </Link>
         </div>
@@ -193,12 +193,12 @@ export function FeedPostItem({ post }: { post: any }) {
 
         {/* Content details */}
         <div className="flex-1 min-w-0">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-1 text-[15px]">
-              <Link to={`/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary">
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex items-center gap-1 text-[15px] min-w-0">
+              <Link to={`/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[180px] sm:max-w-[280px]">
                 {displayName}
               </Link>
-              <span className="text-secondary text-[14px] ml-1">· {formatRelativeTime(post.createdAt)}</span>
+              <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(post.createdAt)}</span>
             </div>
             
             {/* Options Menu */}

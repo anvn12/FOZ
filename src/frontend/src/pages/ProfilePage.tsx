@@ -269,9 +269,9 @@ function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
         </div>
         
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1 text-[15px]">
-            <span className="font-semibold text-primary">{displayName}</span>
-            <span className="text-secondary text-[14px] ml-1">· {formatRelativeTime(reply.createdAt)}</span>
+          <div className="flex items-center gap-1 text-[15px] min-w-0">
+            <span className="font-semibold text-primary truncate max-w-[200px] sm:max-w-[300px]">{displayName}</span>
+            <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(reply.createdAt)}</span>
           </div>
           <p className="mt-1 whitespace-pre-wrap leading-relaxed text-[15px] text-primary">{reply.body}</p>
           <div className="mt-3">
