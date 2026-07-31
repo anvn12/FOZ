@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useProfile } from "#frontend/api/profile";
 import { useToggleReaction, useToggleRepost } from "#frontend/api/interactions";
@@ -48,6 +48,18 @@ export function FeedPostItem({ post }: { post: any }) {
   const isOwner = user?.id === post.authorId;
   const [showOptions, setShowOptions] = React.useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+  const optionsMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showOptions) return;
+    const handler = (e: MouseEvent) => {
+      if (optionsMenuRef.current && !optionsMenuRef.current.contains(e.target as Node)) {
+        setShowOptions(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showOptions]);
   
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
@@ -141,7 +153,7 @@ export function FeedPostItem({ post }: { post: any }) {
             </div>
             
             {/* Options Menu */}
-            <div className="relative">
+            <div className="relative" ref={optionsMenuRef}>
               <button 
                 onClick={(e) => { e.preventDefault(); setShowOptions(!showOptions); }}
                 className="text-secondary hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container-highest"
