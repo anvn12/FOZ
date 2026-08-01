@@ -11,6 +11,7 @@ import {
   listComments,
   listPosts,
   toggleReaction,
+  toggleRepost,
   updateComment,
 } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
@@ -92,6 +93,8 @@ function FeedPost({ post, user }: { post: Post; user: Viewer }) {
   const reaction = useMutation({ mutationFn: () => toggleReaction({ targetType: "post", targetId: post.id, active: liked }), onSuccess: async (result) => { setLiked(result.active); setLikeCount(result.likeCount); await queryClient.invalidateQueries({ queryKey: ["posts"] }); }, onError: showError });
   const remove = useMutation({ mutationFn: () => deletePost(post.id), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["posts"] }); toast.success("Post deleted."); }, onError: showError });
   const enter = () => { if (!user) navigate("/login"); else reaction.mutate(); };
+  const repost = useMutation({ mutationFn: () => toggleRepost(post.id, (post as any).reposted ?? false), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["posts"] }); }, onError: showError });
+  const handleRepost = () => { if (!user) navigate("/login"); else repost.mutate(); };
   return (
     <article className="border-b border-black/5 px-2 py-7">
       <div className="flex gap-4">
@@ -111,7 +114,7 @@ function FeedPost({ post, user }: { post: Post; user: Viewer }) {
           <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.content}</Link>
           <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]">
             <Action icon="chat_bubble" count={post.commentCount} label="Comments" onClick={() => navigate(`/posts/${post.id}`)} />
-            <Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} />
+            <Action icon="repeat" label="Repost" onClick={handleRepost} />
             <Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} />
             <Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.content || "" }).catch(() => undefined)} />
           </div>
