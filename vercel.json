@@ -1,0 +1,13 @@
+{
+  "outputDirectory": "src/frontend/dist",
+  "rewrites": [
+    {
+      "source": "/api/v1/:match*",
+      "destination": "https://foz-backend.onrender.com/api/v1/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -1,0 +1,370 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Admin Dashboard Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ddc39d",
+                        "surface-container": "#eceef0",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-container": "#fefcff",
+                        "secondary": "#0058be",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary-fixed-variant": "#564427",
+                        "tertiary-fixed": "#fadfb8",
+                        "tertiary": "#1e1200",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-background": "#191c1e",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#111c2d",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c5c6cd",
+                        "secondary-container": "#2170e4",
+                        "inverse-surface": "#2d3133",
+                        "on-surface-variant": "#45474c",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary-container": "#8590a6",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "status-warning": "#F59E0B",
+                        "on-secondary-fixed-variant": "#004395",
+                        "primary": "#091426",
+                        "surface-dim": "#d8dadc",
+                        "surface-elevated": "#FFFFFF",
+                        "outline": "#75777d",
+                        "status-info": "#0EA5E9",
+                        "inverse-primary": "#bcc7de",
+                        "primary-fixed-dim": "#bcc7de",
+                        "status-success": "#10B981",
+                        "on-tertiary-container": "#a38c6a",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#271902",
+                        "background": "#f7f9fb",
+                        "primary-fixed": "#d8e3fb",
+                        "surface": "#f7f9fb",
+                        "primary-container": "#1e293b",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#545f73",
+                        "on-surface": "#191c1e",
+                        "status-critical": "#E11D48",
+                        "border-subtle": "#E2E8F0",
+                        "tertiary-container": "#35260c",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "1rem",
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "1.5rem",
+                        "container-max": "1440px",
+                        "stack-xs": "0.25rem",
+                        "margin-page": "2rem",
+                        "stack-md": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest text-primary dark:text-primary-fixed-dim font-body-md text-body-md font-label-caps text-label-caps h-screen w-60 fixed left-0 top-0 border-r border-outline-variant dark:border-outline-variant flex flex-col h-full py-stack-lg z-50">
+<div class="px-gutter mb-stack-lg flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="admin_panel_settings">admin_panel_settings</span>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">FOZ Administrator</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System Administrator</p>
+</div>
+</div>
+
+<ul class="flex flex-col flex-1 px-stack-sm gap-stack-xs"><li class=""><a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 cursor-pointer" href="#"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span><span class="">Dashboard</span></a></li><li class=""><a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 cursor-pointer" href="#"><span class="material-symbols-outlined" data-icon="fact_check">fact_check</span><span class="">Final Review Queue</span></a></li><li class=""><a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 cursor-pointer" href="#"><span class="material-symbols-outlined" data-icon="article">article</span><span class="">Content Management</span></a></li><li class=""><a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 cursor-pointer" href="#"><span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span><span class="">User Management</span></a></li></ul>
+<div class="px-gutter mt-auto flex items-center gap-stack-sm">
+<img alt="Admin Profile" class="w-8 h-8 rounded-full bg-surface-container-highest" data-alt="A small circular avatar placeholder image showing a professional headshot of a person in a corporate setting, well-lit with neutral lighting, on a light grey background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCESyMOs2frdO6nU4Az6WU6lrJqJtf0kUnI44RGpWrrs4hjJ0dQhvHIBaPfcXsIxOMkEV_ajRvVEb6nh1rXTHcAeU9fTsLEwf5XqtACrOwYDZp2Jwop9nAtg-ghTfxPyODVlx1-oNh5PHR8pRNRM5uH93yKY0ZLtJ3FXUjyttVJx7d8LywSsjb6swdt6bHNxpFbUV3huX-tJ63dHibuqvZOpi86vxoKrJwyVtv8xvHesxehP9kMyKXh">
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-60 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest text-primary dark:text-primary-fixed-dim font-body-md text-body-md w-full top-0 sticky z-40 border-b border-outline-variant dark:border-outline-variant flex justify-between items-center h-16 px-gutter shadow-sm">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed">FOZ Administrator</span>
+<div class="relative focus-within:ring-2 focus-within:ring-secondary rounded">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-8 pr-4 py-1 bg-surface-container rounded border-none text-body-sm focus:outline-none w-64 text-on-surface placeholder:text-on-surface-variant" placeholder="Search..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all p-1 rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all p-1 rounded-full">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full border border-border-subtle" data-alt="A small circular avatar placeholder image showing a professional headshot of an administrator in a modern office environment, clear bright lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-TGOICQ0Z36y9rActJgtp8hKge0p-Rpg6kJJuLuBbYcUGw8_UKK8s-aZfXMNt9lurhZAtlxQr6RjzP218HwIEUAHY3pGmRbxqfPxz-VLvgFy9Gkb7fO7cJvPZiP7ZKNzUJp7J4F1J2LJ3wUVtqBwwnJ-8RfVyx_VqvcG63RKetXJF5Hf0jsZorFHrNvVWO7bjFkLCPWOeN25KwN8X65r3-mHt1xYoJxBYiJ7DbayI_1VI--abk1AV">
+</div>
+</header>
+<!-- Dashboard Content Canvas -->
+<main class="flex-1 p-margin-page bg-surface max-w-[1440px] mx-auto w-full">
+<div class="mb-stack-lg flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary">Dashboard Overview</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1">System status and key metrics at a glance.</p>
+</div>
+<div class="flex gap-2">
+<span class="bg-status-success/10 text-status-success font-label-caps text-label-caps px-3 py-1 rounded-full border border-status-success/20 flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-status-success animate-pulse"></span>
+                        System Operational
+                    </span>
+</div>
+</div>
+<!-- Key Metrics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-md mb-stack-lg">
+<!-- Card 1 -->
+<div class="bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Total Users</span>
+<span class="material-symbols-outlined text-secondary" data-icon="group">group</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary mt-auto">124,592</div>
+<div class="font-body-sm text-body-sm text-status-success mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span> +2.4% this week
+                    </div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Active Posts</span>
+<span class="material-symbols-outlined text-secondary" data-icon="forum">forum</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary mt-auto">8,341</div>
+<div class="font-body-sm text-body-sm text-status-success mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span> +12% this week
+                    </div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow relative overflow-hidden group">
+<div class="absolute inset-0 bg-status-warning/5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Pending Reports</span>
+<span class="material-symbols-outlined text-status-warning" data-icon="warning">warning</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary mt-auto">142</div>
+<div class="font-body-sm text-body-sm text-status-critical mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="priority_high">priority_high</span> Action required
+                        </div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Recent Bans</span>
+<span class="material-symbols-outlined text-status-critical" data-icon="block">block</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary mt-auto">27</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1 flex items-center gap-1">
+                        Past 24 hours
+                    </div>
+</div>
+</div>
+<!-- Chart & Activities Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack-md">
+<!-- Chart Area -->
+<div class="lg:col-span-2 bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col">
+<div class="flex justify-between items-center mb-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-primary">Post Activity Trend</h3>
+<select class="bg-surface-container text-body-sm text-on-surface border-none rounded py-1 px-2 focus:ring-1 focus:ring-secondary">
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+</select>
+</div>
+<div class="flex-1 w-full h-64 relative">
+<canvas id="activityChart" width="573" height="301" style="display: block; box-sizing: border-box; height: 321.9px; width: 611.2px;"></canvas>
+</div>
+</div>
+<!-- Recent Activities -->
+<div class="bg-surface-elevated border border-border-subtle rounded-xl p-stack-md flex flex-col h-full max-h-[400px]">
+<div class="flex justify-between items-center mb-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-primary">Recent Activities</h3>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">View All</button>
+</div>
+<div class="overflow-y-auto pr-2 space-y-4 flex-1">
+<!-- Activity Item -->
+<div class="flex gap-3 items-start pb-3 border-b border-border-subtle last:border-0 last:pb-0">
+<div class="bg-surface-container-high p-1.5 rounded-full mt-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]" data-icon="gavel">gavel</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface"><span class="font-bold">Moderator Sarah</span> approved Post <span class="text-secondary cursor-pointer">#Y782</span></p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2 mins ago</span>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-3 items-start pb-3 border-b border-border-subtle last:border-0 last:pb-0">
+<div class="bg-status-critical/10 p-1.5 rounded-full mt-0.5">
+<span class="material-symbols-outlined text-status-critical text-[16px]" data-icon="delete">delete</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface"><span class="font-bold">System Auto-Mod</span> deleted spam post</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">15 mins ago</span>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-3 items-start pb-3 border-b border-border-subtle last:border-0 last:pb-0">
+<div class="bg-status-warning/10 p-1.5 rounded-full mt-0.5">
+<span class="material-symbols-outlined text-status-warning text-[16px]" data-icon="flag">flag</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface">User <span class="font-bold">@alex_dev</span> flagged a comment for review</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">1 hour ago</span>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-3 items-start pb-3 border-b border-border-subtle last:border-0 last:pb-0">
+<div class="bg-surface-container-high p-1.5 rounded-full mt-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]" data-icon="group_add">group_add</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface"><span class="font-bold">Admin Mike</span> invited 3 new moderators</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">3 hours ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            // Subtle gradient for chart
+            let gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 88, 190, 0.2)'); // Secondary color with opacity
+            gradient.addColorStop(1, 'rgba(0, 88, 190, 0)');
+
+            const data = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'New Posts',
+                    data: [120, 190, 150, 220, 180, 250, 210],
+                    borderColor: '#0058be', // secondary
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0058be',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b', // primary-container
+                            titleFont: { family: 'Inter', size: 13 },
+                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' Posts';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e0e3e5', // surface-variant
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 12 },
+                                color: '#45474c' // on-surface-variant
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 12 },
+                                color: '#45474c'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                }
+            };
+
+            new Chart(ctx, config);
+        });
+    </script>
+
+
+
+
+</body></html>

@@ -100,5 +100,6 @@ export const commentResponseSchema = z.object({
   lifecycleState: z.string(),
   createdAt: z.string(),
   updatedAt: z.string().optional(),
+  replyCount: z.number().int().nonnegative().optional(),
 });
 export type CommentResponse = z.infer<typeof commentResponseSchema>;
