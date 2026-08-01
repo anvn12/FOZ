@@ -1,0 +1,283 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Moderation Queue - Threads Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#ddc39d",
+                      "surface-container": "#eceef0",
+                      "surface-bright": "#f7f9fb",
+                      "on-secondary-container": "#fefcff",
+                      "secondary": "#0058be",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-tertiary-fixed-variant": "#564427",
+                      "tertiary-fixed": "#fadfb8",
+                      "tertiary": "#1e1200",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-background": "#191c1e",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-primary-fixed": "#111c2d",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c5c6cd",
+                      "secondary-container": "#2170e4",
+                      "inverse-surface": "#2d3133",
+                      "on-surface-variant": "#45474c",
+                      "on-secondary-fixed": "#001a42",
+                      "on-primary-container": "#8590a6",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-variant": "#e0e3e5",
+                      "status-warning": "#F59E0B",
+                      "on-secondary-fixed-variant": "#004395",
+                      "primary": "#091426",
+                      "surface-dim": "#d8dadc",
+                      "surface-elevated": "#FFFFFF",
+                      "outline": "#75777d",
+                      "status-info": "#0EA5E9",
+                      "inverse-primary": "#bcc7de",
+                      "primary-fixed-dim": "#bcc7de",
+                      "status-success": "#10B981",
+                      "on-tertiary-container": "#a38c6a",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-tertiary-fixed": "#271902",
+                      "background": "#f7f9fb",
+                      "primary-fixed": "#d8e3fb",
+                      "surface": "#f7f9fb",
+                      "primary-container": "#1e293b",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#545f73",
+                      "on-surface": "#191c1e",
+                      "status-critical": "#E11D48",
+                      "border-subtle": "#E2E8F0",
+                      "tertiary-container": "#35260c",
+                      "surface-container-low": "#f2f4f6",
+                      "on-primary-fixed-variant": "#3c475a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "1rem",
+                      "stack-sm": "0.5rem",
+                      "stack-lg": "1.5rem",
+                      "container-max": "1440px",
+                      "stack-xs": "0.25rem",
+                      "margin-page": "2rem",
+                      "stack-md": "1rem"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "code-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "code-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-lowest border-r border-outline-variant h-screen w-60 fixed left-0 top-0 flex flex-col h-full py-stack-lg z-50">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">FOZ Moderator</h1>
+</div>
+<div class="px-gutter mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden shrink-0">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate administrator in a modern office setting. Light mode aesthetic, sharp focus, professional lighting, conveying authority and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpWl-jHhdXhsD4lBDo-hEuIHiRuI6BNHilxR09x8fkAZfbHitVNoRQfypLp56qujtywCbf4phaDJHD0_nKE8r4IZ7w6V3QSWB_vZPGre--vtzB4Rh1KDtXq3OzV9c5Ireb89c2TF3cD7HjQ5UQZ8z_50vZtFVRAOcysrUE18OVYPX_FGv0oOnfewYci4grzoJt4jOeMT4YN8lStjx1euububoUZrGZUQdJQlIBlAE1XaYXe4ICyuHn">
+</div>
+<div>
+<div class="font-headline-sm text-body-sm font-semibold text-on-surface">FOZ Moderator</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Forum Moderator</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors active:scale-95 duration-150 font-body-md text-body-md" href="/dashboard"><span class="material-symbols-outlined">dashboard</span><span class="">Dashboard</span></a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary font-bold border-r-4 border-secondary bg-surface-container-low transition-colors active:scale-95 duration-150 font-body-md text-body-md" href="/moderation-queue">
+<span class="material-symbols-outlined" data-weight="fill">rule</span>
+<span class="">Reports Queue</span>
+</a>
+</nav>
+<div class="px-gutter mt-auto">
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 ml-60 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest border-b border-outline-variant docked full-width top-0 sticky z-40 flex justify-between items-center h-16 px-gutter">
+<div class="flex items-center flex-1 max-w-xl focus-within:ring-2 focus-within:ring-secondary rounded-lg px-3 bg-surface-container-low h-10">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md p-0 placeholder:text-on-surface-variant" placeholder="Search queue..." type="text">
+</div>
+<div class="flex items-center gap-4 ml-4">
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A small circular avatar of an administrator. Clean corporate style, light background, professional appearance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZMx9dwX9_4O0LrMxo4QAOFwBqrFDcKTLty3Fjc_GBMR0oZt0CKgDLOWF08qPVcWD2pfGTC4klBVPcIbgDEbE1NbMake_urRhr_efVGiaRS3JL8Mp46AbvBATGMiKKalU65_UNkSVBR3XORVll9D6UVFIc-MwxCSHoHMLbmRhpOJo_GxFKtTryjIO0V5T6TQ_yNUREHK2xzmpySbbZiETKTBTMCU3cNP5apmPv7I7vFf8Lh7NHkCcy">
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 p-margin-page max-w-container-max mx-auto w-full">
+<!-- Page Header & Filters -->
+<div class="mb-stack-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface mb-stack-xs">Reports Queue</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Review and action reported content from the community.</p>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<div class="relative">
+<select class="appearance-none bg-surface-elevated border border-border-subtle rounded-DEFAULT py-2 pl-3 pr-8 font-body-md text-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary cursor-pointer"><option>All Report Types</option><option selected="">Pending Review</option><option>Safe</option><option>Remove</option><option>Inappropriate Content</option><option>Spam</option><option>Harassment</option></select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-elevated border border-border-subtle rounded-DEFAULT py-2 pl-3 pr-8 font-body-md text-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary cursor-pointer"><option>Sort by: Urgency</option><option>Sort by: Number of Reports</option><option>Sort by: Newest</option><option>Sort by: Oldest</option></select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface-elevated border border-border-subtle rounded-lg overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-border-subtle"><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Content Preview</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Reporter</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Reported User</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Reason</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Reports</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Date Reported</th><th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant font-semibold">Status</th></tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-border-subtle">
+<!-- Row 1: Critical -->
+<tr class="group hover:bg-surface-container-lowest transition-colors h-24"><td class="py-3 px-4 align-top"><div class="bg-surface-container-lowest p-2 rounded-DEFAULT border border-border-subtle text-on-surface font-body-sm text-body-sm line-clamp-2">"You guys are completely clueless..."</div></td><td class="py-3 px-4 align-top text-on-surface-variant">@HelpfulMember</td><td class="py-3 px-4 align-top text-on-surface-variant">@AngryUser99</td><td class="py-3 px-4 align-top"><div class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps gap-1"><span class="material-symbols-outlined text-[14px]">warning</span>Harassment</div></td><td class="py-3 px-4 align-top"><button class="text-secondary hover:underline font-semibold">12 Reports</button></td><td class="py-3 px-4 align-top text-on-surface-variant">2 hours ago</td><td class="py-3 px-4 align-top"><div class="relative inline-flex items-center"><select class="appearance-none bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 pr-6 rounded-full border-none focus:ring-1 focus:ring-secondary cursor-pointer hover:bg-surface-container-highest transition-colors"><option selected="">Pending</option><option>Safe</option><option>Remove</option></select><span class="material-symbols-outlined absolute right-1 pointer-events-none text-[14px]">arrow_drop_down</span></div></td></tr>
+<!-- Row 2: Warning -->
+<tr class="group hover:bg-surface-container-lowest transition-colors bg-surface-bright h-24"><td class="py-3 px-4 align-top"><div class="bg-surface-container-lowest p-2 rounded-DEFAULT border border-border-subtle text-on-surface font-body-sm text-body-sm line-clamp-2">"Check out this amazing new supplement..."</div></td><td class="py-3 px-4 align-top text-on-surface-variant">AutoMod</td><td class="py-3 px-4 align-top text-on-surface-variant">@FitnessBot22</td><td class="py-3 px-4 align-top"><div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-caps text-label-caps gap-1"><span class="material-symbols-outlined text-[14px]">report</span>Spam</div></td><td class="py-3 px-4 align-top"><button class="text-secondary hover:underline font-semibold">5 Reports</button></td><td class="py-3 px-4 align-top text-on-surface-variant">4 hours ago</td><td class="py-3 px-4 align-top"><div class="relative inline-flex items-center"><select class="appearance-none bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 pr-6 rounded-full border-none focus:ring-1 focus:ring-secondary cursor-pointer hover:bg-surface-container-highest transition-colors"><option selected="">Pending</option><option>Safe</option><option>Remove</option></select><span class="material-symbols-outlined absolute right-1 pointer-events-none text-[14px]">arrow_drop_down</span></div></td></tr>
+<!-- Row 3: Info -->
+<tr class="group hover:bg-surface-container-lowest transition-colors h-24"><td class="py-3 px-4 align-top"><div class="bg-surface-container-lowest p-2 rounded-DEFAULT border border-border-subtle text-on-surface font-body-sm text-body-sm line-clamp-2">"I don't think that's entirely accurate..."</div></td><td class="py-3 px-4 align-top text-on-surface-variant">@SensitiveUser</td><td class="py-3 px-4 align-top text-on-surface-variant">@TechNerd</td><td class="py-3 px-4 align-top"><div class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps gap-1"><span class="material-symbols-outlined text-[14px]">info</span>Inappropriate</div></td><td class="py-3 px-4 align-top"><button class="text-secondary hover:underline font-semibold">1 Report</button></td><td class="py-3 px-4 align-top text-on-surface-variant">Yesterday</td><td class="py-3 px-4 align-top"><div class="relative inline-flex items-center"><select class="appearance-none bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 pr-6 rounded-full border-none focus:ring-1 focus:ring-secondary cursor-pointer hover:bg-surface-container-highest transition-colors"><option selected="">Pending</option><option>Safe</option><option>Remove</option></select><span class="material-symbols-outlined absolute right-1 pointer-events-none text-[14px]">arrow_drop_down</span></div></td></tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-lowest border-t border-border-subtle p-3 flex items-center justify-between">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Showing 1-3 of 42 reports</span>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded hover:bg-surface-container-low text-on-surface-variant disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
