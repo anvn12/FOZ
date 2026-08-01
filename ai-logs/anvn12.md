@@ -730,6 +730,33 @@
 **Tool:** Antigravity
 **Model:** Gemini 3.6 Flash
 **Prompt:** "is the name is too long that can lead to some sort of overflow, just make it to "abc...""
-**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
 
+### 2026-08-01 13:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Currnet comment UI does not has number of replies. Add it. Also, the main comment should has Like "x replies" that allows users to press it for view 10 more replies (then if user want to view more, that displays "Show more replies", just like the design from YouTube). Add it"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/backend/services/interactions/comments.ts`, `src/backend/__tests__/integration/interaction.comments.test.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
 
+### 2026-08-01 13:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the number of replies should count the sub replies of replies (not just the direct replies)"
+**Files touched:** `src/backend/services/interactions/comments.ts`, `src/backend/__tests__/integration/interaction.comments.test.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-08-01 13:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "When it's the button Hide replies, it should be below the replies instead of top"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-08-01 13:35
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The L shape line of hide replies is not connect to the main L shape line. Fix it."
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`
+
+### 2026-08-01 13:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "show replies should connect too."
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx`

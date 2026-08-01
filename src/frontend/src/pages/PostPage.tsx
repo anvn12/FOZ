@@ -155,6 +155,15 @@ export function PostPage() {
   );
 }
 
+function countTotalDescendants(commentId: string, comments: any[]): number {
+  const children = comments.filter((c) => c.parentCommentId === commentId);
+  let count = children.length;
+  for (const child of children) {
+    count += countTotalDescendants(child.id, comments);
+  }
+  return count;
+}
+
 function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment: any; comments: any[]; user: any; postId: string; depth?: number }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -219,6 +228,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     onSuccess: async () => {
       setReplyDraft("");
       setShowReplyBox(false);
+      setExpanded(true);
       await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       toast.success("Reply posted.");
     },
@@ -226,6 +236,10 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
   });
 
   const children = comments.filter((item) => item.parentCommentId === comment.id);
+  const totalReplies = comment.replyCount ?? countTotalDescendants(comment.id, comments);
+  const [expanded, setExpanded] = useState(false);
+  const [visibleReplyCount, setVisibleReplyCount] = useState(10);
+
   const act = (callback: () => void) => user ? callback() : navigate("/login");
 
   const MAX_DEPTH = 2;
@@ -245,8 +259,8 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
               </div>
             )}
           </div>
-          {/* Spine line — only shown when children will use connector columns (depth < MAX_DEPTH) */}
-          {children.length > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-outline-variant/40" />}
+          {/* Spine line — shown when totalReplies > 0 & depth < MAX_DEPTH */}
+          {totalReplies > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-outline-variant/40" />}
         </div>
 
         <div className="min-w-0 flex-1 pt-3 pb-2">
@@ -403,31 +417,99 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
         </div>
       </div>
 
-      {/* Child rows — ├──/└── connectors up to MAX_DEPTH; flat (no indent) beyond */}
-      {children.map((child, idx) => {
-        const isLast = idx === children.length - 1;
+      {/* Expand Replies Button (YouTube Style) with L-shaped connector line (shown when collapsed) */}
+      {!expanded && totalReplies > 0 && (
+        <div className="flex gap-3">
+          <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+            <div className="w-[2px] h-5 flex-shrink-0 bg-outline-variant/40" />
+            <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
+          </div>
+          <div className="flex-1 min-w-0 py-1">
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="inline-flex items-center gap-2 text-[14px] font-semibold text-primary hover:bg-surface-container-low px-3 py-1 rounded-full transition-colors group"
+            >
+              <span>{`${totalReplies} ${totalReplies === 1 ? "reply" : "replies"}`}</span>
+              <svg className="w-4 h-4 text-primary group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
-        if (depth < MAX_DEPTH) {
-          // Normal tree connector row: adds one level of indentation
-          return (
-            <div key={child.id} className="flex gap-3">
+      {/* Child rows — rendered only when expanded */}
+      {expanded && (
+        <>
+          {children.slice(0, visibleReplyCount).map((child) => {
+            if (depth < MAX_DEPTH) {
+              return (
+                <div key={child.id} className="flex gap-3">
+                  <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+                    <div className="w-[2px] h-7 flex-shrink-0 bg-outline-variant/40" />
+                    <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
+                    <div className="w-[2px] flex-1 bg-outline-variant/40" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <CommentBranch comment={child} comments={comments} user={user} postId={postId} depth={depth + 1} />
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} depth={MAX_DEPTH} />
+            );
+          })}
+
+          {/* Show more replies button if remaining replies exist with L-shaped connector line */}
+          {children.length > visibleReplyCount && (
+            <div className="flex gap-3">
               <div className="relative flex flex-col items-center w-8 flex-shrink-0">
-                <div className="w-[2px] h-7 flex-shrink-0 bg-outline-variant/40" />
-                <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
-                {!isLast && <div className="w-[2px] flex-1 bg-outline-variant/40" />}
+                <div className="w-[2px] h-5 flex-shrink-0 bg-outline-variant/40" />
+                <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
+                <div className="w-[2px] flex-1 bg-outline-variant/40" />
               </div>
-              <div className="flex-1 min-w-0">
-                <CommentBranch comment={child} comments={comments} user={user} postId={postId} depth={depth + 1} />
+              <div className="flex-1 min-w-0 py-1">
+                <button
+                  type="button"
+                  onClick={() => setVisibleReplyCount((prev) => prev + 10)}
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:bg-surface-container-low px-3 py-1.5 rounded-full transition-colors group"
+                >
+                  <svg className="w-3.5 h-3.5 text-primary group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span className="text-[13px]">Show more replies</span>
+                </button>
               </div>
             </div>
-          );
-        }
+          )}
 
-        // At MAX_DEPTH: render flat with no additional indentation; depth stays pinned at MAX_DEPTH
-        return (
-          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} depth={MAX_DEPTH} />
-        );
-      })}
+          {/* Hide replies button at the bottom of expanded replies with L-shaped connector line */}
+          <div className="flex gap-3">
+            <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+              <div className="w-[2px] h-5 flex-shrink-0 bg-outline-variant/40" />
+              <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-outline-variant/40" />
+            </div>
+            <div className="flex-1 min-w-0 py-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setExpanded(false);
+                  setVisibleReplyCount(10);
+                }}
+                className="inline-flex items-center gap-2 text-[14px] font-semibold text-primary hover:bg-surface-container-low px-3 py-1 rounded-full transition-colors group"
+              >
+                <span>{`Hide ${totalReplies === 1 ? "reply" : "replies"}`}</span>
+                <svg className="w-4 h-4 text-primary transition-transform rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Delete Comment Confirmation Dialog */}
       {showDeleteDialog && (
