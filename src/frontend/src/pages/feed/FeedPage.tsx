@@ -11,6 +11,7 @@ import {
   listComments,
   listPosts,
   toggleReaction,
+  toggleRepost,
   updateComment,
 } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
@@ -92,6 +93,8 @@ function FeedPost({ post, user }: { post: Post; user: Viewer }) {
   const reaction = useMutation({ mutationFn: () => toggleReaction({ targetType: "post", targetId: post.id, active: liked }), onSuccess: async (result) => { setLiked(result.active); setLikeCount(result.likeCount); await queryClient.invalidateQueries({ queryKey: ["posts"] }); }, onError: showError });
   const remove = useMutation({ mutationFn: () => deletePost(post.id), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["posts"] }); toast.success("Post deleted."); }, onError: showError });
   const enter = () => { if (!user) navigate("/login"); else reaction.mutate(); };
+  const repost = useMutation({ mutationFn: () => toggleRepost(post.id, (post as any).reposted ?? false), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["posts"] }); }, onError: showError });
+  const handleRepost = () => { if (!user) navigate("/login"); else repost.mutate(); };
   return (
     <article className="border-b border-black/5 px-2 py-7">
       <div className="flex gap-4">
@@ -111,7 +114,7 @@ function FeedPost({ post, user }: { post: Post; user: Viewer }) {
           <Link to={`/posts/${post.id}`} className="mt-2 block whitespace-pre-wrap text-[18px] leading-8 text-[#262121]">{post.content}</Link>
           <div className="mt-5 flex max-w-[520px] items-center justify-between text-[#6a6161]">
             <Action icon="chat_bubble" count={post.commentCount} label="Comments" onClick={() => navigate(`/posts/${post.id}`)} />
-            <Action icon="repeat" label="Repost" onClick={() => toast("Reposts are not part of this interaction slice.")} />
+            <Action icon="repeat" label="Repost" onClick={handleRepost} />
             <Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like" onClick={enter} />
             <Action icon="ios_share" label="Share" onClick={() => navigator.share?.({ text: post.content || "" }).catch(() => undefined)} />
           </div>
@@ -175,6 +178,15 @@ function ThreadDetail({ postId, user, onAccount }: { postId: string; user: Viewe
   </>;
 }
 
+function countTotalDescendants(commentId: string, comments: any[]): number {
+  const children = comments.filter((c) => c.parentCommentId === commentId);
+  let count = children.length;
+  for (const child of children) {
+    count += countTotalDescendants(child.id, comments);
+  }
+  return count;
+}
+
 function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: { comment: Comment; comments: Comment[]; user: Viewer; postId: string; onReply: (comment: Comment) => void; depth?: number }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -194,6 +206,9 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
   const save = useMutation({ mutationFn: () => updateComment(comment.id, { body }), onSuccess: async () => { setEditing(false); setWasEdited(true); await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); }, onError: showError });
   const remove = useMutation({ mutationFn: () => deleteComment(comment.id), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["comments", postId] }); }, onError: showError });
   const children = comments.filter((item) => item.parentCommentId === comment.id);
+  const totalReplies = (comment as any).replyCount ?? countTotalDescendants(comment.id, comments);
+  const [expanded, setExpanded] = useState(false);
+  const [visibleReplyCount, setVisibleReplyCount] = useState(10);
   const act = (callback: () => void) => user ? callback() : navigate("/login");
   const MAX_DEPTH = 2;
   return (
@@ -204,7 +219,7 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
           <div className="mt-3">
             <Avatar id={comment.authorId} small />
           </div>
-          {children.length > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-black/10" />}
+          {totalReplies > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-black/10" />}
         </div>
         <div className="min-w-0 flex-1 pt-3 pb-2">
           <div className="flex items-center justify-between">
@@ -271,35 +286,104 @@ function CommentBranch({ comment, comments, user, postId, onReply, depth = 0 }: 
           )}
           <div className="mt-3 flex items-center gap-3 text-sm text-[#6a6161]">
             <Action icon={liked ? "favorite" : "favorite_border"} active={liked} count={likeCount} label="Like comment" onClick={() => act(() => react.mutate())} />
-            <Action icon="chat_bubble" label="Reply" onClick={() => act(() => onReply(comment))} />
+            <Action icon="chat_bubble" label="Reply" onClick={() => act(() => { setExpanded(true); onReply(comment); })} />
           </div>
         </div>
       </div>
 
-      {/* Child rows — ├──/└── connectors up to MAX_DEPTH; flat beyond */}
-      {children.map((child, idx) => {
-        const isLast = idx === children.length - 1;
+      {/* Expand Replies Button (YouTube Style) with L-shaped connector line (shown when collapsed) */}
+      {!expanded && totalReplies > 0 && (
+        <div className="flex gap-3">
+          <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+            <div className="w-[2px] h-5 flex-shrink-0 bg-black/10" />
+            <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-black/10" />
+          </div>
+          <div className="flex-1 min-w-0 py-1">
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="inline-flex items-center gap-2 text-[14px] font-semibold text-black hover:bg-black/5 px-3 py-1 rounded-full transition-colors group"
+            >
+              <span>{`${totalReplies} ${totalReplies === 1 ? "reply" : "replies"}`}</span>
+              <svg className="w-4 h-4 text-black group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
-        if (depth < MAX_DEPTH) {
-          return (
-            <div key={child.id} className="flex gap-3">
+      {/* Child rows — rendered only when expanded */}
+      {expanded && (
+        <>
+          {children.slice(0, visibleReplyCount).map((child) => {
+            if (depth < MAX_DEPTH) {
+              return (
+                <div key={child.id} className="flex gap-3">
+                  <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+                    <div className="w-[2px] h-7 flex-shrink-0 bg-black/10" />
+                    <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-black/10" />
+                    <div className="w-[2px] flex-1 bg-black/10" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <CommentBranch comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={MAX_DEPTH} />
+            );
+          })}
+
+          {/* Show more replies button if remaining replies exist with L-shaped connector line */}
+          {children.length > visibleReplyCount && (
+            <div className="flex gap-3">
               <div className="relative flex flex-col items-center w-8 flex-shrink-0">
-                <div className="w-[2px] h-7 flex-shrink-0 bg-black/10" />
-                <div className="absolute top-7 left-[15px] w-[29px] h-[2px] bg-black/10" />
-                {!isLast && <div className="w-[2px] flex-1 bg-black/10" />}
+                <div className="w-[2px] h-5 flex-shrink-0 bg-black/10" />
+                <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-black/10" />
+                <div className="w-[2px] flex-1 bg-black/10" />
               </div>
-              <div className="flex-1 min-w-0">
-                <CommentBranch comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={depth + 1} />
+              <div className="flex-1 min-w-0 py-1">
+                <button
+                  type="button"
+                  onClick={() => setVisibleReplyCount((prev) => prev + 10)}
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-black hover:bg-black/5 px-3 py-1.5 rounded-full transition-colors group"
+                >
+                  <svg className="w-3.5 h-3.5 text-black group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span className="text-[13px]">Show more replies</span>
+                </button>
               </div>
             </div>
-          );
-        }
+          )}
 
-        // At MAX_DEPTH: flat — no additional indentation, depth stays pinned
-        return (
-          <CommentBranch key={child.id} comment={child} comments={comments} user={user} postId={postId} onReply={onReply} depth={MAX_DEPTH} />
-        );
-      })}
+          {/* Hide replies button at the bottom of expanded replies with L-shaped connector line */}
+          <div className="flex gap-3">
+            <div className="relative flex flex-col items-center w-8 flex-shrink-0">
+              <div className="w-[2px] h-5 flex-shrink-0 bg-black/10" />
+              <div className="absolute top-5 left-[15px] w-[29px] h-[2px] bg-black/10" />
+            </div>
+            <div className="flex-1 min-w-0 py-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setExpanded(false);
+                  setVisibleReplyCount(10);
+                }}
+                className="inline-flex items-center gap-2 text-[14px] font-semibold text-black hover:bg-black/5 px-3 py-1 rounded-full transition-colors group"
+              >
+                <span>{`Hide ${totalReplies === 1 ? "reply" : "replies"}`}</span>
+                <svg className="w-4 h-4 text-black transition-transform rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Delete Comment Confirmation Dialog */}
       {showDeleteDialog && (

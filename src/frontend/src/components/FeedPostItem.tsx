@@ -67,6 +67,10 @@ export function FeedPostItem({ post }: { post: any }) {
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     toggleReaction.mutate(
       { targetType: "post", targetId: post.id, active: post.liked },
       {
@@ -87,6 +91,10 @@ export function FeedPostItem({ post }: { post: any }) {
 
   const handleRepost = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     toggleRepost.mutate(
       { postId: post.id, active: post.reposted },
       {

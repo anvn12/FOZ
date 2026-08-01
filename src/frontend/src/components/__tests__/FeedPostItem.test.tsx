@@ -31,3 +31,77 @@ describe("formatRelativeTime", () => {
     expect(formatRelativeTime(twoDaysAgo)).toBe("2d ago");
   });
 });
+
+import React from "react";
+import { vi, beforeEach } from "vitest";
+import { screen, fireEvent } from "@testing-library/react";
+import { renderWithProviders } from "../../test/utils.js";
+import { FeedPostItem } from "../FeedPostItem.js";
+import { useAuthStore } from "#frontend/stores/auth";
+
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = (await vi.importActual("react-router-dom")) as any;
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("../../api/profile.js", () => ({
+  useProfile: vi.fn().mockReturnValue({ data: { displayName: "Author User" }, isLoading: false }),
+}));
+
+const mockToggleReaction = vi.fn();
+const mockToggleRepost = vi.fn();
+vi.mock("../../api/interactions.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../api/interactions.js")>();
+  return {
+    ...actual,
+    useToggleReaction: () => ({ mutate: mockToggleReaction }),
+    useToggleRepost: () => ({ mutate: mockToggleRepost }),
+  };
+});
+
+describe("FeedPostItem Guest Interactions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const dummyPost = {
+    id: "post-123",
+    authorId: "user-456",
+    content: "Test post content",
+    createdAt: new Date().toISOString(),
+    likeCount: 5,
+    liked: false,
+    reposted: false,
+  };
+
+  it("should trigger authentication (navigate to /login) when guest presses like", () => {
+    useAuthStore.setState({ user: null, accessToken: null });
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    // Button index 1 is like (or find by svg/icon inside button)
+    const likeBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("20.84"));
+    expect(likeBtn).toBeDefined();
+    fireEvent.click(likeBtn!);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    expect(mockToggleReaction).not.toHaveBeenCalled();
+  });
+
+  it("should trigger authentication (navigate to /login) when guest presses repost", () => {
+    useAuthStore.setState({ user: null, accessToken: null });
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    const repostBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("M4 4v5h.582"));
+    expect(repostBtn).toBeDefined();
+    fireEvent.click(repostBtn!);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    expect(mockToggleRepost).not.toHaveBeenCalled();
+  });
+});
