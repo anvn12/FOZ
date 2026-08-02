@@ -948,6 +948,13 @@
 **Prompt:** "fix: the images only be uploaded when user submit the post (click "Post" on post creation or "Save" on profile management), also do it with other type of storage (only store when user submit)"
 **Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`, `src/frontend/src/components/CreatePostModal.tsx`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`
 
+### 2026-08-03 00:15
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "invalid request when i upload image (upload to server is successful)"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/shared/schemas/profile.ts`
+
+
 
 
 
