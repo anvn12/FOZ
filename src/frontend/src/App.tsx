@@ -9,6 +9,9 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { SearchPage } from "./pages/SearchPage";
 import { PostPage } from "./pages/PostPage";
 import { useAuthStore } from "./stores/auth";
+import { RequireRole } from "./components/auth/RequireRole";
+import { ModeratorDashboardPage } from "./pages/moderator/ModeratorDashboard";
+import { ReportsQueuePage } from "./pages/moderator/ReportsQueue";
 
 export function App() {
   const user = useAuthStore((state) => state.user);
@@ -26,6 +29,24 @@ export function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/profiles/:userId" element={<ProfilePage />} />
+
+        {/* Moderator Routes */}
+        <Route 
+          path="/moderator" 
+          element={
+            <RequireRole roles={["moderator", "administrator"]}>
+              <ModeratorDashboardPage />
+            </RequireRole>
+          } 
+        />
+        <Route 
+          path="/moderator/queue" 
+          element={
+            <RequireRole roles={["moderator", "administrator"]}>
+              <ReportsQueuePage />
+            </RequireRole>
+          } 
+        />
       </Routes>
       <LogoutDialog user={user} open={logoutOpen} onClose={() => setLogoutOpen(false)} />
     </div>

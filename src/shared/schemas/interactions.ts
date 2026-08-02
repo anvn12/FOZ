@@ -113,3 +113,19 @@ export const feedQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
 export type FeedQuery = z.infer<typeof feedQuerySchema>;
+
+import { reportStatuses } from "../schema-enums.js";
+
+// Moderation schemas
+export const getReportsQuerySchema = z.object({
+  status: z.enum(reportStatuses).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+export type GetReportsQuery = z.infer<typeof getReportsQuerySchema>;
+
+export const updateReportStatusSchema = z.object({
+  status: z.enum(["dismissed", "escalated"]),
+  notes: z.string().max(1000).optional(),
+});
+export type UpdateReportStatus = z.infer<typeof updateReportStatusSchema>;
