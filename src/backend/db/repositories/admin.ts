@@ -5,6 +5,7 @@ import {
   profiles,
   posts,
   comments,
+  reactions,
   reports,
   adminAuditLogs,
   forumCategories,
@@ -195,8 +196,19 @@ export async function countAdministrators() {
 
 export async function deleteUserAccountAndReattribute(userId: string) {
   return db.transaction(async (tx) => {
+    // 1. Delete reactions created by user
+    await tx.delete(reactions).where(eq(reactions.userAccountId, userId));
+    // 2. Delete content reports filed by user
+    await tx.delete(reports).where(eq(reports.reporterId, userId));
+    // 3. Delete comments authored by user
+    await tx.delete(comments).where(eq(comments.authorId, userId));
+    // 4. Delete posts authored by user
+    await tx.delete(posts).where(eq(posts.authorId, userId));
+    // 5. Delete active refresh sessions
     await tx.delete(refreshSessions).where(eq(refreshSessions.userAccountId, userId));
+    // 6. Delete user profile record
     await tx.delete(profiles).where(eq(profiles.userAccountId, userId));
+    // 7. Permanently delete user account
     const [deletedUser] = await tx
       .delete(userAccounts)
       .where(eq(userAccounts.id, userId))
