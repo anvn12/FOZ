@@ -73,12 +73,20 @@ describe("UpdateAvatarRequest Schema", () => {
     expect(parsed.success).toBe(true);
   });
 
+  it("should validate a valid webp base64 image", () => {
+    const parsed = UpdateAvatarRequest.safeParse({
+      avatar: "data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA",
+    });
+    expect(parsed.success).toBe(true);
+  });
+
   it("should reject base64 images of invalid types", () => {
     const parsed = UpdateAvatarRequest.safeParse({
-      avatar: "data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      avatar: "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
     });
     expect(parsed.success).toBe(false);
   });
+
 
   it("should reject base64 payloads that exceed 2MB", () => {
     // 2.1 MB = 2.1 * 1024 * 1024 bytes approx = 2,202,000 bytes

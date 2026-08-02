@@ -876,6 +876,13 @@
 **Prompt:** "why there are images on my local machine when i upload on post (it should stay in database), also the image is 'Attachment' not a real image and i cannot view it"
 **Files touched:** `src/frontend/src/utils/imageCompressor.ts`, `src/frontend/src/components/CreatePostModal.tsx`
 
+### 2026-08-02 21:39
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "i cannot upload profile picture (Invalid request). Fix it"
+**Files touched:** `src/shared/schemas/profile.ts`, `src/shared/schemas/profile.test.ts`
+
+
 
 
 
