@@ -11,6 +11,7 @@ import { reactionRouter } from "#backend/api/reactions/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
 import { profileRouter } from "#backend/api/profile/routes.js";
 import { searchRouter } from "#backend/api/search/routes.js";
+import { uploadRouter } from "#backend/api/upload/routes.js";
 
 export function createApp(): Express {
   const app = express();
@@ -18,6 +19,7 @@ export function createApp(): Express {
   app.disable("x-powered-by");
   app.use(express.json({ limit: "4mb" }));
   app.use(cookieParser());
+  app.use("/uploads", express.static("uploads"));
   app.use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -34,7 +36,9 @@ export function createApp(): Express {
   apiRouter.use("/", reactionRouter);
   apiRouter.use("/profiles", profileRouter);
   apiRouter.use("/search", searchRouter);
+  apiRouter.use("/upload", uploadRouter);
   app.use("/api/v1", apiRouter);
+
 
   app.get("/api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
 
