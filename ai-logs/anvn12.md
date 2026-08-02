@@ -888,6 +888,20 @@
 **Prompt:** "a post can contain at most 5 images (also show a alert when the number of images is over 5, not 'invalid request')"
 **Files touched:** `src/shared/schemas/interactions.ts`, `src/frontend/src/components/CreatePostModal.tsx`
 
+### 2026-08-02 21:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the post images should be on a row (user can drag and drog to scroll it, or hover -> hold shift -> scroll mouse)"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`, `src/frontend/src/components/FeedPostItem.tsx`
+
+### 2026-08-02 21:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the images ratio is not affected, also the transition when scrolling is not smooth"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+
+
 
 
 
