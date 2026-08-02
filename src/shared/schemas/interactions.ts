@@ -103,3 +103,13 @@ export const commentResponseSchema = z.object({
   replyCount: z.number().int().nonnegative().optional(),
 });
 export type CommentResponse = z.infer<typeof commentResponseSchema>;
+
+// Feed query schema
+export const feedTypeSchema = z.enum(["for-you", "latest"]).default("latest");
+export const feedQuerySchema = z.object({
+  type: feedTypeSchema,
+  authorId: z.string().uuid().optional(),
+  cursor: z.string().datetime().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+export type FeedQuery = z.infer<typeof feedQuerySchema>;

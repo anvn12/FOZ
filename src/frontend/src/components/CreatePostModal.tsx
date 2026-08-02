@@ -3,11 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { createPost } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
+import { useProfile } from "#frontend/api/profile";
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
 
 export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const user = useAuthStore(s => s.user);
+  const { data: profile } = useProfile(user?.id ?? "");
+  const displayName = profile?.displayName || user?.email?.split("@")[0] || "U";
+  const avatarUrl = profile?.avatarUrl;
   const [draft, setDraft] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,9 +48,13 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
         </div>
         
         <div className="mt-6 flex gap-4">
-          <div className="avatar h-12 w-12 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-white text-sm font-semibold">
-            {user?.email ? user.email.slice(0, 2).toUpperCase() : "FO"}
-          </div>
+          {avatarUrl ? (
+            <img alt={displayName} className="avatar h-12 w-12 shrink-0 rounded-full object-cover border border-outline-variant" src={avatarUrl} />
+          ) : (
+            <div className="avatar h-12 w-12 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-white text-sm font-semibold">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1 flex flex-col">
             <textarea
               autoFocus
