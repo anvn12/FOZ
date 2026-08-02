@@ -127,7 +127,7 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
     if (row.repostOfId) {
       const original = await getPostById(row.repostOfId);
       if (original) {
-        postToEnrich = { ...(original as any), repostId: row.id };
+        postToEnrich = { ...(original as any), repostId: row.id, createdAt: row.createdAt };
         const profile = await getProfileByUserId(row.authorId);
         originalAuthor = profile ? {
           id: profile.userAccountId,
