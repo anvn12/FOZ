@@ -1,6 +1,6 @@
-import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 import { env } from "../env.js";
-import { CloudinaryAsset } from "../../shared/schemas/upload.js";
+import type { CloudinaryAsset } from "../../shared/schemas/upload.js";
 
 export function isCloudinaryConfigured(): boolean {
   return Boolean(

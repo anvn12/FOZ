@@ -7,7 +7,7 @@ import { UpdateProfileRequest } from "#shared/schemas/profile.js";
 import { useUpdateProfile, useUpdateAvatar, type Profile } from "#frontend/api/profile.js";
 import { ApiError } from "#frontend/api/auth.js";
 import { validateImageFile, compressImageClient } from "#frontend/utils/imageCompressor.js";
-
+import { uploadMediaToCloudinary } from "#frontend/api/upload.js";
 
 type UpdateProfileInput = z.input<typeof UpdateProfileRequest>;
 
@@ -56,28 +56,36 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     }
 
     setFileError(null);
-    const toastId = toast.loading("Processing avatar...");
+    const toastId = toast.loading("Uploading avatar to cloud...");
 
     try {
-      const compressed = await compressImageClient(file, "avatar");
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setAvatarBase64(base64);
-        setPreviewUrl(base64);
-        toast.success("Avatar ready", { id: toastId });
-      };
-      reader.readAsDataURL(compressed.blob);
-    } catch (err) {
-      console.warn("Avatar compression error, using raw file fallback:", err);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setAvatarBase64(base64);
-        setPreviewUrl(base64);
-        toast.dismiss(toastId);
-      };
-      reader.readAsDataURL(file);
+      const asset = await uploadMediaToCloudinary(file, file.name, "avatars");
+      setAvatarBase64(asset.url);
+      setPreviewUrl(asset.url);
+      toast.success("Avatar uploaded to cloud", { id: toastId });
+    } catch (cErr) {
+      console.warn("Cloudinary upload fallback to client compression:", cErr);
+      try {
+        const compressed = await compressImageClient(file, "avatar");
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          setAvatarBase64(base64);
+          setPreviewUrl(base64);
+          toast.success("Avatar ready", { id: toastId });
+        };
+        reader.readAsDataURL(compressed.blob);
+      } catch (err) {
+        console.warn("Avatar compression error, using raw file fallback:", err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          setAvatarBase64(base64);
+          setPreviewUrl(base64);
+          toast.dismiss(toastId);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
