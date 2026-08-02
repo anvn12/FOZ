@@ -147,7 +147,8 @@ uploadRouter.delete(
   requireAuth,
   async (req: AuthedRequest, res: Response, next) => {
     try {
-      const publicId = req.params.publicId || (req.query.publicId as string);
+      const rawPublicId = req.params.publicId ?? req.query.publicId;
+      const publicId = typeof rawPublicId === "string" ? rawPublicId : Array.isArray(rawPublicId) ? String(rawPublicId[0]) : "";
       if (!publicId) {
         return res.status(400).json({
           error: {

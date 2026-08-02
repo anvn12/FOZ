@@ -5,8 +5,7 @@ import { createPost } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
 import { validateImageFile, compressImageToBase64 } from "#frontend/utils/imageCompressor";
-
-
+import { uploadMediaToCloudinary } from "#frontend/api/upload";
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
 
@@ -125,18 +124,29 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
                           toast.error(validation.error || `${file.name} is invalid.`);
                           continue;
                         }
-                        const toastId = toast.loading(`Compressing ${file.name}...`);
+                        const toastId = toast.loading(`Uploading ${file.name} to cloud...`);
                         try {
-                          const compressed = await compressImageToBase64(file, "feed_post");
-                          toast.success(`Image compressed & attached`, { id: toastId });
+                          const asset = await uploadMediaToCloudinary(file, file.name, "posts");
+                          toast.success(`Image uploaded to cloud`, { id: toastId });
                           newAtts.push({
-                            fileUrl: compressed.base64,
-                            fileType: "image/webp",
-                            fileSize: compressed.size,
+                            fileUrl: asset.url,
+                            fileType: "image/" + asset.format,
+                            fileSize: asset.bytes,
                           });
-                        } catch (err) {
-                          console.warn("Client compression error, falling back:", err);
-                          toast.error(`Failed to process ${file.name}`, { id: toastId });
+                        } catch (cErr) {
+                          console.warn("Cloudinary upload fallback to client compression:", cErr);
+                          try {
+                            const compressed = await compressImageToBase64(file, "feed_post");
+                            toast.success(`Image compressed & attached`, { id: toastId });
+                            newAtts.push({
+                              fileUrl: compressed.base64,
+                              fileType: "image/webp",
+                              fileSize: compressed.size,
+                            });
+                          } catch (err) {
+                            console.warn("Client compression error, falling back:", err);
+                            toast.error(`Failed to process ${file.name}`, { id: toastId });
+                          }
                         }
                       } else {
                         if (file.size > 50 * 1024 * 1024) {
