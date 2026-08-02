@@ -95,7 +95,7 @@ As a guest (not logged in), I want to see a general feed of popular recent posts
 ### Measurable Outcomes
 
 - **SC-001**: Logged-in users see personalized content in the top 5 feed positions within 2 weeks of active usage (measured by presence of posts related to user's interaction history).
-- **SC-002**: Feed page loads within 2 seconds for users with up to 10,000 posts in the database.
+- **SC-002**: Feed endpoint responds within 500ms for users with up to 10,000 posts in the database (constitution NFR).
 - **SC-003**: 80% of logged-in users can switch between "For You" and "Latest" tabs without errors.
 - **SC-004**: Guest users see a usable feed of recent popular posts without errors.
 - **SC-005**: Feed generation degrades gracefully — zero user-facing errors when personalization service is slow or unavailable.
