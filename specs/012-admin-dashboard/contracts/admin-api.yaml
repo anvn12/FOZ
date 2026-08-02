@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Administrator Dashboard API
+  version: 1.0.0
+  description: API endpoints for platform administrative control, audit logging, user management, category management, and global system settings.
+paths:
+  /api/v1/admin/metrics:
+    get:
+      summary: Get platform overview metrics
+      description: Returns key metrics for Admin Control Center dashboard.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Metrics overview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUsers:
+                    type: integer
+                  activeModerators:
+                    type: integer
+                  pendingEscalations:
+                    type: integer
+                  contentRemoved24h:
+                    type: integer
+                  aiStatus:
+                    type: string
+        '403':
+          description: Forbidden (non-administrator role)
+
+  /api/v1/admin/users:
+    get:
+      summary: List and search user accounts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [standard_user, moderator, administrator]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated user list
+
+  /api/v1/admin/users/{userId}/role:
+    put:
+      summary: Assign or revoke Moderator role
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [standard_user, moderator]
+                rationale:
+                  type: string
+      responses:
+        '200':
+          description: User role updated
+        '400':
+          description: Invalid role or sole admin demotion attempt
+        '403':
+          description: Forbidden
+
+  /api/v1/admin/users/{userId}:
+    delete:
+      summary: Permanently delete user account
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rationale]
+              properties:
+                rationale:
+                  type: string
+      responses:
+        '200':
+          description: Account purged and content reattributed to [Deleted User]
+        '403':
+          description: Forbidden
+
+  /api/v1/admin/audit-logs:
+    get:
+      summary: Search and filter audit logs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actorId
+          in: query
+          schema:
+            type: string
+        - name: actionType
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Audit log items with pagination
+
+  /api/v1/admin/categories:
+    get:
+      summary: List forum categories
+      responses:
+        '200':
+          description: Category list
+    post:
+      summary: Create new category
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, slug]
+              properties:
+                name:
+                  type: string
+                slug:
+                  type: string
+                description:
+                  type: string
+                displayOrder:
+                  type: integer
+      responses:
+        '201':
+          description: Category created
+
+  /api/v1/admin/categories/{id}:
+    delete:
+      summary: Delete category and reassign threads
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetCategoryId]
+              properties:
+                targetCategoryId:
+                  type: string
+      responses:
+        '200':
+          description: Category deleted and threads reassigned
+
+  /api/v1/admin/settings:
+    get:
+      summary: Get global system settings
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Key-value system settings
+    put:
+      summary: Update global system setting
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [key, value]
+              properties:
+                key:
+                  type: string
+                value:
+                  type: string
+                rationale:
+                  type: string
+      responses:
+        '200':
+          description: System setting updated
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

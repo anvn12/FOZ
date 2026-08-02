@@ -53,3 +53,87 @@
 **Model:** SWE-1.6 Slow
 **Prompt:** "/speckit.specify I want to create test cases for Feed Generation, which is described in @README.md and @docs/1B. Project Proposal.md (Feed Generation features in FOZ - this project). Only test cases, not code. Do in @docs/QA report/. Only test cases for functional requirements, not code. You must strictly follow the AI usage logging rules outlined in AGENTS.md. Before ending your turn, you must use the AI usage logging skill located at .agents/skills/ai-usage-log to log these changes."
 **Files touched:** `docs/QA report/feed-generation-test-cases.md`
+
+### 2026-08-02 09:15
+**Tool:** antigravity
+**Model:** gemini-3.6-flash
+**Prompt:** "/02-speckit.specify Based on @[docs/00 - Old-PA-docs/1B. Project Proposal.md] and @directory:docs/ui-designs/admin (ignore the old designs directory), create Administrator dashboard. This is the highest level of access. Complete access over all database records. Can permanently remove users account, instantly delete any content, assign Moderator roles. Manage forum categories, modify global system settings, and view full audit logs (track all Moderator actions)."
+**Files touched:** `specs/012-admin-dashboard/spec.md`, `specs/012-admin-dashboard/checklists/requirements.md`
+
+### 2026-08-02 09:22
+**Tool:** antigravity
+**Model:** gemini-3.6-flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/012-admin-dashboard/spec.md`
+
+### 2026-08-02 09:24
+**Tool:** antigravity
+**Model:** gemini-3.6-flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/012-admin-dashboard/plan.md`, `specs/012-admin-dashboard/research.md`, `specs/012-admin-dashboard/data-model.md`, `specs/012-admin-dashboard/contracts/admin-api.yaml`, `specs/012-admin-dashboard/quickstart.md`
+
+### 2026-08-02 09:26
+**Tool:** antigravity
+**Model:** gemini-3.6-flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/012-admin-dashboard/tasks.md`
+
+### 2026-08-02 09:32
+**Tool:** antigravity
+**Model:** gemini-3.6-flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/admin.ts`, `src/shared/schemas/index.ts`, `src/backend/db/schema/admin.ts`, `src/backend/db/schema/index.ts`, `src/backend/db/migrations/0006_admin_dashboard.sql`, `src/backend/api/admin/middleware.ts`, `src/backend/db/repositories/admin.ts`, `src/backend/services/admin.service.ts`, `src/backend/api/admin/routes.ts`, `src/backend/index.ts`, `src/frontend/src/api/admin.ts`, `src/frontend/src/components/admin/AuditLogTable.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`, `src/frontend/src/pages/admin/AdminAuditLogsPage.tsx`, `src/frontend/src/components/admin/UserActionModal.tsx`, `src/frontend/src/pages/admin/AdminUsersPage.tsx`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/components/admin/CategoryModal.tsx`, `src/frontend/src/pages/admin/AdminCategoriesPage.tsx`, `src/frontend/src/pages/admin/AdminSettingsPage.tsx`, `src/frontend/src/App.tsx`, `src/backend/api/admin/admin.test.ts`, `specs/012-admin-dashboard/tasks.md`
+
+### 2026-08-02 09:39
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Explain what this problem is and help me fix it: Invalid value for '--ignoreDeprecations'. @[/wsl+ubuntu/home/kuroshiro/my-repos/FOZ/tsconfig.json:L21]"
+**Files touched:** `tsconfig.json`
+
+### 2026-08-02 10:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "run be and fe of Admin dashboard (account admin@foz.dev, password: Passsword123!) parrallely and check the bugs. If detects any fails, then fix"
+**Files touched:** `src/backend/db/migrations/0006_admin_dashboard.sql`
+
+### 2026-08-02 10:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "now run and check the UI/UX of the admin dashboard if it contains every requirements and designs are shown in @[docs/ui-designs/admin/admin_dashboard_control_center/screen.png] , @[docs/ui-designs/admin/admin_user_management/screen.png] , @[docs/ui-designs/admin/reported_content_list/screen.png] , @[docs/ui-designs/admin/reviewed_reports_admin_view/screen.png] and @[docs/ui-designs/admin/reported_content_detail_view/screen.png] . Add the logo FOZ at the top left corner. All the contents must be shown in english. Can ignore the redundant features, but should have the sidebar, as well as redesign to be eye-catching"
+**Files touched:** `src/frontend/src/components/admin/AdminLayout.tsx`, `src/frontend/src/App.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`, `src/frontend/src/pages/admin/AdminUsersPage.tsx`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/pages/admin/AdminCategoriesPage.tsx`, `src/frontend/src/pages/admin/AdminAuditLogsPage.tsx`, `src/frontend/src/pages/admin/AdminSettingsPage.tsx`
+
+### 2026-08-02 10:39
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "ok now sync fe with be of admin dashboard to show the correct data, not mock data also check all bugs, return the correct routes, ... . If detect bugs, then fix."
+**Files touched:** `src/backend/db/repositories/admin.ts`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`
+
+### 2026-08-02 10:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "- delete the word 'Enterprise control' under 'FOZ Admin' - 'Return to forum' button should return http://127.0.0.1:5173, not http://127.0.0.1:5173/feed"
+**Files touched:** `src/frontend/src/components/admin/AdminLayout.tsx`
+
+### 2026-08-02 16:17
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "run the ui/ux of admin dashboard again (mail: admin@foz.dev, pass: Passsword123!) and remove the redundant details (like the picture above, which '+2.4% this week' is not actual data, just a mock, etc.) or change to be realistic/live data."
+**Files touched:** `src/frontend/src/pages/admin/AdminDashboardPage.tsx`
+
+### 2026-08-02 16:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "- the line chart should be live, not mock - also add some instructions to '?' button (like what, why, ...)"
+**Files touched:** `src/backend/db/repositories/admin.ts`, `src/frontend/src/api/admin.ts`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`, `src/frontend/src/components/admin/AdminLayout.tsx`
+
+### 2026-08-02 16:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "admin.ts:32 DELETE http://localhost:5173/api/v1/admin/users/bc9f6ac7-fa02-44a2-b9af-d1305b78f374 500 (Internal Server Error) when I enter reason and the delete button, this error appears. You must test throughout all admin dashboard again with be and fe and fix all the bugs, especially the above."
+**Files touched:** `src/backend/db/repositories/admin.ts`
+
+### 2026-08-02 13:49
+**Tool:** copilot
+**Model:** gpt-5
+**Prompt:** "You have been given comments on the previous commits you made in the repository. ... @copilot resolve the merge conflicts in this pull request"
+**Files touched:** `src/frontend/src/App.tsx`
