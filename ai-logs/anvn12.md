@@ -966,6 +966,13 @@
 **Prompt:** "when user delete post, does the database and the cloud delete data? / yes"
 **Files touched:** `src/backend/services/cloudinary.ts`, `src/backend/services/interactions/posts.ts`, `src/backend/__tests__/integration/post.test.ts`
 
+### 2026-08-03 00:51
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "when user change profile picture, old picture should be removed from cloud too"
+**Files touched:** `src/backend/api/profile/profile.service.ts`, `src/backend/__tests__/integration/profile.test.ts`
+
+
 
 
 
