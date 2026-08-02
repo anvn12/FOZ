@@ -129,15 +129,5 @@
 ### 2026-08-02 16:34
 **Tool:** Antigravity
 **Model:** Gemini 3.6 Flash
-**Prompt:** "admin.ts:32 DELETE http://localhost:5173/api/v1/admin/users/bc9f6ac7-fa02-44a2-b9af-d1305b78f374 500 (Internal Server Error) when I enter reason and the delete button, this error appears. you must test throughout all admin dashboard again with be and fe and fix all the bugs, especially the above."
+**Prompt:** "admin.ts:32 DELETE http://localhost:5173/api/v1/admin/users/bc9f6ac7-fa02-44a2-b9af-d1305b78f374 500 (Internal Server Error) when I enter reason and the delete button, this error appears. You must test throughout all admin dashboard again with be and fe and fix all the bugs, especially the above."
 **Files touched:** `src/backend/db/repositories/admin.ts`
-
-
-
-
-
-
-
-
-
-
