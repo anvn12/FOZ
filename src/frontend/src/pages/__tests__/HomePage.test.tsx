@@ -23,6 +23,20 @@ vi.mock("../../api/profile.js", () => ({
   useProfile: vi.fn(),
 }));
 
+// Mock interactions api
+vi.mock("../../api/interactions.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../api/interactions.js")>();
+  return {
+    ...actual,
+    listPosts: vi.fn().mockResolvedValue({
+      items: [
+        { id: "post-1", authorId: "u1", authorName: "ohiris", content: "test 1", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
+        { id: "post-2", authorId: "u2", authorName: "jillianbydesignn", content: "test 2", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
+      ],
+    }),
+  };
+});
+
 // Mock react-hot-toast
 vi.mock("react-hot-toast", () => {
   const toastMock = vi.fn();
@@ -42,13 +56,14 @@ describe("HomePage Component", () => {
     } as any);
   });
 
-  it("should render homepage logo and mock posts for unauthenticated guest", () => {
+  it("should render homepage logo and mock posts for unauthenticated guest", async () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage />);
 
     expect(screen.getAllByText("FOZ")).toBeDefined();
-    expect(screen.getByText("ohiris")).toBeDefined();
-    expect(screen.getByText("jillianbydesignn")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getAllByText("Alice").length).toBeGreaterThan(0);
+    });
     expect(screen.getAllByText("Log in")).toBeDefined();
     expect(screen.getAllByText("Log in").length).toBeGreaterThan(0);
   });

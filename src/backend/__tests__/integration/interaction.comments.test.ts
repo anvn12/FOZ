@@ -16,7 +16,7 @@ async function createTestPost(accessToken: string, bodyText = "Hello forum!") {
   const res = await getAgent()
     .post("/api/v1/posts")
     .set("Authorization", `Bearer ${accessToken}`)
-    .send({ body: bodyText });
+    .send({ content: bodyText });
   expect(res.status).toBe(201);
   return res.body;
 }
@@ -103,21 +103,38 @@ describe("User Interactions - Comments API Integration Tests", () => {
   });
 
   describe("GET /api/v1/posts/:postId/comments - Get Post Comments", () => {
-    it("should list comments for a specific post", async () => {
+    it("should list comments for a specific post with reply counts", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
-      await getAgent()
+      const parentRes = await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
         .send({ body: "First comment" });
+
+      const replyRes = await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Reply to first comment", parentCommentId: parentRes.body.id });
+
+      // Sub-reply to reply
+      await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Sub-reply to reply", parentCommentId: replyRes.body.id });
 
       const res = await getAgent().get(`/api/v1/posts/${post.id}/comments`);
 
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body.items)).toBe(true);
-      expect(res.body.items.length).toBe(1);
-      expect(res.body.items[0].body).toBe("First comment");
+      expect(res.body.items.length).toBe(3);
+
+      const parentComment = res.body.items.find((item: any) => item.id === parentRes.body.id);
+      expect(parentComment.body).toBe("First comment");
+      expect(parentComment.replyCount).toBe(2);
+
+      const replyComment = res.body.items.find((item: any) => item.id === replyRes.body.id);
+      expect(replyComment.replyCount).toBe(1);
     });
   });
 

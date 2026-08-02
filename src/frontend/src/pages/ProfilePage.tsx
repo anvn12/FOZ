@@ -86,15 +86,15 @@ export function ProfilePage() {
           <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20">
             <div className="px-4 py-8">
               {/* Header Profile Section */}
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 pb-8 border-b border-zinc-100">
+              <div className="flex items-start justify-between gap-4 pb-8 border-b border-zinc-100">
                 <div className="flex-1 min-w-0 space-y-3">
-                  <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-zinc-900">{profile.displayName}</h1>
-                    <p className="text-zinc-500 font-medium">{userHandle}</p>
+                  <div className="min-w-0">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 break-words [overflow-wrap:anywhere]">{profile.displayName}</h1>
+                    <p className="text-zinc-500 font-medium break-all">{userHandle}</p>
                   </div>
 
                   {profile.bio ? (
-                    <p className="text-zinc-700 text-base leading-relaxed whitespace-pre-wrap break-words">
+                    <p className="text-zinc-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
                       {displayedBio}
                       {isBioLong && (
                         <button
@@ -106,13 +106,13 @@ export function ProfilePage() {
                       )}
                     </p>
                   ) : (
-                    <p className="text-zinc-400 italic">No bio written yet.</p>
+                    <p className="text-zinc-400 italic text-sm sm:text-base">No bio written yet.</p>
                   )}
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-zinc-500 min-w-0">
                     {profile.location && (
-                      <span className="flex items-center gap-1">
-                        <span className="text-base">📍</span> {profile.location}
+                      <span className="flex items-center gap-1 break-words">
+                        <span className="text-base shrink-0">📍</span> {profile.location}
                       </span>
                     )}
                     {profile.website && (
@@ -120,24 +120,24 @@ export function ProfilePage() {
                         href={websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-600 hover:underline"
+                        className="flex items-center gap-1 text-blue-600 hover:underline break-all"
                       >
-                        <span className="text-base">🔗</span> {profile.website}
+                        <span className="text-base shrink-0">🔗</span> {profile.website}
                       </a>
                     )}
                   </div>
                 </div>
 
                 {/* Avatar Area */}
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-3 shrink-0">
                   {profile.avatarUrl ? (
                     <img
                       src={profile.avatarUrl}
                       alt={profile.displayName}
-                      className="h-24 w-24 rounded-full object-cover border border-zinc-200 shadow-sm"
+                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover border border-zinc-200 shadow-sm"
                     />
                   ) : (
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-zinc-900 text-white font-bold text-3xl shadow-sm">
+                    <div className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-zinc-900 text-white font-bold text-2xl sm:text-3xl shadow-sm">
                       {initials}
                     </div>
                   )}
@@ -145,7 +145,7 @@ export function ProfilePage() {
                   {isOwner && (
                     <button
                       onClick={() => setIsEditModalOpen(true)}
-                      className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition"
+                      className="rounded-full border border-zinc-300 px-3 py-1.5 sm:px-4 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition whitespace-nowrap"
                     >
                       Edit Profile
                     </button>
@@ -269,9 +269,9 @@ function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
         </div>
         
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1 text-[15px]">
-            <span className="font-semibold text-primary">{displayName}</span>
-            <span className="text-secondary text-[14px] ml-1">· {formatRelativeTime(reply.createdAt)}</span>
+          <div className="flex items-center gap-1 text-[15px] min-w-0">
+            <span className="font-semibold text-primary truncate max-w-[200px] sm:max-w-[300px]">{displayName}</span>
+            <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(reply.createdAt)}</span>
           </div>
           <p className="mt-1 whitespace-pre-wrap leading-relaxed text-[15px] text-primary">{reply.body}</p>
           <div className="mt-3">

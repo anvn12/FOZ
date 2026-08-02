@@ -63,12 +63,35 @@ export async function listComments(postId: string, viewerId?: string) {
   const post = await getPostById(postId);
   if (!post || post.visibilityState !== "public" || post.deletedAt) throw new Error("POST_NOT_FOUND");
   const rows = await listCommentsForPost(postId);
-  const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean }>;
+
+  const childrenMap = new Map<string, string[]>();
+  for (const row of rows) {
+    if (row.parentCommentId) {
+      const list = childrenMap.get(row.parentCommentId) || [];
+      list.push(row.id);
+      childrenMap.set(row.parentCommentId, list);
+    }
+  }
+
+  const memo = new Map<string, number>();
+  const countDescendants = (id: string): number => {
+    if (memo.has(id)) return memo.get(id)!;
+    const children = childrenMap.get(id) || [];
+    let total = children.length;
+    for (const childId of children) {
+      total += countDescendants(childId);
+    }
+    memo.set(id, total);
+    return total;
+  };
+
+  const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean; replyCount: number }>;
   for (const row of rows) {
     enriched.push({
       ...row,
       likeCount: await countReactionsForTarget("comment", row.id),
       liked: viewerId ? Boolean(await getReaction({ userAccountId: viewerId, targetType: "comment", targetId: row.id })) : false,
+      replyCount: countDescendants(row.id),
     });
   }
   return enriched;
@@ -76,12 +99,42 @@ export async function listComments(postId: string, viewerId?: string) {
 
 export async function listAuthorComments(authorId: string, viewerId?: string) {
   const rows = await listCommentsByAuthor(authorId);
-  const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean }>;
+  const postCommentsCache = new Map<string, Map<string, number>>();
+
+  const enriched = [] as Array<(typeof rows)[number] & { likeCount: number; liked: boolean; replyCount: number }>;
   for (const row of rows) {
+    if (!postCommentsCache.has(row.postId)) {
+      const allPostComments = await listCommentsForPost(row.postId);
+      const childrenMap = new Map<string, string[]>();
+      for (const item of allPostComments) {
+        if (item.parentCommentId) {
+          const list = childrenMap.get(item.parentCommentId) || [];
+          list.push(item.id);
+          childrenMap.set(item.parentCommentId, list);
+        }
+      }
+      const memo = new Map<string, number>();
+      const countDescendants = (id: string): number => {
+        if (memo.has(id)) return memo.get(id)!;
+        const children = childrenMap.get(id) || [];
+        let total = children.length;
+        for (const childId of children) {
+          total += countDescendants(childId);
+        }
+        memo.set(id, total);
+        return total;
+      };
+      for (const item of allPostComments) {
+        countDescendants(item.id);
+      }
+      postCommentsCache.set(row.postId, memo);
+    }
+    const memoMap = postCommentsCache.get(row.postId)!;
     enriched.push({
       ...row,
       likeCount: await countReactionsForTarget("comment", row.id),
       liked: viewerId ? Boolean(await getReaction({ userAccountId: viewerId, targetType: "comment", targetId: row.id })) : false,
+      replyCount: memoMap.get(row.id) ?? 0,
     });
   }
   return enriched;

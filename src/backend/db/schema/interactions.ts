@@ -120,3 +120,25 @@ export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
 export type NewReaction = typeof reactions.$inferInsert;
+
+export const postSummaries = pgTable(
+  "post_summaries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    postSnapshot: text("post_snapshot").notNull(),
+    keyHighlights: text("key_highlights").array().notNull(),
+    sentiment: text("sentiment").notNull(),
+    commentCount: integer("comment_count").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("idx_post_summaries_post_id").on(t.postId),
+  ],
+);
+
+export type PostSummary = typeof postSummaries.$inferSelect;
+export type NewPostSummary = typeof postSummaries.$inferInsert;

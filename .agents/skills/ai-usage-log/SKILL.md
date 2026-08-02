@@ -1,15 +1,13 @@
 ---
 name: ai-usage-log
-description: Logs every AI-assisted turn that creates, modifies, or deletes any file — code, docs, configs, scripts, specs, all of it. Activate unconditionally after any response that touched files. Use in every session.
+description: Automatically logs AI-assisted code and specification changes to ai-logs/<username>.md at the repository root. Each team member gets their own log file named after their GitHub login. Activates after any response where source code or SpecKit files were modified. Use in every coding session.
 ---
 
 # AI Usage Log
 
 ## When to log (MANDATORY — no exceptions)
 
-**You MUST append a log entry after EVERY response where you created,
-modified, or deleted one or more files.** This includes but is not
-limited to:
+After each response where you modified source code files (e.g. `.js`, `.ts`, `.jsx`, `.tsx`, `.py`, `.html`, `.css`, `.scss`, `.go`, `.rs`, `.java`, `.c`, `.cpp`, `.h`, `.php`, `.rb`, `.sql`, `.json`) OR SpecKit design & specification files (e.g. `specs/*`, `spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `checklists/*`, `contracts/*`), append an entry to the team log file.
 
 - Source code (`.ts`, `.js`, `.py`, `.go`, `.rs`, `.sql`, `.html`, `.css`, etc.)
 - Documentation (`.md`, `.txt`, `.rst`, `.adoc`)
@@ -22,7 +20,15 @@ limited to:
 zero file operations (no create, edit, write, or delete). If in doubt,
 log.
 
-## Determine the log location (do this every time)
+### What to log
+- Any turn that creates or modifies source code files (`src/`, `lib/`, `tests/`, etc.)
+- Any turn that creates or modifies SpecKit workflow files and feature specs (`specs/*`, `spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `checklists/*`, `contracts/*`)
+- Any prompt/reply turn during `/speckit.specify`, `/speckit.clarify`, `/speckit.plan`, `/speckit.tasks`, `/speckit.implement`, etc.
+
+### What to skip
+- Read-only sessions (no file modifications at all, e.g. `/speckit.analyze` read-only reports)
+- `.md` files in `docs/`, `ai-logs/`, or `ideas/` (unless part of a turn modifying code/specs)
+- Changes that are strictly limited to `README.md`
 
 1. **Find the repo root** — run `git rev-parse --show-toplevel`. This is
    the `<repo-root>`. ALWAYS use this, never the current working
@@ -63,7 +69,6 @@ log.
 - List every file path that was created, modified, or deleted in this
   turn.
 - Use paths relative to the repo root.
-- Do not log this skill's own logging activity (do not include the log
-  file itself in the files touched list).
-- If the agent cannot determine a username (no git repo, no gh, no git
-  config), skip logging rather than guessing.
+- Do not log this skill's own logging activity (do not include the log file itself in the files touched list).
+- If the agent cannot determine a username (no git repo, no gh, no git config), skip logging rather than guessing.
+

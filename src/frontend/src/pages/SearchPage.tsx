@@ -27,7 +27,7 @@ export function SearchPage() {
         {/* MAIN CONTENT AREA: Search Page          */}
         {/* ======================================= */}
         <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen border-r md:border-x border-outline-variant pb-20 relative">
+          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20 relative">
             
             {/* Search Canvas Area */}
             <div className="px-6 py-10 flex flex-col gap-10">
@@ -91,8 +91,8 @@ export function SearchPage() {
                             className="w-12 h-12 rounded-full object-cover border border-outline-variant/30" 
                             src={avatarSrc}
                           />
-                          <div className="flex flex-col flex-1">
-                            <span className="text-[16px] font-bold text-primary group-hover:underline">{profile.displayName}</span>
+                          <div className="flex flex-col flex-1 min-w-0">
+                            <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
                             {profile.bio && (
                               <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
                             )}

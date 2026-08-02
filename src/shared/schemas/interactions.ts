@@ -81,6 +81,7 @@ export const postResponseSchema = z.object({
     displayName: z.string()
   }).optional(),
   reposted: z.boolean().optional(),
+  commentCount: z.number().int().nonnegative().optional(),
   visibilityState: z.enum(["public", "hidden"]),
   lifecycleState: z.string(),
   createdAt: z.string(),
@@ -99,5 +100,6 @@ export const commentResponseSchema = z.object({
   lifecycleState: z.string(),
   createdAt: z.string(),
   updatedAt: z.string().optional(),
+  replyCount: z.number().int().nonnegative().optional(),
 });
 export type CommentResponse = z.infer<typeof commentResponseSchema>;
