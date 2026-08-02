@@ -22,7 +22,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   const updateAvatarMutation = useUpdateAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profile.avatarUrl || null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -42,7 +42,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
 
   if (!isOpen) return null;
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -56,46 +56,46 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     }
 
     setFileError(null);
-    const toastId = toast.loading("Uploading avatar to cloud...");
-
-    try {
-      const asset = await uploadMediaToCloudinary(file, file.name, "avatars");
-      setAvatarBase64(asset.url);
-      setPreviewUrl(asset.url);
-      toast.success("Avatar uploaded to cloud", { id: toastId });
-    } catch (cErr) {
-      console.warn("Cloudinary upload fallback to client compression:", cErr);
-      try {
-        const compressed = await compressImageClient(file, "avatar");
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64 = reader.result as string;
-          setAvatarBase64(base64);
-          setPreviewUrl(base64);
-          toast.success("Avatar ready", { id: toastId });
-        };
-        reader.readAsDataURL(compressed.blob);
-      } catch (err) {
-        console.warn("Avatar compression error, using raw file fallback:", err);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64 = reader.result as string;
-          setAvatarBase64(base64);
-          setPreviewUrl(base64);
-          toast.dismiss(toastId);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
   };
-
 
   const onSubmit = async (values: UpdateProfileInput) => {
     try {
-      if (avatarBase64) {
-        await updateAvatarMutation.mutateAsync({ avatar: avatarBase64 });
+      if (selectedFile) {
+        const toastId = toast.loading("Uploading avatar...");
+        let finalAvatarUrl = "";
+
+        try {
+          const asset = await uploadMediaToCloudinary(selectedFile, selectedFile.name, "avatars");
+          finalAvatarUrl = asset.url;
+          toast.success("Avatar uploaded", { id: toastId });
+        } catch (cErr) {
+          console.warn("Cloudinary upload fallback to client compression:", cErr);
+          try {
+            const compressed = await compressImageClient(selectedFile, "avatar");
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(compressed.blob);
+            });
+            toast.dismiss(toastId);
+          } catch (err) {
+            console.warn("Avatar compression error, using raw file fallback:", err);
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(selectedFile);
+            });
+            toast.dismiss(toastId);
+          }
+        }
+
+        if (finalAvatarUrl) {
+          await updateAvatarMutation.mutateAsync({ avatar: finalAvatarUrl });
+        }
       }
-      // Pass values to mutateAsync which will run validations and parsing
+
       await updateProfileMutation.mutateAsync(values as any);
       toast.success("Profile updated successfully");
       onClose();
