@@ -954,6 +954,13 @@
 **Prompt:** "invalid request when i upload image (upload to server is successful)"
 **Files touched:** `src/shared/schemas/interactions.ts`, `src/shared/schemas/profile.ts`
 
+### 2026-08-03 00:25
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "Right now when user upload images, the raw is pushed to cloud. I want it to be the compressed version. So cloud would have more space"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+
 
 
 

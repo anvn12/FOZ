@@ -63,15 +63,18 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   const onSubmit = async (values: UpdateProfileInput) => {
     try {
       if (selectedFile) {
-        const toastId = toast.loading("Uploading avatar...");
+        const toastId = toast.loading("Compressing & uploading avatar...");
         let finalAvatarUrl = "";
 
         try {
-          const asset = await uploadMediaToCloudinary(selectedFile, selectedFile.name, "avatars");
+          // Compress to WebP first, then stream the smaller blob to Cloudinary
+          const compressed = await compressImageClient(selectedFile, "avatar");
+          const compressedFile = new File([compressed.blob], compressed.fileName, { type: "image/webp" });
+          const asset = await uploadMediaToCloudinary(compressedFile, compressedFile.name, "avatars");
           finalAvatarUrl = asset.url;
           toast.success("Avatar uploaded", { id: toastId });
         } catch (cErr) {
-          console.warn("Cloudinary upload fallback to client compression:", cErr);
+          console.warn("Cloudinary upload failed, falling back to base64:", cErr);
           try {
             const compressed = await compressImageClient(selectedFile, "avatar");
             finalAvatarUrl = await new Promise<string>((resolve) => {

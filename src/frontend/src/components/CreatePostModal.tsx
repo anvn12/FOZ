@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { createPost } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
-import { validateImageFile, compressImageToBase64 } from "#frontend/utils/imageCompressor";
+import { validateImageFile, compressImageClient, compressImageToBase64 } from "#frontend/utils/imageCompressor";
 import { uploadMediaToCloudinary } from "#frontend/api/upload";
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
@@ -47,17 +47,20 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
 
       for (const item of pendingAttachments) {
         if (item.fileType.startsWith("image/")) {
-          const toastId = toast.loading(`Uploading ${item.file.name}...`);
+          const toastId = toast.loading(`Compressing & uploading ${item.file.name}...`);
           try {
-            const asset = await uploadMediaToCloudinary(item.file, item.file.name, "posts");
+            // Compress to WebP first, then stream the smaller blob to Cloudinary
+            const compressed = await compressImageClient(item.file, "feed_post");
+            const compressedFile = new File([compressed.blob], compressed.fileName, { type: "image/webp" });
+            const asset = await uploadMediaToCloudinary(compressedFile, compressedFile.name, "posts");
             toast.success(`Uploaded ${item.file.name}`, { id: toastId });
             finalAttachments.push({
               fileUrl: asset.url,
-              fileType: "image/" + asset.format,
+              fileType: "image/webp",
               fileSize: asset.bytes,
             });
           } catch (cErr) {
-            console.warn("Cloudinary upload fallback to client compression:", cErr);
+            console.warn("Cloudinary upload failed, falling back to base64:", cErr);
             try {
               const compressed = await compressImageToBase64(item.file, "feed_post");
               toast.dismiss(toastId);
