@@ -11,14 +11,16 @@ import { reactionRouter } from "#backend/api/reactions/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
 import { profileRouter } from "#backend/api/profile/routes.js";
 import { searchRouter } from "#backend/api/search/routes.js";
+import { uploadRouter } from "#backend/api/upload/routes.js";
 import { adminRouter } from "#backend/api/admin/routes.js";
 
 export function createApp(): Express {
   const app = express();
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "4mb" }));
+  app.use(express.json({ limit: "10mb" }));
   app.use(cookieParser());
+  app.use("/uploads", express.static("uploads"));
   app.use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -35,6 +37,7 @@ export function createApp(): Express {
   apiRouter.use("/", reactionRouter);
   apiRouter.use("/profiles", profileRouter);
   apiRouter.use("/search", searchRouter);
+  apiRouter.use("/upload", uploadRouter);
   apiRouter.use("/admin", adminRouter);
   app.use("/api/v1", apiRouter);
 
@@ -53,7 +56,7 @@ export function createApp(): Express {
       return res.status(413).json({
         error: {
           code: "PAYLOAD_TOO_LARGE",
-          message: "Request payload exceeds size limit (max 2MB for avatar)",
+          message: "Request payload exceeds maximum allowed size limit",
         },
       });
     }

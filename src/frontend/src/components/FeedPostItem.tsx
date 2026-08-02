@@ -5,7 +5,9 @@ import { useToggleReaction, useToggleRepost } from "#frontend/api/interactions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { ReportModal } from "./ReportModal";
+import { HorizontalMediaGallery } from "./HorizontalMediaGallery";
 import { useAuthStore } from "#frontend/stores/auth";
+
 import { deletePost } from "#frontend/api/interactions";
 
 export function formatRelativeTime(dateInput: string | number | Date | null | undefined): string {
@@ -245,19 +247,8 @@ export function FeedPostItem({ post }: { post: any }) {
             {post.content}
           </div>
 
-          {post.attachments && post.attachments.length > 0 && (
-            <div className={`mt-3 grid gap-2 ${post.attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-              {post.attachments.map((att: any, idx: number) => (
-                <div key={idx} className="relative rounded-2xl overflow-hidden border border-outline-variant bg-surface-container max-h-[400px]">
-                  {att.fileType.startsWith("image/") ? (
-                    <img src={att.fileUrl} alt="attachment" className="w-full h-full object-cover" />
-                  ) : (
-                    <video src={att.fileUrl} controls className="w-full h-full object-cover" />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <HorizontalMediaGallery attachments={post.attachments} />
+
 
           {/* Reaction Row */}
           <div className="mt-3 flex items-center gap-3 text-outline">

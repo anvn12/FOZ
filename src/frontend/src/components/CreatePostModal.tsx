@@ -4,6 +4,9 @@ import { toast } from "react-hot-toast";
 import { createPost } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
+import { validateImageFile, compressImageToBase64 } from "#frontend/utils/imageCompressor";
+
+
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
 
@@ -100,33 +103,74 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
                   onChange={async (e) => {
                     if (!e.target.files) return;
                     const files = Array.from(e.target.files);
-                    const newAtts: Attachment[] = [];
-                    for (const file of files) {
-                      if (file.size > 50 * 1024 * 1024) {
-                        toast.error(`${file.name} is too large. Max 50MB.`);
-                        continue;
-                      }
-                      const base64 = await new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result as string);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                      });
-                      newAtts.push({ fileUrl: base64, fileType: file.type, fileSize: file.size });
+
+                    if (attachments.length >= 5) {
+                      toast.error("Maximum 5 images allowed per post.");
+                      e.target.value = "";
+                      return;
                     }
-                    setAttachments(prev => [...prev, ...newAtts]);
-                    // Reset input
-                    e.target.value = '';
+
+                    const availableSlots = 5 - attachments.length;
+                    if (files.length > availableSlots) {
+                      toast.error(`Maximum 5 images allowed per post. Adding first ${availableSlots} file(s).`);
+                    }
+
+                    const filesToProcess = files.slice(0, availableSlots);
+                    const newAtts: Attachment[] = [];
+
+                    for (const file of filesToProcess) {
+                      if (file.type.startsWith("image/")) {
+                        const validation = validateImageFile(file);
+                        if (!validation.valid) {
+                          toast.error(validation.error || `${file.name} is invalid.`);
+                          continue;
+                        }
+                        const toastId = toast.loading(`Compressing ${file.name}...`);
+                        try {
+                          const compressed = await compressImageToBase64(file, "feed_post");
+                          toast.success(`Image compressed & attached`, { id: toastId });
+                          newAtts.push({
+                            fileUrl: compressed.base64,
+                            fileType: "image/webp",
+                            fileSize: compressed.size,
+                          });
+                        } catch (err) {
+                          console.warn("Client compression error, falling back:", err);
+                          toast.error(`Failed to process ${file.name}`, { id: toastId });
+                        }
+                      } else {
+                        if (file.size > 50 * 1024 * 1024) {
+                          toast.error(`${file.name} is too large. Max 50MB.`);
+                          continue;
+                        }
+                        const base64 = await new Promise<string>((resolve, reject) => {
+                          const reader = new FileReader();
+                          reader.onload = () => resolve(reader.result as string);
+                          reader.onerror = reject;
+                          reader.readAsDataURL(file);
+                        });
+                        newAtts.push({ fileUrl: base64, fileType: file.type, fileSize: file.size });
+                      }
+                    }
+                    setAttachments((prev) => [...prev, ...newAtts]);
+                    e.target.value = "";
                   }}
                 />
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => {
+                    if (attachments.length >= 5) {
+                      toast.error("Maximum 5 images allowed per post.");
+                      return;
+                    }
+                    fileInputRef.current?.click();
+                  }}
                   className="p-2 rounded-full text-outline hover:bg-surface-container hover:text-primary transition-colors flex items-center justify-center"
                   aria-label="Add photo or video"
                 >
                   <span className="material-symbols-outlined">image</span>
                 </button>
+
                 <span className="text-sm font-medium text-outline ml-2">{draft.length}/5000</span>
               </div>
               <button

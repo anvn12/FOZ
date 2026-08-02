@@ -49,12 +49,12 @@ export const UpdateProfileRequest = z.object({
 });
 export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequest>;
 
-const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,[A-Za-z0-9+/=]+$/;
+const base64Regex = /^data:image\/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=]+$/;
 
 export const UpdateAvatarRequest = z.object({
   avatar: z
     .string()
-    .refine((val) => base64Regex.test(val), "Invalid image format. Only PNG, JPEG, and GIF are allowed.")
+    .refine((val) => base64Regex.test(val), "Invalid image format. Only PNG, JPEG, GIF, and WebP are allowed.")
     .refine((val) => {
       const parts = val.split(",");
       const base64Data = parts[1];
@@ -67,4 +67,5 @@ export const UpdateAvatarRequest = z.object({
       return sizeInBytes <= 2 * 1024 * 1024; // 2MB
     }, "Image file size exceeds 2MB limit"),
 });
+
 export type UpdateAvatarRequest = z.infer<typeof UpdateAvatarRequest>;

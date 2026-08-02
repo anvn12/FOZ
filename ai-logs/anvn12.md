@@ -822,3 +822,108 @@
 **Prompt:** "fix it for me"
 **Files touched:** `src/backend/db/migrate.ts`, `package.json`
 
+### 2026-08-02 20:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify when users upload their images, check and compress images so that the server will not be overloaded"
+**Files touched:** `specs/014-image-upload-compression/spec.md`, `specs/014-image-upload-compression/checklists/requirements.md`
+
+### 2026-08-02 21:08
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/014-image-upload-compression/spec.md`
+
+### 2026-08-02 21:13
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify what about max resolution?"
+**Files touched:** `specs/014-image-upload-compression/spec.md`
+
+### 2026-08-02 21:14
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `.specify/feature.json`, `specs/014-image-upload-compression/plan.md`, `specs/014-image-upload-compression/research.md`, `specs/014-image-upload-compression/data-model.md`, `specs/014-image-upload-compression/quickstart.md`, `specs/014-image-upload-compression/contracts/upload-api.yaml`
+
+### 2026-08-02 21:16
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/014-image-upload-compression/tasks.md`
+
+### 2026-08-02 21:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/image.ts`, `src/shared/schemas/index.ts`, `src/backend/services/image-processor.ts`, `src/backend/api/upload/routes.ts`, `src/backend/index.ts`, `src/frontend/src/utils/imageCompressor.ts`, `src/frontend/src/utils/__tests__/imageCompressor.test.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/components/ImageUploader.tsx`, `src/frontend/src/components/__tests__/ImageUploader.test.tsx`, `src/backend/api/upload/__tests__/upload.test.ts`, `specs/014-image-upload-compression/tasks.md`, `package.json`
+
+### 2026-08-02 21:28
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Fix SyntaxError: The requested module '../../shared/schemas/image.js' does not provide an export named 'UploadType'"
+**Files touched:** `src/backend/services/image-processor.ts`, `src/frontend/src/utils/imageCompressor.ts`
+
+### 2026-08-02 21:32
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when i upload image in post: it says: 'Request payload exceeds size limit (max 2MB for avatar)' though it's not avatar. fix it"
+**Files touched:** `src/backend/index.ts`, `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-02 21:35
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why there are images on my local machine when i upload on post (it should stay in database), also the image is 'Attachment' not a real image and i cannot view it"
+**Files touched:** `src/frontend/src/utils/imageCompressor.ts`, `src/frontend/src/components/CreatePostModal.tsx`
+
+### 2026-08-02 21:39
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "i cannot upload profile picture (Invalid request). Fix it"
+**Files touched:** `src/shared/schemas/profile.ts`, `src/shared/schemas/profile.test.ts`
+
+### 2026-08-02 21:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a post can contain at most 5 images (also show a alert when the number of images is over 5, not 'invalid request')"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/frontend/src/components/CreatePostModal.tsx`
+
+### 2026-08-02 21:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the post images should be on a row (user can drag and drog to scroll it, or hover -> hold shift -> scroll mouse)"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`, `src/frontend/src/components/FeedPostItem.tsx`
+
+### 2026-08-02 21:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the images ratio is not affected, also the transition when scrolling is not smooth"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+### 2026-08-02 21:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why these images keep show up on my local storage?"
+**Files touched:** `.gitignore`, `src/backend/api/upload/__tests__/upload.test.ts`
+
+### 2026-08-02 22:04
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why when i scroll my mouse (not hold shift) some image rows are moving"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
