@@ -108,6 +108,13 @@
 **Prompt:** "ok now sync fe with be of admin dashboard to show the correct data, not mock data also check all bugs, return the correct routes, ... . If detect bugs, then fix."
 **Files touched:** `src/backend/db/repositories/admin.ts`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`
 
+### 2026-08-02 10:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "- delete the word 'Enterprise control' under 'FOZ Admin' - 'Return to forum' button should return http://127.0.0.1:5173, not http://127.0.0.1:5173/feed"
+**Files touched:** `src/frontend/src/components/admin/AdminLayout.tsx`
+
+
 
 
 
