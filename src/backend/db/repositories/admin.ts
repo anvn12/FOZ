@@ -198,10 +198,48 @@ export async function deleteCommentById(commentId: string) {
 }
 
 export async function getForumCategories() {
-  return db
+  const existing = await db
     .select()
     .from(forumCategories)
     .orderBy(forumCategories.displayOrder);
+
+  if (existing.length === 0) {
+    const defaults = [
+      {
+        name: "General Discussion",
+        slug: "general-discussion",
+        description: "General community discussion and chat",
+        displayOrder: 1,
+        allowNewPosts: true,
+      },
+      {
+        name: "Tech & Development",
+        slug: "tech-development",
+        description: "Software, hardware, and engineering topics",
+        displayOrder: 2,
+        allowNewPosts: true,
+      },
+      {
+        name: "Announcements",
+        slug: "announcements",
+        description: "Official platform news and updates",
+        displayOrder: 3,
+        allowNewPosts: true,
+      },
+      {
+        name: "Feedback & Support",
+        slug: "feedback-support",
+        description: "Community questions, ideas, and support",
+        displayOrder: 4,
+        allowNewPosts: true,
+      },
+    ];
+
+    await db.insert(forumCategories).values(defaults);
+    return db.select().from(forumCategories).orderBy(forumCategories.displayOrder);
+  }
+
+  return existing;
 }
 
 export async function createForumCategory(data: NewForumCategory) {
@@ -229,7 +267,47 @@ export async function deleteCategoryAndReassignThreads(id: string, targetCategor
 }
 
 export async function getSystemSettings() {
-  return db.select().from(systemSettings);
+  const existing = await db.select().from(systemSettings);
+
+  if (existing.length === 0) {
+    const defaults = [
+      {
+        key: "site_title",
+        value: "FOZ Community Forum",
+        dataType: "string",
+        description: "Official platform site title",
+      },
+      {
+        key: "user_registration_enabled",
+        value: "true",
+        dataType: "boolean",
+        description: "Controls whether new user sign-ups are allowed",
+      },
+      {
+        key: "maintenance_mode",
+        value: "false",
+        dataType: "boolean",
+        description: "Global system maintenance mode status",
+      },
+      {
+        key: "ai_summarization_threshold",
+        value: "10",
+        dataType: "number",
+        description: "Minimum comments required to trigger AI TL;DR summary",
+      },
+      {
+        key: "rate_limit_max_requests",
+        value: "100",
+        dataType: "number",
+        description: "Maximum API requests per rate limit window per IP",
+      },
+    ];
+
+    await db.insert(systemSettings).values(defaults);
+    return db.select().from(systemSettings);
+  }
+
+  return existing;
 }
 
 export async function updateSystemSetting(key: string, value: string, userId?: string) {

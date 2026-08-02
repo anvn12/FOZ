@@ -1,200 +1,150 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSystemSettings, useUpdateSystemSetting } from "#frontend/api/admin";
+import { useSystemSettings, useUpdateSystemSetting, type SystemSettingItem } from "#frontend/api/admin";
 
 export const AdminSettingsPage: React.FC = () => {
   const { data, isLoading } = useSystemSettings();
   const updateSettingMutation = useUpdateSystemSetting();
 
-  const [savingKey, setSavingKey] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [rationale, setRationale] = useState("");
 
   const settingsList = data?.settings ?? [];
 
-  const handleValueChange = (key: string, val: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: val }));
+  const handleStartEdit = (setting: SystemSettingItem) => {
+    setEditingKey(setting.key);
+    setEditValue(setting.value);
+    setRationale("Updating system configuration");
   };
 
   const handleSave = async (key: string) => {
-    const val = formValues[key];
-    if (val === undefined) return;
-    setSavingKey(key);
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    try {
-      await updateSettingMutation.mutateAsync({
-        key,
-        value: val,
-        rationale: `Updated ${key} setting via Admin Settings dashboard`,
-      });
-      setSuccessMsg(`Setting '${key}' updated successfully.`);
-    } catch (err: any) {
-      setErrorMsg(err?.message || "Failed to update system setting");
-    } finally {
-      setSavingKey(null);
-    }
+    await updateSettingMutation.mutateAsync({
+      key,
+      value: editValue,
+      rationale,
+    });
+    setEditingKey(null);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500 mb-1">
-            <Link to="/admin" className="hover:underline">
-              Admin
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+            <Link to="/admin" className="hover:text-blue-600 transition-colors">
+              Dashboard
             </Link>
-            <span>/</span>
-            <span className="font-semibold text-slate-700">System Settings</span>
+            <span>›</span>
+            <span className="text-slate-700">System Settings</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Global System Configuration
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            System Settings
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Configure site registration status, global rate limits, maintenance mode, and AI service parameters.
+          <p className="text-slate-500 text-sm mt-0.5">
+            Configure global site parameters, registration toggles, rate limits, and AI summarization thresholds.
           </p>
         </div>
       </div>
 
-      {successMsg && (
-        <div className="p-4 bg-emerald-50 text-emerald-800 text-sm rounded-xl border border-emerald-200">
-          {successMsg}
-        </div>
-      )}
-
-      {errorMsg && (
-        <div className="p-4 bg-rose-50 text-rose-800 text-sm rounded-xl border border-rose-200">
-          {errorMsg}
-        </div>
-      )}
-
+      {/* Settings Grid / List */}
       {isLoading ? (
-        <div className="p-8 text-center text-slate-500 font-medium">Loading system settings...</div>
+        <div className="p-12 text-center text-slate-400 font-medium bg-white rounded-2xl border border-slate-200/80">
+          Loading system settings...
+        </div>
       ) : settingsList.length === 0 ? (
-        <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
-          <h3 className="font-bold text-slate-900 text-base">Initialize Global Configuration</h3>
-          <p className="text-slate-600 text-xs leading-relaxed">
-            No system settings entries found in database. You can save initial key-value parameters below.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <SettingCard
-              settingKey="allow_user_registration"
-              label="Allow New User Registration"
-              defaultValue="true"
-              description="Controls whether new visitors can sign up for Standard User accounts."
-              onSave={handleSave}
-              onChange={handleValueChange}
-              formValues={formValues}
-              isSaving={savingKey === "allow_user_registration"}
-            />
-
-            <SettingCard
-              settingKey="ai_rate_limit_per_hour"
-              label="AI Summarization Hourly Quota"
-              defaultValue="50"
-              description="Maximum number of AI TL;DR post summaries allowed per user per hour."
-              onSave={handleSave}
-              onChange={handleValueChange}
-              formValues={formValues}
-              isSaving={savingKey === "ai_rate_limit_per_hour"}
-            />
-
-            <SettingCard
-              settingKey="ai_provider_priority"
-              label="AI Fallback Provider Priority"
-              defaultValue="openai,gemini"
-              description="Comma-separated provider order for AI service fallback chain."
-              onSave={handleSave}
-              onChange={handleValueChange}
-              formValues={formValues}
-              isSaving={savingKey === "ai_provider_priority"}
-            />
-
-            <SettingCard
-              settingKey="maintenance_banner_text"
-              label="Global Announcement / Maintenance Banner"
-              defaultValue=""
-              description="Optional announcement banner text displayed across all user pages."
-              onSave={handleSave}
-              onChange={handleValueChange}
-              formValues={formValues}
-              isSaving={savingKey === "maintenance_banner_text"}
-            />
-          </div>
+        <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200/80 space-y-3">
+          <p className="font-semibold text-slate-700">No system settings records found in database.</p>
+          <p className="text-xs text-slate-400">Settings will automatically initialize as system features are configured.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {settingsList.map((s) => (
-            <SettingCard
-              key={s.key}
-              settingKey={s.key}
-              label={s.key}
-              defaultValue={s.value}
-              description={s.description || "System configuration parameter"}
-              onSave={handleSave}
-              onChange={handleValueChange}
-              formValues={formValues}
-              isSaving={savingKey === s.key}
-            />
-          ))}
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden divide-y divide-slate-100">
+          {settingsList.map((setting) => {
+            const isEditing = editingKey === setting.key;
+
+            return (
+              <div key={setting.key} className="p-6 space-y-4 hover:bg-slate-50/50 transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-mono font-bold text-sm text-slate-900">
+                        {setting.key}
+                      </span>
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase bg-slate-100 text-slate-600 rounded">
+                        {setting.dataType}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {setting.description || "System configuration key"}
+                    </p>
+                  </div>
+
+                  {!isEditing && (
+                    <button
+                      onClick={() => handleStartEdit(setting)}
+                      className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-xl border border-slate-200 transition-colors self-start sm:self-auto"
+                    >
+                      Configure
+                    </button>
+                  )}
+                </div>
+
+                {isEditing ? (
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Setting Value
+                      </label>
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Rationale / Audit Reason
+                      </label>
+                      <input
+                        type="text"
+                        value={rationale}
+                        onChange={(e) => setRationale(e.target.value)}
+                        placeholder="Reason for modifying this system setting..."
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end space-x-2 pt-1">
+                      <button
+                        onClick={() => setEditingKey(null)}
+                        className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => handleSave(setting.key)}
+                        className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-600/20 transition-all"
+                      >
+                        Save Setting
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 font-mono text-xs text-slate-800 flex items-center justify-between">
+                    <span>Value: <strong className="text-slate-900">{setting.value}</strong></span>
+                    <span className="text-[10px] text-slate-400">
+                      Updated: {new Date(setting.updatedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
-    </div>
-  );
-};
-
-interface SettingCardProps {
-  settingKey: string;
-  label: string;
-  defaultValue: string;
-  description: string;
-  onSave: (key: string) => void;
-  onChange: (key: string, val: string) => void;
-  formValues: Record<string, string>;
-  isSaving: boolean;
-}
-
-const SettingCard: React.FC<SettingCardProps> = ({
-  settingKey,
-  label,
-  defaultValue,
-  description,
-  onSave,
-  onChange,
-  formValues,
-  isSaving,
-}) => {
-  const currentValue = formValues[settingKey] !== undefined ? formValues[settingKey] : defaultValue;
-
-  return (
-    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
-      <div>
-        <div className="font-bold text-slate-900 text-sm capitalize">{label}</div>
-        <div className="text-xs text-slate-500 mt-1 leading-relaxed">{description}</div>
-      </div>
-
-      <div className="space-y-2 pt-2">
-        <input
-          type="text"
-          value={currentValue}
-          onChange={(e) => onChange(settingKey, e.target.value)}
-          className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
-        />
-
-        <div className="flex justify-end">
-          <button
-            onClick={() => onSave(settingKey)}
-            disabled={isSaving}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors"
-          >
-            {isSaving ? "Saving..." : "Save Setting"}
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

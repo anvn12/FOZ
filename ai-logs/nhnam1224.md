@@ -90,5 +90,26 @@
 **Prompt:** "Explain what this problem is and help me fix it: Invalid value for '--ignoreDeprecations'. @[/wsl+ubuntu/home/kuroshiro/my-repos/FOZ/tsconfig.json:L21]"
 **Files touched:** `tsconfig.json`
 
+### 2026-08-02 10:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "run be and fe of Admin dashboard (account admin@foz.dev, password: Passsword123!) parrallely and check the bugs. If detects any fails, then fix"
+**Files touched:** `src/backend/db/migrations/0006_admin_dashboard.sql`
+
+### 2026-08-02 10:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "now run and check the UI/UX of the admin dashboard if it contains every requirements and designs are shown in @[docs/ui-designs/admin/admin_dashboard_control_center/screen.png] , @[docs/ui-designs/admin/admin_user_management/screen.png] , @[docs/ui-designs/admin/reported_content_list/screen.png] , @[docs/ui-designs/admin/reviewed_reports_admin_view/screen.png] and @[docs/ui-designs/admin/reported_content_detail_view/screen.png] . Add the logo FOZ at the top left corner. All the contents must be shown in english. Can ignore the redundant features, but should have the sidebar, as well as redesign to be eye-catching"
+**Files touched:** `src/frontend/src/components/admin/AdminLayout.tsx`, `src/frontend/src/App.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`, `src/frontend/src/pages/admin/AdminUsersPage.tsx`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/pages/admin/AdminCategoriesPage.tsx`, `src/frontend/src/pages/admin/AdminAuditLogsPage.tsx`, `src/frontend/src/pages/admin/AdminSettingsPage.tsx`
+
+### 2026-08-02 10:39
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "ok now sync fe with be of admin dashboard to show the correct data, not mock data also check all bugs, return the correct routes, ... . If detect bugs, then fix."
+**Files touched:** `src/backend/db/repositories/admin.ts`, `src/frontend/src/pages/admin/AdminReportsPage.tsx`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`
+
+
+
+
 
 

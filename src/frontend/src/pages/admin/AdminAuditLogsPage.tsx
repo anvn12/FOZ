@@ -5,112 +5,83 @@ import { AuditLogTable } from "#frontend/components/admin/AuditLogTable";
 
 export const AdminAuditLogsPage: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [actorId, setActorId] = useState("");
-  const [actionType, setActionType] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [actionTypeFilter, setActionTypeFilter] = useState("");
+  const [actorIdInput, setActorIdInput] = useState("");
 
   const { data, isLoading } = useAuditLogs({
-    actorId: actorId.trim() || undefined,
-    actionType: actionType || undefined,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
+    actionType: actionTypeFilter || undefined,
+    actorId: actorIdInput.trim() || undefined,
     page,
     limit: 15,
   });
 
+  const actionTypes = [
+    "ROLE_ASSIGN",
+    "ROLE_REVOKE",
+    "USER_DELETE",
+    "CONTENT_DELETE",
+    "REPORT_FORWARD",
+    "REPORT_DISMISS",
+    "CATEGORY_CREATE",
+    "CATEGORY_UPDATE",
+    "CATEGORY_DELETE",
+    "SETTING_UPDATE",
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500 mb-1">
-            <Link to="/admin" className="hover:underline">
-              Admin
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+            <Link to="/admin" className="hover:text-blue-600 transition-colors">
+              Dashboard
             </Link>
-            <span>/</span>
-            <span className="font-semibold text-slate-700">Audit Logs</span>
+            <span>›</span>
+            <span className="text-slate-700">Audit Logs</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Moderation & System Audit Logs
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            Audit Logs
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Immutable tracking of all Moderator actions and Administrator interventions.
+          <p className="text-slate-500 text-sm mt-0.5">
+            Tamper-evident audit trail of all Administrator and Moderator actions.
           </p>
         </div>
       </div>
 
-      {/* Filter Controls */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-            Actor User ID
-          </label>
-          <input
-            type="text"
-            placeholder="Search by UUID..."
-            value={actorId}
-            onChange={(e) => {
-              setActorId(e.target.value);
-              setPage(1);
-            }}
-            className="w-full text-xs p-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-            Action Type
-          </label>
+      {/* Filter Bar */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            Filter Action:
+          </span>
           <select
-            value={actionType}
+            value={actionTypeFilter}
             onChange={(e) => {
-              setActionType(e.target.value);
+              setActionTypeFilter(e.target.value);
               setPage(1);
             }}
-            className="w-full text-xs p-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           >
             <option value="">All Action Types</option>
-            <option value="ROLE_ASSIGN">ROLE_ASSIGN</option>
-            <option value="ROLE_REVOKE">ROLE_REVOKE</option>
-            <option value="USER_DELETE">USER_DELETE</option>
-            <option value="CONTENT_DELETE">CONTENT_DELETE</option>
-            <option value="REPORT_FORWARD">REPORT_FORWARD</option>
-            <option value="REPORT_DISMISS">REPORT_DISMISS</option>
-            <option value="CATEGORY_CREATE">CATEGORY_CREATE</option>
-            <option value="CATEGORY_UPDATE">CATEGORY_UPDATE</option>
-            <option value="CATEGORY_DELETE">CATEGORY_DELETE</option>
-            <option value="SETTING_UPDATE">SETTING_UPDATE</option>
+            {actionTypes.map((act) => (
+              <option key={act} value={act}>
+                {act}
+              </option>
+            ))}
           </select>
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-            Start Date
-          </label>
+        <div className="w-full md:w-72">
           <input
-            type="date"
-            value={startDate}
+            type="text"
+            placeholder="Filter by Actor UUID..."
+            value={actorIdInput}
             onChange={(e) => {
-              setStartDate(e.target.value);
+              setActorIdInput(e.target.value);
               setPage(1);
             }}
-            className="w-full text-xs p-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-            End Date
-          </label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-              setPage(1);
-            }}
-            className="w-full text-xs p-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono"
           />
         </div>
       </div>
@@ -119,7 +90,7 @@ export const AdminAuditLogsPage: React.FC = () => {
       <AuditLogTable
         logs={data?.items ?? []}
         isLoading={isLoading}
-        page={data?.page ?? 1}
+        page={data?.page ?? page}
         totalPages={data?.totalPages ?? 1}
         onPageChange={(newPage) => setPage(newPage)}
       />

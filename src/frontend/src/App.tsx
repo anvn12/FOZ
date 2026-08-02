@@ -15,6 +15,7 @@ import { AdminAuditLogsPage } from "./pages/admin/AdminAuditLogsPage";
 import { AdminReportsPage } from "./pages/admin/AdminReportsPage";
 import { AdminCategoriesPage } from "./pages/admin/AdminCategoriesPage";
 import { AdminSettingsPage } from "./pages/admin/AdminSettingsPage";
+import { AdminLayout } from "./components/admin/AdminLayout";
 import { useAuthStore } from "./stores/auth";
 
 function AdminGuard({ children }: { children: React.ReactNode }) {
@@ -22,7 +23,7 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
   if (!user || user.role !== "administrator") {
     return <Navigate to="/login" replace />;
   }
-  return <>{children}</>;
+  return <AdminLayout>{children}</AdminLayout>;
 }
 
 export function App() {

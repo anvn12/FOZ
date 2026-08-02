@@ -48,21 +48,21 @@ export const AdminCategoriesPage: React.FC = () => {
   const categories = data?.categories ?? [];
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500 mb-1">
-            <Link to="/admin" className="hover:underline">
-              Admin
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+            <Link to="/admin" className="hover:text-blue-600 transition-colors">
+              Dashboard
             </Link>
-            <span>/</span>
-            <span className="font-semibold text-slate-700">Categories</span>
+            <span>›</span>
+            <span className="text-slate-700">Forum Categories</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Forum Category Governance
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            Forum Categories
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-0.5">
             Create, reorder, edit properties, or delete discussion categories with mandatory thread reassignment.
           </p>
         </div>
@@ -71,61 +71,63 @@ export const AdminCategoriesPage: React.FC = () => {
             setSelectedCategory(null);
             setModalMode("create");
           }}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors"
+          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition-all flex items-center space-x-2 self-start sm:self-auto"
         >
-          + Create Category
+          <span>+ Create Category</span>
         </button>
       </div>
 
       {isLoading ? (
-        <div className="p-8 text-center text-slate-500 font-medium">Loading forum categories...</div>
+        <div className="p-12 text-center text-slate-400 font-medium bg-white rounded-2xl border border-slate-200/80">
+          Loading forum categories...
+        </div>
       ) : categories.length === 0 ? (
-        <div className="p-8 text-center text-slate-500 bg-white rounded-lg border border-slate-200">
+        <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200/80">
           No discussion categories configured. Click "+ Create Category" to initialize.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold uppercase text-xs tracking-wider">
-                  <th className="py-3 px-4">Order</th>
-                  <th className="py-3 px-4">Name</th>
-                  <th className="py-3 px-4">Slug</th>
-                  <th className="py-3 px-4">Description</th>
-                  <th className="py-3 px-4">Posting</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase text-[11px] tracking-wider">
+                  <th className="py-3.5 px-6">Order</th>
+                  <th className="py-3.5 px-6">Name</th>
+                  <th className="py-3.5 px-6">Slug</th>
+                  <th className="py-3.5 px-6">Description</th>
+                  <th className="py-3.5 px-6">Posting</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
+              <tbody className="divide-y divide-slate-100">
                 {categories.map((cat) => (
-                  <tr key={cat.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-xs text-slate-500">
+                  <tr key={cat.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-4 px-6 font-mono font-bold text-xs text-slate-500">
                       {cat.displayOrder}
                     </td>
-                    <td className="py-3 px-4 font-bold text-slate-900">{cat.name}</td>
-                    <td className="py-3 px-4 text-xs font-mono text-slate-600">{cat.slug}</td>
-                    <td className="py-3 px-4 text-slate-600 text-xs max-w-[240px] truncate">
+                    <td className="py-4 px-6 font-bold text-slate-900">{cat.name}</td>
+                    <td className="py-4 px-6 text-xs font-mono text-slate-600">{cat.slug}</td>
+                    <td className="py-4 px-6 text-slate-600 text-xs max-w-[240px] truncate">
                       {cat.description || "-"}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-4 px-6">
                       <span
-                        className={`inline-block px-2 py-0.5 text-xs font-semibold rounded ${
+                        className={`inline-block px-2.5 py-0.5 text-xs font-bold rounded-full border ${
                           cat.allowNewPosts
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-amber-50 text-amber-700"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-amber-50 text-amber-700 border-amber-200"
                         }`}
                       >
                         {cat.allowNewPosts ? "Allowed" : "Disabled"}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right space-x-2">
+                    <td className="py-4 px-6 text-right space-x-2">
                       <button
                         onClick={() => {
                           setSelectedCategory(cat);
                           setModalMode("edit");
                         }}
-                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium text-xs rounded border border-slate-300"
+                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-xl border border-slate-200 transition-colors"
                       >
                         Edit
                       </button>
@@ -134,7 +136,7 @@ export const AdminCategoriesPage: React.FC = () => {
                           setSelectedCategory(cat);
                           setModalMode("delete");
                         }}
-                        className="px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-800 font-medium text-xs rounded border border-rose-300"
+                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl border border-rose-200 transition-colors"
                       >
                         Delete
                       </button>
@@ -147,7 +149,7 @@ export const AdminCategoriesPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Category Modal */}
       <CategoryModal
         category={selectedCategory}
         mode={modalMode}
