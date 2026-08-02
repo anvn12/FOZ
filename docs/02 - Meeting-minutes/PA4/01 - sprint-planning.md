@@ -1,4 +1,4 @@
-=========== 25/7, Sprint 3 planning ===============
+=========== 25/7, Sprint 4 planning ===============
 
 Team members present:
 
