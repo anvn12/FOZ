@@ -57,6 +57,7 @@
 - [ ] T013 [US2] Add tab switcher UI ("For You" / "Latest") to `Feed` component with ARIA labels, keyboard nav in `src/frontend/src/pages/feed/FeedPage.tsx`
 - [ ] T014 [US2] Wire tab switcher to zustand store and react-query — switch tab → invalidate query → fetch new feed type in `src/frontend/src/pages/feed/FeedPage.tsx`
 - [ ] T015 [US2] Show loading state while feed switches, handle empty state per tab in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [ ] T015a [US2] Verify tab switcher accessibility: WCAG 2.1 AA color contrast, keyboard Tab/Enter navigation, screen-reader announces selected tab in `src/frontend/src/pages/feed/FeedPage.tsx`
 
 **Checkpoint**: Tab switching works end-to-end for logged-in users
 
@@ -84,7 +85,7 @@
 
 - [ ] T019 Ensure new post created via `POST /api/v1/posts` appears at top of both feed types (verify T004 fix works end-to-end) in `src/backend/services/interactions/posts.ts`
 - [ ] T020 Add feed pagination support (`cursor` param) to frontend — infinite scroll or "Load more" in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T021 Verify WCAG 2.1 Level AA: tab switcher keyboard nav, color contrast, screen-reader labels in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [ ] T021 Verify WCAG 2.1 Level AA: full page audit (feed posts, composer, actions) in `src/frontend/src/pages/feed/FeedPage.tsx`
 - [ ] T022 Run quickstart.md validation — manual test all 5 scenarios in `specs/013-you-feed/quickstart.md`
 
 ---

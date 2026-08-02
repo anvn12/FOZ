@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implement a personalized "For You" feed that ranks posts based on user interaction signals (likes, comments, reposts) and post engagement metrics with recency decay. The existing `listPostFeed` returns all posts chronologically; this feature adds a `GET /api/v1/posts/feed?type=for-you|latest` endpoint with a scoring algorithm, a frontend tab switcher, and graceful degradation to the current chronological feed when personalization fails.
+Implement a personalized "For You" feed that ranks posts based on user interaction signals (likes, comments, reposts) and post engagement metrics with recency decay. The existing `listPostFeed` returns all posts chronologically; this feature adds a `GET /api/v1/posts?type=for-you|latest` query param to the existing endpoint with a scoring algorithm, a frontend tab switcher, and graceful degradation to the current chronological feed when personalization fails.
 
 ## Technical Context
 
