@@ -16,7 +16,8 @@ export const singlePostInputSchema = z.object({
   content: z.string().trim().max(5000, "Content is too long").optional(),
   parentId: postIdSchema.optional(),
   repostOfId: postIdSchema.optional(),
-  attachments: z.array(attachmentSchema).max(4, "Maximum 4 attachments allowed").optional(),
+  attachments: z.array(attachmentSchema).max(5, "Maximum 5 attachments allowed").optional(),
+
 }).refine(data => data.content || (data.attachments && data.attachments.length > 0) || data.repostOfId, {
   message: "Post must have either content, attachments, or be a repost",
 });

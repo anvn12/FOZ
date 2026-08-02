@@ -882,6 +882,13 @@
 **Prompt:** "i cannot upload profile picture (Invalid request). Fix it"
 **Files touched:** `src/shared/schemas/profile.ts`, `src/shared/schemas/profile.test.ts`
 
+### 2026-08-02 21:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a post can contain at most 5 images (also show a alert when the number of images is over 5, not 'invalid request')"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/frontend/src/components/CreatePostModal.tsx`
+
+
 
 
 

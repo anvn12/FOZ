@@ -103,8 +103,22 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
                   onChange={async (e) => {
                     if (!e.target.files) return;
                     const files = Array.from(e.target.files);
+
+                    if (attachments.length >= 5) {
+                      toast.error("Maximum 5 images allowed per post.");
+                      e.target.value = "";
+                      return;
+                    }
+
+                    const availableSlots = 5 - attachments.length;
+                    if (files.length > availableSlots) {
+                      toast.error(`Maximum 5 images allowed per post. Adding first ${availableSlots} file(s).`);
+                    }
+
+                    const filesToProcess = files.slice(0, availableSlots);
                     const newAtts: Attachment[] = [];
-                    for (const file of files) {
+
+                    for (const file of filesToProcess) {
                       if (file.type.startsWith("image/")) {
                         const validation = validateImageFile(file);
                         if (!validation.valid) {
@@ -141,17 +155,22 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
                     setAttachments((prev) => [...prev, ...newAtts]);
                     e.target.value = "";
                   }}
-
-
                 />
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => {
+                    if (attachments.length >= 5) {
+                      toast.error("Maximum 5 images allowed per post.");
+                      return;
+                    }
+                    fileInputRef.current?.click();
+                  }}
                   className="p-2 rounded-full text-outline hover:bg-surface-container hover:text-primary transition-colors flex items-center justify-center"
                   aria-label="Add photo or video"
                 >
                   <span className="material-symbols-outlined">image</span>
                 </button>
+
                 <span className="text-sm font-medium text-outline ml-2">{draft.length}/5000</span>
               </div>
               <button
