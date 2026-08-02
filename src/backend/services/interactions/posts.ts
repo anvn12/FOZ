@@ -1,7 +1,7 @@
 import type { CreatePostRequest, UpdatePostRequest } from "#shared/schemas/interactions.js";
 import { db } from "#backend/db/client.js";
 import { posts, postAttachments } from "#backend/db/schema/interactions.js";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import {
   getPostById, listPosts, countReactionsForTarget, countCommentsForPost, getReaction,
   listPostsWithEngagement, getViewerReactions, getViewerComments, buildPostAuthorMap,
@@ -161,6 +161,44 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
 }
 
 /**
+ * Replace repost rows with their original post's content, keeping the repost's
+ * id as repostId and its createdAt for recency. Mirrors listPostFeed's unwrap
+ * so ranked feeds don't render blank repost shells.
+ */
+async function unwrapReposts(rows: any[]) {
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  const repostOfIds = rows.filter((r) => r.repostOfId).map((r) => r.repostOfId);
+  const originals = repostOfIds.length
+    ? await db.select().from(posts).where(inArray(posts.id, repostOfIds))
+    : [];
+  const origMap = new Map(originals.map((o) => [o.id, o]));
+
+  const out = [] as any[];
+  for (const row of rows) {
+    if (!row.repostOfId) {
+      out.push(row);
+      continue;
+    }
+    const original = origMap.get(row.repostOfId);
+    if (!original || original.deletedAt || original.visibilityState !== "public") continue;
+    const origCounts = byId.get(original.id);
+    const profile = await getProfileByUserId(row.authorId);
+    out.push({
+      ...original,
+      likeCount: origCounts?.likeCount ?? 0,
+      commentCount: origCounts?.commentCount ?? 0,
+      repostCount: origCounts?.repostCount ?? 0,
+      createdAt: row.createdAt,
+      repostId: row.id,
+      repostedBy: profile
+        ? { id: profile.userAccountId, displayName: profile.displayName || `Member ${profile.userAccountId.slice(0, 4)}` }
+        : undefined,
+    });
+  }
+  return out;
+}
+
+/**
  * Personalized "For You" feed.
  * Scores posts by viewer affinity, engagement, and recency.
  * Falls back to popularity on cold start (viewer has no interactions).
@@ -170,8 +208,8 @@ export async function listForYouFeed(
   limit = 20,
   cursor?: string,
 ) {
-  // Fetch all active posts with engagement counts (single query)
-  const allPosts = await listPostsWithEngagement();
+  // Fetch all active posts with engagement counts (single query), unwrap reposts
+  const allPosts = await unwrapReposts(await listPostsWithEngagement());
 
   // Batch-fetch viewer's interaction history
   const viewerReactions = await getViewerReactions(viewerId, allPosts.map((p) => p.id));
@@ -182,6 +220,16 @@ export async function listForYouFeed(
   // Score and rank
   const ranked = rankPosts(allPosts as RankedPost[], interactionMap);
 
+  // Build sets of post IDs the viewer has liked / reposted
+  const likedPostIds = new Set(
+    viewerReactions.filter((r) => r.targetType === "post").map((r) => r.targetId),
+  );
+  const viewerRepostRows = await db
+    .select({ repostOfId: posts.repostOfId })
+    .from(posts)
+    .where(and(eq(posts.authorId, viewerId), isNotNull(posts.repostOfId), isNull(posts.deletedAt)));
+  const repostedIds = new Set(viewerRepostRows.map((r) => r.repostOfId));
+
   // Apply cursor pagination (filter posts created before cursor)
   let filtered = ranked;
   if (cursor) {
@@ -189,7 +237,9 @@ export async function listForYouFeed(
     filtered = ranked.filter((p) => new Date(p.createdAt).getTime() < cursorDate);
   }
 
-  const items = filtered.slice(0, limit);
+  const items: Array<RankedPost & { liked: boolean; reposted: boolean }> = filtered
+    .slice(0, limit)
+    .map((p) => ({ ...p, liked: likedPostIds.has(p.id), reposted: repostedIds.has(p.id) }));
   const nextCursor = items.length === limit
     ? new Date(items[items.length - 1]!.createdAt).toISOString()
     : null;
@@ -202,7 +252,7 @@ export async function listForYouFeed(
  * Scores by engagement + recency only (no affinity).
  */
 export async function listPopularFeed(limit = 20, cursor?: string) {
-  const allPosts = await listPostsWithEngagement();
+  const allPosts = await unwrapReposts(await listPostsWithEngagement());
 
   // Score with empty interaction map → popularity only
   const ranked = rankPosts(allPosts as RankedPost[], new Map());
@@ -213,7 +263,9 @@ export async function listPopularFeed(limit = 20, cursor?: string) {
     filtered = ranked.filter((p) => new Date(p.createdAt).getTime() < cursorDate);
   }
 
-  const items = filtered.slice(0, limit);
+  const items: Array<RankedPost & { liked: boolean; reposted: boolean }> = filtered
+    .slice(0, limit)
+    .map((p) => ({ ...p, liked: false, reposted: false }));
   const nextCursor = items.length === limit
     ? new Date(items[items.length - 1]!.createdAt).toISOString()
     : null;

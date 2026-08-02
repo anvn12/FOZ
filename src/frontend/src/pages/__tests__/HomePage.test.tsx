@@ -28,11 +28,12 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api/interactions.js")>();
   return {
     ...actual,
-    listPosts: vi.fn().mockResolvedValue({
+    listFeed: vi.fn().mockResolvedValue({
       items: [
         { id: "post-1", authorId: "u1", authorName: "ohiris", content: "test 1", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
         { id: "post-2", authorId: "u2", authorName: "jillianbydesignn", content: "test 2", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
       ],
+      nextCursor: null,
     }),
   };
 });
@@ -58,7 +59,7 @@ describe("HomePage Component", () => {
 
   it("should render homepage logo and mock posts for unauthenticated guest", async () => {
     useAuthStore.setState({ user: null, accessToken: null });
-    renderWithProviders(<HomePage />);
+    renderWithProviders(<HomePage feedType="latest" />);
 
     expect(screen.getAllByText("FOZ")).toBeDefined();
     await waitFor(() => {
@@ -70,7 +71,7 @@ describe("HomePage Component", () => {
 
   it("should redirect guest to login when clicking a protected link", () => {
     useAuthStore.setState({ user: null, accessToken: null });
-    renderWithProviders(<HomePage />);
+    renderWithProviders(<HomePage feedType="latest" />);
 
     // Click profile link in mobile view / sidebar
     const profileBtns = screen.getAllByLabelText("Profile");
@@ -88,7 +89,7 @@ describe("HomePage Component", () => {
       accessToken: "mock-token",
     });
 
-    renderWithProviders(<HomePage />);
+    renderWithProviders(<HomePage feedType="latest" />);
 
     // Log in button should be gone
     expect(screen.queryByText("Log in")).toBeNull();
@@ -107,7 +108,7 @@ describe("HomePage Component", () => {
 
   it("should redirect guest to login when clicking Create button", () => {
     useAuthStore.setState({ user: null, accessToken: null });
-    renderWithProviders(<HomePage />);
+    renderWithProviders(<HomePage feedType="latest" />);
 
     // Click create button
     const createBtns = screen.getAllByLabelText("Create");
@@ -126,7 +127,7 @@ describe("HomePage Component", () => {
       accessToken: "mock-token",
     });
 
-    renderWithProviders(<HomePage />);
+    renderWithProviders(<HomePage feedType="latest" />);
 
     // Open desktop More menu
     const moreBtn = screen.getByLabelText("More");
