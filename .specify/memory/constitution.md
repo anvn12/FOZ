@@ -1,50 +1,36 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 2.0.0 (MAJOR)
-  Rationale: Principle I backward-incompatibly redefined — a shared package
-  was a "deliberate non-goal" and is now mandated as `src/shared/` Zod schemas;
-  the ORM mandate changed Prisma → Drizzle; AI promoted from deferred to an
-  active core principle. These are governance/principle redefinitions, not
-  clarifications, so MAJOR per semver.
+- Version change: 2.0.0 → 2.1.0 (MINOR)
+  Rationale: New accessibility principle added (Principle VII) reflecting
+  WCAG 2.1 Level AA NFR from the vision document; duplicate AI Service
+  section consolidated; factual corrections (team size, PostgreSQL version);
+  Scrum workflow codified. These are additions/corrections, not backward-
+  incompatible redefinitions, so MINOR per semver.
 - Modified principles (old → new):
-  - I. Modular Client-Server Architecture: "no shared package, types mirrored
-    by hand across client/src + server/src" → "`src/shared/` Zod schemas are
-    the single source of truth, imported via path aliases; no codegen/tRPC"
-  - II. Enforced Folder Structure: `client/` + `server/` paths →
-    `src/frontend/` + `src/backend/` + `src/shared/`
-  - III. Clean Code & Reusability: clarified the per-layer central error
-    mechanism (Express error middleware; FE toast/error-boundary path)
-  - IV. Security at Every Layer: codified JWT access + refresh cookie, bcrypt,
-    `role` column; removed Prisma-specific wording
-  - V. Consistency Over Cleverness: added binding-technology-stack clause
+  - VI. AI Service Boundaries: consolidated duplicate "AI Service Isolation"
+    section into single principle; added authentication gate (guests MUST NOT
+    trigger AI calls) per vision doc NFRs
+  - VII. Accessibility (NEW): WCAG 2.1 Level AA, keyboard navigation,
+    semantic HTML, screen-reader support mandated as a core principle
 - Added sections:
-  - VI. AI Service Boundaries (promoted from "Deferred Principles" to an
-    active core principle — the TL;DR feature is now in scope per tech stack)
-  - Technology Stack (new section codifying the validated choices from
-    docs/Techstack/be.md and docs/Techstack/fe.md)
-  - Decision-authority clause in Governance (imported from the Team Contract)
+  - VII. Accessibility (new principle)
 - Removed sections:
-  - Deferred Principles / AI Service Abstraction — promoted to Principle VI;
-    nothing remains deferred
+  - Duplicate "### VI. AI Service Isolation" standalone section (merged into
+    Principle VI under Core Principles)
 - Templates requiring updates (consistency propagation):
-  - .specify/templates/plan-template.md — ✅ compatible (Constitution Check
-    section is generic and delegates to this file; its "Web application"
-    source-tree option is advisory and explicitly meant to be replaced with
-    real paths per feature, so the `src/{frontend,backend,shared}` convention
-    is honored at plan time)
-  - .specify/templates/spec-template.md — ✅ compatible (generic User
-    Scenarios / Requirements / Success Criteria; no stack-coupled content)
-  - .specify/templates/tasks-template.md — ✅ compatible (generic; path
-    conventions are advisory and overridden by plan.md; Phase 2 "database
-    schema and migrations framework" accommodates Drizzle/drizzle-kit)
+  - .specify/templates/plan-template.md — ✅ compatible (generic Constitution
+    Check section; no stack-coupled content)
+  - .specify/templates/spec-template.md — ✅ compatible (generic requirements;
+    no accessibility-specific content to add — accessibility NFRs are captured
+    in spec Success Criteria when relevant)
+  - .specify/templates/tasks-template.md — ✅ compatible (generic; Phase N
+    Polish section already includes "Security hardening" — accessibility
+    testing naturally fits there)
   - .specify/templates/checklist-template.md — ✅ compatible (generic)
   - .specify/templates/commands/ — ✅ N/A (no command files present)
-  - AGENTS.md — ✅ compatible (SpeckIt pointer only; no stale references)
-  - README.md — ✅ compatible (User/Moderator/Admin roles consistent with
-    Principle IV; src/frontend + src/backend layout consistent with Principle II)
-- Follow-up TODOs: none. Note: `src/frontend/`, `src/backend/`, and `src/shared/`
-  are not yet scaffolded in the repo — this constitution codifies the intended
-  layout from docs/Techstack and README.md so scaffolding conforms to it.
+  - AGENTS.md — ✅ compatible (API routing convention unchanged)
+  - README.md — ✅ compatible (roles, file structure, tech stack consistent)
+- Follow-up TODOs: none.
 -->
 
 # FOZ Constitution
@@ -62,7 +48,7 @@ imported by both sides via path aliases. No npm workspace package, no
 codegen, no tRPC. Duplicating these types across sides is a defect; the
 shared module is the only copy.
 
-Rationale: a 4-person team on a deadline. One language and one shared
+Rationale: a 5-person team on a deadline. One language and one shared
 schema module beat two toolchains and hand-mirrored types.
 
 ### II. Enforced Folder Structure
@@ -108,7 +94,7 @@ enforced at the API boundary via middleware, not only in the UI:
 - Separation of powers: no single role may both flag and punish.
 
 Rate limiting MUST be applied to costly or abuse-prone endpoints (e.g., AI
-summarization).
+summarization, authentication).
 
 Moderation actions — escalations, punishments, content removal — MUST be
 logged for audit. Logs MUST NOT contain sensitive data.
@@ -127,10 +113,29 @@ amendment, not a silent swap.
 AI features (TL;DR summarization) MUST sit behind a single, small service
 module with a swappable provider: a pure-function prompt plus a `for` loop
 over fetch-based providers (OpenAI/Gemini), no streaming or caching in v1.
+A fallback provider chain MUST be configured so a single provider outage
+or quota exhaustion does not disable the feature.
+
 The provider MUST be swappable without business-logic changes. AI
 unavailability MUST NOT block core user flows; a failed summarization MUST
 degrade gracefully (e.g., hide the TL;DR control), never break the post
 view.
+
+AI features MUST require authentication; guests MUST NOT trigger AI calls.
+
+### VII. Accessibility
+The UI MUST meet WCAG 2.1 Level AA. This includes:
+
+- Proper semantic HTML structure throughout all pages.
+- Alt-text for all media attachments (images, avatars).
+- Sufficient color contrast ratios for text and interactive elements.
+- Full keyboard navigability for all interactive elements.
+- Screen-reader support via proper ARIA attributes and semantic structure.
+- Core actions (create a post, comment, search, generate TL;DR) MUST be
+  completable by a new user without external training or documentation.
+
+Accessibility is not polish; it is a launch-blocking requirement for every
+UI feature.
 
 ## Technology Stack
 The validated stack is the binding baseline. Source of truth:
@@ -167,14 +172,6 @@ Shared:
 - `src/shared/` Zod schemas are the source of truth, imported via path
   aliases. No workspace package, no codegen, no tRPC.
 
-### VI. AI Service Isolation
-AI features MUST sit behind a dedicated service interface. The provider MUST
-be swappable without business-logic changes, and a fallback provider chain
-MUST be configured so a single provider outage or quota exhaustion does not
-disable the feature. AI features MUST require authentication; guests MUST NOT
-trigger AI calls. AI unavailability MUST NOT block core user flows — it MUST
-degrade gracefully with a clear message.
-
 ## Quality Standards
 
 All code on `main` MUST:
@@ -192,21 +189,26 @@ All code on `main` MUST:
   resources.
 - Document performance and scalability expectations in each `plan.md` under
   Technical Context, since these are feature-specific.
-- Frontend MUST meet WCAG 2.1 Level AA (keyboard navigation, color contrast,
-  screen-reader labels).
+- Meet WCAG 2.1 Level AA (keyboard navigation, color contrast,
+  screen-reader labels) — see Principle VII.
 
 ## Development Workflow
 
+- The project follows Scrum with sprints aligned to PA deliverables (PA1
+  through PA5). Sprint planning, daily scrums, sprint review, and
+  retrospective are tracked per the team contract.
 - Features start with spec → plan → task generation **before**
   implementation.
 - Each task MUST reference its user story and phase.
-- Security hardening and error handling MUST be part of every
-  implementation phase, not optional polish.
+- Security hardening, accessibility, and error handling MUST be part of
+  every implementation phase, not optional polish.
 - Moderation-pipeline tasks MUST include a Drizzle migration task
   (`drizzle-kit`) for the `role` column plus report and violation tables
   before any moderator or admin UI or route work begins.
 - No direct pushes to `main`; work on feature branches and merge via PR
   with at least one reviewer.
+- Scope creep is managed via the Jira backlog; new feature ideas require
+  team approval before entering an active sprint.
 
 ## Governance
 
@@ -229,4 +231,4 @@ by majority vote (3 of 5 members); the Project Manager holds the final say
 on project-management issues and domain leads on their domain, per the
 Team Contract.
 
-**Version**: 2.0.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-10
+**Version**: 2.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-25
