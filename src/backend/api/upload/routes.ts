@@ -92,3 +92,86 @@ uploadRouter.post(
     }
   }
 );
+
+uploadRouter.post(
+  "/cloudinary",
+  requireAuth,
+  upload.single("file"),
+  async (req: AuthedRequest, res: Response, next) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({
+          error: {
+            code: "MISSING_FILE",
+            message: "No file provided in upload request",
+          },
+        });
+      }
+
+      // Max size check: 5MB for Cloudinary uploads
+      const MAX_CLOUDINARY_SIZE = 5 * 1024 * 1024;
+      if (file.size > MAX_CLOUDINARY_SIZE) {
+        return res.status(413).json({
+          error: {
+            code: "PAYLOAD_TOO_LARGE",
+            message: "File exceeds maximum size limit of 5MB",
+          },
+        });
+      }
+
+      const folder = (req.body?.folder as string) || "foz_uploads";
+      const { uploadStream } = await import("#backend/services/cloudinary.js");
+      const asset = await uploadStream(file.buffer, { folder });
+
+      return res.status(200).json({
+        success: true,
+        data: asset,
+      });
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message.includes("not configured")) {
+        return res.status(503).json({
+          error: {
+            code: "SERVICE_UNAVAILABLE",
+            message: "Cloudinary media storage service is unconfigured",
+          },
+        });
+      }
+      next(err);
+    }
+  }
+);
+
+uploadRouter.delete(
+  "/cloudinary/{*publicId}",
+  requireAuth,
+  async (req: AuthedRequest, res: Response, next) => {
+    try {
+      const publicId = req.params.publicId || (req.query.publicId as string);
+      if (!publicId) {
+        return res.status(400).json({
+          error: {
+            code: "INVALID_REQUEST",
+            message: "Public ID is required for asset deletion",
+          },
+        });
+      }
+
+      const { destroyAsset } = await import("#backend/services/cloudinary.js");
+      const result = await destroyAsset(publicId);
+
+      return res.status(200).json(result);
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message.includes("not configured")) {
+        return res.status(503).json({
+          error: {
+            code: "SERVICE_UNAVAILABLE",
+            message: "Cloudinary media storage service is unconfigured",
+          },
+        });
+      }
+      next(err);
+    }
+  }
+);
+

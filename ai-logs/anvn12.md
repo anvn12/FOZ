@@ -912,6 +912,41 @@
 **Prompt:** "why when i scroll my mouse (not hold shift) some image rows are moving"
 **Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
 
+### 2026-08-02 23:14
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify I am currently hosting my server using Neon (for postgres), Render (for backend), Vercel (for frontend), all are free tier no card requried. I want to integrate a cloud service (Cloudinary) to my system to store my app data. Do it for me"
+**Files touched:** `specs/016-cloudinary-media-storage/spec.md`, `specs/016-cloudinary-media-storage/checklists/requirements.md`
+
+### 2026-08-02 23:16
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/016-cloudinary-media-storage/spec.md`, `specs/016-cloudinary-media-storage/checklists/requirements.md`
+
+### 2026-08-02 23:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `.specify/feature.json`, `specs/016-cloudinary-media-storage/plan.md`, `specs/016-cloudinary-media-storage/research.md`, `specs/016-cloudinary-media-storage/data-model.md`, `specs/016-cloudinary-media-storage/contracts/upload-api.yaml`, `specs/016-cloudinary-media-storage/quickstart.md`
+
+### 2026-08-02 23:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/016-cloudinary-media-storage/tasks.md`
+
+### 2026-08-02 23:25
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `package.json`, `src/backend/env.ts`, `.env.example`, `.env`, `src/shared/schemas/upload.ts`, `src/shared/schemas/index.ts`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`, `src/backend/services/__tests__/cloudinary.test.ts`, `src/backend/api/upload/__tests__/upload.test.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/utils/cloudinary.ts`, `src/frontend/src/utils/__tests__/cloudinary.test.ts`, `specs/016-cloudinary-media-storage/tasks.md`
+
+
+
+
+
+
 
 
 
