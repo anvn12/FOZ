@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev:db": "docker compose up -d db",
-    "dev:be": "tsx watch src/backend/index.ts",
+    "dev:be": "npx drizzle-kit migrate && tsx watch src/backend/index.ts",
     "dev:fe": "vite --config src/frontend/vite.config.ts",
     "start": "npx drizzle-kit migrate && tsx src/backend/index.ts",
     "build": "tsc --noEmit && vite build --config src/frontend/vite.config.ts",
