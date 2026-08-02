@@ -106,6 +106,8 @@ C4Context
 
 # C - Software Architecture: Container Diagram and Component Diagram
 
+*Work performed by: Nguyễn Hải Nam | Reviewed and edited by:*
+
 ## 1. C4 Model - Level 2 (Container Diagram)
 
 ### 1.1 Diagram
