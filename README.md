@@ -144,21 +144,30 @@ Once running, the application components will be available at:
 
 The local Postgres instance runs in Docker as the `foz_db` container. Two databases are created in it: `foz_dev` (for development) and `foz_test` (for the vitest test suite).
 
-Database schema migrations live as raw SQL files under [migrations/](file:///d:/FOZ/src/backend/db/migrations/) and are applied manually.
+### Schema Workflow
 
-### Applying Schema Migrations
+Both `dev:be` and `start` run `drizzle-kit migrate` automatically on startup, so pending migrations are applied every time you start the backend.
+
+When you change a schema file in `src/backend/db/schema/`:
 
 ```sh
-# Apply schema to Dev DB (foz_dev)
-for f in src/backend/db/migrations/*.sql; do
-  docker exec -i foz_db psql -U foz -d foz_dev < "$f"
-done
+# 1. Generate a migration file from your schema changes
+npx drizzle-kit generate
 
-# Create and apply schema to Test DB (foz_test)
-docker exec -i foz_db psql -U foz -d postgres -c "CREATE DATABASE foz_test;"
-for f in src/backend/db/migrations/*.sql; do
-  docker exec -i foz_db psql -U foz -d foz_test < "$f"
-done
+# 2. Restart the backend (migrate runs automatically)
+npm run dev:be
+```
+
+> [!WARNING]
+> **Do not use `drizzle-kit push`.** It syncs the schema directly to the database without creating migration files or updating the migration journal. This causes drift — the live DB and the migration history get out of sync, leading to failures on the next `migrate` run. Always use `generate` + `migrate` instead.
+
+### Resetting the Database
+
+To wipe all data and start fresh (e.g. after major schema conflicts):
+
+```sh
+docker exec -i foz_db psql -U foz -d foz_dev -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+npx drizzle-kit migrate
 ```
 
 ### Option A — Drizzle Studio (Web GUI)

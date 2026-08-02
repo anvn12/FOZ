@@ -99,6 +99,7 @@ export function FeedPostItem({ post }: { post: any }) {
       { postId: post.id, active: post.reposted },
       {
         onSuccess: () => {
+          toast.success(post.reposted ? "Repost removed" : "Reposted to your profile");
           queryClient.invalidateQueries({ queryKey: ["posts"] });
         },
         onError: () => {
