@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { optionalAuth, requireAuth, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
-import { createPostRequestSchema } from "#shared/schemas/interactions.js";
-import { createPost, deletePost, listPostFeed, updatePostBody, createRepost, removeRepost } from "#backend/services/interactions/posts.js";
+import { createPostRequestSchema, feedQuerySchema } from "#shared/schemas/interactions.js";
+import {
+  createPost, deletePost, listPostFeed, updatePostBody, createRepost, removeRepost,
+  listForYouFeed, listPopularFeed,
+} from "#backend/services/interactions/posts.js";
 import { createReport } from "#backend/services/interactions/reports.js";
 import { createReportRequestSchema } from "#shared/schemas/interactions.js";
 import { getOrGeneratePostSummary } from "#backend/services/post-summary.service.js";
@@ -25,8 +28,32 @@ postRouter.post("/", requireAuth, validateBody(createPostRequestSchema), async (
 
 postRouter.get("/", optionalAuth, async (req: AuthedRequest, res, next) => {
   try {
-    const authorId = req.query.authorId as string | undefined;
-    return res.status(200).json({ items: await listPostFeed(req.user?.id, authorId) });
+    const parsed = feedQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return res.status(400).json({ error: { code: "INVALID_QUERY", message: parsed.error.issues[0]?.message ?? "Invalid query" } });
+    }
+    const { type, authorId, cursor, limit } = parsed.data;
+
+    if (type === "for-you") {
+      // Personalized feed requires auth; guests get popularity feed
+      if (!req.user) {
+        const result = await listPopularFeed(limit, cursor);
+        return res.status(200).json(result);
+      }
+
+      try {
+        const result = await listForYouFeed(req.user.id, limit, cursor);
+        return res.status(200).json(result);
+      } catch {
+        // Graceful degradation: personalization failed → fall back to chronological
+        const fallback = await listPostFeed(req.user.id, authorId);
+        return res.status(200).json({ items: fallback.slice(0, limit), degraded: true });
+      }
+    }
+
+    // type === "latest" — chronological (existing behavior)
+    const items = await listPostFeed(req.user?.id, authorId);
+    return res.status(200).json({ items: items.slice(0, limit) });
   } catch (err) {
     next(err);
   }

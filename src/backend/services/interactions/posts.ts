@@ -2,8 +2,12 @@ import type { CreatePostRequest, UpdatePostRequest } from "#shared/schemas/inter
 import { db } from "#backend/db/client.js";
 import { posts, postAttachments } from "#backend/db/schema/interactions.js";
 import { and, eq, isNull } from "drizzle-orm";
-import { getPostById, listPosts, countReactionsForTarget, countCommentsForPost, getReaction } from "#backend/db/repositories/interactions.js";
+import {
+  getPostById, listPosts, countReactionsForTarget, countCommentsForPost, getReaction,
+  listPostsWithEngagement, getViewerReactions, getViewerComments, buildPostAuthorMap,
+} from "#backend/db/repositories/interactions.js";
 import { getProfileByUserId } from "#backend/api/profile/profile.service.js";
+import { rankPosts, buildViewerInteractionMap, type RankedPost } from "#backend/services/interactions/feed-ranking.js";
 
 export async function createPost(authorId: string, input: CreatePostRequest) {
   const postsToCreate = ('posts' in input && Array.isArray(input.posts)) ? input.posts : [input];
@@ -154,4 +158,65 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
     });
   }
   return enriched;
+}
+
+/**
+ * Personalized "For You" feed.
+ * Scores posts by viewer affinity, engagement, and recency.
+ * Falls back to popularity on cold start (viewer has no interactions).
+ */
+export async function listForYouFeed(
+  viewerId: string,
+  limit = 20,
+  cursor?: string,
+) {
+  // Fetch all active posts with engagement counts (single query)
+  const allPosts = await listPostsWithEngagement();
+
+  // Batch-fetch viewer's interaction history
+  const viewerReactions = await getViewerReactions(viewerId, allPosts.map((p) => p.id));
+  const viewerComments = await getViewerComments(viewerId, allPosts.map((p) => p.id));
+  const postAuthorMap = buildPostAuthorMap(allPosts);
+  const interactionMap = buildViewerInteractionMap(viewerReactions, viewerComments, postAuthorMap);
+
+  // Score and rank
+  const ranked = rankPosts(allPosts as RankedPost[], interactionMap);
+
+  // Apply cursor pagination (filter posts created before cursor)
+  let filtered = ranked;
+  if (cursor) {
+    const cursorDate = new Date(cursor).getTime();
+    filtered = ranked.filter((p) => new Date(p.createdAt).getTime() < cursorDate);
+  }
+
+  const items = filtered.slice(0, limit);
+  const nextCursor = items.length === limit
+    ? new Date(items[items.length - 1]!.createdAt).toISOString()
+    : null;
+
+  return { items, nextCursor };
+}
+
+/**
+ * Popular feed for guests / cold-start.
+ * Scores by engagement + recency only (no affinity).
+ */
+export async function listPopularFeed(limit = 20, cursor?: string) {
+  const allPosts = await listPostsWithEngagement();
+
+  // Score with empty interaction map → popularity only
+  const ranked = rankPosts(allPosts as RankedPost[], new Map());
+
+  let filtered = ranked;
+  if (cursor) {
+    const cursorDate = new Date(cursor).getTime();
+    filtered = ranked.filter((p) => new Date(p.createdAt).getTime() < cursorDate);
+  }
+
+  const items = filtered.slice(0, limit);
+  const nextCursor = items.length === limit
+    ? new Date(items[items.length - 1]!.createdAt).toISOString()
+    : null;
+
+  return { items, nextCursor };
 }

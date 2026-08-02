@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState, useCallback } from "react";
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import type { CommentResponse, PostResponse, ReactionResponse } from "#shared/schemas/interactions";
@@ -10,11 +10,13 @@ import {
   deletePost,
   listComments,
   listPosts,
+  listFeed,
   toggleReaction,
   toggleRepost,
   updateComment,
 } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
+import { useFeedStore } from "#frontend/stores/feed";
 
 type Viewer = ReturnType<typeof useAuthStore.getState>["user"];
 type Post = PostResponse & { likeCount: number; liked: boolean };
@@ -61,12 +63,19 @@ function SideNav({ onNewPost }: { onNewPost: () => void }) {
 }
 
 function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
-  const { data, isLoading } = useQuery({ queryKey: ["posts"], queryFn: () => listPosts() });
+  const { activeTab, setActiveTab } = useFeedStore();
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["posts", activeTab],
+    queryFn: ({ pageParam }) => listFeed(activeTab, pageParam as string | undefined),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialPageParam: undefined as string | undefined,
+  });
+  const allItems = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
   const [draft, setDraft] = useState("");
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: createPost,
-    onSuccess: async () => { setDraft(""); await queryClient.invalidateQueries({ queryKey: ["posts"] }); toast.success("Your post is live."); },
+    onSuccess: async () => { setDraft(""); await queryClient.invalidateQueries({ queryKey: ["posts", activeTab] }); toast.success("Your post is live."); },
     onError: showError,
   });
 
@@ -74,6 +83,36 @@ function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
     <div className="sticky top-0 z-20 -mx-4 flex h-16 items-center justify-between border-b border-black/5 bg-white/90 px-4 backdrop-blur md:hidden">
       <button type="button" onClick={onNewPost} className="avatar">{initials(user?.email ?? "FOZ")}</button><Link to="/" className="text-[28px] font-black tracking-[-0.08em]">FOZ</Link><span className="material-symbols-outlined">settings</span>
     </div>
+    {user && (
+      <nav className="flex gap-1 border-b border-black/5 px-4 py-2" role="tablist" aria-label="Feed type">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "for-you"}
+          onClick={() => setActiveTab("for-you")}
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+            activeTab === "for-you"
+              ? "bg-black text-white"
+              : "text-[#5c3f41] hover:bg-black/5"
+          }`}
+        >
+          For You
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "latest"}
+          onClick={() => setActiveTab("latest")}
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+            activeTab === "latest"
+              ? "bg-black text-white"
+              : "text-[#5c3f41] hover:bg-black/5"
+          }`}
+        >
+          Latest
+        </button>
+      </nav>
+    )}
     <section className="border-b border-black/5 py-6">
       <div className="flex gap-4"><div className="avatar h-11 w-11 shrink-0">{initials(user?.email ?? "FOZ")}</div><div className="min-w-0 flex-1">
         <textarea id="post-composer" rows={draft ? 4 : 1} value={draft} onFocus={onNewPost} onChange={(event) => setDraft(event.target.value)} placeholder="Start a discussion on FOZ..." className="w-full resize-none bg-transparent pt-2 text-[17px] text-[#5c3f41] outline-none placeholder:text-[#5c3f41]" />
@@ -81,8 +120,20 @@ function Feed({ user, onNewPost }: { user: Viewer; onNewPost: () => void }) {
       </div></div>
     </section>
     {isLoading && <Loading />}
-    {data?.items.map((post) => <FeedPost key={post.id} post={post} user={user} />)}
-    {!isLoading && !data?.items.length && <p className="py-16 text-center text-[#5c3f41]">No discussions yet. Start the first one.</p>}
+    {allItems.map((post) => <FeedPost key={post.id} post={post} user={user} />)}
+    {!isLoading && !allItems.length && <p className="py-16 text-center text-[#5c3f41]">No discussions yet. Start the first one.</p>}
+    {hasNextPage && (
+      <div className="py-6 text-center">
+        <button
+          type="button"
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+          className="rounded-full border border-black/10 px-6 py-2 text-sm font-semibold text-[#5c3f41] hover:bg-black/5 transition-colors disabled:opacity-50"
+        >
+          {isFetchingNextPage ? "Loading…" : "Load more"}
+        </button>
+      </div>
+    )}
   </div>;
 }
 

@@ -16,11 +16,11 @@
 
 **Purpose**: Core feed infrastructure — scoring engine and optimized queries. Must complete before any user story.
 
-- [ ] T001 Create feed ranking pure function with affinity/engagement/recency scoring in `src/backend/services/interactions/feed-ranking.ts`
-- [ ] T002 [P] Add feed ranking unit tests (cold start, affinity boost, recency decay, edge cases) in `src/backend/__tests__/unit/feed-ranking.test.ts`
-- [ ] T003 Add batch query helpers to fetch posts with engagement counts in single query (fix N+1) in `src/backend/db/repositories/interactions.ts`
-- [ ] T004 Add `listPosts` ORDER BY `createdAt DESC` so newest posts appear first (fixes new-post-at-bottom bug) in `src/backend/db/repositories/interactions.ts`
-- [ ] T005 Add feed query Zod schema (`type` enum: `for-you` | `latest`, `cursor`, `limit`) in `src/shared/schemas/interactions.ts`
+- [x] T001 Create feed ranking pure function with affinity/engagement/recency scoring in `src/backend/services/interactions/feed-ranking.ts`
+- [x] T002 [P] Add feed ranking unit tests (cold start, affinity boost, recency decay, edge cases) in `src/backend/__tests__/unit/feed-ranking.test.ts`
+- [x] T003 Add batch query helpers to fetch posts with engagement counts in single query (fix N+1) in `src/backend/db/repositories/interactions.ts`
+- [x] T004 Add `listPosts` ORDER BY `createdAt DESC` so newest posts appear first (fixes new-post-at-bottom bug) in `src/backend/db/repositories/interactions.ts`
+- [x] T005 Add feed query Zod schema (`type` enum: `for-you` | `latest`, `cursor`, `limit`) in `src/shared/schemas/interactions.ts`
 
 **Checkpoint**: Foundation ready — scoring function tested, queries optimized, ordering fixed
 
@@ -34,11 +34,11 @@
 
 ### Implementation
 
-- [ ] T006 [US1] Implement `listForYouFeed(viewerId, limit?, cursor?)` service function that fetches posts, batch-fetches viewer interactions, scores, sorts, and paginates in `src/backend/services/interactions/posts.ts`
-- [ ] T007 [US1] Implement `listPopularFeed(limit?, cursor?)` service function for guest/cold-start fallback (engagement + recency only) in `src/backend/services/interactions/posts.ts`
-- [ ] T008 [US1] Add `type` query param handling to `GET /api/v1/posts` route — dispatch to `listForYouFeed` or `listPopularFeed` or chronological based on `type` and auth state in `src/backend/api/posts/routes.ts`
-- [ ] T009 [US1] Add graceful degradation: wrap personalization in try/catch, fall back to chronological with `degraded: true` flag in response in `src/backend/api/posts/routes.ts`
-- [ ] T010 [P] [US1] Add feed endpoint integration tests (personalized, cold-start, degraded fallback, <500ms NFR) in `src/backend/__tests__/integration/feed.test.ts`
+- [x] T006 [US1] Implement `listForYouFeed(viewerId, limit?, cursor?)` service function that fetches posts, batch-fetches viewer interactions, scores, sorts, and paginates in `src/backend/services/interactions/posts.ts`
+- [x] T007 [US1] Implement `listPopularFeed(limit?, cursor?)` service function for guest/cold-start fallback (engagement + recency only) in `src/backend/services/interactions/posts.ts`
+- [x] T008 [US1] Add `type` query param handling to `GET /api/v1/posts` route — dispatch to `listForYouFeed` or `listPopularFeed` or chronological based on `type` and auth state in `src/backend/api/posts/routes.ts`
+- [x] T009 [US1] Add graceful degradation: wrap personalization in try/catch, fall back to chronological with `degraded: true` flag in response in `src/backend/api/posts/routes.ts`
+- [x] T010 [P] [US1] Add feed endpoint integration tests (personalized, cold-start, degraded fallback, <500ms NFR) in `src/backend/__tests__/integration/feed.test.ts`
 
 **Checkpoint**: Backend feed API complete — `GET /api/v1/posts?type=for-you` works for authenticated users
 
@@ -52,12 +52,12 @@
 
 ### Implementation
 
-- [ ] T011 [P] [US2] Create zustand feed store with `persist` middleware for tab preference (`for-you` | `latest`) in `src/frontend/src/stores/feed.ts`
-- [ ] T012 [US2] Add `listFeed(type: 'for-you' | 'latest')` API function that calls `GET /api/v1/posts?type=...` in `src/frontend/src/api/interactions.ts`
-- [ ] T013 [US2] Add tab switcher UI ("For You" / "Latest") to `Feed` component with ARIA labels, keyboard nav in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T014 [US2] Wire tab switcher to zustand store and react-query — switch tab → invalidate query → fetch new feed type in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T015 [US2] Show loading state while feed switches, handle empty state per tab in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T015a [US2] Verify tab switcher accessibility: WCAG 2.1 AA color contrast, keyboard Tab/Enter navigation, screen-reader announces selected tab in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T011 [P] [US2] Create zustand feed store with `persist` middleware for tab preference (`for-you` | `latest`) in `src/frontend/src/stores/feed.ts`
+- [x] T012 [US2] Add `listFeed(type: 'for-you' | 'latest')` API function that calls `GET /api/v1/posts?type=...` in `src/frontend/src/api/interactions.ts`
+- [x] T013 [US2] Add tab switcher UI ("For You" / "Latest") to `Feed` component with ARIA labels, keyboard nav in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T014 [US2] Wire tab switcher to zustand store and react-query — switch tab → invalidate query → fetch new feed type in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T015 [US2] Show loading state while feed switches, handle empty state per tab in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T015a [US2] Verify tab switcher accessibility: WCAG 2.1 AA color contrast, keyboard Tab/Enter navigation, screen-reader announces selected tab in `src/frontend/src/pages/feed/FeedPage.tsx`
 
 **Checkpoint**: Tab switching works end-to-end for logged-in users
 
@@ -71,9 +71,9 @@
 
 ### Implementation
 
-- [ ] T016 [US3] Hide "For You" tab for guest users or show it with login prompt in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T017 [US3] Ensure guest feed defaults to `type=latest` (chronological) in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T018 [P] [US3] Add guest feed integration test — `GET /api/v1/posts?type=for-you` without auth returns popularity feed in `src/backend/__tests__/integration/feed.test.ts`
+- [x] T016 [US3] Hide "For You" tab for guest users or show it with login prompt in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T017 [US3] Ensure guest feed defaults to `type=latest` (chronological) in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T018 [P] [US3] Add guest feed integration test — `GET /api/v1/posts?type=for-you` without auth returns popularity feed in `src/backend/__tests__/integration/feed.test.ts`
 
 **Checkpoint**: Guest experience complete — usable feed without login
 
@@ -83,10 +83,10 @@
 
 **Purpose**: Final refinements affecting multiple stories
 
-- [ ] T019 Ensure new post created via `POST /api/v1/posts` appears at top of both feed types (verify T004 fix works end-to-end) in `src/backend/services/interactions/posts.ts`
-- [ ] T020 Add feed pagination support (`cursor` param) to frontend — infinite scroll or "Load more" in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T021 Verify WCAG 2.1 Level AA: full page audit (feed posts, composer, actions) in `src/frontend/src/pages/feed/FeedPage.tsx`
-- [ ] T022 Run quickstart.md validation — manual test all 5 scenarios in `specs/013-you-feed/quickstart.md`
+- [x] T019 Ensure new post created via `POST /api/v1/posts` appears at top of both feed types (verify T004 fix works end-to-end) in `src/backend/services/interactions/posts.ts`
+- [x] T020 Add feed pagination support (`cursor` param) to frontend — infinite scroll or "Load more" in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T021 Verify WCAG 2.1 Level AA: full page audit (feed posts, composer, actions) in `src/frontend/src/pages/feed/FeedPage.tsx`
+- [x] T022 Run quickstart.md validation — manual test all 5 scenarios in `specs/013-you-feed/quickstart.md`
 
 ---
 
