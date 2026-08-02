@@ -114,6 +114,20 @@
 **Prompt:** "- delete the word 'Enterprise control' under 'FOZ Admin' - 'Return to forum' button should return http://127.0.0.1:5173, not http://127.0.0.1:5173/feed"
 **Files touched:** `src/frontend/src/components/admin/AdminLayout.tsx`
 
+### 2026-08-02 16:17
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "run the ui/ux of admin dashboard again (mail: admin@foz.dev, pass: Passsword123!) and remove the redundant details (like the picture above, which '+2.4% this week' is not actual data, just a mock, etc.) or change to be realistic/live data."
+**Files touched:** `src/frontend/src/pages/admin/AdminDashboardPage.tsx`
+
+### 2026-08-02 16:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "- the line chart should be live, not mock - also add some instructions to '?' button (like what, why, ...)"
+**Files touched:** `src/backend/db/repositories/admin.ts`, `src/frontend/src/api/admin.ts`, `src/frontend/src/pages/admin/AdminDashboardPage.tsx`, `src/frontend/src/components/admin/AdminLayout.tsx`
+
+
+
 
 
 

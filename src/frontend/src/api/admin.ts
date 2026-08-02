@@ -49,12 +49,19 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 // 1. Control Center Metrics
+export interface DailyActivityItem {
+  day: string;
+  date: string;
+  count: number;
+}
+
 export interface AdminMetrics {
   totalUsers: number;
   activeModerators: number;
   pendingEscalations: number;
   contentRemoved24h: number;
   aiStatus: string;
+  dailyActivity?: DailyActivityItem[];
 }
 
 export function fetchAdminMetrics() {

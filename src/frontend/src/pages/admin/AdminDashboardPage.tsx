@@ -12,6 +12,19 @@ export const AdminDashboardPage: React.FC = () => {
   const pendingReports = isMetricsLoading ? "..." : (metrics?.pendingEscalations ?? 0).toLocaleString();
   const contentRemoved = isMetricsLoading ? "..." : (metrics?.contentRemoved24h ?? 0).toLocaleString();
 
+  // Dynamic live daily telemetry data
+  const dailyActivity = metrics?.dailyActivity ?? [
+    { day: "Mon", date: "Day 1", count: 0 },
+    { day: "Tue", date: "Day 2", count: 0 },
+    { day: "Wed", date: "Day 3", count: 0 },
+    { day: "Thu", date: "Day 4", count: 0 },
+    { day: "Fri", date: "Day 5", count: 0 },
+    { day: "Sat", date: "Day 6", count: 0 },
+    { day: "Sun", date: "Today", count: 0 },
+  ];
+
+  const maxCount = Math.max(...dailyActivity.map((d) => d.count), 5);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -65,16 +78,13 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="text-3xl font-black text-slate-900 tracking-tight">
               {totalUsers}
             </div>
-            <div className="mt-2 flex items-center space-x-1.5 text-xs font-semibold text-emerald-600">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span>+2.4% this week</span>
+            <div className="mt-2 text-xs text-slate-500 font-medium">
+              Registered platform user accounts
             </div>
           </div>
         </div>
 
-        {/* Card 2: Active Posts / Moderators */}
+        {/* Card 2: Active Moderators */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -90,16 +100,13 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="text-3xl font-black text-slate-900 tracking-tight">
               {activeModerators}
             </div>
-            <div className="mt-2 flex items-center space-x-1.5 text-xs font-semibold text-emerald-600">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span>+12% this week</span>
+            <div className="mt-2 text-xs text-slate-500 font-medium">
+              Assigned moderator roles
             </div>
           </div>
         </div>
 
-        {/* Card 3: Pending Reports (Red Accent Border) */}
+        {/* Card 3: Pending Reports */}
         <div className="bg-white p-5 rounded-2xl border-l-4 border-l-rose-500 border-t border-r border-b border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -115,14 +122,20 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="text-3xl font-black text-rose-600 tracking-tight">
               {pendingReports}
             </div>
-            <div className="mt-2 flex items-center space-x-1.5 text-xs font-bold text-rose-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
-              <span>Action required</span>
-            </div>
+            {(metrics?.pendingEscalations ?? 0) > 0 ? (
+              <div className="mt-2 flex items-center space-x-1.5 text-xs font-bold text-rose-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
+                <span>Action required</span>
+              </div>
+            ) : (
+              <div className="mt-2 flex items-center space-x-1 text-xs font-semibold text-emerald-600">
+                <span>✓ All reports clear</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Card 4: Recent Removals / Bans */}
+        {/* Card 4: Content Removed 24h */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -138,22 +151,28 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="text-3xl font-black text-slate-900 tracking-tight">
               {contentRemoved}
             </div>
-            <div className="mt-2 text-xs text-slate-500 font-medium">Past 24 hours</div>
+            <div className="mt-2 text-xs text-slate-500 font-medium">Deletions in past 24h</div>
           </div>
         </div>
       </div>
 
-      {/* Main Section: Chart & Recent Activity Feed */}
+      {/* Main Section: Live Chart & Recent Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Post Activity Trend Chart (2 Cols) */}
+        {/* Live Post Activity Trend Chart (2 Cols) */}
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-6 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-slate-900">
-                Post Activity Trend
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-base font-extrabold text-slate-900">
+                  Post Activity Trend
+                </h3>
+                <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center space-x-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>LIVE DATABASE</span>
+                </span>
+              </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Daily activity volume & engagement telemetry
+                Real-time daily post creation counts over the past 7 days
               </p>
             </div>
             <select
@@ -162,60 +181,60 @@ export const AdminDashboardPage: React.FC = () => {
               className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
               <option value="Last 7 Days">Last 7 Days</option>
-              <option value="Last 30 Days">Last 30 Days</option>
-              <option value="Last 90 Days">Last 90 Days</option>
             </select>
           </div>
 
-          {/* SVG Area Chart Graphic */}
+          {/* Dynamic Live Bar Chart Graphic */}
           <div className="w-full pt-4 pb-2">
-            <div className="h-56 relative flex items-end justify-between px-2 border-b border-slate-200">
+            <div className="h-56 relative border-b border-slate-200 px-4">
               {/* Y Axis Gridlines */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-slate-400 font-mono">
-                <div className="border-b border-slate-100 pb-1">250</div>
-                <div className="border-b border-slate-100 pb-1">200</div>
-                <div className="border-b border-slate-100 pb-1">150</div>
-                <div className="border-b border-slate-100 pb-1">100</div>
+              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-slate-400 font-mono pr-2">
+                <div className="border-b border-slate-100 pb-1">{maxCount}</div>
+                <div className="border-b border-slate-100 pb-1">{Math.round(maxCount * 0.75)}</div>
+                <div className="border-b border-slate-100 pb-1">{Math.round(maxCount * 0.5)}</div>
+                <div className="border-b border-slate-100 pb-1">{Math.round(maxCount * 0.25)}</div>
                 <div>0</div>
               </div>
 
-              {/* Area SVG Gradient Line */}
-              <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 600 200">
-                <defs>
-                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 0 140 Q 100 80, 200 120 T 400 40 T 600 90 L 600 200 L 0 200 Z"
-                  fill="url(#chartGrad)"
-                />
-                <path
-                  d="M 0 140 Q 100 80, 200 120 T 400 40 T 600 90"
-                  fill="none"
-                  stroke="#3b82f6"
-                  strokeWidth="3"
-                />
-                <circle cx="0" cy="140" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="100" cy="95" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="200" cy="120" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="300" cy="70" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="400" cy="40" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="500" cy="65" r="5" className="fill-white stroke-blue-600 stroke-2" />
-                <circle cx="600" cy="90" r="5" className="fill-white stroke-blue-600 stroke-2" />
-              </svg>
+              {/* Dynamic Live Bars */}
+              <div className="absolute inset-0 flex items-end justify-between px-6 pt-4 pb-0 z-10">
+                {dailyActivity.map((item, index) => {
+                  const heightPercent = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+                  const barHeight = Math.max(heightPercent, 4); // Minimum bar height for visibility
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex-1 flex flex-col items-center justify-end h-full px-2 group relative"
+                    >
+                      {/* Tooltip on hover */}
+                      <div className="opacity-0 group-hover:opacity-100 pointer-events-none absolute -top-8 bg-slate-900 text-white text-[10px] font-mono py-1 px-2.5 rounded-lg shadow-lg transition-opacity whitespace-nowrap z-20">
+                        {item.count} posts ({item.date})
+                      </div>
+
+                      {/* Bar Graphic */}
+                      <div
+                        style={{ height: `${barHeight}%` }}
+                        className={`w-full max-w-[36px] rounded-t-xl transition-all duration-500 ${
+                          item.count > 0
+                            ? "bg-gradient-to-t from-blue-600 to-indigo-500 shadow-md shadow-blue-500/20 group-hover:from-blue-500 group-hover:to-indigo-400"
+                            : "bg-slate-200/80 group-hover:bg-slate-300"
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* X Axis Labels */}
-            <div className="flex justify-between mt-3 text-xs font-semibold text-slate-500 px-2">
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
-              <span>Sun</span>
+            <div className="flex justify-between mt-3 text-xs font-semibold text-slate-500 px-4">
+              {dailyActivity.map((item, index) => (
+                <div key={index} className="flex-1 text-center">
+                  <p className="font-bold text-slate-700">{item.day}</p>
+                  <p className="text-[10px] text-slate-400 font-mono">{item.date}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

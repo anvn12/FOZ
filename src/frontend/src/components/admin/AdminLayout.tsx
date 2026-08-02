@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
 
@@ -10,6 +10,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const navItems = [
     {
@@ -186,8 +187,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <span className="w-2 h-2 bg-blue-600 rounded-full absolute top-1.5 right-1.5" />
               </button>
               <button
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                title="Help & Documentation"
+                onClick={() => setIsHelpOpen(true)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600 hover:text-blue-600"
+                title="Help & Platform Documentation"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -202,6 +204,108 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
+
+      {/* Admin Help & Instructions Modal */}
+      {isHelpOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-6 animate-fadeIn">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+                  ?
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    Administrator Governance Guide
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Platform overview, moderation protocols, and security instructions.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsHelpOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-700 font-bold text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Guide Content */}
+            <div className="space-y-4 text-xs text-slate-700 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
+              <div className="bg-blue-50/80 p-4 rounded-xl border border-blue-100 space-y-1">
+                <h4 className="font-extrabold text-blue-900 text-xs">
+                  What is the Administrator Control Center?
+                </h4>
+                <p className="text-blue-800">
+                  This dashboard gives platform Administrators highest-level control to manage user accounts, assign Moderator roles, moderate reported content, configure forum categories, and adjust system settings.
+                </p>
+              </div>
+
+              <div className="bg-amber-50/80 p-4 rounded-xl border border-amber-100 space-y-1">
+                <h4 className="font-extrabold text-amber-900 text-xs">
+                  Why are all actions logged to Audit Trails?
+                </h4>
+                <p className="text-amber-800">
+                  Every action performed (assigning roles, deleting accounts or posts, modifying system settings) automatically records a tamper-evident entry in the <strong>Audit Log</strong> for accountability and security compliance.
+                </p>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider">
+                  Feature Overview & How to Use
+                </h4>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                  <p className="font-bold text-slate-900">📊 1. Dashboard Overview</p>
+                  <p className="text-slate-600">
+                    View live database telemetry, total user accounts, active moderators, pending escalations, and real-time post creation trends over the last 7 days.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                  <p className="font-bold text-slate-900">🛡️ 2. Moderation Queue (`/admin/reports`)</p>
+                  <p className="text-slate-600">
+                    Filter content reports by type (Phishing, Spam, Harassment). Click any report to view AI TL;DR summaries, reporter details, and execute actions (Mark Safe, Remove Post, Ban User).
+                  </p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                  <p className="font-bold text-slate-900">👥 3. User Management (`/admin/users`)</p>
+                  <p className="text-slate-600">
+                    Filter by user role or status. Assign/revoke Moderator privileges or permanently delete accounts with mandatory audit rationale.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                  <p className="font-bold text-slate-900">📁 4. Forum Categories (`/admin/categories`)</p>
+                  <p className="text-slate-600">
+                    Create new categories, edit slugs, or delete categories with required thread reassignment to prevent orphaned content.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                  <p className="font-bold text-slate-900">⚙️ 5. System Settings (`/admin/settings`)</p>
+                  <p className="text-slate-600">
+                    Configure global parameters (registration toggles, rate limits, AI summarization thresholds) with audit trail rationale.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-end">
+              <button
+                onClick={() => setIsHelpOpen(false)}
+                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition-all"
+              >
+                Close Guide
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

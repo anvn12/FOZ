@@ -42,6 +42,31 @@ export async function getAdminMetrics() {
       )
     );
 
+  // Compute live daily post creation counts for the last 7 days
+  const now = new Date();
+  const dailyActivity: { day: string; date: string; count: number }[] = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const startOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+    const endOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+
+    const [pRow] = await db
+      .select({ count: count() })
+      .from(posts)
+      .where(and(gte(posts.createdAt, startOfDay), lte(posts.createdAt, endOfDay)));
+
+    const dayName = d.toLocaleDateString("en-US", { weekday: "short" });
+    const dateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+    dailyActivity.push({
+      day: dayName,
+      date: dateStr,
+      count: Number(pRow?.count ?? 0),
+    });
+  }
+
   const totalUsers = uRow?.totalUsers ?? 0;
   const activeModerators = mRow?.activeModerators ?? 0;
   const pendingEscalations = eRow?.pendingEscalations ?? 0;
@@ -53,6 +78,7 @@ export async function getAdminMetrics() {
     pendingEscalations: Number(pendingEscalations),
     contentRemoved24h: Number(contentRemoved24h),
     aiStatus: "healthy",
+    dailyActivity,
   };
 }
 
