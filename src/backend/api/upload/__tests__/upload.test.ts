@@ -82,4 +82,32 @@ describe("Upload API Routes (/api/v1/upload)", () => {
     expect(res.body.data.width).toBeLessThanOrEqual(1600);
     expect(res.body.data.height).toBeLessThanOrEqual(1600);
   });
+
+  describe("Cloudinary Upload & Delete Endpoints", () => {
+    it("returns 401 UNAUTHENTICATED when authorization token is missing for Cloudinary upload", async () => {
+      const res = await request(app)
+        .post("/api/v1/upload/cloudinary")
+        .expect(401);
+
+      expect(res.body.error.code).toBe("UNAUTHENTICATED");
+    });
+
+    it("returns 400 MISSING_FILE when no file is attached", async () => {
+      const res = await request(app)
+        .post("/api/v1/upload/cloudinary")
+        .set("Authorization", `Bearer ${token}`)
+        .expect(400);
+
+      expect(res.body.error.code).toBe("MISSING_FILE");
+    });
+
+    it("returns 401 UNAUTHENTICATED when authorization token is missing for Cloudinary delete", async () => {
+      const res = await request(app)
+        .delete("/api/v1/upload/cloudinary/test_id")
+        .expect(401);
+
+      expect(res.body.error.code).toBe("UNAUTHENTICATED");
+    });
+  });
 });
+

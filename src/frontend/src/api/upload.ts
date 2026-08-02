@@ -52,3 +52,57 @@ export async function uploadImageApi(
   const data = await res.json();
   return data.data;
 }
+
+export async function uploadMediaToCloudinary(
+  file: Blob | File,
+  fileName: string,
+  folder = "foz_uploads"
+): Promise<{ publicId: string; url: string; format: string; width: number; height: number; bytes: number }> {
+  const token = useAuthStore.getState().accessToken;
+  const formData = new FormData();
+  formData.append("file", file, fileName);
+  formData.append("folder", folder);
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch("/api/v1/upload/cloudinary", {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  if (!res.ok) {
+    let message = "Cloudinary upload failed";
+    let code = "UPLOAD_FAILED";
+    try {
+      const data = await res.json();
+      if (data?.error?.message) message = data.error.message;
+      if (data?.error?.code) code = data.error.code;
+    } catch {
+      // ignore
+    }
+    throw new ApiError(res.status, code, message);
+  }
+
+  const data = await res.json();
+  return data.data;
+}
+
+export async function deleteCloudinaryMedia(publicId: string): Promise<boolean> {
+  const token = useAuthStore.getState().accessToken;
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`/api/v1/upload/cloudinary/${encodeURIComponent(publicId)}`, {
+    method: "DELETE",
+    headers,
+  });
+
+  return res.ok;
+}
+

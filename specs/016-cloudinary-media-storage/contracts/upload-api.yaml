@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Cloudinary Media Storage API
+  version: 1.0.0
+  description: API endpoints for authenticated media uploads to Cloudinary storage and asset management.
+paths:
+  /api/v1/upload/cloudinary:
+    post:
+      summary: Upload an image file to Cloudinary cloud storage
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The binary image file to upload (max 5MB, jpeg/png/webp/gif).
+                folder:
+                  type: string
+                  description: Optional storage folder prefix in Cloudinary (e.g. avatars, posts).
+                  default: foz_uploads
+      responses:
+        '200':
+          description: Media file uploaded successfully to Cloudinary.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/CloudinaryAsset'
+        '400':
+          description: Invalid file format or size limit exceeded.
+        '401':
+          description: Unauthorized - authentication required.
+        '500':
+          description: Cloud service upload error.
+
+  /api/v1/upload/cloudinary/{publicId}:
+    delete:
+      summary: Delete an asset from Cloudinary storage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Cloudinary public_id of the asset to delete.
+      responses:
+        '200':
+          description: Asset successfully removed from Cloudinary.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  result:
+                    type: string
+                    example: ok
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Asset not found in Cloudinary.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CloudinaryAsset:
+      type: object
+      properties:
+        publicId:
+          type: string
+          example: foz_uploads/avatars/usr_12345
+        url:
+          type: string
+          example: https://res.cloudinary.com/demo/image/upload/v1600000000/foz_uploads/avatars/usr_12345.jpg
+        format:
+          type: string
+          example: jpg
+        width:
+          type: integer
+          example: 800
+        height:
+          type: integer
+          example: 600
+        bytes:
+          type: integer
+          example: 245000
+        resourceType:
+          type: string
+          example: image
+        createdAt:
+          type: string
+          example: 2026-08-02T16:00:00Z
