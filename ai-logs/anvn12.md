@@ -942,6 +942,13 @@
 **Prompt:** "/07-speckit.implement"
 **Files touched:** `package.json`, `src/backend/env.ts`, `.env.example`, `.env`, `src/shared/schemas/upload.ts`, `src/shared/schemas/index.ts`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`, `src/backend/services/__tests__/cloudinary.test.ts`, `src/backend/api/upload/__tests__/upload.test.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/utils/cloudinary.ts`, `src/frontend/src/utils/__tests__/cloudinary.test.ts`, `specs/016-cloudinary-media-storage/tasks.md`
 
+### 2026-08-02 23:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix: the images only be uploaded when user submit the post (click "Post" on post creation or "Save" on profile management), also do it with other type of storage (only store when user submit)"
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`, `src/frontend/src/components/CreatePostModal.tsx`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`
+
+
 
 
 
