@@ -92,13 +92,12 @@ export const HorizontalMediaGallery: React.FC<{ attachments: Attachment[] }> = (
   const handleWheel = (e: React.WheelEvent) => {
     if (isSingle || !containerRef.current) return;
     stopMomentum();
-    if (e.deltaY !== 0) {
-      containerRef.current.scrollBy({
-        left: e.deltaY * 1.2,
-        behavior: "smooth",
-      });
+    // Only scroll horizontal row if Shift key is held or horizontal trackpad scroll (deltaX) is active
+    if (e.shiftKey && e.deltaY !== 0) {
+      containerRef.current.scrollLeft += e.deltaY;
     }
   };
+
 
   useEffect(() => {
     return () => {

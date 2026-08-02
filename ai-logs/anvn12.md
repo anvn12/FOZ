@@ -900,6 +900,20 @@
 **Prompt:** "the images ratio is not affected, also the transition when scrolling is not smooth"
 **Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
 
+### 2026-08-02 21:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why these images keep show up on my local storage?"
+**Files touched:** `.gitignore`, `src/backend/api/upload/__tests__/upload.test.ts`
+
+### 2026-08-02 22:04
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why when i scroll my mouse (not hold shift) some image rows are moving"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+
+
 
 
 

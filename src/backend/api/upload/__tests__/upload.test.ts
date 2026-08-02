@@ -1,4 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import sharp from "sharp";
 
@@ -23,6 +25,13 @@ describe("Upload API Routes (/api/v1/upload)", () => {
     role: "standard",
     status: "active",
   });
+
+  afterAll(async () => {
+    try {
+      await fs.rm(path.join(process.cwd(), "uploads"), { recursive: true, force: true });
+    } catch {}
+  });
+
 
   it("returns 401 UNAUTHENTICATED when authorization header is missing", async () => {
     const res = await request(app)
