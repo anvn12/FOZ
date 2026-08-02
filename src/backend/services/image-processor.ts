@@ -2,8 +2,9 @@ import sharp from "sharp";
 import {
   DIMENSION_LIMITS,
   MAX_PROCESSED_FILE_SIZE_BYTES,
-  UploadType,
-} from "../../shared/schemas/image.js";
+  type UploadType,
+} from "#shared/schemas/image.js";
+
 
 export interface ProcessedImageResult {
   buffer: Buffer;

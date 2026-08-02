@@ -858,6 +858,27 @@
 **Prompt:** "/07-speckit.implement"
 **Files touched:** `src/shared/schemas/image.ts`, `src/shared/schemas/index.ts`, `src/backend/services/image-processor.ts`, `src/backend/api/upload/routes.ts`, `src/backend/index.ts`, `src/frontend/src/utils/imageCompressor.ts`, `src/frontend/src/utils/__tests__/imageCompressor.test.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/components/ImageUploader.tsx`, `src/frontend/src/components/__tests__/ImageUploader.test.tsx`, `src/backend/api/upload/__tests__/upload.test.ts`, `specs/014-image-upload-compression/tasks.md`, `package.json`
 
+### 2026-08-02 21:28
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Fix SyntaxError: The requested module '../../shared/schemas/image.js' does not provide an export named 'UploadType'"
+**Files touched:** `src/backend/services/image-processor.ts`, `src/frontend/src/utils/imageCompressor.ts`
+
+### 2026-08-02 21:32
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when i upload image in post: it says: 'Request payload exceeds size limit (max 2MB for avatar)' though it's not avatar. fix it"
+**Files touched:** `src/backend/index.ts`, `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-02 21:35
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "why there are images on my local machine when i upload on post (it should stay in database), also the image is 'Attachment' not a real image and i cannot view it"
+**Files touched:** `src/frontend/src/utils/imageCompressor.ts`, `src/frontend/src/components/CreatePostModal.tsx`
+
+
+
+
 
 
 

@@ -17,7 +17,7 @@ export function createApp(): Express {
   const app = express();
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "4mb" }));
+  app.use(express.json({ limit: "10mb" }));
   app.use(cookieParser());
   app.use("/uploads", express.static("uploads"));
   app.use(
@@ -54,7 +54,7 @@ export function createApp(): Express {
       return res.status(413).json({
         error: {
           code: "PAYLOAD_TOO_LARGE",
-          message: "Request payload exceeds size limit (max 2MB for avatar)",
+          message: "Request payload exceeds maximum allowed size limit",
         },
       });
     }

@@ -6,6 +6,8 @@ import { z } from "zod";
 import { UpdateProfileRequest } from "#shared/schemas/profile.js";
 import { useUpdateProfile, useUpdateAvatar, type Profile } from "#frontend/api/profile.js";
 import { ApiError } from "#frontend/api/auth.js";
+import { validateImageFile, compressImageClient } from "#frontend/utils/imageCompressor.js";
+
 
 type UpdateProfileInput = z.input<typeof UpdateProfileRequest>;
 
@@ -40,23 +42,13 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
 
   if (!isOpen) return null;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate type
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      const msg = "Only PNG, JPEG, and GIF formats are allowed.";
-      setFileError(msg);
-      toast.error(msg);
-      if (e.target) e.target.value = "";
-      return;
-    }
-
-    // Validate size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      const msg = "Image size must be less than 2MB.";
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      const msg = validation.error || "Invalid avatar image format.";
       setFileError(msg);
       toast.error(msg);
       if (e.target) e.target.value = "";
@@ -64,16 +56,31 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     }
 
     setFileError(null);
+    const toastId = toast.loading("Processing avatar...");
 
-    // Convert to Base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setAvatarBase64(base64);
-      setPreviewUrl(base64);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImageClient(file, "avatar");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setAvatarBase64(base64);
+        setPreviewUrl(base64);
+        toast.success("Avatar ready", { id: toastId });
+      };
+      reader.readAsDataURL(compressed.blob);
+    } catch (err) {
+      console.warn("Avatar compression error, using raw file fallback:", err);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setAvatarBase64(base64);
+        setPreviewUrl(base64);
+        toast.dismiss(toastId);
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
 
   const onSubmit = async (values: UpdateProfileInput) => {
     try {

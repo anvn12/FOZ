@@ -4,6 +4,9 @@ import { toast } from "react-hot-toast";
 import { createPost } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
+import { validateImageFile, compressImageToBase64 } from "#frontend/utils/imageCompressor";
+
+
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
 
@@ -102,22 +105,44 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean, onClose:
                     const files = Array.from(e.target.files);
                     const newAtts: Attachment[] = [];
                     for (const file of files) {
-                      if (file.size > 50 * 1024 * 1024) {
-                        toast.error(`${file.name} is too large. Max 50MB.`);
-                        continue;
+                      if (file.type.startsWith("image/")) {
+                        const validation = validateImageFile(file);
+                        if (!validation.valid) {
+                          toast.error(validation.error || `${file.name} is invalid.`);
+                          continue;
+                        }
+                        const toastId = toast.loading(`Compressing ${file.name}...`);
+                        try {
+                          const compressed = await compressImageToBase64(file, "feed_post");
+                          toast.success(`Image compressed & attached`, { id: toastId });
+                          newAtts.push({
+                            fileUrl: compressed.base64,
+                            fileType: "image/webp",
+                            fileSize: compressed.size,
+                          });
+                        } catch (err) {
+                          console.warn("Client compression error, falling back:", err);
+                          toast.error(`Failed to process ${file.name}`, { id: toastId });
+                        }
+                      } else {
+                        if (file.size > 50 * 1024 * 1024) {
+                          toast.error(`${file.name} is too large. Max 50MB.`);
+                          continue;
+                        }
+                        const base64 = await new Promise<string>((resolve, reject) => {
+                          const reader = new FileReader();
+                          reader.onload = () => resolve(reader.result as string);
+                          reader.onerror = reject;
+                          reader.readAsDataURL(file);
+                        });
+                        newAtts.push({ fileUrl: base64, fileType: file.type, fileSize: file.size });
                       }
-                      const base64 = await new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result as string);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                      });
-                      newAtts.push({ fileUrl: base64, fileType: file.type, fileSize: file.size });
                     }
-                    setAttachments(prev => [...prev, ...newAtts]);
-                    // Reset input
-                    e.target.value = '';
+                    setAttachments((prev) => [...prev, ...newAtts]);
+                    e.target.value = "";
                   }}
+
+
                 />
                 <button
                   type="button"

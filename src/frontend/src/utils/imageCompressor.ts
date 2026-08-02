@@ -2,9 +2,8 @@ import {
   ALLOWED_IMAGE_MIME_TYPES,
   DIMENSION_LIMITS,
   MAX_RAW_FILE_SIZE_BYTES,
-  UploadType,
+  type UploadType,
 } from "#shared/schemas/image";
-
 
 export interface CompressionResult {
   blob: Blob;
@@ -101,5 +100,25 @@ export async function compressImageClient(
     };
 
     img.src = objectUrl;
+  });
+}
+
+export async function compressImageToBase64(
+  file: File,
+  uploadType: UploadType = "feed_post"
+): Promise<{ base64: string; size: number; width: number; height: number }> {
+  const result = await compressImageClient(file, uploadType);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve({
+        base64: reader.result as string,
+        size: result.compressedSize,
+        width: result.width,
+        height: result.height,
+      });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(result.blob);
   });
 }
