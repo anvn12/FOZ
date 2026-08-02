@@ -960,6 +960,13 @@
 **Prompt:** "Right now when user upload images, the raw is pushed to cloud. I want it to be the compressed version. So cloud would have more space"
 **Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/ProfileEditModal.tsx`
 
+### 2026-08-03 00:41
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "when user delete post, does the database and the cloud delete data? / yes"
+**Files touched:** `src/backend/services/cloudinary.ts`, `src/backend/services/interactions/posts.ts`, `src/backend/__tests__/integration/post.test.ts`
+
+
 
 
 

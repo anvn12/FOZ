@@ -77,3 +77,19 @@ export async function destroyAsset(publicId: string): Promise<{ success: true; r
   const result = await cloudinary.uploader.destroy(publicId);
   return { success: true, result: result.result || "ok" };
 }
+
+/**
+ * Extracts a Cloudinary public_id from a secure Cloudinary URL.
+ * e.g. "https://res.cloudinary.com/<cloud>/image/upload/v1234/foz_uploads/posts/abc.webp"
+ *   → "foz_uploads/posts/abc"
+ * Returns null if the URL is not a Cloudinary URL.
+ */
+export function extractCloudinaryPublicId(url: string): string | null {
+  try {
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/);
+    if (!match || !match[1]) return null;
+    return match[1];
+  } catch {
+    return null;
+  }
+}
