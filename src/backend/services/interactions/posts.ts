@@ -81,12 +81,35 @@ export async function deletePost(postId: string, userId: string, isAdmin: boolea
   if (existing.authorId !== userId && !isAdmin) {
     throw new Error("POST_FORBIDDEN");
   }
-  
-  const [row] = await db
+
+  // Collect Cloudinary assets from attachments before deleting the DB row
+  const attachments = await db
+    .select({ fileUrl: postAttachments.fileUrl })
+    .from(postAttachments)
+    .where(eq(postAttachments.postId, postId));
+
+  await db
     .delete(posts)
-    .where(eq(posts.id, postId))
-    .returning();
-    
+    .where(eq(posts.id, postId));
+
+  // Clean up Cloudinary assets in the background — best-effort, never blocks the response
+  if (attachments.length > 0) {
+    const { isCloudinaryConfigured, extractCloudinaryPublicId, destroyAsset } = await import(
+      "#backend/services/cloudinary.js"
+    );
+    if (isCloudinaryConfigured()) {
+      for (const att of attachments) {
+        if (!att.fileUrl.includes("res.cloudinary.com")) continue;
+        const publicId = extractCloudinaryPublicId(att.fileUrl);
+        if (publicId) {
+          destroyAsset(publicId).catch((err) =>
+            console.warn(`[deletePost] Failed to delete Cloudinary asset ${publicId}:`, err)
+          );
+        }
+      }
+    }
+  }
+
   return { ok: true as const };
 }
 

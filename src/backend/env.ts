@@ -21,6 +21,9 @@ const schema = z.object({
   COOKIE_SECURE: boolish,
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   AI_API_KEY: z.string().optional(),
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

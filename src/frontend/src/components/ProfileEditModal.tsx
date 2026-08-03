@@ -6,6 +6,8 @@ import { z } from "zod";
 import { UpdateProfileRequest } from "#shared/schemas/profile.js";
 import { useUpdateProfile, useUpdateAvatar, type Profile } from "#frontend/api/profile.js";
 import { ApiError } from "#frontend/api/auth.js";
+import { validateImageFile, compressImageClient } from "#frontend/utils/imageCompressor.js";
+import { uploadMediaToCloudinary } from "#frontend/api/upload.js";
 
 type UpdateProfileInput = z.input<typeof UpdateProfileRequest>;
 
@@ -20,7 +22,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   const updateAvatarMutation = useUpdateAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profile.avatarUrl || null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -44,19 +46,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate type
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      const msg = "Only PNG, JPEG, and GIF formats are allowed.";
-      setFileError(msg);
-      toast.error(msg);
-      if (e.target) e.target.value = "";
-      return;
-    }
-
-    // Validate size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      const msg = "Image size must be less than 2MB.";
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      const msg = validation.error || "Invalid avatar image format.";
       setFileError(msg);
       toast.error(msg);
       if (e.target) e.target.value = "";
@@ -64,23 +56,49 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     }
 
     setFileError(null);
-
-    // Convert to Base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setAvatarBase64(base64);
-      setPreviewUrl(base64);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (values: UpdateProfileInput) => {
     try {
-      if (avatarBase64) {
-        await updateAvatarMutation.mutateAsync({ avatar: avatarBase64 });
+      if (selectedFile) {
+        const toastId = toast.loading("Compressing & uploading avatar...");
+        let finalAvatarUrl = "";
+
+        try {
+          // Compress to WebP first, then stream the smaller blob to Cloudinary
+          const compressed = await compressImageClient(selectedFile, "avatar");
+          const compressedFile = new File([compressed.blob], compressed.fileName, { type: "image/webp" });
+          const asset = await uploadMediaToCloudinary(compressedFile, compressedFile.name, "avatars");
+          finalAvatarUrl = asset.url;
+          toast.success("Avatar uploaded", { id: toastId });
+        } catch (cErr) {
+          console.warn("Cloudinary upload failed, falling back to base64:", cErr);
+          try {
+            const compressed = await compressImageClient(selectedFile, "avatar");
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(compressed.blob);
+            });
+            toast.dismiss(toastId);
+          } catch (err) {
+            console.warn("Avatar compression error, using raw file fallback:", err);
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(selectedFile);
+            });
+            toast.dismiss(toastId);
+          }
+        }
+
+        if (finalAvatarUrl) {
+          await updateAvatarMutation.mutateAsync({ avatar: finalAvatarUrl });
+        }
       }
-      // Pass values to mutateAsync which will run validations and parsing
+
       await updateProfileMutation.mutateAsync(values as any);
       toast.success("Profile updated successfully");
       onClose();

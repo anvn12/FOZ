@@ -7,16 +7,17 @@ export const commentIdSchema = z.string().uuid();
 export const reactionTargetTypeSchema = z.enum(["post", "comment"]);
 
 export const attachmentSchema = z.object({
-  fileUrl: z.string(),
-  fileType: z.enum(["image/jpeg", "image/png", "image/webp"]),
-  fileSize: z.number().int().max(5 * 1024 * 1024, "File size exceeds 5MB limit"),
+  fileUrl: z.string().min(1),
+  fileType: z.string().min(1),
+  fileSize: z.number().int().optional().default(1),
 });
 
 export const singlePostInputSchema = z.object({
   content: z.string().trim().max(5000, "Content is too long").optional(),
   parentId: postIdSchema.optional(),
   repostOfId: postIdSchema.optional(),
-  attachments: z.array(attachmentSchema).max(4, "Maximum 4 attachments allowed").optional(),
+  attachments: z.array(attachmentSchema).max(5, "Maximum 5 attachments allowed").optional(),
+
 }).refine(data => data.content || (data.attachments && data.attachments.length > 0) || data.repostOfId, {
   message: "Post must have either content, attachments, or be a repost",
 });
