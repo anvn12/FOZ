@@ -93,6 +93,17 @@ describe("PATCH /api/v1/profiles/me", () => {
     expect(checkBRes.status).toBe(200);
     expect(checkBRes.body.profile.displayName).not.toBe("User A Updated");
   });
+
+  it("should return 422 if displayName contains inappropriate/special characters", async () => {
+    const { accessToken } = await registerAndGetToken();
+    const res = await getAgent()
+      .patch("/api/v1/profiles/me")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        displayName: "𝄜 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃",
+      });
+    expect(res.status).toBe(422);
+  });
 });
 
 describe("POST /api/v1/profiles/me/avatar", () => {

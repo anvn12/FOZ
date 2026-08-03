@@ -37,6 +37,15 @@ describe("UpdateProfileRequest Schema", () => {
     expect(parsed.success).toBe(false);
   });
 
+  it("should reject display names containing inappropriate or special characters", () => {
+    const data1 = { displayName: "𝄜" };
+    const data2 = { displayName: "𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃" };
+    const data3 = { displayName: "John 😀 Doe" };
+    expect(UpdateProfileRequest.safeParse(data1).success).toBe(false);
+    expect(UpdateProfileRequest.safeParse(data2).success).toBe(false);
+    expect(UpdateProfileRequest.safeParse(data3).success).toBe(false);
+  });
+
   it("should reject bios longer than 160 characters", () => {
     const data = {
       displayName: "Alice",
