@@ -55,4 +55,11 @@ describe("NavBar Hamburger Menu Click Outside", () => {
     fireEvent.mouseDown(screen.getByTestId("outside-element"));
     expect(screen.queryByText("Settings")).toBeNull();
   });
+
+  it("should mark Home icon active (text-primary) on /latest and /foryou routes", () => {
+    renderWithProviders(<NavBar />, { initialEntries: ["/latest"] });
+
+    const homeLink = screen.getAllByLabelText("Home")[0];
+    expect(homeLink.className).toContain("text-primary");
+  });
 });

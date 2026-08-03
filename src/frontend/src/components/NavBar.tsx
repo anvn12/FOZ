@@ -76,7 +76,10 @@ export function NavBar() {
   }, [isMoreMenuOpen, isMobileDrawerOpen]);
 
   // Determine which nav icon is active based on current route.
-  const isHomeActive = location.pathname === "/";
+  const isHomeActive =
+    location.pathname === "/" ||
+    location.pathname === "/latest" ||
+    location.pathname === "/foryou";
   const isSearchActive = location.pathname === "/search";
   const isProfileActive = location.pathname.startsWith("/profiles/");
 

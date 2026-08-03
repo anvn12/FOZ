@@ -977,6 +977,8 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "@[d:\FOZ\src\frontend\src\components\PostSummaryCard.tsx] add a disclaimer below the TL;DR result. The disclaimer should be short, supportive and maybe like AI can make mistakes..."
 **Files touched:** `src/frontend/src/components/PostSummaryCard.tsx`
-
-
-
+### 2026-08-03 21:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "home icon not black when at home, fix it"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
