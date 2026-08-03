@@ -11,6 +11,7 @@ import { reactionRouter } from "#backend/api/reactions/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
 import { profileRouter } from "#backend/api/profile/routes.js";
 import { searchRouter } from "#backend/api/search/routes.js";
+import { moderationRouter } from "#backend/api/moderation/routes.js";
 import { uploadRouter } from "#backend/api/upload/routes.js";
 import { adminRouter } from "#backend/api/admin/routes.js";
 
@@ -37,6 +38,7 @@ export function createApp(): Express {
   apiRouter.use("/", reactionRouter);
   apiRouter.use("/profiles", profileRouter);
   apiRouter.use("/search", searchRouter);
+  apiRouter.use("/moderation", moderationRouter);
   apiRouter.use("/upload", uploadRouter);
   apiRouter.use("/admin", adminRouter);
   app.use("/api/v1", apiRouter);
