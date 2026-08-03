@@ -37,9 +37,12 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
 }
 
 export function searchProfiles(query: string) {
-  return call<Profile[]>(`/api/v1/search?q=${encodeURIComponent(query)}`, {
-    method: "GET",
-  });
+  return call<{ items: Profile[]; nextCursor: string | null }>(
+    `/api/v1/search?q=${encodeURIComponent(query)}&type=users`,
+    {
+      method: "GET",
+    },
+  ).then((res) => res.items);
 }
 
 export function useSearchProfiles(query: string) {

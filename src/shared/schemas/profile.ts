@@ -32,7 +32,11 @@ export const UpdateProfileRequest = z.object({
     .string()
     .trim()
     .min(1, "Display name is required")
-    .max(50, "Display name must be at most 50 characters"),
+    .max(50, "Display name must be at most 50 characters")
+.regex(
+  /^[\p{L}\p{M}\p{N}\s._'-]+$/u,
+  "Display name contains invalid or special characters"
+),
   bio: z
     .string()
     .max(160, "Bio must be at most 160 characters")
