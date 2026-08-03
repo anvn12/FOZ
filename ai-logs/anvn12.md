@@ -972,6 +972,13 @@
 **Prompt:** "when user change profile picture, old picture should be removed from cloud too"
 **Files touched:** `src/backend/api/profile/profile.service.ts`, `src/backend/__tests__/integration/profile.test.ts`
 
+### 2026-08-03 20:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "@[d:\FOZ\src\frontend\src\components\PostSummaryCard.tsx] add a disclaimer below the TL;DR result. The disclaimer should be short, supportive and maybe like AI can make mistakes..."
+**Files touched:** `src/frontend/src/components/PostSummaryCard.tsx`
+
+
 
 
 

@@ -75,10 +75,7 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
       <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
         <div className="flex items-center space-x-2">
           <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded-md border border-indigo-500/30">
-            AI TL;DR
-          </span>
-          <span className="text-xs text-slate-400">
-            Sampled {summary.commentCount} top comments (40% liked / 30% replied / 30% recent)
+            TL;DR
           </span>
         </div>
         <div className="flex items-center space-x-2">
@@ -120,6 +117,14 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
           </ul>
         </div>
       )}
+
+      {/* AI Disclaimer */}
+      <div className="mt-3 pt-2.5 border-t border-slate-800/60 text-[11px] text-slate-400 flex items-center justify-center space-x-1.5 text-center">
+        <svg className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>AI can make mistakes. Please verify important details.</span>
+      </div>
     </div>
   );
 }
