@@ -179,15 +179,16 @@ async function unwrapReposts(rows: any[]) {
       out.push(row);
       continue;
     }
-    const original = origMap.get(row.repostOfId);
+    const origRow = byId.get(row.repostOfId);
+    const original = origRow ?? origMap.get(row.repostOfId);
     if (!original || original.deletedAt || original.visibilityState !== "public") continue;
-    const origCounts = byId.get(original.id);
     const profile = await getProfileByUserId(row.authorId);
     out.push({
       ...original,
-      likeCount: origCounts?.likeCount ?? 0,
-      commentCount: origCounts?.commentCount ?? 0,
-      repostCount: origCounts?.repostCount ?? 0,
+      likeCount: origRow?.likeCount ?? 0,
+      commentCount: origRow?.commentCount ?? 0,
+      repostCount: origRow?.repostCount ?? 0,
+      attachments: origRow?.attachments ?? [],
       createdAt: row.createdAt,
       repostId: row.id,
       repostedBy: profile

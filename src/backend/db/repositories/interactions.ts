@@ -1,6 +1,6 @@
-import { and, eq, isNull, desc } from "drizzle-orm";
+import { and, eq, isNull, desc, inArray } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
-import { posts, comments, reactions } from "#backend/db/schema/interactions.js";
+import { posts, comments, reactions, postAttachments } from "#backend/db/schema/interactions.js";
 
 export async function getPostById(id: string) {
   const [row] = await db.select().from(posts).where(eq(posts.id, id));
@@ -150,11 +150,21 @@ export async function listPostsWithEngagement(authorId?: string) {
     if (r.repostOfId) repostMap.set(r.repostOfId, (repostMap.get(r.repostOfId) ?? 0) + 1);
   }
 
+  // Batch-fetch attachments for all posts
+  const attRows = await db.select().from(postAttachments).where(inArray(postAttachments.postId, postIds));
+  const attMap = new Map<string, typeof attRows>();
+  for (const att of attRows) {
+    const list = attMap.get(att.postId) ?? [];
+    list.push(att);
+    attMap.set(att.postId, list);
+  }
+
   return rows.map((row) => ({
     ...row,
     likeCount: likeMap.get(row.id) ?? 0,
     commentCount: commentMap.get(row.id) ?? 0,
     repostCount: repostMap.get(row.id) ?? 0,
+    attachments: attMap.get(row.id) ?? [],
   }));
 }
 
