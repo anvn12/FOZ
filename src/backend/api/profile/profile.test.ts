@@ -125,7 +125,7 @@ describe("POST /api/v1/profiles/me/avatar", () => {
     const res = await getAgent()
       .post("/api/v1/profiles/me/avatar")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ avatar: "data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" });
+      .send({ avatar: "data:image/bmp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" });
 
     expect(res.status).toBe(422);
   });
