@@ -18,16 +18,20 @@ FOZ is a web-based forum application focused on fundamental community discussion
 	3. [Running the System Locally](#running-the-system-locally)
 		1. [Windows](#windows)
 		2. [Linux / macOS](#linux--macos)
-3. [🗄️ Working with the Database](#-working-with-the-database)
+3. [🛡️ Administration & Moderation](#-administration--moderation)
+	1. [Assigning Admin & Moderator Roles](#assigning-admin--moderator-roles)
+	2. [Using the Moderator Portal](#using-the-moderator-portal)
+	3. [Using the Admin Portal](#using-the-admin-portal)
+4. [🗄️ Working with the Database](#-working-with-the-database)
 	1. [Applying Schema Migrations](#applying-schema-migrations)
 	2. [Option A — Drizzle Studio (Web GUI)](#option-a--drizzle-studio-web-gui)
 	3. [Option B — psql (CLI)](#option-b--psql-cli)
-4. [🧪 Testing](#-testing)
-5. [💻 Development & Architecture](#-development--architecture)
+5. [🧪 Testing](#-testing)
+6. [💻 Development & Architecture](#-development--architecture)
 	1. [File Structure](#file-structure)
 	2. [API Routing Convention](#api-routing-convention)
 	3. [Authentication API Endpoints](#authentication-api-endpoints)
-6. [🤖 Team AI Usage Logging](#-team-ai-usage-logging)
+7. [🤖 Team AI Usage Logging](#-team-ai-usage-logging)
 
 ## 📖 Introduction & Overview
 
@@ -137,6 +141,76 @@ Once running, the application components will be available at:
 
 - **Frontend Development Server**: `http://localhost:5173`
 - **Backend API Server**: `http://localhost:4000`
+
+---
+
+## 🛡️ Administration & Moderation
+
+FOZ features a role-based access control system (`guest`, `standard`, `moderator`, `administrator`) with dedicated portals for content moderation and platform administration.
+
+### Assigning Admin & Moderator Roles
+
+New accounts are registered with the `standard` role by default. To promote a user account to **Moderator** or **Administrator**, choose one of the following methods:
+
+#### Option 1 — Direct SQL via Docker CLI (Recommended for Local Setup)
+
+Execute an SQL update directly against the running PostgreSQL container:
+
+```sh
+# Promote user to Moderator
+docker exec -i foz_db psql -U foz -d foz_dev -c "UPDATE user_accounts SET role = 'moderator' WHERE email = 'user@example.com';"
+
+# Promote user to Administrator
+docker exec -i foz_db psql -U foz -d foz_dev -c "UPDATE user_accounts SET role = 'administrator' WHERE email = 'admin@example.com';"
+```
+
+#### Option 2 — Drizzle Studio (Web GUI)
+
+1. Launch Drizzle Studio:
+   ```sh
+   npx drizzle-kit studio
+   ```
+2. Open `http://local.drizzle.studio` in your browser.
+3. Select the `user_accounts` table, locate the target user, and update their `role` column to `moderator` or `administrator`.
+
+#### Option 3 — Admin Dashboard (Web UI)
+
+If you are already logged in as an Administrator:
+1. Open the Admin User Management page at `http://localhost:5173/admin/users`.
+2. Search for the target user in the list.
+3. Click the user action menu and select **Change Role** to grant **Moderator** or **Administrator** privileges.
+
+---
+
+### Using the Moderator Portal
+
+Users assigned the **Moderator** or **Administrator** role can access moderation tools:
+
+- **Moderator Dashboard** (`/moderator` or `http://localhost:5173/moderator`):
+  - View real-time metrics: Pending Reviews, Resolved Today, Avg Response Time, Queue Capacity.
+  - Inspect shift activity graphs, high-priority reports, and recent moderation actions.
+- **Reports Queue** (`/moderator/queue` or `http://localhost:5173/moderator/queue`):
+  - Review user reports submitted for posts, comments, or user profiles.
+  - **Resolve / Take Action**: Flag or handle content violating community standards.
+  - **Dismiss**: Dismiss invalid or false reports.
+  - **Escalate**: Escalate complex reports to Administrators for high-level enforcement.
+
+---
+
+### Using the Admin Portal
+
+Users assigned the **Administrator** role have full access to platform administration at `http://localhost:5173/admin`:
+
+- **Dashboard** (`/admin`): System overview, platform analytics, content counts, and key performance indicators.
+- **User Management** (`/admin/users`):
+  - Search and filter all registered users.
+  - Assign or change roles (`standard`, `moderator`, `administrator`).
+  - Update user account statuses (`active`, `suspended`, `banned`).
+  - View detailed user profiles or permanently delete user accounts.
+- **Reports Management** (`/admin/reports`): Review all reported content and handle escalated moderation issues.
+- **Audit Logs** (`/admin/audit-logs`): Track system-wide events including role changes, administrative actions, and moderation decisions with complete timestamps and actor details.
+- **Category Management** (`/admin/categories`): Create, update, or remove forum category structures.
+- **System Settings** (`/admin/settings`): Manage system configuration settings.
 
 ---
 
