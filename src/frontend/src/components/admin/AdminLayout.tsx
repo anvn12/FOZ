@@ -98,11 +98,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 ${
-                  isActive
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 ${isActive
                     ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30"
                     : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
-                }`}
+                  }`}
               >
                 <span className={isActive ? "text-white" : "text-slate-400"}>
                   {item.icon}
