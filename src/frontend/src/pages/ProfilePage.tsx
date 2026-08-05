@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "#frontend/api/profile";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ProfileEditModal } from "#frontend/components/ProfileEditModal.js";
