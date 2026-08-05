@@ -1048,3 +1048,24 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "when register a new account, the web should then redirect to login route. When login, it should redirect to home (root)"
 **Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`
+
+### 2026-08-05 13:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Click post should view details of post (detailed content, comments, ...)\n\nclick image should view full size image"
+**Files touched:** `src/frontend/src/components/ImageViewerModal.tsx`, `src/frontend/src/components/HorizontalMediaGallery.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/components/__tests__/ImageViewerModal.test.tsx`
+
+### 2026-08-05 13:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover image not change the image display"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+### 2026-08-05 13:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "click profile picture (on post) should direct to profile, just like when click to display name"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+
+

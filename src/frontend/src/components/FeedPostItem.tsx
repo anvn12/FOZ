@@ -42,7 +42,7 @@ export function formatRelativeTime(dateInput: string | number | Date | null | un
   return `${years}y ago`;
 }
 
-export function FeedPostItem({ post }: { post: any }) {
+export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDetailsPage?: boolean }) {
   const navigate = useNavigate();
   const { data: profile } = useProfile(post.authorId);
   const displayName = profile?.displayName || `Member ${post.authorId.slice(0, 4)}`;
@@ -51,6 +51,15 @@ export function FeedPostItem({ post }: { post: any }) {
   const [showOptions, setShowOptions] = React.useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
   const optionsMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isDetailsPage) return;
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, textarea, [role='button'], .no-card-click")) {
+      return;
+    }
+    navigate(`/posts/${post.id}`);
+  };
 
   useEffect(() => {
     if (!showOptions) return;
@@ -163,7 +172,12 @@ export function FeedPostItem({ post }: { post: any }) {
   };
   
   return (
-    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl">
+    <article
+      onClick={handleCardClick}
+      className={`p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl ${
+        isDetailsPage ? "" : "cursor-pointer"
+      }`}
+    >
       <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} postId={post.id} />
       
       {/* Delete Post Confirmation Dialog */}
@@ -214,7 +228,7 @@ export function FeedPostItem({ post }: { post: any }) {
       )}
       <div className="flex items-start gap-3">
         {/* Avatar column */}
-        <div className="flex-shrink-0 relative">
+        <Link to={`/profiles/${post.authorId}`} className="flex-shrink-0 relative block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -222,7 +236,7 @@ export function FeedPostItem({ post }: { post: any }) {
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Content details */}
         <div className="flex-1 min-w-0">

@@ -254,11 +254,20 @@ export function ProfilePage() {
 
 function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
   const displayName = profile?.displayName || `Member ${reply.authorId.slice(0, 4)}`;
-  
+  const navigate = useNavigate();
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, textarea, [role='button'], .no-card-click")) {
+      return;
+    }
+    navigate(`/posts/${reply.postId}`);
+  };
+
   return (
-    <article className="p-4 hover:bg-surface-container-low/30 transition-colors">
+    <article onClick={handleCardClick} className="p-4 hover:bg-surface-container-low/30 transition-colors cursor-pointer">
       <div className="flex gap-3">
-        <div className="flex-shrink-0 mt-1">
+        <Link to={`/profiles/${reply.authorId}`} className="flex-shrink-0 mt-1 block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -266,8 +275,8 @@ function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
-        
+        </Link>
+
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1 text-[15px] min-w-0">
             <span className="font-semibold text-primary truncate max-w-[200px] sm:max-w-[300px]">{displayName}</span>

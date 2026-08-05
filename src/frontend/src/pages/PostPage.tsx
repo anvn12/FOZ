@@ -71,7 +71,7 @@ export function PostPage() {
               <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
                 <div ref={feedRef} className="flex-1 overflow-y-auto divide-y divide-outline-variant [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="border-b border-outline-variant">
-                    <FeedPostItem post={post} />
+                    <FeedPostItem post={post} isDetailsPage={true} />
                   </div>
                   <div className="px-4">
                     <PostSummaryCard postId={post.id} />
@@ -273,7 +273,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
       {/* Parent row: avatar lane + content */}
       <div className="flex gap-3">
         <div className="flex flex-col items-center w-8 flex-shrink-0">
-          <div className="w-8 h-8 flex-shrink-0 mt-3">
+          <Link to={`/profiles/${comment.authorId}`} className="w-8 h-8 flex-shrink-0 mt-3 block hover:opacity-85 transition-opacity">
             {profile?.avatarUrl ? (
               <img alt={displayName} className="w-8 h-8 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
             ) : (
@@ -281,7 +281,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                 {displayName.charAt(0).toUpperCase()}
               </div>
             )}
-          </div>
+          </Link>
           {/* Spine line — shown when totalReplies > 0 & depth < MAX_DEPTH */}
           {totalReplies > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-outline-variant/40" />}
         </div>
