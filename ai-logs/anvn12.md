@@ -1043,12 +1043,8 @@
 **Prompt:** "The current project like post or like comment takes too long to change the icon status because the frontend renders based on the status of backend. Change it so that frontend change the icon, send the request to backend. But make sure that the liked is still logically correct. This action is just for quick response on client side"
 **Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
 
-
-
-
-
-
-
-
-
-
+### 2026-08-05 13:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when register a new account, the web should then redirect to login route. When login, it should redirect to home (root)"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`

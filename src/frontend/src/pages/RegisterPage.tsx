@@ -50,7 +50,10 @@ export function RegisterPage() {
               password: values.password,
             };
             register.mutate(payload, {
-              onSuccess: () => navigate("/"),
+              onSuccess: () => {
+                toast.success("Account created successfully.");
+                navigate("/login");
+              },
               onError: (err) =>
                 toast.error(err instanceof ApiError ? err.message : "Something went wrong"),
             });
@@ -124,7 +127,10 @@ export function RegisterPage() {
               password: values.password,
             };
             register.mutate(payload, {
-              onSuccess: () => navigate("/"),
+              onSuccess: () => {
+                toast.success("Account created successfully. Please log in.");
+                navigate("/login");
+              },
               onError: (err) =>
                 toast.error(err instanceof ApiError ? err.message : "Something went wrong"),
             });
