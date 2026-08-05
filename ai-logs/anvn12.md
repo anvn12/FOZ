@@ -1118,8 +1118,247 @@
 ### 2026-08-05 14:12
 **Tool:** Antigravity
 **Model:** Gemini 3.6 Flash
+### 2026-08-02 23:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `.specify/feature.json`, `specs/016-cloudinary-media-storage/plan.md`, `specs/016-cloudinary-media-storage/research.md`, `specs/016-cloudinary-media-storage/data-model.md`, `specs/016-cloudinary-media-storage/contracts/upload-api.yaml`, `specs/016-cloudinary-media-storage/quickstart.md`
+
+### 2026-08-02 23:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/016-cloudinary-media-storage/tasks.md`
+
+### 2026-08-02 23:25
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `package.json`, `src/backend/env.ts`, `.env.example`, `.env`, `src/shared/schemas/upload.ts`, `src/shared/schemas/index.ts`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`, `src/backend/services/__tests__/cloudinary.test.ts`, `src/backend/api/upload/__tests__/upload.test.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/utils/cloudinary.ts`, `src/frontend/src/utils/__tests__/cloudinary.test.ts`, `specs/016-cloudinary-media-storage/tasks.md`
+
+### 2026-08-02 23:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix: the images only be uploaded when user submit the post (click "Post" on post creation or "Save" on profile management), also do it with other type of storage (only store when user submit)"
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`, `src/frontend/src/components/CreatePostModal.tsx`, `src/backend/services/cloudinary.ts`, `src/backend/api/upload/routes.ts`
+
+### 2026-08-03 00:15
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "invalid request when i upload image (upload to server is successful)"
+**Files touched:** `src/shared/schemas/interactions.ts`, `src/shared/schemas/profile.ts`
+
+### 2026-08-03 00:25
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "Right now when user upload images, the raw is pushed to cloud. I want it to be the compressed version. So cloud would have more space"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-03 00:41
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "when user delete post, does the database and the cloud delete data? / yes"
+**Files touched:** `src/backend/services/cloudinary.ts`, `src/backend/services/interactions/posts.ts`, `src/backend/__tests__/integration/post.test.ts`
+
+### 2026-08-03 00:51
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "when user change profile picture, old picture should be removed from cloud too"
+**Files touched:** `src/backend/api/profile/profile.service.ts`, `src/backend/__tests__/integration/profile.test.ts`
+
+### 2026-08-03 20:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "@[d:\FOZ\src\frontend\src\components\PostSummaryCard.tsx] add a disclaimer below the TL;DR result. The disclaimer should be short, supportive and maybe like AI can make mistakes..."
+**Files touched:** `src/frontend/src/components/PostSummaryCard.tsx`
+### 2026-08-03 21:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "home icon not black when at home, fix it"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+
+### 2026-08-03 21:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "@[d:\FOZ\foz-logo-polished.png] add this image to the favicon (the one on the tab bar). Can rename the image. Not touch other UI (just add the favicon)"
+**Files touched:** `src/frontend/public/favicon.png`, `src/frontend/index.html`
+
+### 2026-08-04 22:11
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "in TL;DR, instead of display the thunder icon, change it to this svg icon (just icon, remove background)"
+**Files touched:** `src/frontend/src/components/TldrSparkIcon.tsx`, `src/frontend/src/components/PostSummaryCard.tsx`
+
+### 2026-08-05 12:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add for you button for guests"
+**Files touched:** `src/frontend/src/pages/HomePage.tsx`
+
+### 2026-08-05 13:03
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when hover on nav bar, there should be a instruction box (like Home, Search...)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:05
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the box should be below the button (there is a gap between), grey background and not 100% opacity (a little bit of transparent)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the box of "More" is out of the view, adjust it (can move it a little bit to the right... to make sure it stays in the view)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:08
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a little bit close to the button (the current gap is too much)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:09
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover after 0.5s the box shows, not immediately"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "gap "more" box still big"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The current project like post or like comment takes too long to change the icon status because the frontend renders based on the status of backend. Change it so that frontend change the icon, send the request to backend. But make sure that the liked is still logically correct. This action is just for quick response on client side"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+### 2026-08-05 13:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when register a new account, the web should then redirect to login route. When login, it should redirect to home (root)"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`
+
+### 2026-08-05 13:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Click post should view details of post (detailed content, comments, ...)\n\nclick image should view full size image"
+**Files touched:** `src/frontend/src/components/ImageViewerModal.tsx`, `src/frontend/src/components/HorizontalMediaGallery.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/components/__tests__/ImageViewerModal.test.tsx`
+
+### 2026-08-05 13:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover image not change the image display"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
+
+### 2026-08-05 13:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "click profile picture (on post) should direct to profile, just like when click to display name"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+### 2026-08-05 13:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add a Read more button for posts (or comments) that are too long"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/__tests__/ExpandableText.test.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentItem.tsx`, `src/frontend/src/components/post/PostCard.tsx`
+
+### 2026-08-05 13:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the color of these button should be black"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`
+
+### 2026-08-05 13:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on Comment: Shift enter is newline, enter is submit"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
+### 2026-08-05 13:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make sure that on mobile, enter is a new line, only click submit button is submit the comment"
+**Files touched:** `src/frontend/src/utils/device.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
+### 2026-08-05 13:57
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add the sort comment (algorithm just like the post). Default is Top (like for you in post). Recent is like latest post"
+**Files touched:** `src/frontend/src/utils/comment-sorting.ts`, `src/frontend/src/utils/__tests__/comment-sorting.test.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+### 2026-08-05 14:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "that sort box should be on top of the comment input box "
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:03
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the between the sort box and input comment box"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "interact with post (like post...) should not change the current recommendation order. For example, when user like a post, with the For You recommendation, the post move to top of the view, user cannot see the post. Only change when reload the web."
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+### 2026-08-05 14:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
 **Prompt:** "do the same thing with comments"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
 
+### 2026-08-05 14:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify Fix search: Trending Topics, Suggested Creators, Trending Discussions use mock data\nView all (right side of Suggested Creators) is not functionable\nThe submit search input (the right arrow) only shows when user enters some input to the box"
+**Files touched:** `specs/017-fix-search-widgets/spec.md`, `specs/017-fix-search-widgets/checklists/requirements.md`
 
+### 2026-08-05 14:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/017-fix-search-widgets/spec.md`
 
+### 2026-08-05 14:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `.specify/feature.json`, `specs/017-fix-search-widgets/plan.md`, `specs/017-fix-search-widgets/research.md`, `specs/017-fix-search-widgets/data-model.md`, `specs/017-fix-search-widgets/contracts/search-api.yaml`, `specs/017-fix-search-widgets/quickstart.md`
+
+### 2026-08-05 14:23
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/017-fix-search-widgets/tasks.md`
+
+### 2026-08-05 14:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/search.ts`, `src/shared/schemas/index.ts`, `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`, `src/frontend/src/api/search.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`, `specs/017-fix-search-widgets/tasks.md`
+
+### 2026-08-05 14:28
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on the suggested creator, remove the last profile (view more) as we can use the small view more button on the corner"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 14:31
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Suggested Creators only shows 10 most active creator. The trending discussions should use this type of icon (jus like home page)"
+**Files touched:** `src/backend/api/search/routes.ts`, `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 14:33
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the profile picture not match the default picture in the app. Remove the "Follow" in suggested creators"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
