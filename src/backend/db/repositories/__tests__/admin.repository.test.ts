@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { clearDb } from "#backend/__tests__/integration/auth.setup.js";
 import { db } from "#backend/db/client.js";
-import { userAccounts, profiles, posts, comments, reports, forumCategories, systemSettings } from "#backend/db/schema/index.js";
+import { userAccounts, profiles, posts, comments, reports } from "#backend/db/schema/index.js";
 import * as adminRepo from "../admin.js";
 import { hash } from "bcrypt";
 import { randomUUID } from "node:crypto";
@@ -63,9 +63,9 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
 
     const logs = await adminRepo.getAuditLogs({ page: 1, limit: 10 });
     expect(logs.total).toBe(1);
-    expect(logs.items[0].actionType).toBe("ROLE_CHANGE");
-    expect(logs.items[0].actorName).toBe("admin@foz.dev");
-    expect(logs.items[0].rationale).toBe("Promoted to moderator for community help");
+    expect(logs.items[0]?.actionType).toBe("ROLE_CHANGE");
+    expect(logs.items[0]?.actorName).toBe("admin@foz.dev");
+    expect(logs.items[0]?.rationale).toBe("Promoted to moderator for community help");
   });
 
   it("getAdminMetrics should return accurate live database counts", async () => {
@@ -105,7 +105,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
   it("listUsers and countAdministrators should return paginated users and admin counts", async () => {
     const list = await adminRepo.listUsers({ page: 1, limit: 10, query: "Standard" });
     expect(list.total).toBe(1);
-    expect(list.items[0].email).toBe("user@foz.dev");
+    expect(list.items[0]?.email).toBe("user@foz.dev");
 
     const adminCount = await adminRepo.countAdministrators();
     expect(adminCount).toBe(1);
@@ -113,7 +113,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
 
   it("updateUserRole should change user role", async () => {
     const updated = await adminRepo.updateUserRole(stdUser.id, "moderator");
-    expect(updated.role).toBe("moderator");
+    expect(updated?.role).toBe("moderator");
   });
 
   it("deleteUserAccountAndReattribute should clean up foreign keys and remove user", async () => {
@@ -160,16 +160,16 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
       name: "Technology Hub",
       slug: "technology-hub",
     });
-    expect(updated.name).toBe("Technology Hub");
+    expect(updated?.name).toBe("Technology Hub");
 
-    const deleted = await adminRepo.deleteForumCategory(created.id);
-    expect(deleted.id).toBe(created.id);
+    const deleted = await adminRepo.deleteCategoryAndReassignThreads(created.id, "other-cat-id");
+    expect(deleted?.id).toBe(created.id);
   });
 
   it("System Settings CRUD should fetch and update settings", async () => {
     const updated = await adminRepo.updateSystemSetting("site_notice", "Welcome to FOZ!", adminUser.id);
-    expect(updated.key).toBe("site_notice");
-    expect(updated.value).toBe("Welcome to FOZ!");
+    expect(updated?.key).toBe("site_notice");
+    expect(updated?.value).toBe("Welcome to FOZ!");
 
     const settings = await adminRepo.getSystemSettings();
     const found = settings.find((s) => s.key === "site_notice");
