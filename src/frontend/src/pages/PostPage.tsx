@@ -105,8 +105,14 @@ export function PostPage() {
                             }
                           }}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              e.stopPropagation();
+                            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                              e.preventDefault();
+                              if (!user) return navigate("/login");
+                              if (draft.trim() && !create.isPending) {
+                                create.mutate();
+                                setDraft("");
+                                e.currentTarget.style.height = "";
+                              }
                             }
                           }}
                           placeholder="Add a comment..."
@@ -345,7 +351,19 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
 
           {editing ? (
             <div className="mt-2">
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary" />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    if (body.trim() && !save.isPending) {
+                      save.mutate();
+                    }
+                  }
+                }}
+                className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary"
+              />
               <div className="mt-2 flex gap-3 text-sm font-semibold">
                 <button onClick={() => save.mutate()} disabled={!body.trim()} className="text-primary hover:opacity-80">Save</button>
                 <button onClick={() => { setBody(comment.body); setEditing(false); }} className="text-secondary hover:text-primary">Cancel</button>
@@ -405,8 +423,13 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                       }
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.stopPropagation();
+                      if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                        e.preventDefault();
+                        if (replyDraft.trim() && !reply.isPending) {
+                          reply.mutate();
+                          setReplyDraft("");
+                          e.currentTarget.style.height = "";
+                        }
                       }
                     }}
                     onBlur={(e) => {

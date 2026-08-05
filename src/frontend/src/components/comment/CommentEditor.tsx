@@ -16,6 +16,14 @@ export function CommentEditor({
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            if (value.trim() && !disabled) {
+              onSave();
+            }
+          }
+        }}
         className="w-full rounded-xl border border-outline-variant px-3 py-2"
         rows={3}
       />

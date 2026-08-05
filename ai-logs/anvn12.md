@@ -1079,3 +1079,9 @@
 **Prompt:** "the color of these button should be black"
 **Files touched:** `src/frontend/src/components/ExpandableText.tsx`
 
+### 2026-08-05 13:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on Comment: Shift enter is newline, enter is submit"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
