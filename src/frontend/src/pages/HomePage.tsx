@@ -46,36 +46,32 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
             </header>
 
             {/* Feed Tabs — full navigation so each mode loads fresh state */}
-            {user && (
-              <nav className="flex gap-1 px-4 py-2 flex-shrink-0" role="tablist" aria-label="Feed type">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={feedType === "for-you"}
-                  onClick={() => { window.location.href = "/foryou"; }}
-                  className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                    feedType === "for-you"
-                      ? "bg-primary text-on-primary"
-                      : "text-secondary hover:bg-surface-container-highest"
+            <nav className="flex gap-1 px-4 py-2 flex-shrink-0" role="tablist" aria-label="Feed type">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={feedType === "for-you"}
+                onClick={() => { window.location.href = "/foryou"; }}
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${feedType === "for-you"
+                    ? "bg-primary text-on-primary"
+                    : "text-secondary hover:bg-surface-container-highest"
                   }`}
-                >
-                  For You
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={feedType === "latest"}
-                  onClick={() => { window.location.href = "/latest"; }}
-                  className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                    feedType === "latest"
-                      ? "bg-primary text-on-primary"
-                      : "text-secondary hover:bg-surface-container-highest"
+              >
+                For You
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={feedType === "latest"}
+                onClick={() => { window.location.href = "/latest"; }}
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${feedType === "latest"
+                    ? "bg-primary text-on-primary"
+                    : "text-secondary hover:bg-surface-container-highest"
                   }`}
-                >
-                  Latest
-                </button>
-              </nav>
-            )}
+              >
+                Latest
+              </button>
+            </nav>
 
             {/* Feed Container */}
             <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">

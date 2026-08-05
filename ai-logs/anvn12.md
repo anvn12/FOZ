@@ -995,4 +995,11 @@
 **Prompt:** "in TL;DR, instead of display the thunder icon, change it to this svg icon (just icon, remove background)"
 **Files touched:** `src/frontend/src/components/TldrSparkIcon.tsx`, `src/frontend/src/components/PostSummaryCard.tsx`
 
+### 2026-08-05 12:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add for you button for guests"
+**Files touched:** `src/frontend/src/pages/HomePage.tsx`
+
+
 
