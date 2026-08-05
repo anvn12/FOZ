@@ -1067,5 +1067,15 @@
 **Prompt:** "click profile picture (on post) should direct to profile, just like when click to display name"
 **Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
 
+### 2026-08-05 13:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add a Read more button for posts (or comments) that are too long"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/__tests__/ExpandableText.test.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentItem.tsx`, `src/frontend/src/components/post/PostCard.tsx`
 
+### 2026-08-05 13:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the color of these button should be black"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`
 

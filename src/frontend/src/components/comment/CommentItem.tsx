@@ -1,3 +1,6 @@
+import React from "react";
+import { ExpandableText } from "#frontend/components/ExpandableText";
+
 export function CommentItem({
   body,
   likeCount,
@@ -19,7 +22,12 @@ export function CommentItem({
 }) {
   return (
     <div className="rounded-xl border border-outline-variant p-3">
-      <p className={unavailable ? "text-outline line-through" : undefined}>{body}</p>
+      <ExpandableText
+        text={body}
+        maxLength={240}
+        maxLines={4}
+        className={unavailable ? "text-outline line-through" : undefined}
+      />
       {unavailable && <p className="mt-1 text-label-sm text-outline">This comment is no longer available.</p>}
       <p className="mt-1 text-label-sm text-outline">Likes: {likeCount}</p>
       <div className="mt-2 flex gap-2">
