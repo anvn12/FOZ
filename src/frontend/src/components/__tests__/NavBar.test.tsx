@@ -57,9 +57,9 @@ describe("NavBar Hamburger Menu Click Outside", () => {
   });
 
   it("should mark Home icon active (text-primary) on /latest and /foryou routes", () => {
-    renderWithProviders(<NavBar />, { initialEntries: ["/latest"] });
+    renderWithProviders(<NavBar />, { route: "/latest" });
 
     const homeLink = screen.getAllByLabelText("Home")[0];
-    expect(homeLink.className).toContain("text-primary");
+    expect(homeLink!.className).toContain("text-primary");
   });
 });

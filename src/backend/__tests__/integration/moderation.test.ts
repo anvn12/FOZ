@@ -20,26 +20,28 @@ describe("Moderation API", () => {
 
     // Create a standard user
     const p1 = await hash("pass123", 10);
-    [stdUser] = await db.insert(userAccounts).values({
+    const [insertedStdUser] = await db.insert(userAccounts).values({
       email: "std@example.com",
       passwordHash: p1,
       role: "standard",
       status: "active",
     }).returning();
+    stdUser = insertedStdUser!;
     await db.insert(profiles).values({ userAccountId: stdUser.id, displayName: "Standard User" });
 
     // Create a moderator user
     const p2 = await hash("pass123", 10);
-    [modUser] = await db.insert(userAccounts).values({
+    const [insertedModUser] = await db.insert(userAccounts).values({
       email: "mod@example.com",
       passwordHash: p2,
       role: "moderator",
       status: "active",
     }).returning();
+    modUser = insertedModUser!;
     await db.insert(profiles).values({ userAccountId: modUser.id, displayName: "Moderator User" });
 
-    stdToken = jwt.sign({ sub: stdUser.id }, env.JWT_SECRET, { expiresIn: "1h" });
-    modToken = jwt.sign({ sub: modUser.id }, env.JWT_SECRET, { expiresIn: "1h" });
+    stdToken = jwt.sign({ sub: stdUser.id }, env.JWT_ACCESS_SECRET, { expiresIn: "1h" });
+    modToken = jwt.sign({ sub: modUser.id }, env.JWT_ACCESS_SECRET, { expiresIn: "1h" });
 
     // Insert some mock reports
     const [r1] = await db.insert(reports).values({
@@ -50,7 +52,7 @@ describe("Moderation API", () => {
       details: "This is spam",
       status: "open",
     }).returning();
-    openReportId = r1.id;
+    openReportId = r1!.id;
 
     await db.insert(reports).values({
       reporterId: stdUser.id,
