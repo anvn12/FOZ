@@ -148,4 +148,23 @@ describe("FeedPostItem Authenticated Optimistic Reaction", () => {
       expect.any(Object)
     );
   });
+
+  it("should navigate to post details page /posts/:id when post card is clicked", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const cardContent = screen.getByText("Test post content");
+    fireEvent.click(cardContent);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/posts/post-123");
+  });
+
+  it("should NOT navigate to post details page when clicking inside details page", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} isDetailsPage={true} />);
+
+    const cardContent = screen.getByText("Test post content");
+    fireEvent.click(cardContent);
+
+    expect(mockNavigate).not.toHaveBeenCalledWith("/posts/post-123");
+  });
 });
+

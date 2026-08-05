@@ -71,7 +71,7 @@ export function PostPage() {
               <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
                 <div ref={feedRef} className="flex-1 overflow-y-auto divide-y divide-outline-variant [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="border-b border-outline-variant">
-                    <FeedPostItem post={post} />
+                    <FeedPostItem post={post} isDetailsPage={true} />
                   </div>
                   <div className="px-4">
                     <PostSummaryCard postId={post.id} />
