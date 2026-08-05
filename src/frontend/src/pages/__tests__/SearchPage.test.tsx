@@ -82,7 +82,7 @@ describe("SearchPage Component", () => {
     expect(viewAllButtons.length).toBeGreaterThan(0);
     
     // Click header View all
-    fireEvent.click(viewAllButtons[0]);
+    fireEvent.click(viewAllButtons[0]!);
 
     // Should trigger search results display for People
     expect(screen.getByText("People")).toBeDefined();

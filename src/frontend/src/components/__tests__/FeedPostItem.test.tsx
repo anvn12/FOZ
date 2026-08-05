@@ -176,8 +176,9 @@ describe("FeedPostItem Authenticated Optimistic Reaction", () => {
 
     // Simulate onSuccess callback from toggleReaction mutation
     const mutationArgs = mockToggleReaction.mock.calls[0];
-    expect(mutationArgs[0]).toEqual({ targetType: "post", targetId: "post-123", active: false });
-    const options = mutationArgs[1];
+    expect(mutationArgs).toBeDefined();
+    expect(mutationArgs![0]).toEqual({ targetType: "post", targetId: "post-123", active: false });
+    const options = mutationArgs![1];
     options.onSuccess({ active: true, likeCount: 6 });
 
     expect(screen.getByText("6")).toBeDefined();
