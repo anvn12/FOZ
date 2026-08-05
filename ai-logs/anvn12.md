@@ -1001,5 +1001,47 @@
 **Prompt:** "add for you button for guests"
 **Files touched:** `src/frontend/src/pages/HomePage.tsx`
 
+### 2026-08-05 13:03
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when hover on nav bar, there should be a instruction box (like Home, Search...)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:05
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the box should be below the button (there is a gap between), grey background and not 100% opacity (a little bit of transparent)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the box of "More" is out of the view, adjust it (can move it a little bit to the right... to make sure it stays in the view)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:08
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "a little bit close to the button (the current gap is too much)"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:09
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover after 0.5s the box shows, not immediately"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-05 13:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "gap "more" box still big"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+
+
+
+
+
+
 
 

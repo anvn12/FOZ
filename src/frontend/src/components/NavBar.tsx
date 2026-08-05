@@ -128,72 +128,34 @@ export function NavBar() {
 
         {/* Navigation Icons */}
         <div className="flex-1 flex flex-col items-center space-y-8 w-full">
-          <Link
-            to="/"
-            className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors group ${isHomeActive ? "text-primary" : "text-outline hover:text-primary"
-              }`}
-            aria-label="Home"
-          >
-            <svg
-              aria-hidden="true"
-              className="w-7 h-7 group-hover:scale-110 transition-transform"
-              fill="currentColor"
-              viewBox="0 0 24 24"
+          <div className="relative group flex items-center justify-center">
+            <Link
+              to="/"
+              className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors ${isHomeActive ? "text-primary" : "text-outline hover:text-primary"
+                }`}
+              aria-label="Home"
             >
-              <path d="M12 2L2 10.6v11.4h6v-8h8v8h6V10.6L12 2z" />
-            </svg>
-          </Link>
+              <svg
+                aria-hidden="true"
+                className="w-7 h-7 group-hover:scale-110 transition-transform"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2L2 10.6v11.4h6v-8h8v8h6V10.6L12 2z" />
+              </svg>
+            </Link>
+            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 px-2.5 py-1 text-xs font-medium bg-zinc-800/80 text-zinc-100 rounded-md shadow-md backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none whitespace-nowrap z-50">
+              Home
+            </div>
+          </div>
 
-          <Link
-            to="/search"
-            className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors group ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"
-              }`}
-            aria-label="Search"
-          >
-            <svg
-              aria-hidden="true"
-              className="w-7 h-7 group-hover:scale-110 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
+          <div className="relative group flex items-center justify-center">
+            <Link
+              to="/search"
+              className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"
+                }`}
+              aria-label="Search"
             >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" x2="16.65" y1="21" y2="16.65" />
-            </svg>
-          </Link>
-
-          <button
-            onClick={handleCreateClick}
-            className="p-3 rounded-xl hover:bg-surface-container-low transition-colors group text-outline hover:text-primary"
-            aria-label="Create"
-          >
-            <svg
-              aria-hidden="true"
-              className="w-7 h-7 group-hover:scale-110 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <line x1="12" x2="12" y1="5" y2="19" />
-              <line x1="5" x2="19" y1="12" y2="12" />
-            </svg>
-          </button>
-
-          <button
-            onClick={(e) => handleProtectedClick(e, `/profiles/${user?.id}`)}
-            className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors group ${isProfileActive ? "text-primary" : "text-outline hover:text-primary"
-              }`}
-            aria-label="Profile"
-          >
-            {user ? (
-              <ProfileNavBarAvatar userId={user.id} />
-            ) : (
               <svg
                 aria-hidden="true"
                 className="w-7 h-7 group-hover:scale-110 transition-transform"
@@ -204,11 +166,69 @@ export function NavBar() {
                 strokeWidth="2"
                 viewBox="0 0 24 24"
               >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" x2="16.65" y1="21" y2="16.65" />
               </svg>
-            )}
-          </button>
+            </Link>
+            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 px-2.5 py-1 text-xs font-medium bg-zinc-800/80 text-zinc-100 rounded-md shadow-md backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none whitespace-nowrap z-50">
+              Search
+            </div>
+          </div>
+
+          <div className="relative group flex items-center justify-center">
+            <button
+              onClick={handleCreateClick}
+              className="p-3 rounded-xl hover:bg-surface-container-low transition-colors group text-outline hover:text-primary"
+              aria-label="Create"
+            >
+              <svg
+                aria-hidden="true"
+                className="w-7 h-7 group-hover:scale-110 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <line x1="12" x2="12" y1="5" y2="19" />
+                <line x1="5" x2="19" y1="12" y2="12" />
+              </svg>
+            </button>
+            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 px-2.5 py-1 text-xs font-medium bg-zinc-800/80 text-zinc-100 rounded-md shadow-md backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none whitespace-nowrap z-50">
+              Create
+            </div>
+          </div>
+
+          <div className="relative group flex items-center justify-center">
+            <button
+              onClick={(e) => handleProtectedClick(e, `/profiles/${user?.id}`)}
+              className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors ${isProfileActive ? "text-primary" : "text-outline hover:text-primary"
+                }`}
+              aria-label="Profile"
+            >
+              {user ? (
+                <ProfileNavBarAvatar userId={user.id} />
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  className="w-7 h-7 group-hover:scale-110 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              )}
+            </button>
+            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 px-2.5 py-1 text-xs font-medium bg-zinc-800/80 text-zinc-100 rounded-md shadow-md backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none whitespace-nowrap z-50">
+              Profile
+            </div>
+          </div>
         </div>
 
         {/* Bottom Actions — More/Hamburger Menu (Desktop) */}
@@ -248,27 +268,34 @@ export function NavBar() {
             </div>
           )}
 
-          <button
-            onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-            className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors focus:outline-none ${isMoreMenuOpen ? "text-primary" : "text-outline hover:text-primary"
-              }`}
-            aria-label="More"
-          >
-            <svg
-              aria-hidden="true"
-              className="w-7 h-7"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
+          <div className="relative group flex items-center justify-center">
+            <button
+              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+              className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors focus:outline-none ${isMoreMenuOpen ? "text-primary" : "text-outline hover:text-primary"
+                }`}
+              aria-label="More"
             >
-              <line x1="3" x2="21" y1="12" y2="12" />
-              <line x1="3" x2="21" y1="6" y2="6" />
-              <line x1="3" x2="21" y1="18" y2="18" />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                className="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <line x1="3" x2="21" y1="12" y2="12" />
+                <line x1="3" x2="21" y1="6" y2="6" />
+                <line x1="3" x2="21" y1="18" y2="18" />
+              </svg>
+            </button>
+            {!isMoreMenuOpen && (
+              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-xs font-medium bg-zinc-800/80 text-zinc-100 rounded-md shadow-md backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none whitespace-nowrap z-50">
+                More
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
