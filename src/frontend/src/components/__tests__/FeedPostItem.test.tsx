@@ -105,3 +105,47 @@ describe("FeedPostItem Guest Interactions", () => {
     expect(mockToggleRepost).not.toHaveBeenCalled();
   });
 });
+
+describe("FeedPostItem Authenticated Optimistic Reaction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useAuthStore.setState({
+      user: { id: "user-789", email: "test@example.com", role: "standard", status: "active" },
+      accessToken: "fake-token",
+    });
+  });
+
+  const dummyPost = {
+    id: "post-123",
+    authorId: "user-456",
+    content: "Test post content",
+    createdAt: new Date().toISOString(),
+    likeCount: 5,
+    liked: false,
+    reposted: false,
+  };
+
+  it("should update like icon and count optimistically when authenticated user clicks like", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    const likeBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("20.84"))!;
+    expect(likeBtn).toBeDefined();
+
+    // Initial state before click
+    expect(screen.getByText("5")).toBeDefined();
+
+    // Click like
+    fireEvent.click(likeBtn);
+
+    // Optimistic UI updates count immediately to 6 and toggles heart styling
+    expect(screen.getByText("6")).toBeDefined();
+    expect(likeBtn.className).toContain("text-red-500");
+
+    // Check mutation call
+    expect(mockToggleReaction).toHaveBeenCalledWith(
+      { targetType: "post", targetId: "post-123", active: false },
+      expect.any(Object)
+    );
+  });
+});

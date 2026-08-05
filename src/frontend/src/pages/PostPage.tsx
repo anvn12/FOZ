@@ -195,15 +195,38 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     comment.updatedAt && new Date(comment.updatedAt).getTime() - new Date(comment.createdAt).getTime() > 1000
   );
 
+  useEffect(() => {
+    setLiked(Boolean(comment.liked));
+    setLikeCount(Number(comment.likeCount || 0));
+  }, [comment.liked, comment.likeCount]);
+
   const react = useMutation({
-    mutationFn: () => toggleReaction({ targetType: "comment", targetId: comment.id, active: liked }),
+    mutationFn: (targetActive: boolean) => toggleReaction({ targetType: "comment", targetId: comment.id, active: targetActive }),
     onSuccess: async (result: any) => {
-      setLiked(result.active);
-      setLikeCount(result.likeCount);
+      if (result && typeof result.active === "boolean" && typeof result.likeCount === "number") {
+        setLiked(result.active);
+        setLikeCount(result.likeCount);
+      }
       await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
     },
-    onError: showError
+    onError: (err: Error, targetActive: boolean) => {
+      setLiked(targetActive);
+      setLikeCount((prev) => (targetActive ? prev + 1 : Math.max(0, prev - 1)));
+      showError(err);
+    }
   });
+
+  const handleCommentLike = () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    const nextLiked = !prevLiked;
+    const nextCount = nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1);
+
+    setLiked(nextLiked);
+    setLikeCount(nextCount);
+
+    react.mutate(prevLiked);
+  };
 
   const save = useMutation({
     mutationFn: () => updateComment(comment.id, { body }),
@@ -332,7 +355,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
           )}
 
           <div className="mt-2 flex items-center gap-3 text-outline">
-            <button onClick={() => act(() => react.mutate())} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
+            <button onClick={() => act(handleCommentLike)} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
