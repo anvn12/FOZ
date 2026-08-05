@@ -112,7 +112,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   isActive
                     ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30"
                     : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
-                }`}
+                  }`}
               >
                 <span className={isActive ? "text-white" : "text-slate-400"}>
                   {item.icon}

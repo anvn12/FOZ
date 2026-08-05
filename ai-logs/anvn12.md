@@ -982,3 +982,17 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "home icon not black when at home, fix it"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+
+### 2026-08-03 21:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "@[d:\FOZ\foz-logo-polished.png] add this image to the favicon (the one on the tab bar). Can rename the image. Not touch other UI (just add the favicon)"
+**Files touched:** `src/frontend/public/favicon.png`, `src/frontend/index.html`
+
+### 2026-08-04 22:11
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "in TL;DR, instead of display the thunder icon, change it to this svg icon (just icon, remove background)"
+**Files touched:** `src/frontend/src/components/TldrSparkIcon.tsx`, `src/frontend/src/components/PostSummaryCard.tsx`
+
+

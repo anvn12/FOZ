@@ -1,6 +1,7 @@
 import React from "react";
 import { usePostSummary, useRefreshPostSummary } from "#frontend/api/post-summary";
 import { toast } from "react-hot-toast";
+import { TldrSparkIcon } from "./TldrSparkIcon";
 
 interface PostSummaryCardProps {
   postId: string;
@@ -29,9 +30,7 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
     return (
       <div className="my-3 p-3 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 rounded-xl border border-indigo-500/20 shadow-sm flex items-center justify-between">
         <div className="flex items-center space-x-2 text-sm text-indigo-400 font-medium">
-          <svg className="w-5 h-5 text-indigo-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+          <TldrSparkIcon className="w-5 h-5 flex-shrink-0 animate-pulse" />
           <span>Get AI TL;DR Summary & Key Comment Highlights</span>
         </div>
         <button
@@ -74,8 +73,9 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
     <div className="my-3 p-4 bg-slate-900/80 backdrop-blur rounded-xl border border-indigo-500/30 shadow-lg text-slate-200">
       <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
         <div className="flex items-center space-x-2">
-          <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded-md border border-indigo-500/30">
-            TL;DR
+          <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded-md border border-indigo-500/30 flex items-center space-x-1.5">
+            <TldrSparkIcon className="w-3.5 h-3.5 inline-block" />
+            <span>TL;DR</span>
           </span>
         </div>
         <div className="flex items-center space-x-2">
