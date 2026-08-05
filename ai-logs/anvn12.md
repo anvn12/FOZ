@@ -1109,3 +1109,10 @@
 **Prompt:** "remove the between the sort box and input comment box"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
 
+### 2026-08-05 14:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "interact with post (like post...) should not change the current recommendation order. For example, when user like a post, with the For You recommendation, the post move to top of the view, user cannot see the post. Only change when reload the web."
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+

@@ -85,6 +85,54 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
   const toggleReaction = useToggleReaction();
   const toggleRepost = useToggleRepost();
 
+  const updatePostInCache = (targetPostId: string, updates: Record<string, any>) => {
+    queryClient.setQueriesData({ queryKey: ["posts"] }, (oldData: any) => {
+      if (!oldData) return oldData;
+      if (oldData.pages && Array.isArray(oldData.pages)) {
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            items: page.items?.map((item: any) =>
+              item.id === targetPostId ? { ...item, ...updates } : item
+            ),
+          })),
+        };
+      }
+      if (oldData.items && Array.isArray(oldData.items)) {
+        return {
+          ...oldData,
+          items: oldData.items.map((item: any) =>
+            item.id === targetPostId ? { ...item, ...updates } : item
+          ),
+        };
+      }
+      return oldData;
+    });
+  };
+
+  const removePostFromCache = (targetPostId: string) => {
+    queryClient.setQueriesData({ queryKey: ["posts"] }, (oldData: any) => {
+      if (!oldData) return oldData;
+      if (oldData.pages && Array.isArray(oldData.pages)) {
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            items: page.items?.filter((item: any) => item.id !== targetPostId),
+          })),
+        };
+      }
+      if (oldData.items && Array.isArray(oldData.items)) {
+        return {
+          ...oldData,
+          items: oldData.items.filter((item: any) => item.id !== targetPostId),
+        };
+      }
+      return oldData;
+    });
+  };
+
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) {
@@ -103,11 +151,11 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       { targetType: "post", targetId: post.id, active: prevLiked },
       {
         onSuccess: (res: any) => {
-          if (res && typeof res.active === "boolean" && typeof res.likeCount === "number") {
-            setLiked(res.active);
-            setLikeCount(res.likeCount);
-          }
-          queryClient.invalidateQueries({ queryKey: ["posts"] });
+          const finalLiked = res && typeof res.active === "boolean" ? res.active : nextLiked;
+          const finalLikeCount = res && typeof res.likeCount === "number" ? res.likeCount : nextCount;
+          setLiked(finalLiked);
+          setLikeCount(finalLikeCount);
+          updatePostInCache(post.id, { liked: finalLiked, likeCount: finalLikeCount });
         },
         onError: () => {
           setLiked(prevLiked);
@@ -129,12 +177,13 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       navigate("/login");
       return;
     }
+    const nextReposted = !post.reposted;
     toggleRepost.mutate(
       { postId: post.id, active: post.reposted },
       {
         onSuccess: () => {
           toast.success(post.reposted ? "Repost removed" : "Reposted to your profile");
-          queryClient.invalidateQueries({ queryKey: ["posts"] });
+          updatePostInCache(post.id, { reposted: nextReposted });
         },
         onError: () => {
           toast.error("Failed to repost");
@@ -158,7 +207,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       await deletePost(post.id);
       toast.success("Post deleted");
       setShowDeleteDialog(false);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      removePostFromCache(post.id);
     } catch (err: any) {
       toast.error(err.message || "Failed to delete post");
     } finally {

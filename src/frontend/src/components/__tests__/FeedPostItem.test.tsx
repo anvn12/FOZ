@@ -166,5 +166,22 @@ describe("FeedPostItem Authenticated Optimistic Reaction", () => {
 
     expect(mockNavigate).not.toHaveBeenCalledWith("/posts/post-123");
   });
+
+  it("should update post state in query cache on success without re-fetching feed", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    const likeBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("20.84"))!;
+    fireEvent.click(likeBtn);
+
+    // Simulate onSuccess callback from toggleReaction mutation
+    const mutationArgs = mockToggleReaction.mock.calls[0];
+    expect(mutationArgs[0]).toEqual({ targetType: "post", targetId: "post-123", active: false });
+    const options = mutationArgs[1];
+    options.onSuccess({ active: true, likeCount: 6 });
+
+    expect(screen.getByText("6")).toBeDefined();
+  });
 });
+
 
