@@ -1085,3 +1085,9 @@
 **Prompt:** "on Comment: Shift enter is newline, enter is submit"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
 
+### 2026-08-05 13:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make sure that on mobile, enter is a new line, only click submit button is submit the comment"
+**Files touched:** `src/frontend/src/utils/device.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+

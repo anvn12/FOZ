@@ -18,6 +18,7 @@ import { useProfile } from "#frontend/api/profile";
 import { ExpandableText } from "#frontend/components/ExpandableText";
 
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
+import { isMobileDevice } from "#frontend/utils/device";
 
 function showError(error: Error) { toast.error(error.message || "Something went wrong. Please try again."); }
 
@@ -106,6 +107,7 @@ export function PostPage() {
                           }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                              if (isMobileDevice()) return;
                               e.preventDefault();
                               if (!user) return navigate("/login");
                               if (draft.trim() && !create.isPending) {
@@ -356,6 +358,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                 onChange={(e) => setBody(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    if (isMobileDevice()) return;
                     e.preventDefault();
                     if (body.trim() && !save.isPending) {
                       save.mutate();
@@ -424,6 +427,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                        if (isMobileDevice()) return;
                         e.preventDefault();
                         if (replyDraft.trim() && !reply.isPending) {
                           reply.mutate();
