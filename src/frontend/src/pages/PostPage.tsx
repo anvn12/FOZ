@@ -68,9 +68,32 @@ export function PostPage() {
     return () => document.removeEventListener("mousedown", handler);
   }, [showSortMenu]);
 
+  const orderRef = useRef<string[]>([]);
+  const prevSortModeRef = useRef<SortMode>(sortMode);
+
   const roots = useMemo(() => {
-    const items = (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId);
-    return sortComments(items, sortMode);
+    const rawItems = (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId);
+    const itemMap = new Map(rawItems.map((item) => [item.id, item]));
+
+    if (prevSortModeRef.current !== sortMode || orderRef.current.length === 0) {
+      prevSortModeRef.current = sortMode;
+      const sorted = sortComments(rawItems, sortMode);
+      orderRef.current = sorted.map((item) => item.id);
+      return sorted;
+    }
+
+    const existingOrder = orderRef.current.filter((id) => itemMap.has(id));
+    const newItems = rawItems.filter((item) => !orderRef.current.includes(item.id));
+
+    if (newItems.length > 0) {
+      const sortedNew = sortComments(newItems, sortMode);
+      const newIds = sortedNew.map((item) => item.id);
+      orderRef.current = [...newIds, ...existingOrder];
+    } else {
+      orderRef.current = existingOrder;
+    }
+
+    return orderRef.current.map((id) => itemMap.get(id)!).filter(Boolean);
   }, [commentsQuery.data, sortMode]);
 
   return (
@@ -283,14 +306,26 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     setLikeCount(Number(comment.likeCount || 0));
   }, [comment.liked, comment.likeCount]);
 
+  const updateCommentInCache = (targetCommentId: string, updates: Record<string, any>) => {
+    queryClient.setQueriesData({ queryKey: ["comments", postId] }, (oldData: any) => {
+      if (!oldData || !oldData.items) return oldData;
+      return {
+        ...oldData,
+        items: oldData.items.map((item: any) =>
+          item.id === targetCommentId ? { ...item, ...updates } : item
+        ),
+      };
+    });
+  };
+
   const react = useMutation({
     mutationFn: (targetActive: boolean) => toggleReaction({ targetType: "comment", targetId: comment.id, active: targetActive }),
-    onSuccess: async (result: any) => {
-      if (result && typeof result.active === "boolean" && typeof result.likeCount === "number") {
-        setLiked(result.active);
-        setLikeCount(result.likeCount);
-      }
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    onSuccess: (result: any) => {
+      const finalLiked = result && typeof result.active === "boolean" ? result.active : !liked;
+      const finalLikeCount = result && typeof result.likeCount === "number" ? result.likeCount : likeCount;
+      setLiked(finalLiked);
+      setLikeCount(finalLikeCount);
+      updateCommentInCache(comment.id, { liked: finalLiked, likeCount: finalLikeCount });
     },
     onError: (err: Error, targetActive: boolean) => {
       setLiked(targetActive);
