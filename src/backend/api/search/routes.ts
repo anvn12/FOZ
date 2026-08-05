@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { z } from "zod";
-import { ilike, eq, and } from "drizzle-orm";
+import { ilike, eq, and, desc, sql } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
-import { posts, profiles, userAccounts } from "#backend/db/schema/index.js";
+import { posts, profiles, userAccounts, reactions, comments } from "#backend/db/schema/index.js";
+import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
 
 const SearchQuerySchema = z.object({
   q: z
@@ -14,6 +15,111 @@ const SearchQuerySchema = z.object({
 });
 
 const router = Router();
+
+router.get("/discovery", async (req, res, next) => {
+  try {
+    const { limit } = SearchDiscoveryQuerySchema.parse(req.query);
+    const maxLimit = Math.min(limit, 10);
+
+    // 1. Suggested Creators: Top 10 most active creators ordered by active post count
+    const rawCreators = await db
+      .select({
+        id: profiles.id,
+        userAccountId: profiles.userAccountId,
+        displayName: profiles.displayName,
+        bio: profiles.bio,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(profiles)
+      .innerJoin(userAccounts, eq(profiles.userAccountId, userAccounts.id))
+      .where(eq(userAccounts.status, "active"))
+      .orderBy(
+        desc(
+          sql`(SELECT COUNT(*)::int FROM ${posts} WHERE ${posts.authorId} = ${profiles.userAccountId} AND ${posts.lifecycleState} = 'active')`
+        ),
+        desc(profiles.createdAt)
+      )
+      .limit(maxLimit);
+
+    // 2. Trending Discussions: Top 10 active public posts ordered by total engagement (likes + comments)
+    const activePosts = await db
+      .select({
+        id: posts.id,
+        authorId: posts.authorId,
+        content: posts.content,
+        createdAt: posts.createdAt,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(posts)
+      .innerJoin(profiles, eq(posts.authorId, profiles.userAccountId))
+      .innerJoin(userAccounts, eq(posts.authorId, userAccounts.id))
+      .where(
+        and(
+          eq(posts.lifecycleState, "active"),
+          eq(posts.visibilityState, "public"),
+          eq(userAccounts.status, "active")
+        )
+      )
+      .orderBy(
+        desc(
+          sql`(
+            (SELECT COUNT(*)::int FROM ${reactions} WHERE ${reactions.targetType} = 'post' AND ${reactions.targetId} = ${posts.id}) +
+            (SELECT COUNT(*)::int FROM ${comments} WHERE ${comments.postId} = ${posts.id} AND ${comments.lifecycleState} = 'active')
+          )`
+        ),
+        desc(posts.createdAt)
+      )
+      .limit(maxLimit);
+
+    const discussions = await Promise.all(
+      activePosts.map(async (p) => {
+        // Fetch like count
+        const [likeRes] = await db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(reactions)
+          .where(and(eq(reactions.targetType, "post"), eq(reactions.targetId, p.id)));
+
+        // Fetch comment count
+        const [commentRes] = await db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(comments)
+          .where(and(eq(comments.postId, p.id), eq(comments.lifecycleState, "active")));
+
+        const authorHandle = `@${(p.displayName || "user").toLowerCase().replace(/\s+/g, "")}`;
+
+        return {
+          id: p.id,
+          authorId: p.authorId,
+          authorName: p.displayName || "Anonymous",
+          authorHandle,
+          authorAvatarUrl: p.avatarUrl,
+          content: p.content || "",
+          createdAt: p.createdAt ? p.createdAt.toISOString() : new Date().toISOString(),
+          likeCount: likeRes?.count ?? 0,
+          commentCount: commentRes?.count ?? 0,
+        };
+      })
+    );
+
+    // 3. Trending Topics: Extracted tags or defaults
+    const defaultTopics = [
+      { id: "t1", name: "Design Systems", tag: "#DesignSystems" },
+      { id: "t2", name: "AI Architecture", tag: "AI Architecture" },
+      { id: "t3", name: "Minimalism", tag: "#Minimalism" },
+      { id: "t4", name: "UI Engineering", tag: "UI Engineering" },
+      { id: "t5", name: "Future of Work", tag: "Future of Work" },
+    ];
+
+    res.json({
+      topics: defaultTopics,
+      creators: rawCreators,
+      discussions,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
@@ -63,6 +169,7 @@ router.get("/", async (req, res, next) => {
             eq(posts.visibilityState, "public")
           )
         )
+        .orderBy(desc(posts.createdAt))
         .limit(20);
 
       postItems = matchedPosts.map((p) => ({
