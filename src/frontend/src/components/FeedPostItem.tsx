@@ -228,7 +228,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       )}
       <div className="flex items-start gap-3">
         {/* Avatar column */}
-        <div className="flex-shrink-0 relative">
+        <Link to={`/profiles/${post.authorId}`} className="flex-shrink-0 relative block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -236,7 +236,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Content details */}
         <div className="flex-1 min-w-0">

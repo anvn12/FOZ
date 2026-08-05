@@ -1061,4 +1061,11 @@
 **Prompt:** "hover image not change the image display"
 **Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
 
+### 2026-08-05 13:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "click profile picture (on post) should direct to profile, just like when click to display name"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+
 
