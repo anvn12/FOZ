@@ -63,6 +63,14 @@ export function FeedPostItem({ post }: { post: any }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [showOptions]);
   
+  const [liked, setLiked] = React.useState(Boolean(post.liked));
+  const [likeCount, setLikeCount] = React.useState(Number(post.likeCount || 0));
+
+  useEffect(() => {
+    setLiked(Boolean(post.liked));
+    setLikeCount(Number(post.likeCount || 0));
+  }, [post.liked, post.likeCount]);
+
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
   const toggleRepost = useToggleRepost();
@@ -73,13 +81,27 @@ export function FeedPostItem({ post }: { post: any }) {
       navigate("/login");
       return;
     }
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    const nextLiked = !prevLiked;
+    const nextCount = nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1);
+
+    setLiked(nextLiked);
+    setLikeCount(nextCount);
+
     toggleReaction.mutate(
-      { targetType: "post", targetId: post.id, active: post.liked },
+      { targetType: "post", targetId: post.id, active: prevLiked },
       {
-        onSuccess: () => {
+        onSuccess: (res: any) => {
+          if (res && typeof res.active === "boolean" && typeof res.likeCount === "number") {
+            setLiked(res.active);
+            setLikeCount(res.likeCount);
+          }
           queryClient.invalidateQueries({ queryKey: ["posts"] });
         },
         onError: () => {
+          setLiked(prevLiked);
+          setLikeCount(prevCount);
           toast.error("Failed to like post");
         }
       }
@@ -252,11 +274,11 @@ export function FeedPostItem({ post }: { post: any }) {
 
           {/* Reaction Row */}
           <div className="mt-3 flex items-center gap-3 text-outline">
-            <button onClick={handleLike} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${post.liked ? 'text-red-500' : 'hover:text-primary'}`}>
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={post.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <button onClick={handleLike} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? 'text-red-500' : 'hover:text-primary'}`}>
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
-              {post.likeCount > 0 && <span className="text-[13px]">{post.likeCount.toLocaleString()}</span>}
+              {likeCount > 0 && <span className="text-[13px]">{likeCount.toLocaleString()}</span>}
             </button>
             <button onClick={handleComment} className="min-w-[54px] flex items-center gap-1.5 hover:text-primary transition-colors group">
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

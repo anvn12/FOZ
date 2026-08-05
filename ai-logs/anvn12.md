@@ -1037,6 +1037,13 @@
 **Prompt:** "gap "more" box still big"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`
 
+### 2026-08-05 13:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The current project like post or like comment takes too long to change the icon status because the frontend renders based on the status of backend. Change it so that frontend change the icon, send the request to backend. But make sure that the liked is still logically correct. This action is just for quick response on client side"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+
 
 
 
