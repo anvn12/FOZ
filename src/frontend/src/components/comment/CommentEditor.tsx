@@ -1,3 +1,5 @@
+import { isMobileDevice } from "#frontend/utils/device";
+
 export function CommentEditor({
   value,
   onChange,
@@ -18,6 +20,7 @@ export function CommentEditor({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+            if (isMobileDevice()) return;
             e.preventDefault();
             if (value.trim() && !disabled) {
               onSave();

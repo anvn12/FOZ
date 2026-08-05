@@ -18,6 +18,8 @@ import { useProfile } from "#frontend/api/profile";
 import { ExpandableText } from "#frontend/components/ExpandableText";
 
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
+import { isMobileDevice } from "#frontend/utils/device";
+import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
 
 function showError(error: Error) { toast.error(error.message || "Something went wrong. Please try again."); }
 
@@ -51,7 +53,25 @@ export function PostPage() {
     onError: showError
   });
 
-  const roots = useMemo(() => (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId), [commentsQuery.data]);
+  const [sortMode, setSortMode] = useState<SortMode>("top");
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const sortMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSortMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showSortMenu]);
+
+  const roots = useMemo(() => {
+    const items = (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId);
+    return sortComments(items, sortMode);
+  }, [commentsQuery.data, sortMode]);
 
   return (
     <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
@@ -78,8 +98,63 @@ export function PostPage() {
                     <PostSummaryCard postId={post.id} />
                   </div>
 
-                  {/* Comment Input */}
-                  <div className="px-4 py-3 border-b border-outline-variant bg-surface">
+                  {/* Sort Comment & Comment Input Section */}
+                  <div className="px-4 pt-2.5 pb-3 border-b border-outline-variant bg-surface flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="relative" ref={sortMenuRef}>
+                        <button
+                          type="button"
+                          onClick={() => setShowSortMenu((prev) => !prev)}
+                          className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                          aria-expanded={showSortMenu}
+                          aria-haspopup="menu"
+                        >
+                          <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <span>{sortMode === "top" ? "Top" : "Recent"}</span>
+                          <svg className={`w-3.5 h-3.5 text-secondary transition-transform ${showSortMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </button>
+
+                        {showSortMenu && (
+                          <div className="absolute left-0 top-full mt-1 z-30 min-w-[160px] rounded-2xl border border-outline-variant bg-surface-container-lowest p-1.5 shadow-xl animate-foz-pop">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSortMode("top");
+                                setShowSortMenu(false);
+                              }}
+                              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                            >
+                              <span>Top</span>
+                              {sortMode === "top" && (
+                                <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSortMode("recent");
+                                setShowSortMenu(false);
+                              }}
+                              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                            >
+                              <span>Recent</span>
+                              {sortMode === "recent" && (
+                                <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     <form onSubmit={(e) => e.preventDefault()} className="w-full">
                       <div className="relative w-full bg-surface-container rounded-2xl px-4 py-2.5 transition-all focus-within:ring-1 focus-within:ring-outline min-h-[44px]">
                         <textarea
@@ -106,6 +181,7 @@ export function PostPage() {
                           }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                              if (isMobileDevice()) return;
                               e.preventDefault();
                               if (!user) return navigate("/login");
                               if (draft.trim() && !create.isPending) {
@@ -218,7 +294,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     },
     onError: (err: Error, targetActive: boolean) => {
       setLiked(targetActive);
-      setLikeCount((prev) => (targetActive ? prev + 1 : Math.max(0, prev - 1)));
+      setLikeCount((prev: number) => (targetActive ? prev + 1 : Math.max(0, prev - 1)));
       showError(err);
     }
   });
@@ -356,6 +432,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                 onChange={(e) => setBody(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    if (isMobileDevice()) return;
                     e.preventDefault();
                     if (body.trim() && !save.isPending) {
                       save.mutate();
@@ -424,6 +501,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                        if (isMobileDevice()) return;
                         e.preventDefault();
                         if (replyDraft.trim() && !reply.isPending) {
                           reply.mutate();

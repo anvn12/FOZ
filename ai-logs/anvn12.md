@@ -1085,3 +1085,27 @@
 **Prompt:** "on Comment: Shift enter is newline, enter is submit"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
 
+### 2026-08-05 13:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make sure that on mobile, enter is a new line, only click submit button is submit the comment"
+**Files touched:** `src/frontend/src/utils/device.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
+### 2026-08-05 13:57
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add the sort comment (algorithm just like the post). Default is Top (like for you in post). Recent is like latest post"
+**Files touched:** `src/frontend/src/utils/comment-sorting.ts`, `src/frontend/src/utils/__tests__/comment-sorting.test.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+### 2026-08-05 14:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "that sort box should be on top of the comment input box "
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:03
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the between the sort box and input comment box"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
