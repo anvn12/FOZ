@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { ReportModal } from "./ReportModal";
 import { HorizontalMediaGallery } from "./HorizontalMediaGallery";
 import { useAuthStore } from "#frontend/stores/auth";
+import { ExpandableText } from "./ExpandableText";
 
 import { deletePost } from "#frontend/api/interactions";
 
@@ -279,9 +280,12 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
               )}
             </div>
           </div>
-          <div className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary">
-            {post.content}
-          </div>
+          <ExpandableText
+            text={post.content}
+            maxLength={280}
+            maxLines={4}
+            className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary"
+          />
 
           <HorizontalMediaGallery attachments={post.attachments} />
 

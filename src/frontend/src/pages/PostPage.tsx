@@ -15,6 +15,7 @@ import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { useProfile } from "#frontend/api/profile";
+import { ExpandableText } from "#frontend/components/ExpandableText";
 
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
 
@@ -351,7 +352,12 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
               </div>
             </div>
           ) : (
-            <p className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary">{comment.body}</p>
+            <ExpandableText
+              text={comment.body}
+              maxLength={240}
+              maxLines={4}
+              className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary"
+            />
           )}
 
           <div className="mt-2 flex items-center gap-3 text-outline">
