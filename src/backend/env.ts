@@ -47,6 +47,6 @@ export type Env = z.infer<typeof schema>;
 
 export function getFrontendUrl(): string {
   if (env.FRONTEND_URL) return env.FRONTEND_URL.replace(/\/+$/, "");
-  const firstOrigin = env.CORS_ORIGIN.split(",")[0].trim();
+  const firstOrigin = (env.CORS_ORIGIN.split(",")[0] || "http://localhost:5173").trim();
   return firstOrigin.replace(/\/+$/, "");
 }
