@@ -13,7 +13,7 @@ const boolish = z
 const cleanString = z
   .string()
   .optional()
-  .transform((v) => (v ? v.replace(/^["']|["']$/g, "").trim() : undefined));
+  .transform((v) => (v ? v.replace(/[\"']|[\"']$/g, "").trim() : undefined));
 
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -33,6 +33,7 @@ const schema = z.object({
   GOOGLE_CLIENT_SECRET: cleanString,
   GOOGLE_CALLBACK_URL: cleanString.transform((v) => v || "http://localhost:4000/api/v1/auth/google/callback"),
   FRONTEND_URL: cleanString,
+  VERCEL_URL: cleanString.optional(),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -45,8 +46,20 @@ if (!parsed.success) {
 export const env = parsed.data;
 export type Env = z.infer<typeof schema>;
 
+/**
+ * Returns the base URL of the frontend application.
+ * Priority order:
+ *   1. FRONTEND_URL (explicitly set by the user)
+ *   2. VERCEL_URL (auto‑provided by Vercel deployments)
+ *   3. First entry of CORS_ORIGIN (commonly localhost during dev)
+ *   4. Fallback to http://localhost:5173
+ */
 export function getFrontendUrl(): string {
   if (env.FRONTEND_URL) return env.FRONTEND_URL.replace(/\/+$/, "");
+  if (env.VERCEL_URL) {
+    const url = env.VERCEL_URL.startsWith("http") ? env.VERCEL_URL : `https://${env.VERCEL_URL}`;
+    return url.replace(/\/+$/, "");
+  }
   const firstOrigin = (env.CORS_ORIGIN.split(",")[0] || "http://localhost:5173").trim();
   return firstOrigin.replace(/\/+$/, "");
 }
