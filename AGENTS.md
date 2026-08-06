@@ -20,5 +20,5 @@ templates, extensions, workflows) lives **in this directory** —
 first for binding project principles and the technology stack, and use
 `.specify/templates/` for plan/spec/tasks/checklist scaffolding.
 
-**Current plan:** `specs/013-you-feed/plan.md` — You Feed feature
+**Current plan:** `specs/022-settings-page/plan.md` — Settings Page feature
 <!-- SPECKIT END -->
