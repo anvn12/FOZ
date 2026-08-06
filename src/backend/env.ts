@@ -31,6 +31,8 @@ const schema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
   GOOGLE_CLIENT_ID: cleanString,
   GOOGLE_CLIENT_SECRET: cleanString,
+  // Render provides the external hostname via environment variable
+  RENDER_EXTERNAL_HOSTNAME: cleanString.optional(),
   GOOGLE_CALLBACK_URL: cleanString.transform((v) => v || "http://localhost:4000/api/v1/auth/google/callback"),
   FRONTEND_URL: cleanString,
   VERCEL_URL: cleanString.optional(),
@@ -51,13 +53,21 @@ export type Env = z.infer<typeof schema>;
  * Priority order:
  *   1. FRONTEND_URL (explicitly set by the user)
  *   2. VERCEL_URL (auto‑provided by Vercel deployments)
- *   3. First entry of CORS_ORIGIN (commonly localhost during dev)
- *   4. Fallback to http://localhost:5173
+ *   3. RENDER_EXTERNAL_HOSTNAME (auto-provided by Render deployments)
+ *   4. First entry of CORS_ORIGIN (commonly localhost during dev)
+ *   5. Fallback to http://localhost:5173
  */
 export function getFrontendUrl(): string {
-  if (env.FRONTEND_URL) return env.FRONTEND_URL.replace(/\/+$/, "");
+  if (env.FRONTEND_URL) {
+    const url = env.FRONTEND_URL.startsWith("http") ? env.FRONTEND_URL : `https://${env.FRONTEND_URL}`;
+    return url.replace(/\/+$/, "");
+  }
   if (env.VERCEL_URL) {
     const url = env.VERCEL_URL.startsWith("http") ? env.VERCEL_URL : `https://${env.VERCEL_URL}`;
+    return url.replace(/\/+$/, "");
+  }
+  if (env.RENDER_EXTERNAL_HOSTNAME) {
+    const url = env.RENDER_EXTERNAL_HOSTNAME.startsWith("http") ? env.RENDER_EXTERNAL_HOSTNAME : `https://${env.RENDER_EXTERNAL_HOSTNAME}`;
     return url.replace(/\/+$/, "");
   }
   const firstOrigin = (env.CORS_ORIGIN.split(",")[0] || "http://localhost:5173").trim();
