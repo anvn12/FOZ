@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Log in to FOZ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Montserrat:wght@400;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#dbb8ff",
+                      "on-secondary": "#480082",
+                      "inverse-primary": "#0059c7",
+                      "secondary-fixed": "#efdbff",
+                      "on-error": "#690005",
+                      "outline": "#8c90a0",
+                      "on-tertiary-fixed-variant": "#004d67",
+                      "on-secondary-container": "#e3c5ff",
+                      "secondary-fixed-dim": "#dbb8ff",
+                      "surface-dim": "#111318",
+                      "tertiary-fixed": "#c2e8ff",
+                      "tertiary": "#75d1ff",
+                      "on-tertiary-fixed": "#001e2b",
+                      "primary-container": "#528dff",
+                      "surface-container-low": "#1a1c20",
+                      "on-secondary-fixed": "#2b0052",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed": "#001944",
+                      "on-background": "#e2e2e8",
+                      "error-container": "#93000a",
+                      "primary": "#afc6ff",
+                      "on-surface-variant": "#c2c6d7",
+                      "surface-container": "#1e2024",
+                      "on-secondary-fixed-variant": "#6600b6",
+                      "inverse-surface": "#e2e2e8",
+                      "surface-variant": "#333539",
+                      "surface-tint": "#afc6ff",
+                      "on-tertiary": "#003548",
+                      "on-primary-fixed-variant": "#004299",
+                      "surface": "#f9f9ff",
+                      "secondary-container": "#8000e2",
+                      "outline-variant": "#424754",
+                      "on-primary": "#002d6d",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#282a2e",
+                      "on-surface": "#1e2024",
+                      "tertiary-fixed-dim": "#75d1ff",
+                      "primary-fixed": "#d9e2ff",
+                      "background": "#f9f9ff",
+                      "on-primary-container": "#00275f",
+                      "surface-bright": "#f9f9ff",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#002e3f",
+                      "inverse-on-surface": "#2f3035",
+                      "tertiary-container": "#009ccd",
+                      "primary-fixed-dim": "#afc6ff",
+                      "surface-container-highest": "#333539"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "split-ratio": "0.5",
+                      "margin-mobile": "20px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Montserrat"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Montserrat"
+                      ],
+                      "headline-lg": [
+                              "Montserrat"
+                      ],
+                      "display-lg": [
+                              "Montserrat"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "72px",
+                              {
+                                      "lineHeight": "80px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+        
+        .input-glass {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .input-glass:focus {
+            border-color: #2E7DFF;
+            box-shadow: 0 0 15px rgba(46, 125, 255, 0.1);
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #2E7DFF 0%, #9D3BFF 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(46, 125, 255, 0.3);
+        }
+        
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #1e2024;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Shader -->
+<!-- Top Navigation (Brand Anchor) -->
+<nav class="w-full absolute top-0 left-0 z-50 bg-transparent flex justify-between items-center px-margin-mobile md:px-margin-desktop py-6">
+<div class="flex items-center gap-4">
+<img alt="FOZ Logo" class="h-10 w-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG2dtFpXOaoguUWWzA8emJhKPboHhLcxZslQ8tGT_lLFplkcqBDhOVkg32jQ8sIExp8wPgKIfaj8osR-leaC-yKpJ568k9ZF__Zm02prCaDwMlNcHQkxkar598Mu0V93Xx8-RYfiC1TGb1IvRIQsCK9IEKTbpdSuBrAfNg5-Q7GZWzqJZ33BXuuu0RGDpBHubPKbKP7mC221iIV-WHgtMPtarWBuWSMLVAKeBw4pkKj2vhv8L7gjCo0j0Jh95OB0o-8w"/>
+<span class="text-headline-lg font-headline-lg font-black text-primary tracking-tighter">FOZ</span>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col md:flex-row w-full h-screen relative z-10 items-center justify-center pt-32">
+<!-- Left Half: Branding & Carousel -->
+<div class="hidden md:flex w-1/2 h-full flex-col justify-center px-margin-desktop relative items-center">
+<div class="max-w-xl z-10">
+<h1 class="text-display-lg font-display-lg mb-6 text-on-surface">
+                    Focus on <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Zillions.</span>
+</h1>
+<p class="text-body-lg font-body-lg mb-12 text-on-surface">
+                    Explore the things you love, connect with the community, and discover new insights in real-time.
+                </p>
+<!-- Interactive Carousel -->
+<div class="relative h-32 w-full max-w-md" id="trending-carousel">
+<div class="carousel-item glass-panel rounded-xl p-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 bg-tertiary text-on-surface text-label-md font-label-md rounded-full">Trending</span>
+<span class="text-label-md font-label-md text-on-surface">Just now</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface">Top 10 productivity hacks for 2024 to streamline your workflow.</p>
+</div>
+<div class="carousel-item glass-panel rounded-xl p-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 bg-secondary text-on-secondary text-label-md font-label-md rounded-full">Market</span>
+<span class="text-label-md font-label-md text-on-surface">2h ago</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface">The rise of AI in fintech: What you need to know for the next quarter.</p>
+</div>
+<div class="carousel-item glass-panel rounded-xl p-6 active">
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 bg-primary text-on-primary text-label-md font-label-md rounded-full">Community</span>
+<span class="text-label-md font-label-md text-on-surface">5h ago</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface">New discussion on global sustainability initiatives gaining traction.</p>
+</div>
+</div>
+<!-- Carousel Controls -->
+<div class="flex gap-2 mt-6">
+<button class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-black/5 transition-colors" onclick="prevSlide()">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<button class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-black/5 transition-colors" onclick="nextSlide()">
+<span class="material-symbols-outlined text-on-surface">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Half: Login Card -->
+<div class="w-full md:w-1/2 h-full flex items-center justify-center px-margin-mobile md:px-margin-desktop flex-col">
+<div class="glass-panel w-full max-w-md rounded-xl p-8 md:p-10 shadow-xl relative z-10">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-8 text-center">Log in to FOZ</h2>
+<form class="space-y-6">
+<div>
+<label class="sr-only" for="email">Email address or mobile number</label>
+<input class="w-full px-4 py-3 rounded-lg input-glass text-on-surface text-body-md font-body-md placeholder-on-surface" id="email" placeholder="Email address or mobile number" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="password">Password</label>
+<input class="w-full px-4 py-3 rounded-lg input-glass text-on-surface text-body-md font-body-md placeholder-on-surface" id="password" placeholder="Password" type="password"/>
+</div>
+<button class="w-full py-3 rounded-lg btn-gradient text-white text-headline-md font-headline-md !text-lg !font-bold mt-2" type="button">
+                        Log in
+                    </button>
+</form>
+<div class="mt-6 text-center">
+<a class="text-primary hover:text-tertiary transition-colors text-body-md font-body-md" href="#">Forgotten password?</a>
+</div>
+<div class="mt-8 pt-8 border-t border-black/5 text-center">
+<button class="w-full py-3 rounded-lg btn-glass text-on-surface text-body-md font-body-md font-bold hover:text-primary transition-colors" type="button">
+                        Create new account
+                    </button>
+</div>
+<div class="mt-6 flex justify-center items-center gap-2 opacity-50">
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Brand Anchor - Suppressed for focus journey, but included for completeness if needed based on strict layout) -->
+<!-- Navigation shell suppressed due to linear/transactional intent (Login page) -->
+<script>
+        // Simple Carousel Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto advance
+        setInterval(nextSlide, 5000);
+    </script>
+</body></html>
