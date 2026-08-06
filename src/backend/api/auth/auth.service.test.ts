@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("#backend/db/repositories/users.js", () => ({
   findUserByEmail: vi.fn(),
+  findUserByUsername: vi.fn(),
   getUserById: vi.fn(),
   createUserWithProfile: vi.fn(),
   updatePasswordHash: vi.fn(),

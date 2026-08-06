@@ -18,6 +18,7 @@ describe("Hashtag Unit & Integration Tests", () => {
     let testPostId: string;
 
     beforeAll(async () => {
+      await db.execute(sql`ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS username TEXT;`);
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS hashtags (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -43,6 +44,7 @@ describe("Hashtag Unit & Integration Tests", () => {
         .insert(userAccounts)
         .values({
           email: "hashtag-tester@foz.app",
+          username: "hashtag_tester",
           passwordHash: "hash",
           role: "standard",
           status: "active",

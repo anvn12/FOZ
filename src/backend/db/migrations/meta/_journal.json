@@ -28,7 +28,13 @@
       "version": "7",
       "when": 1786000002000,
       "tag": "0008_username_column",
-      "tag": "0008_hashtags",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786000003000,
+      "tag": "0009_hashtags",
       "breakpoints": true
     }
   ]
