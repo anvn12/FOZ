@@ -82,10 +82,10 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
         updatedAt: new Date(),
         passwordHash: "ignored",
       },
-      profile: { id: "p1", userAccountId: "u1", displayName: "u1", bio: null, avatarUrl: null, location: null, website: null, createdAt: new Date(), updatedAt: new Date() },
+      profile: { id: "p1", userAccountId: "u1", username: "u1", displayName: "u1", bio: null, avatarUrl: null, location: null, website: null, createdAt: new Date(), updatedAt: new Date() },
     });
 
-    const session = await register({ email: "[email protected]", password: "abcdefgh" });
+    const session = await register({ email: "[email protected]", password: "abcdefgh", username: "u1", displayName: "User 1", location: "Loc", website: "https://foz.dev" });
 
     // register() returns the full AuthResponse (user + accessToken)
     const auth = session.auth as { user: { id: string; email: string }; accessToken: string };
@@ -109,7 +109,7 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     } as never);
-    await expect(register({ email: "[email protected]", password: "abcdefgh" })).rejects.toBeInstanceOf(DuplicateEmailError);
+    await expect(register({ email: "[email protected]", password: "abcdefgh", username: "u1", displayName: "User 1", location: "Loc", website: "https://foz.dev" })).rejects.toBeInstanceOf(DuplicateEmailError);
   });
 });
 

@@ -5,7 +5,7 @@ import { createUserWithProfile } from "#backend/db/repositories/users.js";
 async function registerAndGetToken(email = "user@example.com"): Promise<{ accessToken: string; userId: string }> {
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, password: "password123" });
+    .send({ email, password: "password123", username: `u${Math.random().toString(36).slice(2, 8)}`, displayName: "Test User", location: "loc", website: "https://foz.dev" });
   expect(res.status).toBe(201);
   return {
     accessToken: res.body.accessToken,
@@ -31,6 +31,7 @@ describe("Profile Management API Integration Tests", () => {
       const { profile } = await createUserWithProfile({
         email: "testprofile@example.com",
         passwordHash: "somehashedpassword",
+        username: "testprofile",
         displayName: "Alice",
       });
 

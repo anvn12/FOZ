@@ -79,6 +79,12 @@ export function changePassword(input: ChangePasswordRequest) {
 export function useRegister() {
   return useMutation({
     mutationFn: register,
+    onSuccess: (data) => {
+      useAuthStore.getState().setSession({
+        user: data.user as AuthUser,
+        accessToken: data.accessToken,
+      });
+    },
   });
 }
 

@@ -33,7 +33,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
       })
       .returning();
     adminUser = u1!;
-    await db.insert(profiles).values({ userAccountId: adminUser.id, displayName: "System Admin" });
+    await db.insert(profiles).values({ userAccountId: adminUser.id, username: "sysadmin", displayName: "System Admin" });
 
     // Create a Standard User
     const p2 = await hash("pass123", 10);
@@ -47,7 +47,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
       })
       .returning();
     stdUser = u2!;
-    await db.insert(profiles).values({ userAccountId: stdUser.id, displayName: "Standard Member" });
+    await db.insert(profiles).values({ userAccountId: stdUser.id, username: "stdmember", displayName: "Standard Member" });
   });
 
   it("createAuditLog and getAuditLogs should record and query logs", async () => {
