@@ -32,9 +32,6 @@ const schema = z.object({
   GOOGLE_CLIENT_ID: cleanString,
   GOOGLE_CLIENT_SECRET: cleanString,
   GOOGLE_CALLBACK_URL: cleanString.transform((v) => v || "http://localhost:4000/api/v1/auth/google/callback"),
-  FACEBOOK_APP_ID: cleanString,
-  FACEBOOK_APP_SECRET: cleanString,
-  FACEBOOK_CALLBACK_URL: cleanString.transform((v) => v || "http://localhost:4000/api/v1/auth/facebook/callback"),
 });
 
 const parsed = schema.safeParse(process.env);

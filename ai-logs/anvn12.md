@@ -1706,3 +1706,15 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "/07-speckit.implement"
 **Files touched:** `src/frontend/src/index.css`, `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `specs/020-mobile-login-redesign/tasks.md`
+
+### 2026-08-06 18:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "deploy vercal fails: TS5097, TS2769, TS2554, TS2345 errors"
+**Files touched:** `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/services/social-auth.service.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 18:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the facebook auth"
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/env.ts`, `src/backend/services/oauth-providers.service.ts`, `src/shared/schemas/social-auth.ts`, `src/backend/db/schema/user-social-links.ts`, `src/frontend/src/api/auth.ts`, `src/backend/__tests__/integration/auth.social.test.ts`

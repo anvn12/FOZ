@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const socialProviderEnum = z.enum(["google", "facebook"]);
+export const socialProviderEnum = z.enum(["google"]);
 export type SocialProvider = z.infer<typeof socialProviderEnum>;
 
 export const socialAuthCallbackSchema = z.object({

@@ -75,11 +75,14 @@ export async function processSocialAuth(input: SocialProfileInput) {
       });
     } else {
       // 3. Create new user account and profile
+      const userEmail: string = email;
+      const finalDisplayName: string = displayName || userEmail.split("@")[0] || "User";
+
       const result = await db.transaction(async (tx) => {
         const [user] = await tx
           .insert(userAccounts)
           .values({
-            email: email.trim().toLowerCase(),
+            email: userEmail.trim().toLowerCase(),
             passwordHash: "", // Passwordless social user
             role: "standard",
             status: "active",
@@ -90,7 +93,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
 
         await tx.insert(profiles).values({
           userAccountId: user.id,
-          displayName: displayName || email.split("@")[0],
+          displayName: finalDisplayName,
           avatarUrl: avatarUrl || null,
         });
 
@@ -98,7 +101,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
           userAccountId: user.id,
           provider,
           providerUserId,
-          providerEmail: email,
+          providerEmail: userEmail,
         });
 
         return user;
@@ -151,17 +154,13 @@ export async function processSocialAuth(input: SocialProfileInput) {
     throw new AuthError("ACCOUNT_NOT_ACTIVE", 403);
   }
 
-  const [profileRecord] = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userAccountId, userId));
-
-  const publicUser = toPublicUser(userRecord, profileRecord || undefined);
+  const publicUser = toPublicUser(userRecord);
 
   // Issue session tokens matching standard auth flow
   const accessToken = signAccessToken({
     sub: userRecord.id,
     role: userRecord.role,
+    status: userRecord.status,
   });
 
   const issuedRefresh = issueRefreshToken(env.REFRESH_TTL_DAYS);
