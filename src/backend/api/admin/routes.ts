@@ -164,7 +164,10 @@ adminRouter.post(
         ...req.body,
       });
       return res.status(201).json({ category: created });
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.code === "23505" || err?.cause?.code === "23505" || err?.message?.includes("unique constraint")) {
+        return res.status(400).json({ error: { code: "DUPLICATE", message: "Category with this name or slug already exists" } });
+      }
       next(err);
     }
   }

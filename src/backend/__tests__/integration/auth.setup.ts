@@ -19,7 +19,7 @@ export async function clearDb(): Promise<void> {
   await db.execute(sql`TRUNCATE TABLE refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE`);
   // Other tables (posts, comments, reactions, etc.) may still have FK refs to
   // user_accounts/profiles; the CASCADE above handles that.
-  await db.execute(sql`TRUNCATE TABLE posts, comments, reactions RESTART IDENTITY CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE posts, comments, reactions, forum_categories, admin_audit_logs, system_settings RESTART IDENTITY CASCADE`);
 }
 
 export function expectFastResponse(res: { headers: Record<string, string | string[] | undefined> }, maxMs = 500) {
