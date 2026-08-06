@@ -22,6 +22,13 @@
       "when": 1786000001000,
       "tag": "0007_user_social_links",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786000002000,
+      "tag": "0008_hashtags",
+      "breakpoints": true
     }
   ]
 }

@@ -12,6 +12,8 @@ import { summaryRateLimiter } from "#backend/lib/rate-limit.js";
 
 
 
+import { extractHashtagsAndSync } from "#backend/db/repositories/hashtags.js";
+
 export const postRouter = Router();
 
 postRouter.post("/", requireAuth, validateBody(createPostRequestSchema), async (req: AuthedRequest, res, next) => {
@@ -19,8 +21,14 @@ postRouter.post("/", requireAuth, validateBody(createPostRequestSchema), async (
     if (!req.user) {
       return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
     }
-    const post = await createPost(req.user.id, req.body);
-    return res.status(201).json(post);
+    const postOrPosts = await createPost(req.user.id, req.body);
+    const createdArray = Array.isArray(postOrPosts) ? postOrPosts : [postOrPosts];
+    for (const p of createdArray) {
+      if (p && p.id && p.content) {
+        await extractHashtagsAndSync(p.id, p.content).catch(() => null);
+      }
+    }
+    return res.status(201).json(postOrPosts);
   } catch (err) {
     next(err);
   }
@@ -53,7 +61,7 @@ postRouter.get("/", optionalAuth, async (req: AuthedRequest, res, next) => {
 
     // type === "latest" — chronological (existing behavior)
     const items = await listPostFeed(req.user?.id, authorId);
-    return res.status(200).json({ items: items.slice(0, limit) });
+    return res.status(200).json({ items });
   } catch (err) {
     next(err);
   }
@@ -66,6 +74,9 @@ postRouter.patch("/:postId", requireAuth, validateBody(createPostRequestSchema),
     }
     const postId = req.params.postId as string;
     const post = await updatePostBody(postId, req.user.id, req.body);
+    if (post && post.id && post.content) {
+      await extractHashtagsAndSync(post.id, post.content).catch(() => null);
+    }
     return res.status(200).json(post);
   } catch (err) {
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {

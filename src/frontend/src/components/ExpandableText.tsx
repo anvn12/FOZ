@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { HashtagText } from "./HashtagText";
 
 export interface ExpandableTextProps {
   text: string;
@@ -27,7 +28,11 @@ export function ExpandableText({
   const isTooLong = isLineExceeded || isLengthExceeded;
 
   if (!isTooLong) {
-    return <div className={className}>{text}</div>;
+    return (
+      <div className={className}>
+        <HashtagText text={text} />
+      </div>
+    );
   }
 
   let displayText = text;
@@ -53,7 +58,9 @@ export function ExpandableText({
 
   return (
     <div className={className}>
-      <span>{isExpanded ? text : `${displayText.trimEnd()}...`}</span>
+      <span>
+        <HashtagText text={isExpanded ? text : `${displayText.trimEnd()}...`} />
+      </span>
       <button
         type="button"
         onClick={handleToggle}
