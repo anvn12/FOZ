@@ -1,0 +1,377 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FOZ Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&amp;family=Montserrat:wght@600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#d0e1fb",
+                    "surface-container-high": "#dee8ff",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#afc6ff",
+                    "background": "#f9f9ff",
+                    "surface-container": "#e7eeff",
+                    "tertiary-fixed": "#e1e3e4",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#263143",
+                    "primary-fixed": "#d9e2ff",
+                    "on-surface": "#0f172a", /* Slate 900 */
+                    "outline": "#727786",
+                    "inverse-primary": "#afc6ff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-background": "#111c2d",
+                    "primary": "#0057c3",
+                    "on-tertiary-fixed-variant": "#454748",
+                    "secondary": "#505f76",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary-container": "#fcfdfe",
+                    "surface-dim": "#cfdaf2",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#475569", /* Slate 600 */
+                    "surface-container-highest": "#d8e3fb",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#0f6ef0",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-primary-fixed-variant": "#004299",
+                    "surface-variant": "#d8e3fb",
+                    "surface-tint": "#0059c7",
+                    "tertiary": "#5a5c5d",
+                    "secondary-fixed": "#d3e4fe",
+                    "tertiary-container": "#737576",
+                    "on-secondary-container": "#54647a",
+                    "outline-variant": "#c2c6d7",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed": "#001944",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f0f3ff",
+                    "tertiary-fixed-dim": "#c5c7c8",
+                    "on-tertiary-fixed": "#191c1d",
+                    "on-primary-container": "#fefcff",
+                    "brand-gradient-start": "#2E7DFF",
+                    "brand-gradient-end": "#9D3BFF"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "margin-desktop": "64px",
+                    "xl": "32px",
+                    "max-width": "1280px",
+                    "xxl": "48px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "label-sm": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-md": [
+                            "JetBrains Mono"
+                    ],
+                    "body-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-md": [
+                            "Montserrat"
+                    ],
+                    "headline-xl": [
+                            "Montserrat"
+                    ],
+                    "headline-lg-mobile": [
+                            "Montserrat"
+                    ],
+                    "headline-lg": [
+                            "Montserrat"
+                    ],
+                    "display-lg": [
+                            "Montserrat"
+                    ]
+            },
+            "fontSize": {
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-xl": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg": [
+                            "40px",
+                            {
+                                    "lineHeight": "48px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-lg": [
+                            "72px",
+                            {
+                                    "lineHeight": "80px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .shader-bg {
+            background: #f9f9ff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shader-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #afc6ff;
+            top: -50px;
+            left: -50px;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #dbb8ff;
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 50px) scale(1.1); }
+            100% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .input-glass:focus {
+            border-color: #2E7DFF;
+            box-shadow: 0 0 15px rgba(46, 125, 255, 0.1);
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #2E7DFF 0%, #9D3BFF 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(46, 125, 255, 0.3);
+        }
+
+        .carousel-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<div class="shader-bg">
+<div class="shader-orb orb-1"></div>
+<div class="shader-orb orb-2"></div>
+</div>
+<!-- TopNavBar: Minimal for Mobile Login Context -->
+<nav class="w-full bg-transparent flex items-center px-margin-mobile py-6 z-50 absolute top-0 justify-center">
+<div class="flex items-center gap-2">
+<img alt="FOZ Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG2dtFpXOaoguUWWzA8emJhKPboHhLcxZslQ8tGT_lLFplkcqBDhOVkg32jQ8sIExp8wPgKIfaj8osR-leaC-yKpJ568k9ZF__Zm02prCaDwMlNcHQkxkar598Mu0V93Xx8-RYfiC1TGb1IvRIQsCK9IEKTbpdSuBrAfNg5-Q7GZWzqJZ33BXuuu0RGDpBHubPKbKP7mC221iIV-WHgtMPtarWBuWSMLVAKeBw4pkKj2vhv8L7gjCo0j0Jh95OB0o-8w">
+<div class="text-headline-md font-headline-md font-black text-brand-gradient-start tracking-tighter">
+            FOZ
+        </div>
+</div>
+
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col justify-start pt-24 px-margin-mobile pb-xl w-full max-w-md mx-auto z-10 gap-xl">
+<!-- Branding Section -->
+<div class="w-full mt-4 text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile mb-4 text-on-surface">Focus on <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-gradient-start to-brand-gradient-end">Zillions.</span></h1>
+
+</div>
+<!-- Interactive Carousel (Mobile) -->
+
+<!-- Login Card -->
+<div class="glass-panel rounded-xl p-lg flex flex-col gap-md">
+<h2 class="text-headline-md font-headline-md text-on-surface text-center mb-2">Log in to FOZ</h2>
+<form class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="sr-only" for="email">Email address or mobile number</label>
+<div class="relative">
+
+<input class="w-full input-glass rounded-lg py-3 pl-xl pr-md font-body-md text-body-md text-on-surface placeholder-on-surface-variant" id="email" placeholder="Email address or username" type="text">
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="sr-only" for="password">Password</label>
+<div class="relative">
+
+<input class="w-full input-glass rounded-lg py-3 pl-xl pr-md font-body-md text-body-md text-on-surface placeholder-on-surface-variant" id="password" placeholder="Password" type="password">
+</div>
+</div>
+<button class="w-full btn-gradient text-white font-headline-md !text-lg !font-bold py-3 rounded-lg mt-2 flex items-center justify-center gap-sm" type="button">
+                    Log in
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+<div class="mt-4 text-center">
+<a class="font-body-md text-body-md text-brand-gradient-start hover:text-brand-gradient-end transition-colors" href="#">Forgotten password?</a>
+</div>
+<div class="mt-4 pt-4 border-t border-black/5 text-center">
+<button class="w-full py-3 rounded-lg bg-white/50 backdrop-blur-md border border-black/10 text-on-surface text-body-md font-body-md font-bold hover:text-brand-gradient-start transition-colors" type="button">
+                        Create new account
+                    </button>
+</div>
+<div class="relative flex py-sm items-center mt-2">
+<div class="flex-grow border-t border-outline-variant/30"></div>
+<span class="flex-shrink-0 mx-md text-outline font-label-sm text-label-sm">or continue with</span>
+<div class="flex-grow border-t border-outline-variant/30"></div>
+</div>
+<div class="flex gap-md">
+<button class="flex-1 input-glass rounded-lg py-sm flex justify-center items-center hover:bg-white/80 transition-colors">
+<span class="material-symbols-outlined text-on-surface">account_circle</span>
+</button>
+<button class="flex-1 input-glass rounded-lg py-sm flex justify-center items-center hover:bg-white/80 transition-colors">
+<span class="material-symbols-outlined text-on-surface">code</span>
+</button>
+</div>
+</div>
+</main>
+<script>
+        // Simple Carousel Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        // Auto advance
+        setInterval(nextSlide, 5000);
+    </script>
+
+
+</body></html>

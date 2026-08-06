@@ -44,8 +44,8 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
 
     renderWithProviders(<LoginPage />);
 
-    expect(screen.getByText(/Focus on/i)).toBeTruthy();
-    expect(screen.getByText(/Zillions\./i)).toBeTruthy();
+    expect(screen.getAllByText(/Focus on/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Zillions\./i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Top 10 productivity hacks for 2024/i)).toBeTruthy();
   });
 
@@ -88,4 +88,39 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
+
+  it("toggles password visibility when eye icon is clicked", () => {
+    vi.spyOn(authApi, "useLogin").mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+
+    renderWithProviders(<LoginPage />);
+
+    const passwordInput = screen.getByPlaceholderText(/Password/i) as HTMLInputElement;
+    expect(passwordInput.type).toBe("password");
+
+    const toggleBtn = screen.getByRole("button", { name: /Show password/i });
+    fireEvent.click(toggleBtn);
+
+    expect(passwordInput.type).toBe("text");
+
+    const hideToggleBtn = screen.getByRole("button", { name: /Hide password/i });
+    fireEvent.click(hideToggleBtn);
+
+    expect(passwordInput.type).toBe("password");
+  });
+
+  it("renders Google social login button with 'or continue with' divider", () => {
+    vi.spyOn(authApi, "useLogin").mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+
+    renderWithProviders(<LoginPage />);
+
+    expect(screen.getByText(/or continue with/i)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Continue with Google account/i })).toBeTruthy();
+  });
 });
+
