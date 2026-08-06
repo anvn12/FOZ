@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { LogoutDialog } from "./components/LogoutDialog";
 import { ChangePasswordPage } from "./pages/ChangePasswordPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -46,6 +47,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/settings" element={<RequireRole roles={["standard", "moderator", "administrator"]}><SettingsPage /></RequireRole>} />
         <Route path="/profiles/@:username" element={<ProfilePage />} />
         <Route path="/profiles/:userId" element={<ProfilePage />} />
 

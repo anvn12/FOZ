@@ -169,3 +169,33 @@
 **Model:** mimo-v2.5-pro
 **Prompt:** "post with images does not appear in /for you(the post is blank) while the same post with image in latest works (the image does not disappear)"
 **Files touched:** `src/backend/db/repositories/interactions.ts`, `src/backend/services/interactions/posts.ts`
+### 2026-08-06 23:50
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "complete the settings button in More, it should contains the ability to change password and change apperanace (dark/light)"
+**Files touched:** `specs/022-settings-page/spec.md`, `specs/022-settings-page/checklists/requirements.md`, `.specify/feature.json`
+### 2026-08-06 23:53
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "/speckit.plan"
+**Files touched:** `specs/022-settings-page/plan.md`, `AGENTS.md`
+### 2026-08-06 23:55
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "/speckit.tasks"
+**Files touched:** `specs/022-settings-page/tasks.md`
+### 2026-08-07 00:03
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "/speckit.implement"
+**Files touched:** `src/frontend/index.html`, `src/frontend/src/App.tsx`, `src/frontend/src/pages/SettingsPage.tsx`, `src/frontend/src/pages/ChangePasswordPage.tsx`, `src/frontend/src/components/ChangePasswordForm.tsx`, `src/frontend/src/components/AppearanceToggle.tsx`, `src/frontend/src/components/NavBar.tsx`, `specs/022-settings-page/tasks.md`
+### 2026-08-07 00:07
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "the dark/light togglign does not work, it fully depends on the user's system theme"
+**Files touched:** `src/frontend/tailwind.config.js`, `src/frontend/src/index.css`
+### 2026-08-07 00:14
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "the \"read more\" butotn is still white if a user with dark theme system uses the web light theme"
+**Files touched:** `src/frontend/src/index.css`

@@ -25,7 +25,7 @@ _Skipped — nothing to initialize._
 
 **Purpose**: Theme initialization on page load (blocks US3, but harmless to add early)
 
-- [ ] T001 Add inline theme-init script in `src/frontend/index.html` that reads `localStorage.getItem("foz-theme")` and applies `dark` class to `<html>` before React renders, falling back to `prefers-color-scheme`
+- [x] T001 Add inline theme-init script in `src/frontend/index.html` that reads `localStorage.getItem("foz-theme")` and applies `dark` class to `<html>` before React renders, falling back to `prefers-color-scheme`
 
 **Checkpoint**: Theme flash prevention in place — user stories can begin.
 
@@ -39,10 +39,10 @@ _Skipped — nothing to initialize._
 
 ### Implementation for User Story 1
 
-- [ ] T002 [P] [US1] Create `SettingsPage.tsx` skeleton in `src/frontend/src/pages/SettingsPage.tsx` with two section headings ("Change Password" and "Appearance") and placeholder content
-- [ ] T003 [US1] Update NavBar desktop menu in `src/frontend/src/components/NavBar.tsx` — replace `toast("Settings coming soon")` with `navigate("/settings")` using `useNavigate()`
-- [ ] T004 [US1] Update NavBar mobile menu in `src/frontend/src/components/NavBar.tsx` — same toast → navigate replacement for the mobile drawer
-- [ ] T005 [US1] Add route `<Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />` in `src/frontend/src/App.tsx`
+- [x] T002 [P] [US1] Create `SettingsPage.tsx` skeleton in `src/frontend/src/pages/SettingsPage.tsx` with two section headings ("Change Password" and "Appearance") and placeholder content
+- [x] T003 [US1] Update NavBar desktop menu in `src/frontend/src/components/NavBar.tsx` — replace `toast("Settings coming soon")` with `navigate("/settings")` using `useNavigate()`
+- [x] T004 [US1] Update NavBar mobile menu in `src/frontend/src/components/NavBar.tsx` — same toast → navigate replacement for the mobile drawer
+- [x] T005 [US1] Add route `<Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />` in `src/frontend/src/App.tsx`
 
 **Checkpoint**: Clicking Settings in More menu navigates to the Settings page. Page shows two sections.
 
@@ -56,8 +56,8 @@ _Skipped — nothing to initialize._
 
 ### Implementation for User Story 2
 
-- [ ] T006 [US2] Extract password form logic from `src/frontend/src/pages/ChangePasswordPage.tsx` into a reusable `ChangePasswordForm` component in `src/frontend/src/components/ChangePasswordForm.tsx` — move the react-hook-form setup, fields, and submit handler; keep ChangePasswordPage as a thin wrapper that renders it inside AuthShell
-- [ ] T007 [US2] Embed `<ChangePasswordForm />` into the "Change Password" section of `src/frontend/src/pages/SettingsPage.tsx`
+- [x] T006 [US2] Extract password form logic from `src/frontend/src/pages/ChangePasswordPage.tsx` into a reusable `ChangePasswordForm` component in `src/frontend/src/components/ChangePasswordForm.tsx` — move the react-hook-form setup, fields, and submit handler; keep ChangePasswordPage as a thin wrapper that renders it inside AuthShell
+- [x] T007 [US2] Embed `<ChangePasswordForm />` into the "Change Password" section of `src/frontend/src/pages/SettingsPage.tsx`
 
 **Checkpoint**: Settings page shows a working password change form. Submitting it calls the existing API and shows toast feedback.
 
@@ -71,8 +71,8 @@ _Skipped — nothing to initialize._
 
 ### Implementation for User Story 3
 
-- [ ] T008 [P] [US3] Create `AppearanceToggle.tsx` in `src/frontend/src/components/AppearanceToggle.tsx` — reads `localStorage.getItem("foz-theme")`, renders Light/Dark/System segmented control, on change sets localStorage and toggles `dark` class on `document.documentElement`
-- [ ] T009 [US3] Embed `<AppearanceToggle />` into the "Appearance" section of `src/frontend/src/pages/SettingsPage.tsx`
+- [x] T008 [P] [US3] Create `AppearanceToggle.tsx` in `src/frontend/src/components/AppearanceToggle.tsx` — reads `localStorage.getItem("foz-theme")`, renders Light/Dark/System segmented control, on change sets localStorage and toggles `dark` class on `document.documentElement`
+- [x] T009 [US3] Embed `<AppearanceToggle />` into the "Appearance" section of `src/frontend/src/pages/SettingsPage.tsx`
 
 **Checkpoint**: Appearance toggle works. Theme persists on reload. All three user stories complete.
 
@@ -82,8 +82,8 @@ _Skipped — nothing to initialize._
 
 **Purpose**: Final cleanup
 
-- [ ] T010 Verify `ChangePasswordPage.tsx` still works standalone at `/change-password` after the extraction in T006
-- [ ] T011 Ensure Settings page is not visible to guests (NavBar hides Settings option for unauthenticated users; route uses RequireAuth guard)
+- [x] T010 Verify `ChangePasswordPage.tsx` still works standalone at `/change-password` after the extraction in T006
+- [x] T011 Ensure Settings page is not visible to guests (NavBar hides Settings option for unauthenticated users; route uses RequireAuth guard)
 
 ---
 
