@@ -31,8 +31,20 @@ CREATE TABLE IF NOT EXISTS "system_settings" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE "admin_audit_logs" ADD CONSTRAINT "admin_audit_logs_actor_id_user_accounts_id_fk" FOREIGN KEY ("actor_id") REFERENCES "user_accounts"("id") ON DELETE set null ON UPDATE no action;
-ALTER TABLE "system_settings" ADD CONSTRAINT "system_settings_last_updated_by_user_accounts_id_fk" FOREIGN KEY ("last_updated_by") REFERENCES "user_accounts"("id") ON DELETE set null ON UPDATE no action;
+DO $$ 
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'admin_audit_logs_actor_id_user_accounts_id_fk'
+    ) THEN
+        ALTER TABLE "admin_audit_logs" ADD CONSTRAINT "admin_audit_logs_actor_id_user_accounts_id_fk" FOREIGN KEY ("actor_id") REFERENCES "user_accounts"("id") ON DELETE set null ON UPDATE no action;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'system_settings_last_updated_by_user_accounts_id_fk'
+    ) THEN
+        ALTER TABLE "system_settings" ADD CONSTRAINT "system_settings_last_updated_by_user_accounts_id_fk" FOREIGN KEY ("last_updated_by") REFERENCES "user_accounts"("id") ON DELETE set null ON UPDATE no action;
+    END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS "idx_audit_actor_created" ON "admin_audit_logs" ("actor_id", "created_at" DESC);
 CREATE INDEX IF NOT EXISTS "idx_audit_action_created" ON "admin_audit_logs" ("action_type", "created_at" DESC);
