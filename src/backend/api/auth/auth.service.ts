@@ -3,6 +3,7 @@ import { hashPassword, verifyPassword } from "#backend/lib/password.js";
 import { signAccessToken } from "#backend/lib/jwt.js";
 import {
   findUserByEmail,
+  findUserByUsername,
   getUserById,
   createUserWithProfile,
   updatePasswordHash,
@@ -27,6 +28,11 @@ export class AuthError extends Error {
 export class DuplicateEmailError extends AuthError {
   constructor() {
     super("EMAIL_TAKEN", 409);
+  }
+}
+export class DuplicateUsernameError extends AuthError {
+  constructor() {
+    super("USERNAME_TAKEN", 409);
   }
 }
 export class InvalidCredentialsError extends AuthError {
@@ -88,6 +94,7 @@ type Session = {
 async function issueFullSession(user: {
   id: string;
   email: string;
+  username: string;
   role: string;
   status: string;
 }): Promise<Session> {
@@ -104,6 +111,7 @@ async function issueFullSession(user: {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
         role: user.role as PublicUser["role"],
         status: user.status as PublicUser["status"],
       },
@@ -117,13 +125,16 @@ async function issueFullSession(user: {
   };
 }
 
-export async function register(input: { email: string; password: string }): Promise<Session> {
-  const existing = await findUserByEmail(input.email);
-  if (existing) throw new DuplicateEmailError();
+export async function register(input: { email: string; username: string; password: string }): Promise<Session> {
+  const existingEmail = await findUserByEmail(input.email);
+  if (existingEmail) throw new DuplicateEmailError();
+  const existingUsername = await findUserByUsername(input.username);
+  if (existingUsername) throw new DuplicateUsernameError();
   const passwordHash = await hashPassword(input.password);
-  const displayName = `user_${Math.random().toString(36).slice(2, 8)}`;
+  const displayName = input.username;
   const { user } = await createUserWithProfile({
     email: input.email,
+    username: input.username,
     passwordHash,
     displayName,
   });

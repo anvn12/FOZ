@@ -9,10 +9,12 @@ import { listPosts } from "#backend/db/repositories/interactions.js";
 // Helper to create a user
 async function createUser(email: string) {
   const bcrypt = await import("bcrypt");
+  const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const [user] = await db
     .insert(userAccounts)
     .values({
       email,
+      username,
       passwordHash: await bcrypt.hash("password123", 1),
       status: "active",
       role: "standard",

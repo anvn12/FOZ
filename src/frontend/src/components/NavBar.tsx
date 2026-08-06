@@ -202,7 +202,7 @@ export function NavBar() {
 
           <div className="relative group flex items-center justify-center">
             <button
-              onClick={(e) => handleProtectedClick(e, `/profiles/${user?.id}`)}
+              onClick={(e) => handleProtectedClick(e, user?.username ? `/profiles/@${user.username}` : `/profiles/${user?.id}`)}
               className={`p-3 rounded-xl hover:bg-surface-container-low transition-colors ${isProfileActive ? "text-primary" : "text-outline hover:text-primary"
                 }`}
               aria-label="Profile"
@@ -428,7 +428,7 @@ export function NavBar() {
             </svg>
           </button>
           <button
-            onClick={(e) => handleProtectedClick(e, `/profiles/${user?.id}`)}
+            onClick={(e) => handleProtectedClick(e, user?.username ? `/profiles/@${user.username}` : `/profiles/${user?.id}`)}
             className={`w-full h-full flex items-center justify-center transition-colors ${isProfileActive ? "text-primary" : "text-outline hover:text-primary"
               }`}
             aria-label="Profile"

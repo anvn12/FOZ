@@ -1,6 +1,17 @@
 import { and, eq, isNull, desc, inArray } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
 import { posts, comments, reactions, postAttachments } from "#backend/db/schema/interactions.js";
+import { findProfileByUsername } from "#backend/db/repositories/profiles.js";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function resolveUserAccountId(identifier: string): Promise<string | null> {
+  if (UUID_REGEX.test(identifier)) {
+    return identifier;
+  }
+  const profile = await findProfileByUsername(identifier);
+  return profile ? profile.userAccountId : null;
+}
 
 export async function getPostById(id: string) {
   const [row] = await db.select().from(posts).where(eq(posts.id, id));
@@ -14,7 +25,11 @@ export async function getCommentById(id: string) {
 
 export async function listPosts(authorId?: string) {
   const conditions = [eq(posts.visibilityState, "public"), isNull(posts.deletedAt)];
-  if (authorId) conditions.push(eq(posts.authorId, authorId));
+  if (authorId) {
+    const resolvedId = await resolveUserAccountId(authorId);
+    if (!resolvedId) return [];
+    conditions.push(eq(posts.authorId, resolvedId));
+  }
   return db.select().from(posts).where(and(...conditions)).orderBy(desc(posts.createdAt));
 }
 
@@ -34,10 +49,12 @@ export async function countCommentsForPost(postId: string) {
 }
 
 export async function listCommentsByAuthor(authorId: string) {
+  const resolvedId = await resolveUserAccountId(authorId);
+  if (!resolvedId) return [];
   return db
     .select()
     .from(comments)
-    .where(and(eq(comments.authorId, authorId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)))
+    .where(and(eq(comments.authorId, resolvedId), eq(comments.visibilityState, "public"), isNull(comments.deletedAt)))
     .orderBy(comments.createdAt);
 }
 

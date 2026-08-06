@@ -8,9 +8,11 @@ import * as profileApi from "../../api/profile.js";
 
 vi.mock("../../api/profile.js", () => ({
   useProfile: vi.fn(),
+  useProfileByUsername: vi.fn(),
   useUpdateProfile: vi.fn(),
   useUpdateAvatar: vi.fn(),
   getProfile: vi.fn(),
+  getProfileByUsername: vi.fn(),
   updateProfile: vi.fn(),
   updateAvatar: vi.fn(),
 }));

@@ -162,6 +162,21 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
           </div>
 
           <div>
+            <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700">
+              Username Handle
+            </label>
+            <input
+              id="username-handle"
+              type="text"
+              disabled
+              readOnly
+              value={`@${profile.username || profile.displayName.toLowerCase().replace(/\s+/g, "")}`}
+              className="mt-1 w-full rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-500 cursor-not-allowed font-medium"
+            />
+            <p className="mt-1 text-xs text-zinc-400">Usernames are permanent and cannot be changed.</p>
+          </div>
+
+          <div>
             <label htmlFor="displayName" className="block text-sm font-semibold text-zinc-700">
               Display Name
             </label>

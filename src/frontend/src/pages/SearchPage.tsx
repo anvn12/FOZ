@@ -86,16 +86,18 @@ export function SearchPage() {
                   <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
                     {isLoading ? "Searching..." : "People"}
                   </h2>
-                  <div className="flex flex-col gap-0">
+                  <div className="flex flex-col gap-3">
                     {searchResults?.length === 0 && !isLoading && (
                       <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
                     )}
                     {searchResults?.map(profile => {
+                      const handle = profile.username ? `@${profile.username}` : `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
+                      const linkPath = profile.username ? `/profiles/@${profile.username}` : `/profiles/${profile.userAccountId}`;
                       return (
                         <Link 
                           key={profile.id} 
-                          to={`/profiles/${profile.userAccountId}`}
-                          className="flex gap-4 py-4 px-2 border-b border-outline-variant hover:bg-surface-container-lowest transition-colors items-center cursor-pointer group"
+                          to={linkPath}
+                          className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
                         >
                           {profile.avatarUrl ? (
                             <img 
@@ -110,6 +112,7 @@ export function SearchPage() {
                           )}
                           <div className="flex flex-col flex-1 min-w-0">
                             <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
+                            <span className="text-[13px] font-medium text-secondary truncate">{handle}</span>
                             {profile.bio && (
                               <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
                             )}
@@ -153,11 +156,12 @@ export function SearchPage() {
                     </div>
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory max-md:[&::-webkit-scrollbar]:hidden max-md:[-ms-overflow-style:none] max-md:[scrollbar-width:none] md:[&::-webkit-scrollbar]:h-1.5 md:[&::-webkit-scrollbar-track]:bg-transparent md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-thumb]:bg-outline-variant hover:md:[&::-webkit-scrollbar-thumb]:bg-outline">
                       {discoveryData?.creators?.map(creator => {
-                        const handle = `@${creator.displayName.toLowerCase().replace(/\s+/g, "")}`;
+                        const handle = creator.username ? `@${creator.username}` : `@${creator.displayName.toLowerCase().replace(/\s+/g, "")}`;
+                        const linkPath = creator.username ? `/profiles/@${creator.username}` : `/profiles/${creator.userAccountId}`;
                         return (
                           <div 
                             key={creator.id}
-                            onClick={() => navigate(`/profiles/${creator.userAccountId}`)}
+                            onClick={() => navigate(linkPath)}
                             className="flex-shrink-0 w-48 bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center text-center gap-3 border border-outline-variant shadow-sm hover:shadow-md transition-shadow cursor-pointer group snap-center"
                           >
                             {creator.avatarUrl ? (
