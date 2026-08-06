@@ -60,7 +60,7 @@ describe("Auth Redirection Flow", () => {
 
     renderWithProviders(<LoginPage />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
+    const emailInput = screen.getByPlaceholderText(/Email/i);
     const passwordInput = screen.getByPlaceholderText("Password");
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });

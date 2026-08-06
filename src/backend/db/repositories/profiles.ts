@@ -32,10 +32,9 @@ export async function updateProfile(
     website?: string | null;
   }
 ) {
-  const [row] = await db
+  await db
     .update(profiles)
     .set({ ...data, updatedAt: new Date() })
-    .where(eq(profiles.userAccountId, userId))
-    .returning();
-  return row;
+    .where(eq(profiles.userAccountId, userId));
+  return findProfileByUserId(userId);
 }

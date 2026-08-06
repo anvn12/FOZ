@@ -11,6 +11,7 @@ export interface Profile {
   location: string | null;
   website: string | null;
   avatarUrl: string | null;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
