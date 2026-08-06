@@ -14,6 +14,7 @@ export const DiscoveryTopicSchema = z.object({
 export const DiscoveryCreatorSchema = z.object({
   id: z.string(),
   userAccountId: z.string(),
+  username: z.string().optional(),
   displayName: z.string(),
   bio: z.string().nullable(),
   avatarUrl: z.string().nullable(),

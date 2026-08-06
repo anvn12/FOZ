@@ -17,6 +17,7 @@ export function getAgent(): Agent {
 
 export async function clearDb(): Promise<void> {
   await db.execute(sql`
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS username text DEFAULT 'legacy_user';
     CREATE TABLE IF NOT EXISTS user_social_links (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_account_id UUID NOT NULL REFERENCES user_accounts(id) ON DELETE CASCADE,

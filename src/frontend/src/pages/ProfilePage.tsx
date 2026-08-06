@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useProfile } from "#frontend/api/profile";
+import { useProfile, useProfileByUsername } from "#frontend/api/profile";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ProfileEditModal } from "#frontend/components/ProfileEditModal.js";
 import { NavBar } from "#frontend/components/NavBar.js";
@@ -22,24 +22,40 @@ import {
 } from "#frontend/components/icons/ProfileIcons.js";
 
 export function ProfilePage() {
-  const { userId } = useParams<{ userId: string }>();
-  const { data: profile, isLoading, error } = useProfile(userId || "");
+  const { username, userId } = useParams<{ username?: string; userId?: string }>();
+  const navigate = useNavigate();
+
+  const profileByUserIdQuery = useProfile(userId || "");
+  const profileByUsernameQuery = useProfileByUsername(username || "");
+
+  const profile = username ? profileByUsernameQuery.data : profileByUserIdQuery.data;
+  const isLoading = username ? profileByUsernameQuery.isLoading : profileByUserIdQuery.isLoading;
+  const error = username ? profileByUsernameQuery.error : profileByUserIdQuery.error;
+
+  const targetUserId = profile?.userAccountId || "";
+
+  useEffect(() => {
+    if (userId && profile?.username) {
+      navigate(`/profiles/@${profile.username}`, { replace: true });
+    }
+  }, [userId, profile?.username, navigate]);
+
   const currentUser = useAuthStore((s) => s.user);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"threads" | "replies" | "reposts">("threads");
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: postsData } = useQuery({
-    queryKey: ["posts", "profile", userId],
-    queryFn: () => listPosts(userId || ""),
-    enabled: !!userId,
+    queryKey: ["posts", "profile", targetUserId],
+    queryFn: () => listPosts(targetUserId),
+    enabled: !!profile?.userAccountId,
   });
   const posts = postsData?.items || [];
 
   const { data: repliesData } = useQuery({
-    queryKey: ["replies", "profile", userId],
-    queryFn: () => listUserComments(userId || ""),
-    enabled: !!userId,
+    queryKey: ["replies", "profile", targetUserId],
+    queryFn: () => listUserComments(targetUserId),
+    enabled: !!profile?.userAccountId,
   });
   const replies = repliesData?.items || [];
 
@@ -82,7 +98,7 @@ export function ProfilePage() {
 
   const isOwner = currentUser?.id === profile.userAccountId;
   const initials = profile.displayName.charAt(0).toUpperCase() || "?";
-  const userHandle = `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
+  const userHandle = `@${profile.username || profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
 
   const bioLimit = 100;
   const isBioLong = !!(profile.bio && profile.bio.length > bioLimit);
@@ -387,6 +403,8 @@ export function ProfilePage() {
 
 function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
   const displayName = profile?.displayName || `Member ${reply.authorId.slice(0, 4)}`;
+  const handle = profile?.username ? `@${profile.username}` : null;
+  const profileLink = profile?.username ? `/profiles/@${profile.username}` : `/profiles/${reply.authorId}`;
   const navigate = useNavigate();
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -400,7 +418,7 @@ function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
   return (
     <article onClick={handleCardClick} className="p-4 hover:bg-surface-container-low/30 transition-colors cursor-pointer">
       <div className="flex gap-3">
-        <Link to={`/profiles/${reply.authorId}`} className="flex-shrink-0 mt-1 block hover:opacity-85 transition-opacity">
+        <Link to={profileLink} className="flex-shrink-0 mt-1 block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -411,8 +429,9 @@ function ProfileReplyItem({ reply, profile }: { reply: any; profile: any }) {
         </Link>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1 text-[15px] min-w-0">
+          <div className="flex items-center gap-1.5 text-[15px] min-w-0 flex-wrap">
             <span className="font-semibold text-primary truncate max-w-[200px] sm:max-w-[300px]">{displayName}</span>
+            {handle && <span className="text-secondary text-[13px]">{handle}</span>}
             <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(reply.createdAt)}</span>
           </div>
           <p className="mt-1 whitespace-pre-wrap leading-relaxed text-[15px] text-primary">{reply.body}</p>

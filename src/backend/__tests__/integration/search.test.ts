@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { sql } from "drizzle-orm";
 import { getAgent, clearDb, expectFastResponse } from "./auth.setup.js";
-import { uniqueEmail, uniquePassword } from "../fixtures/users.js";
+import { uniqueEmail, uniqueUsername, uniquePassword } from "../fixtures/users.js";
 import { db } from "#backend/db/client.js";
 
 // --- test data helpers ----------------------------------------------------
@@ -9,7 +9,7 @@ import { db } from "#backend/db/client.js";
 async function registerUserWithDisplayName(displayName: string) {
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email: uniqueEmail(), password: uniquePassword() });
+    .send({ email: uniqueEmail(), username: uniqueUsername(), password: uniquePassword() });
   if (res.status !== 201) throw new Error(`register failed: ${res.status} ${JSON.stringify(res.body)}`);
   // /api/v1/auth/register auto-generates the display name; override for searchability.
   await db.execute(sql`

@@ -1,4 +1,4 @@
-import { findProfileByUserId, updateProfile } from "#backend/db/repositories/profiles.js";
+import { findProfileByUserId, findProfileByUsername, updateProfile } from "#backend/db/repositories/profiles.js";
 import { extractCloudinaryPublicId, isCloudinaryConfigured, destroyAsset } from "#backend/services/cloudinary.js";
 
 export class ProfileError extends Error {
@@ -13,6 +13,14 @@ export class ProfileError extends Error {
 
 export async function getProfileByUserId(userId: string) {
   const profile = await findProfileByUserId(userId);
+  if (!profile) {
+    throw new ProfileError("NOT_FOUND", 404, "Profile not found");
+  }
+  return profile;
+}
+
+export async function getProfileByUsername(username: string) {
+  const profile = await findProfileByUsername(username);
   if (!profile) {
     throw new ProfileError("NOT_FOUND", 404, "Profile not found");
   }

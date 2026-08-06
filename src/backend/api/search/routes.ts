@@ -26,6 +26,7 @@ router.get("/discovery", async (req, res, next) => {
       .select({
         id: profiles.id,
         userAccountId: profiles.userAccountId,
+        username: userAccounts.username,
         displayName: profiles.displayName,
         bio: profiles.bio,
         avatarUrl: profiles.avatarUrl,

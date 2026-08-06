@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProfileByUserId, updateUserProfile, ProfileError } from "./profile.service.js";
+import { getProfileByUserId, getProfileByUsername, updateUserProfile, ProfileError } from "./profile.service.js";
 import { requireAuth, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { UpdateProfileRequest, UpdateAvatarRequest } from "#shared/schemas/profile.js";
 
@@ -16,6 +16,28 @@ function handleProfileError(err: unknown, res: any) {
   }
   throw err;
 }
+
+profileRouter.get("/by-username/:username", async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    if (!username) {
+      return res.status(400).json({
+        error: {
+          code: "VALIDATION",
+          message: "Username is required",
+        },
+      });
+    }
+    const profile = await getProfileByUsername(username);
+    res.status(200).json({ profile });
+  } catch (err) {
+    try {
+      return handleProfileError(err, res);
+    } catch (e) {
+      return next(e);
+    }
+  }
+});
 
 profileRouter.get("/:userId", async (req, res, next) => {
   try {

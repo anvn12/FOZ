@@ -33,10 +33,12 @@ describe("Auth Redirection Flow", () => {
     renderWithProviders(<RegisterPage />);
 
     const emailInput = screen.getByLabelText(/Email/i);
+    const usernameInput = screen.getByPlaceholderText("your_handle");
     const passwordInput = screen.getByPlaceholderText("Create a password");
     const confirmPasswordInput = screen.getByPlaceholderText("Confirm your password");
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    fireEvent.change(usernameInput, { target: { value: "testuser" } });
     fireEvent.change(passwordInput, { target: { value: "Password123!" } });
     fireEvent.change(confirmPasswordInput, { target: { value: "Password123!" } });
 

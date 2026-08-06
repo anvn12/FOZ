@@ -3,9 +3,10 @@ import { getAgent, clearDb } from "./auth.setup.js";
 import { createUserWithProfile } from "#backend/db/repositories/users.js";
 
 async function registerAndGetToken(email = "user@example.com"): Promise<{ accessToken: string; userId: string }> {
+  const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, password: "password123" });
+    .send({ email, username, password: "password123" });
   expect(res.status).toBe(201);
   return {
     accessToken: res.body.accessToken,
@@ -30,6 +31,7 @@ describe("Profile Management API Integration Tests", () => {
     it("should return 200 and the profile details for a valid user", async () => {
       const { profile } = await createUserWithProfile({
         email: "testprofile@example.com",
+        username: "testprofile",
         passwordHash: "somehashedpassword",
         displayName: "Alice",
       });

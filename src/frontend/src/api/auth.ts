@@ -54,6 +54,13 @@ export function register(input: RegisterRequest) {
   });
 }
 
+export function checkUsernameAvailability(username: string) {
+  return call<{ available: boolean; reason?: string | null }>(
+    `/api/v1/auth/check-username?username=${encodeURIComponent(username)}`,
+    { method: "GET" },
+  );
+}
+
 export function login(input: LoginRequest) {
   return call<AuthResponse>("/api/v1/auth/login", {
     method: "POST",

@@ -22,6 +22,7 @@ describe("Moderation API", () => {
     const p1 = await hash("pass123", 10);
     const [insertedStdUser] = await db.insert(userAccounts).values({
       email: "std@example.com",
+      username: "std_user",
       passwordHash: p1,
       role: "standard",
       status: "active",
@@ -33,6 +34,7 @@ describe("Moderation API", () => {
     const p2 = await hash("pass123", 10);
     const [insertedModUser] = await db.insert(userAccounts).values({
       email: "mod@example.com",
+      username: "mod_user",
       passwordHash: p2,
       role: "moderator",
       status: "active",

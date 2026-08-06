@@ -46,6 +46,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/profiles/@:username" element={<ProfilePage />} />
         <Route path="/profiles/:userId" element={<ProfilePage />} />
 
         {/* Moderator Routes */}
