@@ -131,3 +131,10 @@ export function listFeed(type: FeedQuery["type"] = "latest", cursor?: string) {
   );
 }
 
+export function resolveReport(reportId: string, input: { action: "delete_content" | "dismiss" | "escalate", notes?: string }) {
+  return call<{ id: string; status: string }>(`/api/v1/moderation/reports/${reportId}/action`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
