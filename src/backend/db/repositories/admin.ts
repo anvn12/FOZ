@@ -1,4 +1,4 @@
-import { eq, and, desc, count, gte, lte, ilike, or } from "drizzle-orm";
+import { eq, and, desc, gte, lte, ilike, or, sql } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
 import {
   userAccounts,
@@ -21,20 +21,20 @@ export async function createAuditLog(entry: NewAdminAuditLog) {
 }
 
 export async function getAdminMetrics() {
-  const [uRow] = await db.select({ totalUsers: count() }).from(userAccounts);
+  const [uRow] = await db.select({ totalUsers: sql<number>`count(*)::int` }).from(userAccounts);
   const [mRow] = await db
-    .select({ activeModerators: count() })
+    .select({ activeModerators: sql<number>`count(*)::int` })
     .from(userAccounts)
     .where(eq(userAccounts.role, "moderator"));
 
   const [eRow] = await db
-    .select({ pendingEscalations: count() })
+    .select({ pendingEscalations: sql<number>`count(*)::int` })
     .from(reports)
     .where(or(eq(reports.status, "open"), eq(reports.status, "escalated")));
 
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const [cRow] = await db
-    .select({ contentRemoved24h: count() })
+    .select({ contentRemoved24h: sql<number>`count(*)::int` })
     .from(adminAuditLogs)
     .where(
       and(
@@ -54,7 +54,7 @@ export async function getAdminMetrics() {
     const endOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
 
     const [pRow] = await db
-      .select({ count: count() })
+      .select({ count: sql<number>`count(*)::int` })
       .from(posts)
       .where(and(gte(posts.createdAt, startOfDay), lte(posts.createdAt, endOfDay)));
 
@@ -109,7 +109,7 @@ export async function getAuditLogs(params: {
     .offset(offset);
 
   const [tRow] = await db
-    .select({ total: count() })
+    .select({ total: sql<number>`count(*)::int` })
     .from(adminAuditLogs)
     .where(whereClause);
 
@@ -161,7 +161,7 @@ export async function listUsers(params: {
     .offset(offset);
 
   const [tRow] = await db
-    .select({ total: count() })
+    .select({ total: sql<number>`count(*)::int` })
     .from(userAccounts)
     .leftJoin(profiles, eq(profiles.userAccountId, userAccounts.id))
     .where(whereClause);
@@ -188,7 +188,7 @@ export async function updateUserRole(userId: string, role: string) {
 
 export async function countAdministrators() {
   const [tRow] = await db
-    .select({ total: count() })
+    .select({ total: sql<number>`count(*)::int` })
     .from(userAccounts)
     .where(eq(userAccounts.role, "administrator"));
   return Number(tRow?.total ?? 0);
