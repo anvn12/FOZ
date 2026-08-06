@@ -1737,5 +1737,12 @@
 **Prompt:** "right now the Google login does not work: https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
 **Files touched:** `src/backend/env.ts`, `src/backend/index.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
 
+### 2026-08-06 19:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "vercel deploy fails: src/backend/env.ts(79,17): error TS2532: Object is possibly 'undefined'. src/backend/env.ts(80,12): error TS18048: 'url' is possibly 'undefined'. Error: Command "npm run build" exited with 2"
+**Files touched:** `src/backend/env.ts`
+
+
 
 

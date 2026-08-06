@@ -75,8 +75,9 @@ export function getFrontendUrl(): string {
     .split(",")
     .map((s) => s.trim())
     .filter((s) => s && s !== "*");
-  if (origins.length > 0) {
-    const url = origins[0].startsWith("http") ? origins[0] : `https://${origins[0]}`;
+  const firstOrigin = origins[0];
+  if (firstOrigin) {
+    const url = firstOrigin.startsWith("http") ? firstOrigin : `https://${firstOrigin}`;
     return url.replace(/\/+$/, "");
   }
   return "http://localhost:5173";
