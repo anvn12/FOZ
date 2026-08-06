@@ -14,6 +14,7 @@ import { AdminAuditLogsPage } from "./pages/admin/AdminAuditLogsPage";
 import { AdminReportsPage } from "./pages/admin/AdminReportsPage";
 import { AdminCategoriesPage } from "./pages/admin/AdminCategoriesPage";
 import { AdminSettingsPage } from "./pages/admin/AdminSettingsPage";
+import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { useAuthStore } from "./stores/auth";
 import { RequireRole } from "./components/auth/RequireRole";
@@ -23,7 +24,7 @@ import { ReportsQueuePage } from "./pages/moderator/ReportsQueue";
 function AdminGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user);
   if (!user || user.role !== "administrator") {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
   return <AdminLayout>{children}</AdminLayout>;
 }
@@ -63,6 +64,7 @@ export function App() {
           } 
         />
         {/* Admin Dashboard Routes */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminGuard><AdminDashboardPage /></AdminGuard>} />
         <Route path="/admin/users" element={<AdminGuard><AdminUsersPage /></AdminGuard>} />
         <Route path="/admin/audit-logs" element={<AdminGuard><AdminAuditLogsPage /></AdminGuard>} />
