@@ -8,6 +8,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SearchPage } from "./pages/SearchPage";
 import { PostPage } from "./pages/PostPage";
+import { HashtagFeedPage } from "./pages/HashtagFeedPage";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboardPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 import { AdminAuditLogsPage } from "./pages/admin/AdminAuditLogsPage";
@@ -40,6 +41,7 @@ export function App() {
         <Route path="/latest" element={<HomePage feedType="latest" />} />
         <Route path="/foryou" element={<HomePage feedType="for-you" />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/hashtags/:tag" element={<HashtagFeedPage />} />
         <Route path="/posts/:postId" element={<PostPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
