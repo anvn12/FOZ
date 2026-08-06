@@ -3,7 +3,7 @@ import { requireAuth, requireRole, validateBody, type AuthedRequest } from "#bac
 import { db } from "#backend/db/client.js";
 import { reports, userAccounts, profiles } from "#backend/db/schema/index.js";
 import { getReportsQuerySchema, updateReportStatusSchema } from "#shared/schemas/interactions.js";
-import { eq, desc, and, count, not, gte } from "drizzle-orm";
+import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 
 export const moderationRouter = Router();
 
@@ -17,9 +17,9 @@ moderationRouter.get("/metrics", async (req, res, next) => {
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
     const [totalReportsResult, pendingReportsResult, resolvedTodayResult] = await Promise.all([
-      db.select({ count: count() }).from(reports),
-      db.select({ count: count() }).from(reports).where(eq(reports.status, "open")),
-      db.select({ count: count() }).from(reports).where(and(not(eq(reports.status, "open")), gte(reports.updatedAt, twentyFourHoursAgo))),
+      db.select({ count: sql<number>`count(*)::int` }).from(reports),
+      db.select({ count: sql<number>`count(*)::int` }).from(reports).where(eq(reports.status, "open")),
+      db.select({ count: sql<number>`count(*)::int` }).from(reports).where(and(not(eq(reports.status, "open")), gte(reports.updatedAt, twentyFourHoursAgo))),
     ]);
 
     const pendingReview = pendingReportsResult[0]?.count ?? 0;
