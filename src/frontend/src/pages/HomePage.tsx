@@ -5,6 +5,7 @@ import { NavBar } from "#frontend/components/NavBar.js";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { listFeed } from "#frontend/api/interactions";
 import { FeedPostItem } from "#frontend/components/FeedPostItem";
+import { TrendingHashtagsWidget } from "#frontend/components/TrendingHashtagsWidget";
 
 
 
@@ -30,7 +31,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
   return (
     <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
       {/* Container for layouts */}
-      <div className="w-full max-w-7xl flex relative justify-center h-full">
+      <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
 
         {/* Shared Navigation Bar */}
         <NavBar />
@@ -97,6 +98,11 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
             </div>
           </main>
         </div>
+
+        {/* Right Sidebar: Trending Hashtags */}
+        <aside className="hidden lg:block w-80 pt-4 pr-4 shrink-0">
+          <TrendingHashtagsWidget />
+        </aside>
 
       </div>
     </div>

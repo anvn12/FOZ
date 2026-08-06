@@ -29,7 +29,7 @@ export async function clearDb(): Promise<void> {
   `);
   await db.execute(sql`TRUNCATE TABLE user_social_links, refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE`);
   try {
-    await db.execute(sql`TRUNCATE TABLE posts, comments, reactions RESTART IDENTITY CASCADE`);
+    await db.execute(sql`TRUNCATE TABLE posts, comments, reactions, forum_categories, admin_audit_logs, system_settings RESTART IDENTITY CASCADE`);
   } catch (_e) {
     // Ignore if optional feature tables are not populated in test DB
   }

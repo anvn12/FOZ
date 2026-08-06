@@ -14,6 +14,7 @@ import { searchRouter } from "#backend/api/search/routes.js";
 import { moderationRouter } from "#backend/api/moderation/routes.js";
 import { uploadRouter } from "#backend/api/upload/routes.js";
 import { adminRouter } from "#backend/api/admin/routes.js";
+import { hashtagRouter } from "#backend/api/hashtags/routes.js";
 
 export function createApp(): Express {
   const app = express();
@@ -41,6 +42,7 @@ export function createApp(): Express {
   apiRouter.use("/moderation", moderationRouter);
   apiRouter.use("/upload", uploadRouter);
   apiRouter.use("/admin", adminRouter);
+  apiRouter.use("/hashtags", hashtagRouter);
   app.use("/api/v1", apiRouter);
 
   app.get("/api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
