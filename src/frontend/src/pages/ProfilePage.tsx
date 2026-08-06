@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { listPosts, listUserComments } from "#frontend/api/interactions";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { Link } from "react-router-dom";
+import { FaFacebook, FaReddit, FaInstagram, FaGlobe, FaTwitter, FaTiktok } from "react-icons/fa";
+import { SiThreads } from "react-icons/si";
 
 export function ProfilePage() {
   const { userId } = useParams<{ userId: string }>();
@@ -77,6 +79,21 @@ export function ProfilePage() {
       : `https://${profile.website}`
     : "";
 
+  const role = (profile as any).role;
+  const isAdmin = role === "administrator";
+  const isMod = role === "moderator";
+
+  const getWebsiteIcon = (url: string) => {
+    const lower = url.toLowerCase();
+    if (lower.includes("facebook.com")) return <FaFacebook className="text-[#1877F2]" />;
+    if (lower.includes("reddit.com")) return <FaReddit className="text-[#FF4500]" />;
+    if (lower.includes("instagram.com")) return <FaInstagram className="text-[#E4405F]" />;
+    if (lower.includes("threads.net")) return <SiThreads className="text-zinc-900 dark:text-white" />;
+    if (lower.includes("twitter.com") || lower.includes("x.com")) return <FaTwitter className="text-[#1DA1F2]" />;
+    if (lower.includes("tiktok.com")) return <FaTiktok className="text-black dark:text-white" />;
+    return <FaGlobe className="text-blue-500" />;
+  };
+
   return (
     <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
       <div className="w-full max-w-7xl flex relative justify-center">
@@ -89,7 +106,19 @@ export function ProfilePage() {
               <div className="flex items-start justify-between gap-4 pb-8 border-b border-zinc-100">
                 <div className="flex-1 min-w-0 space-y-3">
                   <div className="min-w-0">
-                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 break-words [overflow-wrap:anywhere]">{profile.displayName}</h1>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 break-words [overflow-wrap:anywhere]">{profile.displayName}</h1>
+                      {isAdmin && (
+                        <span className="px-2 py-0.5 text-[11px] font-bold tracking-wider text-red-600 bg-red-100 border border-red-200 rounded-full uppercase shrink-0">
+                          Admin
+                        </span>
+                      )}
+                      {isMod && (
+                        <span className="px-2 py-0.5 text-[11px] font-bold tracking-wider text-green-600 bg-green-100 border border-green-200 rounded-full uppercase shrink-0">
+                          Mod
+                        </span>
+                      )}
+                    </div>
                     <p className="text-zinc-500 font-medium break-all">{userHandle}</p>
                   </div>
 
@@ -120,9 +149,10 @@ export function ProfilePage() {
                         href={websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-600 hover:underline break-all"
+                        className="flex items-center gap-1.5 text-blue-600 hover:underline break-all bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 transition-colors hover:bg-blue-100 shadow-sm"
                       >
-                        <span className="text-base shrink-0">🔗</span> {profile.website}
+                        <span className="text-sm shrink-0 flex items-center justify-center">{getWebsiteIcon(websiteUrl)}</span>
+                        <span className="font-medium">{profile.website.replace(/^https?:\/\/(www\.)?/, '')}</span>
                       </a>
                     )}
                   </div>
