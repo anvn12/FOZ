@@ -32,6 +32,7 @@ const schema = z.object({
   GOOGLE_CLIENT_ID: cleanString,
   GOOGLE_CLIENT_SECRET: cleanString,
   GOOGLE_CALLBACK_URL: cleanString.transform((v) => v || "http://localhost:4000/api/v1/auth/google/callback"),
+  FRONTEND_URL: cleanString,
 });
 
 const parsed = schema.safeParse(process.env);
@@ -43,3 +44,9 @@ if (!parsed.success) {
 
 export const env = parsed.data;
 export type Env = z.infer<typeof schema>;
+
+export function getFrontendUrl(): string {
+  if (env.FRONTEND_URL) return env.FRONTEND_URL.replace(/\/+$/, "");
+  const firstOrigin = env.CORS_ORIGIN.split(",")[0].trim();
+  return firstOrigin.replace(/\/+$/, "");
+}

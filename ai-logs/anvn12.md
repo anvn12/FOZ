@@ -1718,3 +1718,10 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "remove the facebook auth"
 **Files touched:** `src/backend/api/auth/routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/env.ts`, `src/backend/services/oauth-providers.service.ts`, `src/shared/schemas/social-auth.ts`, `src/backend/db/schema/user-social-links.ts`, `src/frontend/src/api/auth.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
+
+### 2026-08-06 19:19
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "cannot login with google on web. https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
+**Files touched:** `src/backend/env.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/frontend/src/main.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`
+

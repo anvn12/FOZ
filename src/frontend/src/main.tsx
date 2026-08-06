@@ -26,5 +26,12 @@ function Root() {
 // then render. Whether or not refresh succeeds, we still render — the
 // unauthenticated state is the default.
 void silentRefresh().finally(() => {
+  if (typeof window !== "undefined") {
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("token")) {
+      url.searchParams.delete("token");
+      window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+    }
+  }
   ReactDOM.createRoot(document.getElementById("root")!).render(<Root />);
 });

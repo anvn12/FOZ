@@ -17,7 +17,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-black/10 w-full" />
         <span className="bg-[#ffffff] px-3 text-xs font-medium text-[#727786] font-plus-jakarta absolute">
-          or continue with
+          or
         </span>
       </div>
 
