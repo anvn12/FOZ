@@ -8,6 +8,7 @@ import { useUpdateProfile, useUpdateAvatar, type Profile } from "#frontend/api/p
 import { ApiError } from "#frontend/api/auth.js";
 import { validateImageFile, compressImageClient } from "#frontend/utils/imageCompressor.js";
 import { uploadMediaToCloudinary } from "#frontend/api/upload.js";
+import { CloseIcon, MapPinIcon, LinkIcon } from "#frontend/components/icons/ProfileIcons.js";
 
 type UpdateProfileInput = z.input<typeof UpdateProfileRequest>;
 
@@ -120,10 +121,10 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
           <h2 className="text-xl font-bold text-zinc-950">Edit profile</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition"
+            className="rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition"
             aria-label="Close"
           >
-            ✕
+            <CloseIcon className="w-5 h-5" />
           </button>
         </div>
 
@@ -200,8 +201,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700">
-                Location
+              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+                <MapPinIcon className="w-3.5 h-3.5 text-zinc-500" />
+                <span>Location</span>
               </label>
               <input
                 id="location"
@@ -219,8 +221,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
             </div>
 
             <div>
-              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700">
-                Website
+              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+                <LinkIcon className="w-3.5 h-3.5 text-zinc-500" />
+                <span>Website</span>
               </label>
               <input
                 id="website"
