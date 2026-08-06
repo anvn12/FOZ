@@ -116,7 +116,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<"google" | "facebook" | null>(null);
+  const [socialLoading, setSocialLoading] = useState<"google" | null>(null);
 
   const {
     register: field,
@@ -132,7 +132,7 @@ export function LoginPage() {
     });
   });
 
-  const handleSocialSelect = async (provider: "google" | "facebook") => {
+  const handleSocialSelect = async (provider: "google") => {
     try {
       setSocialLoading(provider);
       const isMobile = isMobileDevice();

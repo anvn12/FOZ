@@ -1645,3 +1645,31 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "make these 2 buttons work instead of mock data"
 **Files touched:** `src/backend/services/oauth-providers.service.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`
+
+### 2026-08-06 18:24
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "i have filled the google client id and client secret, but cannot using google on localhost"
+**Files touched:** `.env`, `.env.example`
+
+### 2026-08-06 18:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on localhost, after i log in, it says: INTERNAL server error on callback"
+**Files touched:** `src/backend/env.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/frontend/src/api/auth.ts`
+
+### 2026-08-06 18:31
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Failed query: select from user_social_links"
+**Files touched:** `src/backend/db/migrations/meta/_journal.json`
+
+### 2026-08-06 18:35
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove login by facebook, only google. Then make the button google to take up the space of facebook on UI (change or continue with to or, Continue with Google"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+
+
+
