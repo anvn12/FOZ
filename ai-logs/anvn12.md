@@ -1743,6 +1743,8 @@
 **Prompt:** "vercel deploy fails: src/backend/env.ts(79,17): error TS2532: Object is possibly 'undefined'. src/backend/env.ts(80,12): error TS18048: 'url' is possibly 'undefined'. Error: Command "npm run build" exited with 2"
 **Files touched:** `src/backend/env.ts`
 
-
-
-
+### 2026-08-06 20:02
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "When i use google login on deploymen (vercel and render), it redirects to the home page without any actual login. Help me fix it. Also, this is the lis of variable on my backend for this login: FRONTEND_URL, GOOGLE_CALLBACK_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CORS_ORIGIN. And for vercel, VITE_API_URL"
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/frontend/src/main.tsx`, `src/backend/index.ts`

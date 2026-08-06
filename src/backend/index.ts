@@ -24,7 +24,7 @@ export function createApp(): Express {
   app.use("/uploads", express.static("uploads"));
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean),
       credentials: true,
     }),
   );

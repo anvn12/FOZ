@@ -13,10 +13,31 @@ import {
   clearRefreshCookieOptions,
   AuthError,
 } from "#backend/api/auth/auth.service.js";
+import { getUserById } from "#backend/db/repositories/users.js";
 import { googleAuthRouter } from "./google-auth.routes.js";
 
 export const authRouter: Router = Router();
 authRouter.use(googleAuthRouter);
+
+// GET /api/v1/auth/me — returns the authenticated user from a Bearer token.
+// Used by the OAuth redirect flow to exchange an access token for a full user object.
+authRouter.get("/me", requireAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    const user = await getUserById(userId);
+    if (!user) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    return res.status(200).json({
+      user: { id: user.id, email: user.email, role: user.role, status: user.status },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 
 function setRefreshCookie(res: Parameters<RequestHandler>[1], cookie: {
