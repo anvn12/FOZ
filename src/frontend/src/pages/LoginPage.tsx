@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { LoginRequest } from "#shared/schemas/auth";
-import { useLogin, ApiError } from "#frontend/api/auth";
+import { useLogin, initiateSocialAuth, ApiError } from "#frontend/api/auth";
+import { SocialLoginButtons } from "#frontend/components/SocialLoginButtons";
+import { isMobileDevice } from "#frontend/utils/device";
 
 interface CarouselSlideData {
   id: string;
@@ -114,6 +116,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<"google" | "facebook" | null>(null);
 
   const {
     register: field,
@@ -129,8 +132,27 @@ export function LoginPage() {
     });
   });
 
+  const handleSocialSelect = async (provider: "google" | "facebook") => {
+    try {
+      setSocialLoading(provider);
+      const isMobile = isMobileDevice();
+      const res = await initiateSocialAuth(provider, isMobile);
+      if (res) {
+        toast.success("Successfully logged in!");
+        navigate("/");
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+      } else {
+        toast.error("Social authentication failed or was cancelled.");
+      }
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
   const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // If route unconfigured, show graceful toast feedback
     toast.error("Password recovery feature coming soon.");
   };
 
@@ -260,6 +282,13 @@ export function LoginPage() {
                 Create new account
               </Link>
             </div>
+
+            {/* Social Login Buttons Below Create New Account */}
+            <SocialLoginButtons
+              onSelectProvider={handleSocialSelect}
+              loadingProvider={socialLoading}
+              disabled={isSubmitting || login.isPending}
+            />
           </div>
         </div>
       </main>

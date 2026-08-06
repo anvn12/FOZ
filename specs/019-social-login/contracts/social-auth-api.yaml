@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: Social Auth API
+  version: 1.0.0
+  description: Endpoints for Google and Facebook OAuth2 authentication in FOZ application.
+paths:
+  /api/v1/auth/google:
+    get:
+      summary: Initiate Google OAuth2 login flow
+      parameters:
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [popup, redirect]
+            default: popup
+      responses:
+        '302':
+          description: Redirects to Google OAuth authorization consent screen.
+
+  /api/v1/auth/google/callback:
+    get:
+      summary: Google OAuth2 callback endpoint
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pop-up auth success postMessage response HTML script.
+        '302':
+          description: Mobile redirect auth success redirect back to frontend.
+        '400':
+          description: Missing code or invalid authorization attempt.
+        '401':
+          description: Social token verification failed.
+
+  /api/v1/auth/facebook:
+    get:
+      summary: Initiate Facebook OAuth2 login flow
+      parameters:
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [popup, redirect]
+            default: popup
+      responses:
+        '302':
+          description: Redirects to Facebook OAuth dialog screen.
+
+  /api/v1/auth/facebook/callback:
+    get:
+      summary: Facebook OAuth2 callback endpoint
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pop-up auth success postMessage response HTML script.
+        '302':
+          description: Mobile redirect auth success redirect back to frontend.
+        '400':
+          description: Invalid authorization code.
+        '401':
+          description: Provider authentication failed.

@@ -13,8 +13,13 @@ import {
   clearRefreshCookieOptions,
   AuthError,
 } from "#backend/api/auth/auth.service.js";
+import { googleAuthRouter } from "./google-auth.routes.js";
+import { facebookAuthRouter } from "./facebook-auth.routes.js";
 
 export const authRouter: Router = Router();
+authRouter.use(googleAuthRouter);
+authRouter.use(facebookAuthRouter);
+
 
 function setRefreshCookie(res: Parameters<RequestHandler>[1], cookie: {
   name: string;
