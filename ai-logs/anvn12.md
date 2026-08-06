@@ -1670,6 +1670,13 @@
 **Prompt:** "remove login by facebook, only google. Then make the button google to take up the space of facebook on UI (change or continue with to or, Continue with Google"
 **Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
 
+### 2026-08-06 18:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the main UI of login should be in the view (not scroll for view the button...)"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`
+
+
 
 
 

@@ -12,11 +12,11 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="w-full mt-6">
+    <div className="w-full mt-3">
       {/* "or" Divider */}
-      <div className="relative flex items-center justify-center my-6">
+      <div className="relative flex items-center justify-center my-3">
         <div className="border-t border-black/10 w-full" />
-        <span className="bg-[#ffffff] px-4 text-xs font-semibold text-[#6c707e] uppercase font-plus-jakarta absolute">
+        <span className="bg-[#ffffff] px-3 text-xs font-semibold text-[#6c707e] uppercase font-plus-jakarta absolute">
           or
         </span>
       </div>
