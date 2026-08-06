@@ -1,6 +1,6 @@
 import { Router, type RequestHandler } from "express";
 import { env } from "#backend/env.js";
-import { processSocialAuth } from "#backend/services/social-auth.service.ts";
+import { processSocialAuth } from "#backend/services/social-auth.service.js";
 import { clearRefreshCookieOptions } from "#backend/api/auth/auth.service.js";
 
 export const googleAuthRouter: Router = Router();

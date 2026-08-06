@@ -157,36 +157,52 @@ export function LoginPage() {
   };
 
   return (
-    <div className="bg-[#f9f9ff] text-[#1e2024] min-h-screen flex flex-col antialiased overflow-x-hidden relative">
-      {/* Top Navigation (Brand Anchor) */}
-      <nav className="w-full absolute top-0 left-0 z-50 bg-transparent flex justify-between items-center px-6 md:px-16 py-6">
-        <Link to="/" className="flex items-center gap-4" aria-label="FOZ Home">
+    <div className="bg-[#f9f9ff] text-[#0f172a] min-h-screen flex flex-col antialiased overflow-x-hidden relative">
+      {/* Background Animated Floating Shader Orbs */}
+      <div className="shader-bg" aria-hidden="true">
+        <div className="shader-orb orb-1" />
+        <div className="shader-orb orb-2" />
+      </div>
+
+      {/* Top Navigation (Brand Header) */}
+      <nav className="w-full absolute top-0 left-0 z-50 bg-transparent flex justify-center md:justify-between items-center px-4 md:px-16 py-4 md:py-6">
+        <Link to="/" className="flex items-center gap-3" aria-label="FOZ Home">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG2dtFpXOaoguUWWzA8emJhKPboHhLcxZslQ8tGT_lLFplkcqBDhOVkg32jQ8sIExp8wPgKIfaj8osR-leaC-yKpJ568k9ZF__Zm02prCaDwMlNcHQkxkar598Mu0V93Xx8-RYfiC1TGb1IvRIQsCK9IEKTbpdSuBrAfNg5-Q7GZWzqJZ33BXuuu0RGDpBHubPKbKP7mC221iIV-WHgtMPtarWBuWSMLVAKeBw4pkKj2vhv8L7gjCo0j0Jh95OB0o-8w"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = "/foz-logo.svg";
             }}
             alt="FOZ Logo"
-            className="h-10 w-10 object-contain"
+            className="h-8 w-8 md:h-10 md:w-10 object-contain"
           />
-          <span className="text-3xl font-black text-[#2E7DFF] tracking-tighter font-montserrat">
+          <span className="text-2xl md:text-3xl font-black text-[#2E7DFF] tracking-tighter font-montserrat">
             FOZ
           </span>
         </Link>
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col md:flex-row w-full min-h-screen relative z-10 items-center justify-center pt-20 md:pt-14 pb-6 px-4">
-        {/* Left Half: Branding & Carousel (Desktop View) */}
-        <div className="hidden md:flex w-1/2 h-full flex-col justify-center px-12 md:px-16 relative items-center">
-          <div className="max-w-xl z-10">
-            <h1 className="text-4xl lg:text-5xl font-extrabold mb-4 text-[#1e2024] leading-tight font-montserrat">
+      {/* Main Content Container */}
+      <main className="flex-1 flex flex-col md:flex-row w-full max-w-6xl mx-auto min-h-screen relative z-10 items-center justify-center pt-20 md:pt-16 pb-8 px-4 gap-6">
+        {/* Mobile Branding Header (< 768px) */}
+        <div className="w-full text-center mt-2 md:hidden mb-2">
+          <h1 className="text-3xl font-bold font-montserrat text-[#0f172a] mb-1">
+            Focus on{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7DFF] to-[#9D3BFF]">
+              Zillions.
+            </span>
+          </h1>
+        </div>
+
+        {/* Desktop Left Panel: Branding & Carousel (≥ 768px) */}
+        <div className="hidden md:flex w-1/2 h-full flex-col justify-center px-8 lg:px-12 relative items-center">
+          <div className="max-w-md z-10">
+            <h1 className="text-4xl lg:text-5xl font-extrabold mb-4 text-[#0f172a] leading-tight font-montserrat">
               Focus on <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7DFF] to-[#9D3BFF]">
                 Zillions.
               </span>
             </h1>
-            <p className="text-base mb-8 text-[#424754] font-plus-jakarta max-w-md">
+            <p className="text-base mb-8 text-[#475569] font-plus-jakarta max-w-sm">
               Explore the things you love, connect with the community, and discover new insights in real-time.
             </p>
 
@@ -195,10 +211,10 @@ export function LoginPage() {
           </div>
         </div>
 
-        {/* Right Half: Glassmorphic Login Card */}
-        <div className="w-full md:w-1/2 h-full flex items-center justify-center px-2 md:px-12 flex-col">
-          <div className="glass-panel w-full max-w-md rounded-xl p-6 md:p-7 shadow-xl relative z-10">
-            <h2 className="text-2xl font-semibold text-[#1e2024] mb-5 text-center font-montserrat">
+        {/* Glassmorphic Login Card (Mobile Centered / Desktop Right) */}
+        <div className="w-full md:w-1/2 flex items-center justify-center px-0 md:px-6">
+          <div className="glass-panel w-full max-w-md rounded-xl p-5 md:p-7 shadow-xl relative z-10 flex flex-col">
+            <h2 className="text-2xl font-semibold text-[#0f172a] mb-4 text-center font-montserrat">
               Log in to FOZ
             </h2>
 
@@ -214,7 +230,7 @@ export function LoginPage() {
                   placeholder="Email address or mobile number"
                   aria-invalid={errors.email ? true : undefined}
                   {...field("email")}
-                  className="w-full px-4 py-2.5 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none"
+                  className="w-full min-h-[44px] px-4 py-3 rounded-lg input-glass text-[#0f172a] text-base placeholder-[#727786] font-plus-jakarta focus:outline-none"
                 />
                 {errors.email && (
                   <p className="mt-1 px-1 text-xs text-[#ba1a1a] font-medium">
@@ -235,13 +251,13 @@ export function LoginPage() {
                     placeholder="Password"
                     aria-invalid={errors.password ? true : undefined}
                     {...field("password")}
-                    className="w-full px-4 py-2.5 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none pr-12"
+                    className="w-full min-h-[44px] px-4 py-3 rounded-lg input-glass text-[#0f172a] text-base placeholder-[#727786] font-plus-jakarta focus:outline-none pr-12"
                   />
                   <button
                     type="button"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#8c90a0] hover:text-[#2E7DFF] transition-colors focus:outline-none"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center min-h-[44px] text-[#727786] hover:text-[#2E7DFF] transition-colors focus:outline-none cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[20px]">
                       {showPassword ? "visibility" : "visibility_off"}
@@ -258,9 +274,12 @@ export function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || login.isPending}
-                className="w-full py-3 rounded-lg btn-gradient text-white text-base font-bold font-montserrat mt-1 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full min-h-[44px] py-3 rounded-lg btn-gradient text-white text-base font-bold font-montserrat mt-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md"
               >
-                {isSubmitting || login.isPending ? "Logging in…" : "Log in"}
+                <span>{isSubmitting || login.isPending ? "Logging in…" : "Log in"}</span>
+                {!isSubmitting && !login.isPending && (
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                )}
               </button>
             </form>
 
@@ -268,16 +287,16 @@ export function LoginPage() {
               <a
                 href="/forgot-password"
                 onClick={handleForgotPassword}
-                className="text-[#2E7DFF] hover:text-[#00C2FF] transition-colors text-sm font-medium font-plus-jakarta"
+                className="text-[#2E7DFF] hover:text-[#9D3BFF] transition-colors text-sm font-medium font-plus-jakarta inline-block py-1 min-h-[32px]"
               >
                 Forgotten password?
               </a>
             </div>
 
-            <div className="mt-5 pt-5 border-t border-black/10 text-center">
+            <div className="mt-4 pt-4 border-t border-black/10 text-center">
               <Link
                 to="/register"
-                className="block w-full py-2.5 rounded-lg btn-glass text-center text-[#1e2024] text-sm font-bold font-montserrat hover:text-[#2E7DFF] transition-colors"
+                className="block w-full min-h-[44px] py-3 rounded-lg btn-glass text-center text-[#0f172a] text-sm font-bold font-montserrat hover:text-[#2E7DFF] transition-colors flex items-center justify-center"
               >
                 Create new account
               </Link>
@@ -294,4 +313,4 @@ export function LoginPage() {
       </main>
     </div>
   );
-}
+}

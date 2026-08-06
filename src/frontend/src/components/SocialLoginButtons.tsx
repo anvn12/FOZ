@@ -13,11 +13,11 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
 }) => {
   return (
     <div className="w-full mt-3">
-      {/* "or" Divider */}
-      <div className="relative flex items-center justify-center my-3">
+      {/* "or continue with" Divider */}
+      <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-black/10 w-full" />
-        <span className="bg-[#ffffff] px-3 text-xs font-semibold text-[#6c707e] uppercase font-plus-jakarta absolute">
-          or
+        <span className="bg-[#ffffff] px-3 text-xs font-medium text-[#727786] font-plus-jakarta absolute">
+          or continue with
         </span>
       </div>
 
@@ -27,7 +27,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
         aria-label="Continue with Google account"
         disabled={disabled || loadingProvider !== null}
         onClick={() => onSelectProvider("google")}
-        className="w-full py-3 px-4 rounded-xl border border-black/10 bg-white hover:bg-black/5 flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E7DFF]/40 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm cursor-pointer"
+        className="w-full min-h-[44px] py-3 px-4 rounded-xl border border-black/10 bg-white/70 backdrop-blur-md hover:bg-white/90 flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E7DFF]/40 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm cursor-pointer"
       >
         {loadingProvider === "google" ? (
           <span className="material-symbols-outlined animate-spin text-[#1e2024]">

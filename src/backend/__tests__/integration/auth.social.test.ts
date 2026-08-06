@@ -4,7 +4,7 @@ import { db } from "#backend/db/client.js";
 import { userAccounts, userSocialLinks } from "#backend/db/schema/index.js";
 import { eq } from "drizzle-orm";
 
-describe("Social Auth Routes (/api/v1/auth/google & /api/v1/auth/facebook)", () => {
+describe("Social Auth Routes (/api/v1/auth/google)", () => {
   beforeEach(async () => {
     await clearDb();
   });
@@ -41,34 +41,5 @@ describe("Social Auth Routes (/api/v1/auth/google & /api/v1/auth/facebook)", () 
       .where(eq(userSocialLinks.userAccountId, user!.id));
     expect(link).toBeDefined();
     expect(link!.provider).toBe("google");
-  });
-
-  it("GET /api/v1/auth/facebook/callback links to existing user if email matches", async () => {
-    // Seed user first via registration
-    const email = "existing.user@example.com";
-    await getAgent()
-      .post("/api/v1/auth/register")
-      .send({ email, password: "Password123!" });
-
-    // Login via Facebook using the same email
-    const res = await getAgent().get(
-      `/api/v1/auth/facebook/callback?code=mock_facebook_code&state=popup&mock_email=${encodeURIComponent(
-        email,
-      )}&mock_name=FacebookUser`,
-    );
-
-    expect(res.status).toBe(200);
-
-    // Verify user count in DB is still 1 (linked to existing account)
-    const users = await db.select().from(userAccounts).where(eq(userAccounts.email, email));
-    expect(users.length).toBe(1);
-
-    // Verify social link mapped to the existing user
-    const [link] = await db
-      .select()
-      .from(userSocialLinks)
-      .where(eq(userSocialLinks.userAccountId, users[0]!.id));
-    expect(link).toBeDefined();
-    expect(link!.provider).toBe("facebook");
   });
 });

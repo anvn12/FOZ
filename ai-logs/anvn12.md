@@ -1677,6 +1677,44 @@
 **Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`
 
 
+### 2026-08-06 18:43
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify redesign the Login UI on mobile based on@[d:\FOZ\docs\03 - UI-designs\white mode\mobile\login]. The mobile design must match the original one from desktop version @[d:\FOZ\docs\03 - UI-designs\white mode\desktop\login], so you can adjust to make sure everything is matching together."
+**Files touched:** `specs/020-mobile-login-redesign/spec.md`, `specs/020-mobile-login-redesign/checklists/requirements.md`
 
+### 2026-08-06 18:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/020-mobile-login-redesign/spec.md`
 
+### 2026-08-06 18:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/020-mobile-login-redesign/plan.md`, `specs/020-mobile-login-redesign/research.md`, `specs/020-mobile-login-redesign/data-model.md`, `specs/020-mobile-login-redesign/quickstart.md`, `specs/020-mobile-login-redesign/contracts/login-ui-contract.md`, `.specify/feature.json`
 
+### 2026-08-06 18:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/020-mobile-login-redesign/tasks.md`
+
+### 2026-08-06 18:49
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/index.css`, `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `specs/020-mobile-login-redesign/tasks.md`
+
+### 2026-08-06 18:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "deploy vercal fails: TS5097, TS2769, TS2554, TS2345 errors"
+**Files touched:** `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/services/social-auth.service.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 18:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the facebook auth"
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/env.ts`, `src/backend/services/oauth-providers.service.ts`, `src/shared/schemas/social-auth.ts`, `src/backend/db/schema/user-social-links.ts`, `src/frontend/src/api/auth.ts`, `src/backend/__tests__/integration/auth.social.test.ts`

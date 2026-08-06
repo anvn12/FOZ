@@ -105,7 +105,7 @@ export function useChangePassword() {
   return useMutation({ mutationFn: changePassword });
 }
 
-export function initiateSocialAuth(provider: "google" | "facebook", isMobile: boolean): Promise<AuthResponse | null> {
+export function initiateSocialAuth(provider: "google", isMobile: boolean): Promise<AuthResponse | null> {
   const mode = isMobile ? "redirect" : "popup";
   const url = `/api/v1/auth/${provider}?mode=${mode}`;
 
@@ -114,7 +114,7 @@ export function initiateSocialAuth(provider: "google" | "facebook", isMobile: bo
     return Promise.resolve(null);
   }
 
-  return new Promise<AuthResponse>((resolve, reject) => {
+  return new Promise<AuthResponse | null>((resolve, reject) => {
     const width = 500;
     const height = 600;
     const left = window.screenX + (window.innerWidth - width) / 2;

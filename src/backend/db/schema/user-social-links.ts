@@ -15,7 +15,7 @@ export const userSocialLinks = pgTable(
     userAccountId: uuid("user_account_id")
       .notNull()
       .references(() => userAccounts.id, { onDelete: "cascade" }),
-    provider: text("provider").notNull(), // 'google' | 'facebook'
+    provider: text("provider").notNull(), // 'google'
     providerUserId: text("provider_user_id").notNull(),
     providerEmail: text("provider_email"),
     createdAt: timestamp("created_at", { withTimezone: true })
