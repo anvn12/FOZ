@@ -1411,13 +1411,237 @@
 **Prompt:** "you forgot the icon next to the FOZ logo"
 **Files touched:** `src/frontend/public/foz-logo.svg`, `src/frontend/src/pages/LoginPage.tsx`
 
+### 2026-08-06 17:36
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
 
+### 2026-08-05 13:09
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover after 0.5s the box shows, not immediately"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
 
+### 2026-08-05 13:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "gap "more" box still big"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
 
+### 2026-08-05 13:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The current project like post or like comment takes too long to change the icon status because the frontend renders based on the status of backend. Change it so that frontend change the icon, send the request to backend. But make sure that the liked is still logically correct. This action is just for quick response on client side"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
 
+### 2026-08-05 13:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when register a new account, the web should then redirect to login route. When login, it should redirect to home (root)"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`
 
+### 2026-08-05 13:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Click post should view details of post (detailed content, comments, ...)\n\nclick image should view full size image"
+**Files touched:** `src/frontend/src/components/ImageViewerModal.tsx`, `src/frontend/src/components/HorizontalMediaGallery.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/components/__tests__/ImageViewerModal.test.tsx`
 
+### 2026-08-05 13:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "hover image not change the image display"
+**Files touched:** `src/frontend/src/components/HorizontalMediaGallery.tsx`
 
+### 2026-08-05 13:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "click profile picture (on post) should direct to profile, just like when click to display name"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
 
+### 2026-08-05 13:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add a Read more button for posts (or comments) that are too long"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/__tests__/ExpandableText.test.tsx`, `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentItem.tsx`, `src/frontend/src/components/post/PostCard.tsx`
 
+### 2026-08-05 13:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the color of these button should be black"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`
 
+### 2026-08-05 13:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on Comment: Shift enter is newline, enter is submit"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
+### 2026-08-05 13:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make sure that on mobile, enter is a new line, only click submit button is submit the comment"
+**Files touched:** `src/frontend/src/utils/device.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/comment/CommentEditor.tsx`, `src/frontend/src/components/__tests__/CommentEditor.test.tsx`
+
+### 2026-08-05 13:57
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "add the sort comment (algorithm just like the post). Default is Top (like for you in post). Recent is like latest post"
+**Files touched:** `src/frontend/src/utils/comment-sorting.ts`, `src/frontend/src/utils/__tests__/comment-sorting.test.ts`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`
+
+### 2026-08-05 14:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "that sort box should be on top of the comment input box "
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:03
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the between the sort box and input comment box"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "interact with post (like post...) should not change the current recommendation order. For example, when user like a post, with the For You recommendation, the post move to top of the view, user cannot see the post. Only change when reload the web."
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`
+
+### 2026-08-05 14:12
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "do the same thing with comments"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-05 14:18
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify Fix search: Trending Topics, Suggested Creators, Trending Discussions use mock data\nView all (right side of Suggested Creators) is not functionable\nThe submit search input (the right arrow) only shows when user enters some input to the box"
+**Files touched:** `specs/017-fix-search-widgets/spec.md`, `specs/017-fix-search-widgets/checklists/requirements.md`
+
+### 2026-08-05 14:20
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/017-fix-search-widgets/spec.md`
+
+### 2026-08-05 14:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `.specify/feature.json`, `specs/017-fix-search-widgets/plan.md`, `specs/017-fix-search-widgets/research.md`, `specs/017-fix-search-widgets/data-model.md`, `specs/017-fix-search-widgets/contracts/search-api.yaml`, `specs/017-fix-search-widgets/quickstart.md`
+
+### 2026-08-05 14:23
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/017-fix-search-widgets/tasks.md`
+
+### 2026-08-05 14:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/search.ts`, `src/shared/schemas/index.ts`, `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`, `src/frontend/src/api/search.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`, `specs/017-fix-search-widgets/tasks.md`
+
+### 2026-08-05 14:28
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on the suggested creator, remove the last profile (view more) as we can use the small view more button on the corner"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 14:31
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Suggested Creators only shows 10 most active creator. The trending discussions should use this type of icon (jus like home page)"
+**Files touched:** `src/backend/api/search/routes.ts`, `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 14:33
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the profile picture not match the default picture in the app. Remove the "Follow" in suggested creators"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 23:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "cannot deploy vercel: src/frontend/src/components/__tests__/FeedPostItem.test.tsx(179,12): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/components/__tests__/FeedPostItem.test.tsx(180,21): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/pages/__tests__/SearchPage.test.tsx(85,21): error TS2345: Argument of type 'HTMLElement | undefined' is not assignable to parameter of type 'Window | Document | Node | Element'.\n  Type 'undefined' is not assignable to type 'Window | Document | Node | Element'.\nError: Command "npm run build" exited with 2"
+**Files touched:** `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-06 15:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The 'X' icon when to remove images when creating posts does not show on MOBILE"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/__tests__/CreatePostModal.test.tsx`
+
+### 2026-08-06 16:42
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify @[d:\FOZ\docs\03 - UI-designs\white mode\login] based on the given material, change the current login UI to that design. Remember to work on responsive design too"
+**Files touched:** `specs/018-login-ui-redesign/spec.md`, `specs/018-login-ui-redesign/checklists/requirements.md`
+
+### 2026-08-06 16:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/018-login-ui-redesign/spec.md`
+
+### 2026-08-06 16:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/018-login-ui-redesign/plan.md`, `specs/018-login-ui-redesign/research.md`, `specs/018-login-ui-redesign/data-model.md`, `specs/018-login-ui-redesign/quickstart.md`, `specs/018-login-ui-redesign/contracts/auth-login.md`
+
+### 2026-08-06 16:49
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/018-login-ui-redesign/tasks.md`
+
+### 2026-08-06 16:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/index.html`, `src/frontend/src/index.css`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`, `specs/018-login-ui-redesign/tasks.md`
+
+### 2026-08-06 16:57
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "you forgot the icon next to the FOZ logo"
+**Files touched:** `src/frontend/public/foz-logo.svg`, `src/frontend/src/pages/LoginPage.tsx`
+
+### 2026-08-06 17:36
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify add login via Google and Facebook to login UI"
+**Files touched:** `specs/019-social-login/spec.md`, `specs/019-social-login/checklists/requirements.md`
+
+### 2026-08-06 17:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `.specify/feature.json`, `specs/019-social-login/spec.md`
+
+### 2026-08-06 17:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/019-social-login/plan.md`, `specs/019-social-login/research.md`, `specs/019-social-login/data-model.md`, `specs/019-social-login/quickstart.md`, `specs/019-social-login/contracts/social-auth-api.yaml`, `.github/copilot-instructions.md`
+
+### 2026-08-06 17:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/019-social-login/tasks.md`
+
+### 2026-08-06 17:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/social-auth.ts`, `src/shared/schemas/index.ts`, `src/backend/db/schema/user-social-links.ts`, `src/backend/db/schema/index.ts`, `src/backend/db/migrations/0007_user_social_links.sql`, `src/backend/env.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/api/auth/routes.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/backend/__tests__/integration/auth.setup.ts`, `src/backend/__tests__/integration/auth.social.test.ts`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `specs/019-social-login/tasks.md`### 2026-08-06 17:58
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the UI of these 2 buttons should be below the Create new account button"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 17:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make these 2 buttons work instead of mock data"
+**Files touched:** `src/backend/services/oauth-providers.service.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`
