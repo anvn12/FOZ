@@ -42,4 +42,19 @@ describe("Social Auth Routes (/api/v1/auth/google)", () => {
     expect(link).toBeDefined();
     expect(link!.provider).toBe("google");
   });
+
+  it("GET /api/v1/auth/google/callback redirects to frontend in redirect mode", async () => {
+    const res = await getAgent().get(
+      "/api/v1/auth/google/callback?code=mock_google_code&state=redirect&mock_email=redirectgoogle@example.com",
+    );
+
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toMatch(/\/\?token=/);
+  });
+
+  it("GET / handles root requests and token query params gracefully", async () => {
+    const resRoot = await getAgent().get("/");
+    expect(resRoot.status).toBe(200);
+    expect(resRoot.body).toEqual({ ok: true, message: "FOZ API Backend" });
+  });
 });

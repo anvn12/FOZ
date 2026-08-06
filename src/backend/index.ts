@@ -3,7 +3,7 @@ import express, { Router, type Express, type NextFunction, type Request, type Re
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ZodError } from "zod";
-import { env } from "#backend/env.js";
+import { env, getFrontendUrl } from "#backend/env.js";
 import { authRouter } from "#backend/api/auth/routes.js";
 import { postRouter } from "#backend/api/posts/routes.js";
 import { commentRouter } from "#backend/api/comments/routes.js";
@@ -43,8 +43,19 @@ export function createApp(): Express {
   apiRouter.use("/admin", adminRouter);
   app.use("/api/v1", apiRouter);
 
-
   app.get("/api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
+
+  app.get("/", (req, res) => {
+    const frontendUrl = getFrontendUrl();
+    const host = req.headers.host || "";
+    // If request contains a token query param (e.g., from an misdirected OAuth redirect),
+    // redirect to the actual frontend URL if configured and not matching current backend host.
+    if (req.query.token && frontendUrl && !frontendUrl.includes(host)) {
+      const token = encodeURIComponent(String(req.query.token));
+      return res.redirect(`${frontendUrl}/?token=${token}`);
+    }
+    return res.status(200).json({ ok: true, message: "FOZ API Backend" });
+  });
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND", message: "Not found" } });
