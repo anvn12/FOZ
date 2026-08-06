@@ -12,22 +12,18 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
     vi.clearAllMocks();
   });
 
-  it("renders stacked Google and Facebook brand buttons with ARIA labels and OR divider", () => {
+  it("renders full-width Google brand button with ARIA labels and OR divider", () => {
     const handleSelect = vi.fn();
     renderWithProviders(<SocialLoginButtons onSelectProvider={handleSelect} />);
 
     const googleBtn = screen.getByRole("button", { name: /Continue with Google account/i });
-    const facebookBtn = screen.getByRole("button", { name: /Continue with Facebook account/i });
 
     expect(googleBtn).toBeTruthy();
-    expect(facebookBtn).toBeTruthy();
-    expect(screen.getByText(/or continue with/i)).toBeTruthy();
+    expect(screen.getByText("Continue with Google")).toBeTruthy();
+    expect(screen.getByText("or")).toBeTruthy();
 
     fireEvent.click(googleBtn);
     expect(handleSelect).toHaveBeenCalledWith("google");
-
-    fireEvent.click(facebookBtn);
-    expect(handleSelect).toHaveBeenCalledWith("facebook");
   });
 
   it("displays loading spinner state when social login is in progress", () => {
@@ -39,7 +35,7 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
     expect(googleBtn.getAttribute("disabled")).toBe("");
   });
 
-  it("renders social login buttons inside LoginPage", () => {
+  it("renders Google social login button inside LoginPage", () => {
     vi.spyOn(authApi, "useLogin").mockReturnValue({
       mutate: vi.fn(),
       isPending: false,
@@ -48,6 +44,5 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
     renderWithProviders(<LoginPage />);
 
     expect(screen.getByRole("button", { name: /Continue with Google account/i })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Continue with Facebook account/i })).toBeTruthy();
   });
 });

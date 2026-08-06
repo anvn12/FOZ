@@ -65,7 +65,32 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
     }
 
     return res.redirect(`${env.CORS_ORIGIN}/?token=${encodeURIComponent(session.auth.accessToken)}`);
-  } catch (err) {
+  } catch (err: any) {
+    console.error("Google Auth Callback Error:", err);
+    const mode = (req.query.state as string) || "popup";
+    const errorMessage = err?.message || "Google authentication failed";
+
+    if (mode === "popup") {
+      res.setHeader("Content-Type", "text/html");
+      return res.status(200).send(`
+        <!DOCTYPE html>
+        <html>
+          <head><title>Authentication Error</title></head>
+          <body>
+            <script>
+              if (window.opener) {
+                window.opener.postMessage({ type: 'SOCIAL_AUTH_ERROR', error: ${JSON.stringify(errorMessage)} }, '*');
+                window.close();
+              } else {
+                alert(${JSON.stringify(errorMessage)});
+                window.location.href = '/login';
+              }
+            </script>
+          </body>
+        </html>
+      `);
+    }
+
     next(err);
   }
 });

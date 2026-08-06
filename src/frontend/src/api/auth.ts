@@ -141,6 +141,10 @@ export function initiateSocialAuth(provider: "google" | "facebook", isMobile: bo
           accessToken: data.accessToken,
         });
         resolve(data);
+      } else if (event.data?.type === "SOCIAL_AUTH_ERROR") {
+        window.removeEventListener("message", messageHandler);
+        clearInterval(timer);
+        reject(new ApiError(400, "SOCIAL_AUTH_FAILED", event.data?.error || "Social authentication failed."));
       }
     };
 

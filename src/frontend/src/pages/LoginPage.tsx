@@ -116,7 +116,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<"google" | "facebook" | null>(null);
+  const [socialLoading, setSocialLoading] = useState<"google" | null>(null);
 
   const {
     register: field,
@@ -132,7 +132,7 @@ export function LoginPage() {
     });
   });
 
-  const handleSocialSelect = async (provider: "google" | "facebook") => {
+  const handleSocialSelect = async (provider: "google") => {
     try {
       setSocialLoading(provider);
       const isMobile = isMobileDevice();
@@ -176,17 +176,17 @@ export function LoginPage() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col md:flex-row w-full min-h-screen relative z-10 items-center justify-center pt-24 md:pt-16 pb-12">
+      <main className="flex-1 flex flex-col md:flex-row w-full min-h-screen relative z-10 items-center justify-center pt-20 md:pt-14 pb-6 px-4">
         {/* Left Half: Branding & Carousel (Desktop View) */}
         <div className="hidden md:flex w-1/2 h-full flex-col justify-center px-12 md:px-16 relative items-center">
           <div className="max-w-xl z-10">
-            <h1 className="text-5xl lg:text-6xl font-extrabold mb-6 text-[#1e2024] leading-tight font-montserrat">
+            <h1 className="text-4xl lg:text-5xl font-extrabold mb-4 text-[#1e2024] leading-tight font-montserrat">
               Focus on <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7DFF] to-[#9D3BFF]">
                 Zillions.
               </span>
             </h1>
-            <p className="text-lg mb-12 text-[#424754] font-plus-jakarta max-w-md">
+            <p className="text-base mb-8 text-[#424754] font-plus-jakarta max-w-md">
               Explore the things you love, connect with the community, and discover new insights in real-time.
             </p>
 
@@ -196,13 +196,13 @@ export function LoginPage() {
         </div>
 
         {/* Right Half: Glassmorphic Login Card */}
-        <div className="w-full md:w-1/2 h-full flex items-center justify-center px-4 md:px-16 flex-col">
-          <div className="glass-panel w-full max-w-md rounded-xl p-8 md:p-10 shadow-xl relative z-10">
-            <h2 className="text-2xl font-semibold text-[#1e2024] mb-8 text-center font-montserrat">
+        <div className="w-full md:w-1/2 h-full flex items-center justify-center px-2 md:px-12 flex-col">
+          <div className="glass-panel w-full max-w-md rounded-xl p-6 md:p-7 shadow-xl relative z-10">
+            <h2 className="text-2xl font-semibold text-[#1e2024] mb-5 text-center font-montserrat">
               Log in to FOZ
             </h2>
 
-            <form onSubmit={onSubmit} className="space-y-6" noValidate>
+            <form onSubmit={onSubmit} className="space-y-4" noValidate>
               <div>
                 <label className="sr-only" htmlFor="email">
                   Email address or mobile number
@@ -214,10 +214,10 @@ export function LoginPage() {
                   placeholder="Email address or mobile number"
                   aria-invalid={errors.email ? true : undefined}
                   {...field("email")}
-                  className="w-full px-4 py-3 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none"
                 />
                 {errors.email && (
-                  <p className="mt-1.5 px-1 text-xs text-[#ba1a1a] font-medium">
+                  <p className="mt-1 px-1 text-xs text-[#ba1a1a] font-medium">
                     {errors.email.message}
                   </p>
                 )}
@@ -235,7 +235,7 @@ export function LoginPage() {
                     placeholder="Password"
                     aria-invalid={errors.password ? true : undefined}
                     {...field("password")}
-                    className="w-full px-4 py-3 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none pr-12"
+                    className="w-full px-4 py-2.5 rounded-lg input-glass text-[#1e2024] text-base placeholder-[#8c90a0] font-plus-jakarta focus:outline-none pr-12"
                   />
                   <button
                     type="button"
@@ -249,7 +249,7 @@ export function LoginPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1.5 px-1 text-xs text-[#ba1a1a] font-medium">
+                  <p className="mt-1 px-1 text-xs text-[#ba1a1a] font-medium">
                     {errors.password.message}
                   </p>
                 )}
@@ -258,13 +258,13 @@ export function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || login.isPending}
-                className="w-full py-3.5 rounded-lg btn-gradient text-white text-base font-bold font-montserrat mt-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-3 rounded-lg btn-gradient text-white text-base font-bold font-montserrat mt-1 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isSubmitting || login.isPending ? "Logging in…" : "Log in"}
               </button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-4 text-center">
               <a
                 href="/forgot-password"
                 onClick={handleForgotPassword}
@@ -274,10 +274,10 @@ export function LoginPage() {
               </a>
             </div>
 
-            <div className="mt-8 pt-8 border-t border-black/10 text-center">
+            <div className="mt-5 pt-5 border-t border-black/10 text-center">
               <Link
                 to="/register"
-                className="block w-full py-3 rounded-lg btn-glass text-center text-[#1e2024] text-sm font-bold font-montserrat hover:text-[#2E7DFF] transition-colors"
+                className="block w-full py-2.5 rounded-lg btn-glass text-center text-[#1e2024] text-sm font-bold font-montserrat hover:text-[#2E7DFF] transition-colors"
               >
                 Create new account
               </Link>
