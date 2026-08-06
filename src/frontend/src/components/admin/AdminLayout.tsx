@@ -1,15 +1,41 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
+import { useProfile } from "#frontend/api/profile";
+import { FozLogo } from "#frontend/components/FozLogo";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
+}
+
+function AdminSidebarAvatar({ userId, fallbackEmail }: { userId?: string; fallbackEmail?: string }) {
+  const { data: profile } = useProfile(userId || "");
+
+  if (profile?.avatarUrl) {
+    return (
+      <img
+        src={profile.avatarUrl}
+        alt={profile.displayName || fallbackEmail}
+        className="w-9 h-9 rounded-full object-cover border border-slate-700 shadow-sm ring-2 ring-blue-500/40"
+      />
+    );
+  }
+
+  const displayName = profile?.displayName || fallbackEmail || "Admin";
+  const initials = displayName.charAt(0).toUpperCase();
+
+  return (
+    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 ring-2 ring-blue-500/40 shadow-sm">
+      {initials}
+    </div>
+  );
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const { data: adminProfile } = useProfile(user?.id || "");
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -84,15 +110,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Sidebar Navigation */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col shrink-0 border-r border-slate-800 shadow-xl transition-transform duration-300 md:static md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         {/* Brand Header */}
-        <div className="p-6 border-b border-slate-800/80 flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 ring-1 ring-white/20">
-            <span className="text-white font-black text-xl tracking-wider">FOZ</span>
-          </div>
-          <div>
-            <div className="font-extrabold text-lg text-white tracking-tight flex items-center space-x-1.5">
-              <span>FOZ Admin</span>
-            </div>
-          </div>
+        <div className="p-5 border-b border-slate-800/80 flex items-center space-x-3">
+          <FozLogo
+            to="/admin"
+            imgClassName="h-8 w-8 object-contain"
+            textClassName="text-xl font-black text-white tracking-wider font-montserrat"
+            textSuffix="Admin"
+          />
         </div>
 
         {/* Navigation Links */}
@@ -126,12 +150,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Sidebar Footer User Info */}
         <div className="p-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 ring-2 ring-blue-500/30">
-              {user?.email?.[0]?.toUpperCase() ?? "A"}
-            </div>
+            <AdminSidebarAvatar userId={user?.id} fallbackEmail={user?.email} />
             <div className="min-w-0">
               <p className="text-xs font-semibold text-slate-200 truncate">
-                {user?.email ?? "admin@foz.dev"}
+                {adminProfile?.displayName || user?.email || "Admin User"}
               </p>
               <p className="text-[10px] text-emerald-400 font-mono capitalize flex items-center space-x-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

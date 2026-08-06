@@ -7,6 +7,7 @@ import { LoginRequest } from "#shared/schemas/auth";
 import { useLogin, initiateSocialAuth, ApiError } from "#frontend/api/auth";
 import { SocialLoginButtons } from "#frontend/components/SocialLoginButtons";
 import { isMobileDevice } from "#frontend/utils/device";
+import { FozLogo } from "#frontend/components/FozLogo";
 
 interface CarouselSlideData {
   id: string;
@@ -126,7 +127,13 @@ export function LoginPage() {
 
   const onSubmit = handleSubmit((values) => {
     login.mutate(values, {
-      onSuccess: () => navigate("/"),
+      onSuccess: (data) => {
+        if (data.user.role === "administrator") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      },
       onError: (err) =>
         toast.error(err instanceof ApiError ? err.message : "Something went wrong"),
     });
@@ -166,19 +173,7 @@ export function LoginPage() {
 
       {/* Top Navigation (Brand Header) */}
       <nav className="w-full absolute top-0 left-0 z-50 bg-transparent flex justify-center md:justify-between items-center px-4 md:px-16 py-4 md:py-6">
-        <Link to="/" className="flex items-center gap-3" aria-label="FOZ Home">
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG2dtFpXOaoguUWWzA8emJhKPboHhLcxZslQ8tGT_lLFplkcqBDhOVkg32jQ8sIExp8wPgKIfaj8osR-leaC-yKpJ568k9ZF__Zm02prCaDwMlNcHQkxkar598Mu0V93Xx8-RYfiC1TGb1IvRIQsCK9IEKTbpdSuBrAfNg5-Q7GZWzqJZ33BXuuu0RGDpBHubPKbKP7mC221iIV-WHgtMPtarWBuWSMLVAKeBw4pkKj2vhv8L7gjCo0j0Jh95OB0o-8w"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = "/foz-logo.svg";
-            }}
-            alt="FOZ Logo"
-            className="h-8 w-8 md:h-10 md:w-10 object-contain"
-          />
-          <span className="text-2xl md:text-3xl font-black text-[#2E7DFF] tracking-tighter font-montserrat">
-            FOZ
-          </span>
-        </Link>
+        <FozLogo />
       </nav>
 
       {/* Main Content Container */}
@@ -313,4 +308,4 @@ export function LoginPage() {
       </main>
     </div>
   );
-}
+}
