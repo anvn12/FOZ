@@ -1368,3 +1368,10 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "cannot deploy vercel: src/frontend/src/components/__tests__/FeedPostItem.test.tsx(179,12): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/components/__tests__/FeedPostItem.test.tsx(180,21): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/pages/__tests__/SearchPage.test.tsx(85,21): error TS2345: Argument of type 'HTMLElement | undefined' is not assignable to parameter of type 'Window | Document | Node | Element'.\n  Type 'undefined' is not assignable to type 'Window | Document | Node | Element'.\nError: Command "npm run build" exited with 2"
 **Files touched:** `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-06 15:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The 'X' icon when to remove images when creating posts does not show on MOBILE"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/__tests__/CreatePostModal.test.tsx`
+

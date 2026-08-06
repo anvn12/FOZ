@@ -148,11 +148,12 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
                     )}
                     <button
                       type="button"
+                      aria-label="Remove attachment"
                       onClick={() => {
                         URL.revokeObjectURL(att.previewUrl);
                         setPendingAttachments((prev) => prev.filter((_, index) => index !== i));
                       }}
-                      className="absolute -top-2 -right-2 bg-error text-on-error rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                      className="absolute -top-2 -right-2 bg-error text-on-error rounded-full p-1 opacity-100 transition-opacity flex items-center justify-center"
                     >
                       <span className="material-symbols-outlined text-[14px]">close</span>
                     </button>
