@@ -3,6 +3,7 @@ import { hashPassword, verifyPassword } from "#backend/lib/password.js";
 import { signAccessToken } from "#backend/lib/jwt.js";
 import {
   findUserByEmail,
+  findUserByUsername,
   getUserById,
   createUserWithProfile,
   updatePasswordHash,
@@ -27,6 +28,11 @@ export class AuthError extends Error {
 export class DuplicateEmailError extends AuthError {
   constructor() {
     super("EMAIL_TAKEN", 409);
+  }
+}
+export class DuplicateUsernameError extends AuthError {
+  constructor() {
+    super("USERNAME_TAKEN", 409);
   }
 }
 export class InvalidCredentialsError extends AuthError {
@@ -88,6 +94,7 @@ type Session = {
 async function issueFullSession(user: {
   id: string;
   email: string;
+  username: string;
   role: string;
   status: string;
 }): Promise<Session> {
@@ -104,6 +111,7 @@ async function issueFullSession(user: {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
         role: user.role as PublicUser["role"],
         status: user.status as PublicUser["status"],
       },
@@ -130,6 +138,7 @@ export async function register(input: {
   const passwordHash = await hashPassword(input.password);
   const { user } = await createUserWithProfile({
     email: input.email,
+    username: input.username,
     passwordHash,
     username: input.username,
     displayName: input.displayName,

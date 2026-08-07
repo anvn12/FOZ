@@ -278,7 +278,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       )}
       <div className="flex items-start gap-3">
         {/* Avatar column */}
-        <Link to={`/profiles/${post.authorId}`} className="flex-shrink-0 relative block hover:opacity-85 transition-opacity">
+        <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${post.authorId}`} className="flex-shrink-0 relative block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -291,10 +291,15 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
         {/* Content details */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <div className="flex items-center gap-1 text-[15px] min-w-0">
-              <Link to={`/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[180px] sm:max-w-[280px]">
+            <div className="flex items-center gap-1.5 text-[15px] min-w-0 flex-wrap">
+              <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[180px] sm:max-w-[240px]">
                 {displayName}
               </Link>
+              {profile?.username && (
+                <Link to={`/profiles/@${profile.username}`} className="text-secondary text-[13px] hover:underline truncate">
+                  @{profile.username}
+                </Link>
+              )}
               <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(post.createdAt)}</span>
             </div>
             

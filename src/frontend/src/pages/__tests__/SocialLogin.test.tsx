@@ -20,7 +20,7 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
 
     expect(googleBtn).toBeTruthy();
     expect(screen.getByText("Continue with Google")).toBeTruthy();
-    expect(screen.getByText(/or continue with/i)).toBeTruthy();
+    expect(screen.getByText(/^or$/i)).toBeTruthy();
 
     fireEvent.click(googleBtn);
     expect(handleSelect).toHaveBeenCalledWith("google");

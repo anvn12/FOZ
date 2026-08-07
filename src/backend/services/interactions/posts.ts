@@ -139,8 +139,7 @@ export async function removeRepost(authorId: string, repostOfId: string) {
   return { ok: true as const };
 }
 
-export async function listPostFeed(viewerId?: string, authorId?: string) {
-  const rows = await listPosts(authorId);
+export async function enrichPostList(rows: any[], viewerId?: string) {
   const enriched = [] as Array<any>;
   for (const row of rows) {
     let postToEnrich = row;
@@ -181,6 +180,11 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
     });
   }
   return enriched;
+}
+
+export async function listPostFeed(viewerId?: string, authorId?: string) {
+  const rows = await listPosts(authorId);
+  return enrichPostList(rows, viewerId);
 }
 
 /**

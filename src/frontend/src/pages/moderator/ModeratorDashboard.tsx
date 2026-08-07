@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
+import { useAuthStore } from "../../stores/auth";
 
 type DashboardMetrics = {
   totalReports: number;
@@ -18,7 +19,7 @@ type Report = {
   status: string;
   createdAt: string;
   updatedAt: string;
-  reporter: {
+  reporter?: {
     id: string;
     displayName: string;
   };
@@ -34,9 +35,13 @@ export function ModeratorDashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
+        const token = useAuthStore.getState().accessToken;
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (token) headers.Authorization = `Bearer ${token}`;
+
         const [metricsRes, reportsRes] = await Promise.all([
-          fetch("/api/v1/moderation/metrics"),
-          fetch("/api/v1/moderation/reports?limit=50") // Fetch latest 50 to extract both open and recent actions
+          fetch("/api/v1/moderation/metrics", { credentials: "include", headers }),
+          fetch("/api/v1/moderation/reports?limit=50", { credentials: "include", headers })
         ]);
 
         if (metricsRes.ok) {
@@ -205,7 +210,7 @@ export function ModeratorDashboardPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 font-body-md text-body-md text-on-surface-variant">
-                        {report.reporter.displayName}
+                        {report.reporter?.displayName || "Anonymous User"}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`font-body-md text-body-md flex items-center gap-1 ${new Date().getTime() - new Date(report.createdAt).getTime() > 1800000 ? 'text-error' : 'text-on-surface-variant'}`}>

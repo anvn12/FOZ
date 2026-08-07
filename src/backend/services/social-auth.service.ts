@@ -11,6 +11,30 @@ import {
 import { signAccessToken } from "#backend/lib/jwt.js";
 import { env } from "#backend/env.js";
 import { REFRESH_COOKIE_NAME, refreshCookieOptions, refreshCookiePayload, AuthError } from "#backend/api/auth/auth.service.js";
+import { RESERVED_USERNAMES } from "#shared/schemas/auth.js";
+
+async function generateUniqueUsername(base: string): Promise<string> {
+  let baseName = base.toLowerCase().replace(/[^a-z0-9._]/g, "_");
+  if (baseName.length < 3) baseName = baseName.padEnd(3, "_");
+  if (baseName.length > 25) baseName = baseName.slice(0, 25);
+  if (RESERVED_USERNAMES.includes(baseName)) {
+    baseName = `${baseName}_user`;
+  }
+
+  let candidate = baseName;
+  let counter = 1;
+  while (true) {
+    const existing = await db
+      .select({ id: userAccounts.id })
+      .from(userAccounts)
+      .where(eq(userAccounts.username, candidate));
+    if (existing.length === 0) {
+      return candidate;
+    }
+    candidate = `${baseName}${counter}`;
+    counter++;
+  }
+}
 
 export type SocialProfileInput = {
   provider: "google" | "facebook";
@@ -77,12 +101,14 @@ export async function processSocialAuth(input: SocialProfileInput) {
       // 3. Create new user account and profile
       const userEmail: string = email;
       const finalDisplayName: string = displayName || userEmail.split("@")[0] || "User";
+      const generatedUsername = await generateUniqueUsername(userEmail.split("@")[0] || "user");
 
       const result = await db.transaction(async (tx) => {
         const [user] = await tx
           .insert(userAccounts)
           .values({
             email: userEmail.trim().toLowerCase(),
+            username: generatedUsername,
             passwordHash: "", // Passwordless social user
             role: "standard",
             status: "active",
@@ -113,11 +139,13 @@ export async function processSocialAuth(input: SocialProfileInput) {
   } else {
     // Generate a fallback synthetic user if no email provided by provider
     const syntheticEmail = `${provider}_${providerUserId}@social.foz.internal`;
+    const generatedUsername = await generateUniqueUsername(`${provider}_${providerUserId}`);
     const result = await db.transaction(async (tx) => {
       const [user] = await tx
         .insert(userAccounts)
         .values({
           email: syntheticEmail,
+          username: generatedUsername,
           passwordHash: "",
           role: "standard",
           status: "active",

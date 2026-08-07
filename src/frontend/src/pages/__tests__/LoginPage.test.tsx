@@ -111,7 +111,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
     expect(passwordInput.type).toBe("password");
   });
 
-  it("renders Google social login button with 'or continue with' divider", () => {
+  it("renders Google social login button with 'or' divider", () => {
     vi.spyOn(authApi, "useLogin").mockReturnValue({
       mutate: vi.fn(),
       isPending: false,
@@ -119,7 +119,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
 
     renderWithProviders(<LoginPage />);
 
-    expect(screen.getByText(/or continue with/i)).toBeTruthy();
+    expect(screen.getByText(/^or$/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Continue with Google account/i })).toBeTruthy();
   });
 });

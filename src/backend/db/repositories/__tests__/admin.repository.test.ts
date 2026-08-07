@@ -27,6 +27,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
       .insert(userAccounts)
       .values({
         email: "admin@foz.dev",
+        username: "admin_test",
         passwordHash: p1,
         role: "administrator",
         status: "active",
@@ -41,6 +42,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
       .insert(userAccounts)
       .values({
         email: "user@foz.dev",
+        username: "user_test",
         passwordHash: p2,
         role: "standard",
         status: "active",
@@ -72,6 +74,7 @@ describe("Admin Database Repository Tests (db/repositories/admin.ts)", () => {
     // Add a moderator
     await db.insert(userAccounts).values({
       email: "mod@foz.dev",
+      username: "mod_test",
       passwordHash: "hash",
       role: "moderator",
       status: "active",

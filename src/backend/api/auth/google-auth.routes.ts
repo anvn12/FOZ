@@ -1,5 +1,5 @@
 import { Router, type RequestHandler } from "express";
-import { env } from "#backend/env.js";
+import { env, getFrontendUrl } from "#backend/env.js";
 import { processSocialAuth } from "#backend/services/social-auth.service.js";
 import { clearRefreshCookieOptions } from "#backend/api/auth/auth.service.js";
 
@@ -43,6 +43,7 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
     const session = await processSocialAuth(profile);
 
     res.cookie(session.cookie.name, session.cookie.value, session.cookie.options);
+    const frontendUrl = getFrontendUrl();
 
     if (mode === "popup") {
       res.setHeader("Content-Type", "text/html");
@@ -56,7 +57,7 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
                 window.opener.postMessage({ type: 'SOCIAL_AUTH_SUCCESS', payload: ${JSON.stringify(session.auth)} }, '*');
                 window.close();
               } else {
-                window.location.href = '/?token=${encodeURIComponent(session.auth.accessToken)}';
+                window.location.href = '${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}';
               }
             </script>
           </body>
@@ -64,11 +65,12 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
       `);
     }
 
-    return res.redirect(`${env.CORS_ORIGIN}/?token=${encodeURIComponent(session.auth.accessToken)}`);
+    return res.redirect(`${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}`);
   } catch (err: any) {
     console.error("Google Auth Callback Error:", err);
     const mode = (req.query.state as string) || "popup";
     const errorMessage = err?.message || "Google authentication failed";
+    const frontendUrl = getFrontendUrl();
 
     if (mode === "popup") {
       res.setHeader("Content-Type", "text/html");
@@ -83,7 +85,7 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
                 window.close();
               } else {
                 alert(${JSON.stringify(errorMessage)});
-                window.location.href = '/login';
+                window.location.href = '${frontendUrl}/login';
               }
             </script>
           </body>

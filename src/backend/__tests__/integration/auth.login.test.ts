@@ -1,16 +1,17 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { sql } from "drizzle-orm";
 import { getAgent, clearDb, expectFastResponse } from "./auth.setup.js";
-import { uniqueEmail, uniquePassword } from "../fixtures/users.js";
+import { uniqueEmail, uniqueUsername, uniquePassword } from "../fixtures/users.js";
 import { db } from "#backend/db/client.js";
 import { userAccounts } from "#backend/db/schema/index.js";
 import { eq } from "drizzle-orm";
 
 async function seedUser(status: "active" | "suspended" | "banned" | "pending" = "active") {
   const email = uniqueEmail();
+  const username = uniqueUsername();
   const password = uniquePassword();
   // Register first to get a properly hashed password.
-  const res = await getAgent().post("/api/v1/auth/register").send({ email, password });
+  const res = await getAgent().post("/api/v1/auth/register").send({ email, username, password });
   expect(res.status).toBe(201);
   // Then flip the status if needed.
   if (status !== "active") {

@@ -26,8 +26,15 @@
     {
       "idx": 3,
       "version": "7",
-      "when": 1786025174137,
-      "tag": "0003_boring_gorilla_man",
+      "when": 1786000002000,
+      "tag": "0008_username_column",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786000003000,
+      "tag": "0009_hashtags",
       "breakpoints": true
     }
   ]

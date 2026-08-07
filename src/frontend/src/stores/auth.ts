@@ -3,6 +3,7 @@ import { create } from "zustand";
 export type AuthUser = {
   id: string;
   email: string;
+  username?: string;
   role: "guest" | "standard" | "moderator" | "administrator";
   status: "active" | "suspended" | "banned" | "pending";
 };

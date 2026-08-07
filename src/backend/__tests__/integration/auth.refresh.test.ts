@@ -1,14 +1,15 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { sql, eq } from "drizzle-orm";
 import { getAgent, clearDb, expectFastResponse } from "./auth.setup.js";
-import { uniqueEmail, uniquePassword } from "../fixtures/users.js";
+import { uniqueEmail, uniqueUsername, uniquePassword } from "../fixtures/users.js";
 import { db } from "#backend/db/client.js";
 import { userAccounts } from "#backend/db/schema/index.js";
 
 async function registerAndGetCookie(): Promise<{ email: string; refreshCookie: string }> {
   const email = uniqueEmail();
+  const username = uniqueUsername();
   const password = uniquePassword();
-  const res = await getAgent().post("/api/v1/auth/register").send({ email, password });
+  const res = await getAgent().post("/api/v1/auth/register").send({ email, username, password });
   expect(res.status).toBe(201);
   const cookie = (res.headers["set-cookie"] ?? []) as string | string[];
   const refreshCookie: string = Array.isArray(cookie)

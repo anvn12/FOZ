@@ -22,6 +22,7 @@ describe("Administrator End-to-End API Integration Suite (src/backend/api/admin/
       .insert(userAccounts)
       .values({
         email: "admin@foz.dev",
+        username: "admin_user",
         passwordHash: p1,
         role: "administrator",
         status: "active",
@@ -36,6 +37,7 @@ describe("Administrator End-to-End API Integration Suite (src/backend/api/admin/
       .insert(userAccounts)
       .values({
         email: "stduser@foz.dev",
+        username: "std_user",
         passwordHash: p2,
         role: "standard",
         status: "active",

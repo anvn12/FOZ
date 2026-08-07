@@ -137,3 +137,69 @@
 **Model:** gpt-5
 **Prompt:** "You have been given comments on the previous commits you made in the repository. ... @copilot resolve the merge conflicts in this pull request"
 **Files touched:** `src/frontend/src/App.tsx`
+
+### 2026-08-06 12:32
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "when i use admin login page, use right account (username + password) and then enter login, this page then return error and white page. when reload it shows right admin dashboard. run foz app in local (db, fe, be) and find out the bugs. fix it"
+**Files touched:** `src/frontend/src/pages/admin/AdminLoginPage.tsx`
+
+### 2026-08-06 12:37
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "foz admin dashboard and login page must use same icon as the foz title (on left top of admin dashboard). foz login page should use same ui (just ui) as auth login page.  Also admin avatar should be the same as the avater on the forum"
+**Files touched:** `src/frontend/src/components/FozLogo.tsx`, `src/frontend/src/components/admin/AdminLayout.tsx`, `src/frontend/src/pages/admin/AdminLoginPage.tsx`, `src/frontend/src/pages/LoginPage.tsx`
+
+### 2026-08-06 13:05
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/02-speckit.specify I want to create hashtag feature for the foz forum. Ensure it uses the live data"
+**Files touched:** `specs/021-hashtag-feature/spec.md`, `specs/021-hashtag-feature/checklists/requirements.md`
+
+### 2026-08-06 13:07
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/021-hashtag-feature/spec.md`
+
+### 2026-08-06 13:09
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/021-hashtag-feature/plan.md`, `specs/021-hashtag-feature/research.md`, `specs/021-hashtag-feature/data-model.md`, `specs/021-hashtag-feature/contracts/hashtags-api.yaml`, `specs/021-hashtag-feature/quickstart.md`
+
+### 2026-08-06 13:10
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/021-hashtag-feature/tasks.md`
+
+### 2026-08-06 13:18
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/hashtags.ts`, `src/shared/schemas/index.ts`, `src/backend/db/schema/hashtags.ts`, `src/backend/db/schema/index.ts`, `src/backend/db/migrations/0008_hashtags.sql`, `src/backend/db/migrations/meta/_journal.json`, `src/backend/db/repositories/hashtags.ts`, `src/backend/api/posts/routes.ts`, `src/backend/services/interactions/posts.ts`, `src/backend/api/hashtags/routes.ts`, `src/backend/index.ts`, `src/frontend/src/api/hashtags.ts`, `src/frontend/src/components/HashtagText.tsx`, `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/TrendingHashtagsWidget.tsx`, `src/frontend/src/pages/HashtagFeedPage.tsx`, `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/App.tsx`, `src/backend/api/hashtags/__tests__/hashtags.test.ts`, `specs/021-hashtag-feature/tasks.md`
+
+### 2026-08-06 13:19
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "Fix test cascade truncate for admin integration tests"
+**Files touched:** `src/backend/__tests__/integration/auth.setup.ts`
+
+### 2026-08-06 13:22
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "hashtag feature occurs error. find out and fix those"
+**Files touched:** `src/backend/db/repositories/hashtags.ts`, `src/backend/api/posts/routes.ts`, `src/frontend/src/pages/HashtagFeedPage.tsx`
+
+### 2026-08-06 13:27
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "should redesign treding hashtags as beautiful format as x.com (but followed the design of foz)"
+**Files touched:** `src/frontend/src/components/TrendingHashtagsWidget.tsx`
+
+### 2026-08-06 13:29
+**Tool:** antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "delete 'live' on top and the 3 dots in each trends"
+**Files touched:** `src/frontend/src/components/TrendingHashtagsWidget.tsx`

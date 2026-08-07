@@ -4,9 +4,10 @@ import { db } from "#backend/db/client.js";
 import { userAccounts } from "#backend/db/schema/users.js";
 
 async function registerAndGetToken(email = "user@example.com", role = "standard"): Promise<{ accessToken: string; userId: string }> {
+  const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, password: "password123" });
+    .send({ email, username, password: "password123" });
   expect(res.status).toBe(201);
   const userId = res.body.user.id;
   

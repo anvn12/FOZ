@@ -1,3 +1,9 @@
+### 2026-08-06 21:32
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Flash
+**Prompt:** "Add UUID regex check in findProfileByUserId to prevent PostgreSQL 22P02 invalid input syntax error when requested by handle"
+**Files touched:** `src/backend/db/repositories/profiles.ts`
+
 ### 2026-07-20 00:48
 **Tool:** Antigravity
 **Model:** Gemini 3.5 Flash
@@ -1718,3 +1724,251 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "remove the facebook auth"
 **Files touched:** `src/backend/api/auth/routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/env.ts`, `src/backend/services/oauth-providers.service.ts`, `src/shared/schemas/social-auth.ts`, `src/backend/db/schema/user-social-links.ts`, `src/frontend/src/api/auth.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
+
+### 2026-08-06 19:19
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "cannot login with google on web. https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
+**Files touched:** `src/backend/env.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/frontend/src/main.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`
+
+### 2026-08-06 19:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix: cannot deploy on vercel: src/backend/env.ts(50,23): error TS2532: Object is possibly 'undefined'. Error: Command "npm run build" exited with 2"
+**Files touched:** `src/backend/env.ts`
+
+### 2026-08-06 19:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "right now the Google login does not work: https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
+**Files touched:** `src/backend/env.ts`, `src/backend/index.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
+
+### 2026-08-06 19:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+### 2026-08-05 14:31
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Suggested Creators only shows 10 most active creator. The trending discussions should use this type of icon (jus like home page)"
+**Files touched:** `src/backend/api/search/routes.ts`, `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 14:33
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the profile picture not match the default picture in the app. Remove the "Follow" in suggested creators"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-05 23:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "cannot deploy vercel: src/frontend/src/components/__tests__/FeedPostItem.test.tsx(179,12): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/components/__tests__/FeedPostItem.test.tsx(180,21): error TS18048: 'mutationArgs' is possibly 'undefined'.\nsrc/frontend/src/pages/__tests__/SearchPage.test.tsx(85,21): error TS2345: Argument of type 'HTMLElement | undefined' is not assignable to parameter of type 'Window | Document | Node | Element'.\n  Type 'undefined' is not assignable to type 'Window | Document | Node | Element'.\nError: Command "npm run build" exited with 2"
+**Files touched:** `src/frontend/src/components/__tests__/FeedPostItem.test.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-06 15:26
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "The 'X' icon when to remove images when creating posts does not show on MOBILE"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/__tests__/CreatePostModal.test.tsx`
+
+### 2026-08-06 16:42
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify @[d:\FOZ\docs\03 - UI-designs\white mode\login] based on the given material, change the current login UI to that design. Remember to work on responsive design too"
+**Files touched:** `specs/018-login-ui-redesign/spec.md`, `specs/018-login-ui-redesign/checklists/requirements.md`
+
+### 2026-08-06 16:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/018-login-ui-redesign/spec.md`
+
+### 2026-08-06 16:48
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/018-login-ui-redesign/plan.md`, `specs/018-login-ui-redesign/research.md`, `specs/018-login-ui-redesign/data-model.md`, `specs/018-login-ui-redesign/quickstart.md`, `specs/018-login-ui-redesign/contracts/auth-login.md`
+
+### 2026-08-06 16:49
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/018-login-ui-redesign/tasks.md`
+
+### 2026-08-06 16:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/index.html`, `src/frontend/src/index.css`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`, `specs/018-login-ui-redesign/tasks.md`
+
+### 2026-08-06 16:57
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "you forgot the icon next to the FOZ logo"
+**Files touched:** `src/frontend/public/foz-logo.svg`, `src/frontend/src/pages/LoginPage.tsx`
+
+### 2026-08-06 17:36
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify add login via Google and Facebook to login UI"
+**Files touched:** `specs/019-social-login/spec.md`, `specs/019-social-login/checklists/requirements.md`
+
+### 2026-08-06 17:38
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `.specify/feature.json`, `specs/019-social-login/spec.md`
+
+### 2026-08-06 17:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/019-social-login/plan.md`, `specs/019-social-login/research.md`, `specs/019-social-login/data-model.md`, `specs/019-social-login/quickstart.md`, `specs/019-social-login/contracts/social-auth-api.yaml`, `.github/copilot-instructions.md`
+
+### 2026-08-06 17:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/019-social-login/tasks.md`
+
+### 2026-08-06 17:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/shared/schemas/social-auth.ts`, `src/shared/schemas/index.ts`, `src/backend/db/schema/user-social-links.ts`, `src/backend/db/schema/index.ts`, `src/backend/db/migrations/0007_user_social_links.sql`, `src/backend/env.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/api/auth/routes.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/backend/__tests__/integration/auth.setup.ts`, `src/backend/__tests__/integration/auth.social.test.ts`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `specs/019-social-login/tasks.md`### 2026-08-06 17:58
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the UI of these 2 buttons should be below the Create new account button"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 17:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "make these 2 buttons work instead of mock data"
+**Files touched:** `src/backend/services/oauth-providers.service.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`
+
+### 2026-08-06 18:24
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "i have filled the google client id and client secret, but cannot using google on localhost"
+**Files touched:** `.env`, `.env.example`
+
+### 2026-08-06 18:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on localhost, after i log in, it says: INTERNAL server error on callback"
+**Files touched:** `src/backend/env.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/frontend/src/api/auth.ts`
+
+### 2026-08-06 18:31
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "Failed query: select from user_social_links"
+**Files touched:** `src/backend/db/migrations/meta/_journal.json`
+
+### 2026-08-06 18:35
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove login by facebook, only google. Then make the button google to take up the space of facebook on UI (change or continue with to or, Continue with Google"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 18:37
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "the main UI of login should be in the view (not scroll for view the button...)"
+**Files touched:** `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`
+
+
+### 2026-08-06 18:43
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/02-speckit.specify redesign the Login UI on mobile based on@[d:\FOZ\docs\03 - UI-designs\white mode\mobile\login]. The mobile design must match the original one from desktop version @[d:\FOZ\docs\03 - UI-designs\white mode\desktop\login], so you can adjust to make sure everything is matching together."
+**Files touched:** `specs/020-mobile-login-redesign/spec.md`, `specs/020-mobile-login-redesign/checklists/requirements.md`
+
+### 2026-08-06 18:44
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/020-mobile-login-redesign/spec.md`
+
+### 2026-08-06 18:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/020-mobile-login-redesign/plan.md`, `specs/020-mobile-login-redesign/research.md`, `specs/020-mobile-login-redesign/data-model.md`, `specs/020-mobile-login-redesign/quickstart.md`, `specs/020-mobile-login-redesign/contracts/login-ui-contract.md`, `.specify/feature.json`
+
+### 2026-08-06 18:46
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/020-mobile-login-redesign/tasks.md`
+
+### 2026-08-06 18:49
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/index.css`, `src/frontend/src/components/SocialLoginButtons.tsx`, `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `specs/020-mobile-login-redesign/tasks.md`
+
+### 2026-08-06 18:54
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "deploy vercal fails: TS5097, TS2769, TS2554, TS2345 errors"
+**Files touched:** `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/backend/services/social-auth.service.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`
+
+### 2026-08-06 18:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "remove the facebook auth"
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/backend/api/auth/facebook-auth.routes.ts`, `src/backend/env.ts`, `src/backend/services/oauth-providers.service.ts`, `src/shared/schemas/social-auth.ts`, `src/backend/db/schema/user-social-links.ts`, `src/frontend/src/api/auth.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
+
+### 2026-08-06 19:19
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "cannot login with google on web. https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
+**Files touched:** `src/backend/env.ts`, `src/backend/api/auth/google-auth.routes.ts`, `src/frontend/src/main.tsx`, `src/frontend/src/pages/__tests__/SocialLogin.test.tsx`, `src/frontend/src/pages/__tests__/LoginPage.test.tsx`
+
+### 2026-08-06 19:22
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "fix: cannot deploy on vercel: src/backend/env.ts(50,23): error TS2532: Object is possibly 'undefined'. Error: Command "npm run build" exited with 2"
+**Files touched:** `src/backend/env.ts`
+
+### 2026-08-06 19:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "right now the Google login does not work: https://foz-backend.onrender.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... {"error":{"code":"NOT_FOUND","message":"Not found"}}"
+**Files touched:** `src/backend/env.ts`, `src/backend/index.ts`, `src/backend/__tests__/integration/auth.social.test.ts`
+
+### 2026-08-06 19:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "vercel deploy fails: src/backend/env.ts(79,17): error TS2532: Object is possibly 'undefined'. src/backend/env.ts(80,12): error TS18048: 'url' is possibly 'undefined'. Error: Command "npm run build" exited with 2"
+**Files touched:** `src/backend/env.ts`
+
+### 2026-08-06 20:02
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "When i use google login on deploymen (vercel and render), it redirects to the home page without any actual login. Help me fix it. Also, this is the lis of variable on my backend for this login: FRONTEND_URL, GOOGLE_CALLBACK_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CORS_ORIGIN. And for vercel, VITE_API_URL"
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/frontend/src/main.tsx`, `src/backend/index.ts`
+
+### 2026-08-06 20:13
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "/02-speckit.specify Display name can be different from username. Help me add that"
+**Files touched:** `specs/021-display-name/spec.md`, `specs/021-display-name/checklists/requirements.md`
+
+### 2026-08-06 20:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/021-display-name/spec.md`, `.specify/feature.json`
+
+### 2026-08-06 20:41
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/021-display-name/plan.md`, `specs/021-display-name/research.md`, `specs/021-display-name/data-model.md`, `specs/021-display-name/quickstart.md`, `specs/021-display-name/contracts/api-contracts.yaml`, `.specify/feature.json`
+
+### 2026-08-06 20:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/021-display-name/tasks.md`

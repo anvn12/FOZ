@@ -6,3 +6,4 @@ export * from "./admin.js";
 export * from "./upload.js";
 export * from "./search.js";
 export * from "./social-auth.js";
+export * from "./hashtags.js";

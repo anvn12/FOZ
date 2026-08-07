@@ -2,8 +2,9 @@ import { Router } from "express";
 import { requireAuth, requireRole, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { db } from "#backend/db/client.js";
 import { reports, userAccounts, profiles } from "#backend/db/schema/index.js";
-import { getReportsQuerySchema, updateReportStatusSchema } from "#shared/schemas/interactions.js";
+import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } from "#shared/schemas/interactions.js";
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
+import { deletePost } from "#backend/services/interactions/posts.js";
 
 export const moderationRouter = Router();
 
@@ -45,7 +46,7 @@ moderationRouter.get("/reports", async (req, res, next) => {
 
     const { status, limit, offset } = result.data;
     
-    let query = db.select({
+    const reportList = await db.select({
       id: reports.id,
       reporterId: reports.reporterId,
       targetType: reports.targetType,
@@ -63,15 +64,11 @@ moderationRouter.get("/reports", async (req, res, next) => {
     .from(reports)
     .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
     .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .where(status ? eq(reports.status, status) : undefined)
     .orderBy(desc(reports.updatedAt))
     .limit(limit || 50)
     .offset(offset);
 
-    if (status) {
-      query.where(eq(reports.status, status));
-    }
-
-    const reportList = await query;
     res.json({ reports: reportList });
   } catch (err) {
     next(err);
@@ -97,6 +94,50 @@ moderationRouter.patch("/reports/:reportId/status", validateBody(updateReportSta
     if (!updatedReport) {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Report not found" } });
     }
+
+    res.json(updatedReport);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Resolve a report with an action
+moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSchema), async (req: AuthedRequest, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    const reportId = req.params.reportId as string;
+    const { action, notes } = req.body;
+
+    const targetReport = await db.query.reports.findFirst({
+      where: eq(reports.id, reportId)
+    });
+
+    if (!targetReport) {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Report not found" } });
+    }
+
+    let newStatus = targetReport.status;
+
+    if (action === "delete_content") {
+      if (targetReport.targetType === "post") {
+        await deletePost(targetReport.targetId, req.user.id, true);
+      }
+      newStatus = "closed";
+    } else if (action === "dismiss") {
+      newStatus = "dismissed";
+    } else if (action === "escalate") {
+      newStatus = "escalated";
+    }
+
+    const [updatedReport] = await db.update(reports)
+      .set({ 
+        status: newStatus as any, 
+        updatedAt: new Date(),
+      })
+      .where(eq(reports.id, reportId))
+      .returning();
 
     res.json(updatedReport);
   } catch (err) {

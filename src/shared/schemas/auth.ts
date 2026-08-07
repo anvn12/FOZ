@@ -13,8 +13,37 @@ const emailSchema = z
   .toLowerCase()
   .pipe(z.email("Invalid email address"));
 
+export const RESERVED_USERNAMES = [
+  "admin",
+  "administrator",
+  "moderator",
+  "mod",
+  "api",
+  "support",
+  "root",
+  "null",
+  "undefined",
+  "foz",
+  "system",
+  "help",
+  "about",
+  "settings",
+  "terms",
+  "privacy",
+];
+
+export const usernameSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(3, "Username must be at least 3 characters")
+  .max(30, "Username must be at most 30 characters")
+  .regex(/^[a-z0-9._]+$/, "Username can only contain lowercase letters, numbers, underscores, and periods")
+  .refine((val) => !RESERVED_USERNAMES.includes(val), "This username is reserved");
+
 export const RegisterRequest = z.object({
   email: emailSchema,
+  username: usernameSchema,
   password: passwordSchema,
   username: z.string().min(3, "Username must be at least 3 characters").max(30, "Username is too long"),
   displayName: z.string().min(1, "Display name is required").max(50, "Display name is too long"),
@@ -44,6 +73,7 @@ export const AuthResponse = z.object({
   user: z.object({
     id: z.string().uuid(),
     email: z.string(),
+    username: z.string(),
     role: z.enum(["guest", "standard", "moderator", "administrator"]),
     status: z.enum(["active", "suspended", "banned", "pending"]),
   }),

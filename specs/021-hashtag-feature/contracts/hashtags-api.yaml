@@ -1,0 +1,81 @@
+openapi: 3.0.3
+info:
+  title: FOZ Hashtag API Contract
+  version: 1.0.0
+  description: API endpoints for retrieving trending hashtags and hashtag-filtered post feeds.
+
+paths:
+  /api/v1/hashtags/trending:
+    get:
+      summary: Get live trending hashtags
+      description: Returns top 10 trending hashtags based on post activity in the last 7 days.
+      responses:
+        '200':
+          description: List of live trending hashtags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HashtagItem'
+
+  /api/v1/hashtags/{tag}/posts:
+    get:
+      summary: Get posts tagged with a specific hashtag
+      description: Returns paginated live posts tagged with the specified hashtag.
+      parameters:
+        - name: tag
+          in: path
+          required: true
+          schema:
+            type: string
+          example: foz
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated post feed items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                  nextCursor:
+                    type: string
+                    nullable: true
+
+components:
+  schemas:
+    HashtagItem:
+      type: object
+      required:
+        - id
+        - name
+        - displayName
+        - postCount
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        displayName:
+          type: string
+        postCount:
+          type: integer

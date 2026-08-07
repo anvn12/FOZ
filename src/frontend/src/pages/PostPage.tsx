@@ -391,7 +391,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
       {/* Parent row: avatar lane + content */}
       <div className="flex gap-3">
         <div className="flex flex-col items-center w-8 flex-shrink-0">
-          <Link to={`/profiles/${comment.authorId}`} className="w-8 h-8 flex-shrink-0 mt-3 block hover:opacity-85 transition-opacity">
+          <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${comment.authorId}`} className="w-8 h-8 flex-shrink-0 mt-3 block hover:opacity-85 transition-opacity">
             {profile?.avatarUrl ? (
               <img alt={displayName} className="w-8 h-8 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
             ) : (
@@ -406,10 +406,15 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
 
         <div className="min-w-0 flex-1 pt-3 pb-2">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 text-[14px] min-w-0">
-              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[160px] sm:max-w-[240px]">
+            <div className="flex items-center gap-1.5 text-[14px] min-w-0 flex-wrap">
+              <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[140px] sm:max-w-[220px]">
                 {displayName}
               </Link>
+              {profile?.username && (
+                <Link to={`/profiles/@${profile.username}`} className="text-secondary text-[12px] hover:underline truncate">
+                  @{profile.username}
+                </Link>
+              )}
               <span className="text-secondary ml-1 shrink-0">· {formatRelativeTime(comment.createdAt)}</span>
               {isEdited && <span className="text-secondary text-[12px] font-normal ml-0.5 shrink-0">(Edited)</span>}
             </div>

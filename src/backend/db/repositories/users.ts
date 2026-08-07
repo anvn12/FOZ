@@ -11,6 +11,19 @@ export async function findUserByEmail(email: string) {
   return row;
 }
 
+export async function findUserByUsername(username: string) {
+  const [row] = await db
+    .select()
+    .from(userAccounts)
+    .where(eq(userAccounts.username, username.trim().toLowerCase()));
+  return row;
+}
+
+export async function checkUsernameAvailable(username: string) {
+  const user = await findUserByUsername(username);
+  return !user;
+}
+
 export async function getUserById(id: string) {
   const [row] = await db.select().from(userAccounts).where(eq(userAccounts.id, id));
   return row;
@@ -18,6 +31,7 @@ export async function getUserById(id: string) {
 
 export async function createUserWithProfile(args: {
   email: string;
+  username: string;
   passwordHash: string;
   username: string;
   displayName: string;
@@ -29,6 +43,7 @@ export async function createUserWithProfile(args: {
       .insert(userAccounts)
       .values({
         email: args.email.trim().toLowerCase(),
+        username: args.username.trim().toLowerCase(),
         passwordHash: args.passwordHash,
         role: "standard",
         status: "active",
@@ -111,14 +126,16 @@ export async function revokeRefreshSession(id: string) {
 export type PublicUser = {
   id: string;
   email: string;
+  username: string;
   role: "guest" | "standard" | "moderator" | "administrator";
   status: "active" | "suspended" | "banned" | "pending";
 };
 
-export function toPublicUser(user: { id: string; email: string; role: string; status: string }): PublicUser {
+export function toPublicUser(user: { id: string; email: string; username?: string; role: string; status: string }): PublicUser {
   return {
     id: user.id,
     email: user.email,
+    username: user.username || user.email.split("@")[0] || "user",
     role: user.role as PublicUser["role"],
     status: user.status as PublicUser["status"],
   };

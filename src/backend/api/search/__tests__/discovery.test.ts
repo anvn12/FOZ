@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { sql } from "drizzle-orm";
 import { getAgent, clearDb } from "../../../__tests__/integration/auth.setup.js";
-import { uniqueEmail, uniquePassword } from "../../../__tests__/fixtures/users.js";
+import { uniqueEmail, uniqueUsername, uniquePassword } from "../../../__tests__/fixtures/users.js";
 import { db } from "#backend/db/client.js";
 
 async function registerUserWithDisplayName(displayName: string) {
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email: uniqueEmail(), password: uniquePassword() });
+    .send({ email: uniqueEmail(), username: uniqueUsername(), password: uniquePassword() });
   if (res.status !== 201) throw new Error(`register failed: ${res.status} ${JSON.stringify(res.body)}`);
   await db.execute(sql`
     UPDATE profiles SET display_name = ${displayName} WHERE user_account_id = ${res.body.user.id}
