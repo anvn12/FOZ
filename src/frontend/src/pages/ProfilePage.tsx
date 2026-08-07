@@ -69,8 +69,8 @@ export function ProfilePage() {
           <NavBar />
           <div className="flex-1 w-full flex justify-center md:pl-24">
             <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen flex items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-900" />
-              <span className="ml-3 text-zinc-600 font-medium">Loading profile...</span>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-700 border-t-zinc-900 dark:border-t-white" />
+              <span className="ml-3 text-zinc-600 dark:text-zinc-400 font-medium">Loading profile...</span>
             </main>
           </div>
         </div>
@@ -131,26 +131,19 @@ export function ProfilePage() {
           <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20">
             <div className="px-4 py-6">
               {/* Header Profile Section with Modern Banner */}
-              <div className="relative mb-6 rounded-2xl overflow-hidden border border-zinc-200/80 shadow-sm bg-zinc-900">
-                <div className="h-28 sm:h-36 w-full relative bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-950">
-                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-                  <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
-                  <div className="absolute -top-10 -left-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
-                </div>
-
-                {/* Header Content Overlay */}
-                <div className="px-4 sm:px-6 pb-6 pt-0 relative bg-white">
-                  <div className="flex items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-4">
+              <div className="relative mb-6 rounded-2xl overflow-hidden border border-zinc-200/80 shadow-sm">
+                <div className="px-4 sm:px-6 pb-6 pt-6 relative bg-white dark:bg-black">
+                  <div className="flex items-end justify-between gap-4 mb-4">
                     {/* Avatar */}
                     <div className="relative group">
                       {profile.avatarUrl ? (
                         <img
                           src={profile.avatarUrl}
                           alt={profile.displayName}
-                          className="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-white bg-white shadow-md transition group-hover:scale-105"
+                          className="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-white dark:ring-black bg-white dark:bg-zinc-900 shadow-md transition group-hover:scale-105"
                         />
                       ) : (
-                        <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-zinc-900 text-white font-extrabold text-3xl ring-4 ring-white shadow-md transition group-hover:scale-105">
+                        <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-800 text-white font-extrabold text-3xl ring-4 ring-white dark:ring-black shadow-md transition group-hover:scale-105">
                           {initials}
                         </div>
                       )}
@@ -160,7 +153,7 @@ export function ProfilePage() {
                     <div className="flex items-center gap-2 mb-1">
                       <button
                         onClick={handleShareProfile}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-zinc-300 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 hover:border-zinc-400 shadow-sm transition active:scale-95"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 shadow-sm transition active:scale-95"
                         title="Share profile"
                       >
                         <ShareIcon className="w-3.5 h-3.5 text-zinc-500" />
@@ -170,9 +163,9 @@ export function ProfilePage() {
                       {isOwner && (
                         <button
                           onClick={() => setIsEditModalOpen(true)}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 px-4 py-1.5 text-xs sm:text-sm font-semibold text-white hover:bg-zinc-800 shadow-sm transition active:scale-95 whitespace-nowrap"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 dark:bg-white px-4 py-1.5 text-xs sm:text-sm font-semibold text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 shadow-sm transition active:scale-95 whitespace-nowrap"
                         >
-                          <EditPencilIcon className="w-3.5 h-3.5 text-zinc-300" />
+                          <EditPencilIcon className="w-3.5 h-3.5 text-zinc-300 dark:text-zinc-700" />
                           <span>Edit Profile</span>
                         </button>
                       )}
@@ -183,7 +176,7 @@ export function ProfilePage() {
                   <div className="space-y-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 break-words [overflow-wrap:anywhere]">
+                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white break-words [overflow-wrap:anywhere]">
                           {profile.displayName}
                         </h1>
                         {(() => {
@@ -207,29 +200,29 @@ export function ProfilePage() {
                           return null;
                         })()}
                       </div>
-                      <p className="text-zinc-500 font-medium text-sm break-all mt-0.5">{userHandle}</p>
+                      <p className="text-zinc-500 dark:text-zinc-400 font-medium text-sm break-all mt-0.5">{userHandle}</p>
                     </div>
 
                     {profile.bio ? (
-                      <p className="text-zinc-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
+                      <p className="text-zinc-700 dark:text-zinc-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
                         {displayedBio}
                         {isBioLong && (
                           <button
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="ml-1.5 text-sm font-semibold text-zinc-900 hover:underline focus:outline-none"
+                            className="ml-1.5 text-sm font-semibold text-zinc-900 dark:text-white hover:underline focus:outline-none"
                           >
                             {isExpanded ? "show less" : "view more"}
                           </button>
                         )}
                       </p>
                     ) : (
-                      <p className="text-zinc-400 italic text-sm sm:text-base">No bio written yet.</p>
+                      <p className="text-zinc-400 dark:text-zinc-600 italic text-sm sm:text-base">No bio written yet.</p>
                     )}
 
                     {/* Metadata Badges / Info Icons */}
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs sm:text-sm text-zinc-500 pt-1">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 pt-1">
                       {profile.location && (
-                        <span className="flex items-center gap-1.5 text-zinc-600 break-words">
+                        <span className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-300 break-words">
                           <MapPinIcon className="w-4 h-4 text-zinc-400 shrink-0" />
                           <span>{profile.location}</span>
                         </span>
@@ -254,17 +247,17 @@ export function ProfilePage() {
                     </div>
 
                     {/* Stats Bar */}
-                    <div className="flex items-center gap-6 pt-3 border-t border-zinc-100 text-xs sm:text-sm">
+                    <div className="flex items-center gap-6 pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs sm:text-sm">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-zinc-900">{threads.length}</span>
+                        <span className="font-bold text-zinc-900 dark:text-white">{threads.length}</span>
                         <span className="text-zinc-500">Threads</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-zinc-900">{replies.length}</span>
+                        <span className="font-bold text-zinc-900 dark:text-white">{replies.length}</span>
                         <span className="text-zinc-500">Replies</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-zinc-900">{reposts.length}</span>
+                        <span className="font-bold text-zinc-900 dark:text-white">{reposts.length}</span>
                         <span className="text-zinc-500">Reposts</span>
                       </div>
                     </div>
@@ -274,20 +267,20 @@ export function ProfilePage() {
 
               {/* Tabs Switcher */}
               <div className="mt-2">
-                <div className="flex border-b border-zinc-200">
+                <div className="flex border-b border-zinc-200 dark:border-zinc-800">
                   <button
                     onClick={() => setActiveTab("threads")}
                     className={`flex-1 py-3 text-sm font-semibold border-b-2 text-center transition flex items-center justify-center gap-2 ${
                       activeTab === "threads"
-                        ? "border-zinc-900 text-zinc-950"
-                        : "border-transparent text-zinc-500 hover:text-zinc-800"
+                        ? "border-zinc-900 dark:border-white text-zinc-950 dark:text-white"
+                        : "border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                     }`}
                   >
-                    <ThreadsTabIcon className={`w-4 h-4 ${activeTab === "threads" ? "text-zinc-950" : "text-zinc-400"}`} />
+                    <ThreadsTabIcon className={`w-4 h-4 ${activeTab === "threads" ? "text-zinc-950 dark:text-white" : "text-zinc-400"}`} />
                     <span>Threads</span>
                     <span
                       className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
-                        activeTab === "threads" ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-600"
+                        activeTab === "threads" ? "bg-zinc-900 dark:bg-white text-white dark:text-black" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
                       }`}
                     >
                       {threads.length}
@@ -297,15 +290,15 @@ export function ProfilePage() {
                     onClick={() => setActiveTab("replies")}
                     className={`flex-1 py-3 text-sm font-semibold border-b-2 text-center transition flex items-center justify-center gap-2 ${
                       activeTab === "replies"
-                        ? "border-zinc-900 text-zinc-950"
-                        : "border-transparent text-zinc-500 hover:text-zinc-800"
+                        ? "border-zinc-900 dark:border-white text-zinc-950 dark:text-white"
+                        : "border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                     }`}
                   >
-                    <RepliesTabIcon className={`w-4 h-4 ${activeTab === "replies" ? "text-zinc-950" : "text-zinc-400"}`} />
+                    <RepliesTabIcon className={`w-4 h-4 ${activeTab === "replies" ? "text-zinc-950 dark:text-white" : "text-zinc-400"}`} />
                     <span>Replies</span>
                     <span
                       className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
-                        activeTab === "replies" ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-600"
+                        activeTab === "replies" ? "bg-zinc-900 dark:bg-white text-white dark:text-black" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
                       }`}
                     >
                       {replies.length}
@@ -315,15 +308,15 @@ export function ProfilePage() {
                     onClick={() => setActiveTab("reposts")}
                     className={`flex-1 py-3 text-sm font-semibold border-b-2 text-center transition flex items-center justify-center gap-2 ${
                       activeTab === "reposts"
-                        ? "border-zinc-900 text-zinc-950"
-                        : "border-transparent text-zinc-500 hover:text-zinc-800"
+                        ? "border-zinc-900 dark:border-white text-zinc-950 dark:text-white"
+                        : "border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                     }`}
                   >
-                    <RepostsTabIcon className={`w-4 h-4 ${activeTab === "reposts" ? "text-zinc-950" : "text-zinc-400"}`} />
+                    <RepostsTabIcon className={`w-4 h-4 ${activeTab === "reposts" ? "text-zinc-950 dark:text-white" : "text-zinc-400"}`} />
                     <span>Reposts</span>
                     <span
                       className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
-                        activeTab === "reposts" ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-600"
+                        activeTab === "reposts" ? "bg-zinc-900 dark:bg-white text-white dark:text-black" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
                       }`}
                     >
                       {reposts.length}
@@ -341,12 +334,12 @@ export function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50">
-                        <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto mb-3 text-zinc-400">
+                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                        <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-3 text-zinc-400">
                           <ThreadsTabIcon className="w-6 h-6" />
                         </div>
-                        <p className="text-zinc-700 font-semibold text-sm">No threads yet</p>
-                        <p className="text-zinc-400 text-xs mt-1">Posts shared by {profile.displayName} will appear here.</p>
+                        <p className="text-zinc-700 dark:text-zinc-300 font-semibold text-sm">No threads yet</p>
+                        <p className="text-zinc-400 dark:text-zinc-500 text-xs mt-1">Posts shared by {profile.displayName} will appear here.</p>
                       </div>
                     ))}
 
@@ -358,12 +351,12 @@ export function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50">
-                        <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto mb-3 text-zinc-400">
+                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                        <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-3 text-zinc-400">
                           <RepliesTabIcon className="w-6 h-6" />
                         </div>
-                        <p className="text-zinc-700 font-semibold text-sm">No replies yet</p>
-                        <p className="text-zinc-400 text-xs mt-1">Replies made on threads will show up here.</p>
+                        <p className="text-zinc-700 dark:text-zinc-300 font-semibold text-sm">No replies yet</p>
+                        <p className="text-zinc-400 dark:text-zinc-500 text-xs mt-1">Replies made on threads will show up here.</p>
                       </div>
                     ))}
 
@@ -375,12 +368,12 @@ export function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50">
-                        <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto mb-3 text-zinc-400">
+                      <div className="text-center py-12 px-4 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                        <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-3 text-zinc-400">
                           <RepostsTabIcon className="w-6 h-6" />
                         </div>
-                        <p className="text-zinc-700 font-semibold text-sm">No reposts yet</p>
-                        <p className="text-zinc-400 text-xs mt-1">Reposted threads will be saved here.</p>
+                        <p className="text-zinc-700 dark:text-zinc-300 font-semibold text-sm">No reposts yet</p>
+                        <p className="text-zinc-400 dark:text-zinc-500 text-xs mt-1">Reposted threads will be saved here.</p>
                       </div>
                     ))}
                 </div>
