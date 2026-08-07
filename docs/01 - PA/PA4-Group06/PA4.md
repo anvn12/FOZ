@@ -53,30 +53,30 @@ Plugin settings -> enable "Markdown links"
 The FOZ project uses the following technologies across its stack:
 
 ### Frontend
-- **Framework & Language**: React 18 with TypeScript 5 for building a robust and type-safe UI.
-- **Build Tool**: Vite 5 for fast, modern web development and bundling.
-- **Styling**: Tailwind CSS 3 (vanilla configuration without UI component libraries) for utility-first styling.
-- **Routing**: `react-router-dom` v6 for client-side navigation.
+- **Framework & Language**: React 19 with TypeScript 6 for building a robust and type-safe UI.
+- **Build Tool**: Vite 8 for fast, modern web development and bundling.
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/postcss`) for utility-first styling, without UI component libraries.
+- **Routing**: `react-router-dom` v7 for client-side navigation.
 - **State Management**: 
   - `@tanstack/react-query` v5 for server state (fetching, caching, and synchronizing data).
   - `zustand` v5 for lightweight client-side state management.
-- **Forms & Validation**: `react-hook-form` coupled with Zod for robust client-side validation.
+- **Forms & Validation**: `react-hook-form` v7 coupled with Zod v4 for robust client-side validation.
 - **UI Notifications**: `react-hot-toast` for toast notifications.
 
 ### Backend
-- **Runtime**: Node.js (current LTS) utilizing ES Modules (ESM).
-- **Framework**: Express with hand-wired Zod validation middleware and a central error handler.
+- **Runtime**: Node.js v24 (current LTS) utilizing ES Modules (ESM).
+- **Framework**: Express 5 with hand-wired Zod validation middleware and a central error handler.
 - **Database ORM**: Drizzle ORM (SQL-visible approach) along with `drizzle-kit` for managing schema migrations.
 - **Authentication**: 
   - JWT (JSON Web Tokens) for access control (15-minute access token in memory, 7-day refresh token stored in an HttpOnly, SameSite=Lax cookie).
   - `bcrypt` for secure password hashing.
-- **Validation**: Zod used strictly at inbound trust boundaries (request bodies, query params).
+- **Validation**: Zod v4 used strictly at inbound trust boundaries (request bodies, query params).
 
 ### Database
 - **Database Engine**: PostgreSQL 16 running locally via Docker (`docker-compose.yml`) for robust, relational data persistence.
 
 ### External APIs / Services
-- **AI / LLM Provider**: Integration with external AI APIs (e.g., OpenAI API, Gemini API) strictly for the "Post Summarize (TL;DR)" feature, utilizing a direct `fetch`-based provider fallback loop.
+- **AI / LLM Provider**: Integration with the Google Gemini API (e.g., `gemini-2.5-flash`) strictly for the "Post Summarize (TL;DR)" feature, utilizing a direct `fetch`-based provider fallback loop.
 
 
 ## C4 Model - Level 1 (System Context Diagram)
@@ -85,7 +85,7 @@ The FOZ project uses the following technologies across its stack:
 flowchart TD
     User(["FOZ User<br/>Guest · Standard · Moderator · Admin<br/>interacts with the community"])
     FOZ["FOZ Platform<br/>web-based community forum<br/>(React SPA · Express API · PostgreSQL)"]
-    AI["AI Provider API<br/>OpenAI · Gemini<br/><i>external LLM service</i>"]
+    AI["AI Provider API<br/>Google Gemini<br/><i>external LLM service</i>"]
 
     User -. "uses<br/>HTTPS" .-> FOZ
     FOZ -. "TL;DR summary<br/>HTTPS/REST" .-> AI
@@ -98,7 +98,7 @@ flowchart TD
 
 - **FOZ User (Actor)**: Represents all users interacting with the application. Depending on their role (Guest, Standard User, Moderator, Admin), they can view content, participate in discussions, manage profiles, report inappropriate content, or administrate the platform. Users interact with the FOZ Platform via a modern web browser over secure HTTPS.
 - **FOZ Platform (System)**: The core software system being built. It encompasses the frontend React application, the Node.js/Express backend API, and the PostgreSQL database. It handles user authentication, content management (posts, comments, attachments), and interactions (likes, reports).
-- **AI Provider API (External System)**: An external third-party service (such as OpenAI or Google Gemini). The FOZ Platform securely communicates with this API over HTTPS/REST to send post and top-comment text payloads in order to receive concise, AI-generated summaries for the "Post Summarize (TL;DR)" feature. It sits completely outside the internal control of the system but is a critical dependency for this specific feature.
+- **AI Provider API (External System)**: An external third-party LLM service (Google Gemini, e.g. `gemini-2.5-flash`). The FOZ Platform securely communicates with this API over HTTPS/REST to send post and top-comment text payloads in order to receive concise, AI-generated summaries for the "Post Summarize (TL;DR)" feature. It sits completely outside the internal control of the system but is a critical dependency for this specific feature.
 
 # C - Software Architecture: Container Diagram and Component Diagram
 
