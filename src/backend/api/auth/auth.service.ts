@@ -125,18 +125,25 @@ async function issueFullSession(user: {
   };
 }
 
-export async function register(input: { email: string; username: string; password: string }): Promise<Session> {
-  const existingEmail = await findUserByEmail(input.email);
-  if (existingEmail) throw new DuplicateEmailError();
-  const existingUsername = await findUserByUsername(input.username);
-  if (existingUsername) throw new DuplicateUsernameError();
+export async function register(input: { 
+  email: string; 
+  password: string;
+  username: string;
+  displayName: string;
+  location: string;
+  website: string;
+}): Promise<Session> {
+  const existing = await findUserByEmail(input.email);
+  if (existing) throw new DuplicateEmailError();
   const passwordHash = await hashPassword(input.password);
-  const displayName = input.username;
   const { user } = await createUserWithProfile({
     email: input.email,
     username: input.username,
     passwordHash,
-    displayName,
+    username: input.username,
+    displayName: input.displayName,
+    location: input.location,
+    website: input.website,
   });
   return issueFullSession(user);
 }

@@ -119,6 +119,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
 
         await tx.insert(profiles).values({
           userAccountId: user.id,
+          username: `user_${Math.random().toString(36).slice(2, 8)}`,
           displayName: finalDisplayName,
           avatarUrl: avatarUrl || null,
         });
@@ -155,6 +156,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
 
       await tx.insert(profiles).values({
         userAccountId: user.id,
+        username: `user_${Math.random().toString(36).slice(2, 8)}`,
         displayName: displayName || `${provider}User`,
         avatarUrl: avatarUrl || null,
       });

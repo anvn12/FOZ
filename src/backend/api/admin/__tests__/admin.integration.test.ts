@@ -29,7 +29,7 @@ describe("Administrator End-to-End API Integration Suite (src/backend/api/admin/
       })
       .returning();
     adminUser = u1!;
-    await db.insert(profiles).values({ userAccountId: adminUser.id, displayName: "Platform Admin" });
+    await db.insert(profiles).values({ userAccountId: adminUser.id, username: "admin", displayName: "Platform Admin" });
 
     // Create Standard User
     const p2 = await hash("Passsword123!", 10);
@@ -44,7 +44,7 @@ describe("Administrator End-to-End API Integration Suite (src/backend/api/admin/
       })
       .returning();
     stdUser = u2!;
-    await db.insert(profiles).values({ userAccountId: stdUser.id, displayName: "Standard User" });
+    await db.insert(profiles).values({ userAccountId: stdUser.id, username: "stduser", displayName: "Standard User" });
 
     // Generate valid JWT Tokens
     adminToken = signAccessToken({ sub: adminUser.id, role: adminUser.role, status: adminUser.status });

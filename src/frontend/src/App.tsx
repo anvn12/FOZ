@@ -7,6 +7,7 @@ import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { OnboardingAvatarPage } from "./pages/OnboardingAvatarPage";
 import { SearchPage } from "./pages/SearchPage";
 import { PostPage } from "./pages/PostPage";
 import { HashtagFeedPage } from "./pages/HashtagFeedPage";
@@ -46,6 +47,7 @@ export function App() {
         <Route path="/posts/:postId" element={<PostPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/onboarding/avatar" element={<OnboardingAvatarPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/settings" element={<RequireRole roles={["standard", "moderator", "administrator"]}><SettingsPage /></RequireRole>} />
         <Route path="/profiles/@:username" element={<ProfilePage />} />
