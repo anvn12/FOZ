@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { resolveReport } from "../../api/interactions";
 import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
+
+import { useAuthStore } from "../../stores/auth";
 
 type Report = {
   id: string;
@@ -11,7 +14,7 @@ type Report = {
   details: string;
   status: string;
   createdAt: string;
-  reporter: {
+  reporter?: {
     id: string;
     displayName: string;
   };
@@ -23,6 +26,8 @@ export function ReportsQueuePage() {
   const [filter, setFilter] = useState("all"); 
   const [escalateDialog, setEscalateDialog] = useState(false);
   const [escalateId, setEscalateId] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchReports();
@@ -31,15 +36,21 @@ export function ReportsQueuePage() {
   async function fetchReports() {
     setLoading(true);
     try {
+      const token = useAuthStore.getState().accessToken;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+
       const url =
         filter === "all"
           ? "/api/v1/moderation/reports"
           : `/api/v1/moderation/reports?status=${filter}`;
 
-      const res = await fetch(url);
+      const res = await fetch(url, { credentials: "include", headers });
       if (res.ok) {
         const data = await res.json();
         setReports(data.reports);
+      } else {
+        toast.error("Failed to load reports queue");
       }
     } catch (err) {
       toast.error("Failed to load reports queue");
@@ -48,21 +59,13 @@ export function ReportsQueuePage() {
     }
   }
 
-  async function updateReportStatus(reportId: string, newStatus: string) {
+  async function resolveReportAction(reportId: string, action: "delete_content" | "dismiss" | "escalate", notes?: string) {
     try {
-      const res = await fetch(`/api/v1/moderation/reports/${reportId}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
-      if (res.ok) {
-        toast.success(`Report ${newStatus}`);
-        fetchReports();
-      } else {
-        toast.error("Failed to update report");
-      }
+      await resolveReport(reportId, { action, notes });
+      toast.success(`Action applied successfully`);
+      fetchReports();
     } catch (err) {
-      toast.error("Error updating report");
+      toast.error("Failed to process report action");
     }
   }
 
@@ -201,7 +204,7 @@ export function ReportsQueuePage() {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-body-md text-body-md text-on-surface-variant">{report.reporter.displayName}</td>
+                    <td className="px-6 py-4 font-body-md text-body-md text-on-surface-variant">{report.reporter?.displayName || "Anonymous User"}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-label-sm font-medium capitalize">
                         {report.reasonType.replace("_", " ")}
@@ -217,15 +220,18 @@ export function ReportsQueuePage() {
                       {new Date(report.createdAt).toLocaleDateString()} - {new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {report.status === 'dismissed' ? (
+                      {report.status === 'dismissed' || report.status === 'closed' ? (
                         <span className="text-label-sm italic text-secondary">No further action</span>
                       ) : (
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => updateReportStatus(report.id, "dismissed")} className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Dismiss">
+                          <button onClick={() => resolveReportAction(report.id, "dismiss")} className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Dismiss">
                             <span className="material-symbols-outlined text-[20px]">close</span>
                           </button>
                           <button onClick={() => { setEscalateId(report.id); setEscalateDialog(true); }} className="p-2 text-secondary hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Escalate">
                             <span className="material-symbols-outlined text-[20px]">priority_high</span>
+                          </button>
+                          <button onClick={() => { setDeleteId(report.id); setDeleteDialog(true); }} className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Delete Content">
+                            <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                         </div>
                       )}
@@ -284,7 +290,31 @@ export function ReportsQueuePage() {
             </div>
             <div className="flex gap-3 mt-8">
               <button className="flex-1 py-2.5 rounded-xl border border-outline-variant text-secondary font-label-md hover:bg-surface-container-high transition-all" onClick={() => setEscalateDialog(false)}>Cancel</button>
-              <button onClick={() => { updateReportStatus(escalateId!, "escalated"); setEscalateDialog(false); }} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">Confirm Escalation</button>
+              <button onClick={() => { resolveReportAction(escalateId!, "escalate"); setEscalateDialog(false); }} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">Confirm Escalation</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Content Dialog */}
+      {deleteDialog && (
+        <div className="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[60] flex items-center justify-center">
+          <div className="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-2xl p-8 border border-outline-variant transform transition-transform duration-300 scale-100">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-error-container p-2 rounded-lg">
+                  <span className="material-symbols-outlined text-error" style={{ fontVariationSettings: "'FILL' 1" }}>delete</span>
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-on-surface">Delete Content?</h3>
+              </div>
+              <button className="text-secondary hover:text-on-surface" onClick={() => setDeleteDialog(false)}>
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="font-body-md text-body-md text-secondary mb-6">Are you sure you want to delete this reported content? This action cannot be undone, and the report will be marked as closed.</p>
+            <div className="flex gap-3 mt-8">
+              <button className="flex-1 py-2.5 rounded-xl border border-outline-variant text-secondary font-label-md hover:bg-surface-container-high transition-all" onClick={() => setDeleteDialog(false)}>Cancel</button>
+              <button onClick={() => { resolveReportAction(deleteId!, "delete_content"); setDeleteDialog(false); }} className="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold font-label-md shadow-md hover:bg-red-700 transition-all">Delete Content</button>
             </div>
           </div>
         </div>

@@ -126,7 +126,13 @@ export const getReportsQuerySchema = z.object({
 export type GetReportsQuery = z.infer<typeof getReportsQuerySchema>;
 
 export const updateReportStatusSchema = z.object({
-  status: z.enum(["dismissed", "escalated"]),
+  status: z.enum(["dismissed", "escalated", "closed"]),
   notes: z.string().max(1000).optional(),
 });
 export type UpdateReportStatus = z.infer<typeof updateReportStatusSchema>;
+
+export const resolveReportSchema = z.object({
+  action: z.enum(["delete_content", "dismiss", "escalate"]),
+  notes: z.string().max(1000).optional(),
+});
+export type ResolveReportRequest = z.infer<typeof resolveReportSchema>;
