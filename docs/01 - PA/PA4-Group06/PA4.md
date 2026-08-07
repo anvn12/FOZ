@@ -58,7 +58,7 @@
 | 06/Aug/2026 | 1.1 | Update the Alternative Flow and Reordered sections for clarity | Nguyễn Hải Trọng |
 
 # Use-Case Specification: Sign Up
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-01
@@ -76,7 +76,7 @@ This use case allows an unauthenticated guest to create a new user account and p
 ## 3. Flow of Events
 ### 3.1 Basic Flow
 1. The use case begins when the Guest navigates to the Registration page.
-2. The user enters a valid email address and a strong password.
+2. The user enters a valid email address, a unique username, and a strong password.
 3. The user clicks "Create account".
 4. The system validates the inputs (email format, password length > 8 chars).
 5. The system checks if the email is already registered.
@@ -113,6 +113,19 @@ This use case allows an unauthenticated guest to create a new user account and p
 2. The system highlights the confirmation field and displays "Passwords do not match".
 3. The flow resumes at step 2.
 
+#### 3.2.6 Username Already Taken
+1. If at step 5, the chosen username exists in the database.
+2. The system aborts the registration and displays "This username is already taken".
+3. The flow resumes at step 2.
+
+#### 3.2.7 Sign Up with Google Account
+1. If at step 2, the user chooses to "Continue with Google".
+2. The system redirects the user to the Google OAuth consent screen.
+3. The user successfully authenticates with Google.
+4. The system automatically provisions a `user_accounts` and `profiles` record using the Google profile data.
+5. The system issues access and refresh tokens, bypassing steps 3-6.
+6. The flow resumes at step 8.
+
 ## 4. Special Requirements
 * **Security:** Passwords must be hashed via bcrypt with a minimum cost of 12. Plaintext passwords must never be logged.
 
@@ -126,18 +139,22 @@ This use case allows an unauthenticated guest to create a new user account and p
 * **Screen 1 (Basic Flow):**
     ![](<./Prototype requirement/UC01-1.png>)
 * **Screen 2 (Alt Flow - Email Already Exists):**
-    *(Placeholder for Email Already Exists screen)*
+    ![](<./Prototype requirement/UC01-2.png>)
 * **Screen 3 (Alt Flow - Weak Password):**
-    *(Placeholder for Weak Password screen)*
+    ![](<./Prototype requirement/UC01-3.png>)
 * **Screen 4 (Alt Flow - Password Too Long):**
-    *(Placeholder for Password Too Long screen)*
+    ![](<./Prototype requirement/UC01-4.png>)
 * **Screen 5 (Alt Flow - Rate Limit Exceeded):**
-    *(Placeholder for Rate Limit Exceeded screen)*
+    ![](<./Prototype requirement/UC01-5.png>)
 * **Screen 6 (Alt Flow - Confirm Password Does Not Match):**
-    *(Placeholder for Confirm Password Does Not Match screen)*
+    ![](<./Prototype requirement/UC01-6.png>)
+* **Screen 7 (Alt Flow - Username Already Taken):**
+    ![](<./Prototype requirement/UC01-7.png>)
+* **Screen 8 (Alt Flow - Sign Up with Google Account):**
+    ![](<./Prototype requirement/UC01-8.png>)
 
 # Use-Case Specification: Log In
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-02
@@ -178,6 +195,14 @@ This use case describes how a registered Guest accesses their account by providi
 2. The system rejects the request and displays "Too many requests, slow down."
 3. The use case ends.
 
+#### 3.2.4 Sign In with Google Account
+1. If at step 2, the user chooses to "Sign in with Google".
+2. The system redirects the user to the Google OAuth consent screen.
+3. The user successfully authenticates with Google.
+4. The system verifies the Google profile exists in `user_accounts`.
+5. The system issues an Access Token and sets a Refresh Token cookie, bypassing standard password verification.
+6. The flow resumes at step 6.
+
 ## 4. Special Requirements
 * **Rate Limiting:** Maximum 100 attempts per 15 minutes to prevent brute-force attacks.
 
@@ -191,14 +216,16 @@ This use case describes how a registered Guest accesses their account by providi
 * **Screen 1 (Basic Flow):**
     ![](<./Prototype requirement/UC02-1.png>)
 * **Screen 2 (Alt Flow - Invalid Credentials):**
-    *(Placeholder for Invalid Credentials screen)*
+    ![](<./Prototype requirement/UC02-2.png>)
 * **Screen 3 (Alt Flow - Account Suspended):**
-    *(Placeholder for Account Suspended screen)*
+    ![](<./Prototype requirement/UC02-3.png>)
 * **Screen 4 (Alt Flow - Rate Limit Exceeded):**
-    *(Placeholder for Rate Limit Exceeded screen)*
+    ![](<./Prototype requirement/UC02-4.png>)
+* **Screen 5 (Alt Flow - Sign In with Google Account):**
+    ![](<./Prototype requirement/UC02-5.png>)
 
 # Use-Case Specification: Log Out
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-03
@@ -244,13 +271,11 @@ Allows an authenticated user to securely end their active session on the current
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC03-1.png>)
-* **Screen 2 (Alt Flow - Session Already Expired):**
-    *(Placeholder for Session Already Expired screen)*
-* **Screen 3 (Alt Flow - User Cancels Log Out):**
-    *(Placeholder for User Cancels Log Out screen)*
+* **Screen 2 (Alt Flow - User Cancels Log Out):**
+  ![](<./Prototype requirement/UC03-2.png>)
 
 # Use-Case Specification: Manage Profile
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-04
@@ -305,14 +330,12 @@ Allows the user to update their public-facing information such as display name, 
 * **Screen 1 (Basic Flow):**
   ![](<./Prototype requirement/UC04-1.png>)
 * **Screen 2 (Alt Flow - Invalid Input Format):**
-    *(Placeholder for Invalid Input Format screen)*
+  ![](<./Prototype requirement/UC04-2.png>)
 * **Screen 3 (Alt Flow - Validation Errors):**
-    *(Placeholder for Validation Errors screen)*
-* **Screen 4 (Alt Flow - User Cancels):**
-    *(Placeholder for User Cancels screen)*
+  ![](<./Prototype requirement/UC04-3.png>)
 
 # Use-Case Specification: Change Password
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-05
@@ -360,8 +383,8 @@ Allows an authenticated user to change their password securely by verifying thei
 3. The flow resumes at step 2.
 
 #### 3.2.5 User Cancels
-1. If at step 2, the user clicks "Cancel" instead of "Update password".
-2. The system discards the input and returns to the previous screen.
+1. If at step 2, the user clicks "Back" instead of "Update password".
+2. The system discards the input and returns to the Homepage screen.
 3. The use case ends.
 
 ## 4. Special Requirements
@@ -378,18 +401,16 @@ Allows an authenticated user to change their password securely by verifying thei
   ![](<./Prototype requirement/UC05-1.png>)
   **Change Password will be in Settings**
 * **Screen 2 (Alt Flow - Incorrect Current Password):**
-    *(Placeholder for Incorrect Current Password screen)*
+  ![](<./Prototype requirement/UC05-2.png>)
 * **Screen 3 (Alt Flow - New Password Matches Old Password):**
-    *(Placeholder for New Password Matches Old Password screen)*
+  ![](<./Prototype requirement/UC05-3.png>)
 * **Screen 4 (Alt Flow - Confirm Password Does Not Match):**
-    *(Placeholder for Confirm Password Does Not Match screen)*
+  ![](<./Prototype requirement/UC05-4.png>)
 * **Screen 5 (Alt Flow - Weak New Password):**
-    *(Placeholder for Weak New Password screen)*
-* **Screen 6 (Alt Flow - User Cancels):**
-    *(Placeholder for User Cancels screen)*
+  ![](<./Prototype requirement/UC05-5.png>)
 
 # Use-Case Specification: Change Avatar
-
+*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-06
@@ -415,9 +436,9 @@ Allows an authenticated user to upload a new profile picture.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 Wrong File Type
-1. If at step 3, the file uploaded is not a supported image format (e.g., PDF, DOCX).
-2. The system aborts the upload and displays "Invalid file format. Please upload an image."
+#### 3.2.1 File Too Large
+1. If at step 3, the file exceeds the 25MB raw upload limit.
+2. The system aborts the upload and displays "Image file exceeds maximum raw size limit of 25MB."
 3. The flow resumes at step 1.
 
 #### 3.2.2 User Cancels
@@ -426,7 +447,7 @@ Allows an authenticated user to upload a new profile picture.
 3. The use case ends.
 
 ## 4. Special Requirements
-* **Space:** Image uploads must be limited to 2MB to conserve server storage.
+* **Space:** Raw image uploads can be up to 25MB, but they are compressed heavily on the client and server to conserve server storage.
 
 ## 5. Postconditions
 * The new avatar is visible publicly on the user's profile.
@@ -437,10 +458,9 @@ Allows an authenticated user to upload a new profile picture.
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC06-1.png>)
-* **Screen 2 (Alt Flow - Wrong File Type):**
-    *(Placeholder for Wrong File Type screen)*
-* **Screen 3 (Alt Flow - User Cancels):**
-    *(Placeholder for User Cancels screen)*
+* **Screen 2 (Alt Flow - File Too Large):**
+  ![](<./Prototype requirement/UC06-2-1.png>)
+  ![](<./Prototype requirement/UC06-2.png>)
 
 # Use-Case Specification: Browse Feed
 

@@ -61,10 +61,15 @@ export const ChangePasswordRequest = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: passwordSchema,
+    confirmNewPassword: z.string(),
   })
   .refine((v) => v.currentPassword !== v.newPassword, {
     message: "New password must differ from the current one",
     path: ["newPassword"],
+  })
+  .refine((v) => v.newPassword === v.confirmNewPassword, {
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
   });
 export type ChangePasswordRequest = z.infer<typeof ChangePasswordRequest>;
 

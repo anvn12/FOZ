@@ -19,3 +19,12 @@ Based on the TA feedback from PA3-2026, the following revisions were made to the
    - **UC-14 (Request AI Summary):** Added an alternative flow for `Rate Limit Exceeded` when a user exceeds 10 summary requests within 1 minute.
    - **UC-15 (Delete Own Post):** Added alternative flow handling POST_NOT_FOUND or POST_FORBIDDEN exceptions.
    - **UC-16 (Report Inappropriate Content):** Updated the reporting reasons to perfectly match the implemented codebase (`Harassment`, `Spam`, `Inappropriate`, `Other`). Added a detailed validation error alternative flow for details exceeding the 1000 character limit.
+
+   - **UC-01 (Sign Up - Additional Pass):** Integrated the 'Username' field into the basic flow to reflect actual database schema. Added alternative flows for 'Username Already Taken' and 'Sign Up with Google Account' (as Google OAuth is fully implemented in the backend routes).
+
+   - **UC-02 (Log In - Additional Pass):** Added alternative flow for 'Sign In with Google Account' to align with the frontend and backend OAuth integrations.
+
+   - **UC-06 (Change Avatar - Additional Pass):** Reverted the 'Wrong File Type' alternative flow back to 'File Too Large' because the browser's native file picker strictly prevents selecting non-image formats, making the 'Wrong File Type' flow impossible to test in the UI.
+
+   - **UC-06 (Change Avatar - Correction):** Corrected the 'File Too Large' alternative flow to trigger at 25MB instead of 2MB, accurately reflecting the frontend client's raw upload limit before compression.
+3. **Include more prototype requirements for detailed alternative flows in each use case**
