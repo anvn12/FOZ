@@ -99,3 +99,12 @@
 **Prompt:** "add a \"back\" button or make the word FOZ takes you to the home page in the sign in the register and login page"
 **Files touched:** `src/frontend/src/components/AuthShell.tsx` (FozLogo now renders as a Link to "/" with hover dim; touches login, register, change-password via shared component)
 - Verified: `tsc --noEmit` clean, `vite build` green.
+
+### 2026-08-07 09:40
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "go A and go thorugh with the small edits to the mermaid block we discussed" — Option A cleanup: FOZ has no real-time/notification feature, so `socket.io-client` is a dead dependency and all realtime/socket mentions in PA4's C4 diagrams are fictional. Removed them and tightened two container-diagram edge labels.
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`, `package.json`
+- PA4.md: dropped the Frontend "Realtime" and Backend "Realtime Server" tech-stack bullets; corrected System Context user edge `HTTPS/WSS` → `HTTPS` and the FOZ Platform bullet (removed "realtime feed updates"); removed "socket.io-client" from the Web Application container description; deleted the "Realtime Client" component + description from the Level-3 frontend diagram and the "Realtime Server" component + description from the Level-3 backend diagram; tightened the Level-2 container edges (`User→WebApp` now `HTTPS browse / submit`, `Backend→Database` now `SQL via Drizzle/postgres-js, :5432`).
+- package.json: removed `"socket.io-client": "^4.8.3"` (was imported nowhere — `rg socket src` is empty).
+- Verified: `package.json` parses as valid JSON; `rg "socket|realtime|real-time" docs/01\ -\ PA/PA4-Group06/PA4.md` returns none.
