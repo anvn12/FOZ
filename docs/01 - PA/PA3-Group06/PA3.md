@@ -1,4 +1,4 @@
-<img width="1912" height="897" alt="image" src="https://github.com/user-attachments/assets/778ff933-6d36-42fa-811f-d91bbb167683" /># Table of Contents
+# Table of Contents
 
 - [A - Revised Project Plan](#a---revised-project-plan)
 	- [1. Introduction](#1-introduction)
@@ -1508,7 +1508,7 @@ Allows an authenticated user to reply to a post or to another comment.
 
 ### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC12-1.png>)
+   ![](<./Prototype requirement/UC12-1.png>)
 
   **Screen 2 (Alternative Flow 2):**
    ![](<./Prototype requirement/UC12-2.png>)
