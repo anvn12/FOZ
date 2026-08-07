@@ -95,7 +95,7 @@ postRouter.delete("/:postId", requireAuth, async (req: AuthedRequest, res, next)
       return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
     }
     const postId = req.params.postId as string;
-    const isAdmin = req.user.role === "administrator";
+    const isAdmin = req.user.role === "administrator" || req.user.role === "moderator";
     
     await deletePost(postId, req.user.id, isAdmin);
     return res.status(200).json({ ok: true });

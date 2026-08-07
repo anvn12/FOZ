@@ -199,3 +199,51 @@
 **Model:** mimo-v2.5-pro
 **Prompt:** "the \"read more\" butotn is still white if a user with dark theme system uses the web light theme"
 **Files touched:** `src/frontend/src/index.css`
+
+### 2026-08-07 09:40
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "go A and go thorugh with the small edits to the mermaid block we discussed" — Option A cleanup: FOZ has no real-time/notification feature, so `socket.io-client` is a dead dependency and all realtime/socket mentions in PA4's C4 diagrams are fictional. Removed them and tightened two container-diagram edge labels.
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`, `package.json`
+- PA4.md: dropped the Frontend "Realtime" and Backend "Realtime Server" tech-stack bullets; corrected System Context user edge `HTTPS/WSS` → `HTTPS` and the FOZ Platform bullet (removed "realtime feed updates"); removed "socket.io-client" from the Web Application container description; deleted the "Realtime Client" component + description from the Level-3 frontend diagram and the "Realtime Server" component + description from the Level-3 backend diagram; tightened the Level-2 container edges (`User→WebApp` now `HTTPS browse / submit`, `Backend→Database` now `SQL via Drizzle/postgres-js, :5432`).
+- package.json: removed `"socket.io-client": "^4.8.3"` (was imported nowhere — `rg socket src` is empty).
+- Verified: `package.json` parses as valid JSON; `rg "socket|realtime|real-time" docs/01\ -\ PA/PA4-Group06/PA4.md` returns none.
+
+### 2026-08-07 09:46
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "wait this was drawn with c4 syntax? it is not required try rewriting in mermaid format, becuase the arrow is suppoed to be dashed lines and the relationship above the lines position is getting into other containers as it is too long" (+ "You may use standard Mermaid flowchart/graph syntax with C4-style labeling")
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Rewrote all 4 mermaid diagrams (System Context, Level-2 Container, Level-3 FE Component, Level-3 BE Component) from C4-piggyback syntax (`C4Context`/`C4Container`/`C4Component`, `Rel_D`/`Rel_R`/`Rel_L`, `UpdateLayoutConfig`) to standard `flowchart LR`:
+  - All relationship arrows are dashed (`-. ... .->`).
+  - Edge labels trimmed to short 1–2-token forms (e.g. `SQL / :5432`, `HTTP JSON /api/v1`, `HTTPS fetch`) so the relationship text no longer spills over neighboring containers; long tech/responsibility detail is carried in node bodies (br `<br/>`-separated name + tech + responsibility, matching C4 convention) and the existing prose descriptions.
+  - External/`System_Ext` nodes (AI Provider, LLM Provider) rendered with a dashed-stroke `classDef external` (`stroke-dasharray:5 5`) per C4 convention.
+  - `subgraph` replaces `System_Boundary`/`Container_Boundary`; cylinder `[(...)]` for the database; `([...])` for the Person actor.
+  - No `UpdateLayoutConfig` needed — mermaid auto-layouts.
+
+### 2026-08-07 09:52
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "the diagram for backend api server container is a bit too overwhelming, seperate them into 2, 1 with feed service, search service, profile service and 1 with AI TLDR, interaction service, auth service"
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Split the single backend component diagram into two `flowchart LR` diagrams, each retaining the shared infrastructure (API Gateway, Data Access Layer, Shared Types, DB) so the flow stays complete:
+  - 2.2.1 Diagram A — Content & Discovery: Feed · Search · Profile.
+  - 2.2.2 Diagram B — Identity & Interaction: Auth · Interaction · AI/TL;DR (+ external LLM).
+- Added a note clarifying Gateway/DataAccess/Shared are shared infra reused across both diagrams (backend is one container); split is presentational only.
+- Renumbered "Component Descriptions" to 2.2.3 and updated the ToC anchors accordingly.
+
+### 2026-08-07 10:05
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "ok now go through everything and recheck to make sure the software architecture diagrams in PA4.md matches the current system architecture"
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Re-audited all 5 diagrams against the actual `src/` tree, `package.json`, `docker-compose.yml`, `src/backend/index.ts` route mounts, and `src/backend/services/ai-summarizer.ts`:
+  - Frontend pages (HomePage, FeedPage, PostPage, SearchPage, ProfilePage, LoginPage, RegisterPage, ChangePasswordPage) ↔ match App.tsx routes list exactly.
+  - FE components, stores, api modules ↔ match the L3 FE component diagram.
+  - Backend api/auth, api/posts, api/comments, api/reactions, api/profile, api/search ↔ match the two split backend diagrams (Feed/Search/Profile + Auth/Interaction/AI).
+  - Backend services (post-summary.service.ts, ai-summarizer.ts, services/interactions/{posts,comments,reactions,reports}.ts) ↔ match.
+  - db/repositories (interactions.ts, post-summary.repository.ts, profiles.ts, users.ts) and db/schema (users.ts, refresh-sessions.ts, interactions.ts) ↔ match the Data Access Layer component.
+  - Versions on diagrams (React 19, Vite, Tailwind v4, Node v24, Express 5, postgres:16, react-router-dom 7, @tanstack/react-query 5, zustand 5) ↔ match package.json.
+  - Gemini-only AI integration confirmed; LLM edges to an external dashed-stroked "Google Gemini" box correct in L2 and the split BE diagram.
+- Fixed 1 diagram drift: L1 System Context labeled AI provider "OpenAI · Gemini" but only Gemini is implemented (L2 already correct). Replaced with "Google Gemini".
+- Flagged (NOT touched, these are prose, not diagrams) section B "Tech Stack" list version drift for user decision: says "React 18" (actual 19), "Vite 5" (actual 8), "Tailwind CSS 3" (actual v4), "react-router-dom v6" (actual v7); zod is now v4.
