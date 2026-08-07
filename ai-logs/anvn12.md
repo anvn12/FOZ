@@ -1972,3 +1972,10 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "/05-speckit.tasks"
 **Files touched:** `specs/021-display-name/tasks.md`
+
+### 2026-08-07 16:24
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when i merge from sign up to main, there is some conflicts. i think i resolved in wrong way. SO fix it for me"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/shared/schemas/auth.ts`, `src/backend/api/auth/auth.service.ts`, `src/backend/db/schema/users.ts`, `src/backend/db/repositories/users.ts`, `src/backend/api/profile/profile.test.ts`, `src/backend/__tests__/integration/profile.test.ts`, `src/backend/__tests__/integration/moderation.test.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/api/admin/__tests__/admin.integration.test.ts`, `src/backend/api/auth/auth.service.test.ts`, `src/backend/db/repositories/__tests__/admin.repository.test.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+

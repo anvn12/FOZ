@@ -20,7 +20,6 @@ describe("GET /api/v1/profiles/:userId", () => {
       email: "testprofile@example.com",
       username: "testprofile",
       passwordHash: "somehashedpassword",
-      username: "testprofile",
       displayName: "Alice",
     });
 

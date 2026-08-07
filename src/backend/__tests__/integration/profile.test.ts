@@ -33,7 +33,6 @@ describe("Profile Management API Integration Tests", () => {
         email: "testprofile@example.com",
         username: "testprofile",
         passwordHash: "somehashedpassword",
-        username: "testprofile",
         displayName: "Alice",
       });
 

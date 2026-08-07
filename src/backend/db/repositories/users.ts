@@ -33,7 +33,6 @@ export async function createUserWithProfile(args: {
   email: string;
   username: string;
   passwordHash: string;
-  username: string;
   displayName: string;
   location?: string;
   website?: string;
@@ -54,7 +53,6 @@ export async function createUserWithProfile(args: {
       .insert(profiles)
       .values({ 
         userAccountId: user.id, 
-        username: args.username,
         displayName: args.displayName,
         location: args.location,
         website: args.website 

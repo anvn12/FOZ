@@ -25,15 +25,15 @@ describe("NavBar Hamburger Menu Click Outside", () => {
     );
 
     const moreButton = screen.getByLabelText("More");
-    expect(screen.queryByText("Settings")).toBeNull();
+    expect(screen.queryByText("Report a Problem")).toBeNull();
 
     // Click to open More menu
     fireEvent.click(moreButton);
-    expect(screen.getByText("Settings")).toBeDefined();
+    expect(screen.getByText("Report a Problem")).toBeDefined();
 
     // Click outside
     fireEvent.mouseDown(screen.getByTestId("outside-element"));
-    expect(screen.queryByText("Settings")).toBeNull();
+    expect(screen.queryByText("Report a Problem")).toBeNull();
   });
 
   it("should close mobile hamburger (Menu) menu when clicking outside", () => {
@@ -44,16 +44,16 @@ describe("NavBar Hamburger Menu Click Outside", () => {
       </div>
     );
 
-    const menuButton = screen.getByLabelText("Menu");
-    expect(screen.queryByText("Settings")).toBeNull();
+    const menuButton = screen.getByLabelText("More");
+    expect(screen.queryByText("Report a Problem")).toBeNull();
 
     // Click to open mobile Menu
     fireEvent.click(menuButton);
-    expect(screen.getByText("Settings")).toBeDefined();
+    expect(screen.getByText("Report a Problem")).toBeDefined();
 
     // Click outside
     fireEvent.mouseDown(screen.getByTestId("outside-element"));
-    expect(screen.queryByText("Settings")).toBeNull();
+    expect(screen.queryByText("Report a Problem")).toBeNull();
   });
 
   it("should mark Home icon active (text-primary) on /latest and /foryou routes", () => {

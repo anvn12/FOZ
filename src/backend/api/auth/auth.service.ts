@@ -129,19 +129,20 @@ export async function register(input: {
   email: string; 
   password: string;
   username: string;
-  displayName: string;
-  location: string;
-  website: string;
+  displayName?: string;
+  location?: string;
+  website?: string;
 }): Promise<Session> {
-  const existing = await findUserByEmail(input.email);
-  if (existing) throw new DuplicateEmailError();
+  const existingEmail = await findUserByEmail(input.email);
+  if (existingEmail) throw new DuplicateEmailError();
+  const existingUsername = await findUserByUsername(input.username);
+  if (existingUsername) throw new DuplicateUsernameError();
   const passwordHash = await hashPassword(input.password);
   const { user } = await createUserWithProfile({
     email: input.email,
     username: input.username,
     passwordHash,
-    username: input.username,
-    displayName: input.displayName,
+    displayName: input.displayName || input.username,
     location: input.location,
     website: input.website,
   });
