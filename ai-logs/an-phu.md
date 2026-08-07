@@ -108,3 +108,26 @@
 - PA4.md: dropped the Frontend "Realtime" and Backend "Realtime Server" tech-stack bullets; corrected System Context user edge `HTTPS/WSS` → `HTTPS` and the FOZ Platform bullet (removed "realtime feed updates"); removed "socket.io-client" from the Web Application container description; deleted the "Realtime Client" component + description from the Level-3 frontend diagram and the "Realtime Server" component + description from the Level-3 backend diagram; tightened the Level-2 container edges (`User→WebApp` now `HTTPS browse / submit`, `Backend→Database` now `SQL via Drizzle/postgres-js, :5432`).
 - package.json: removed `"socket.io-client": "^4.8.3"` (was imported nowhere — `rg socket src` is empty).
 - Verified: `package.json` parses as valid JSON; `rg "socket|realtime|real-time" docs/01\ -\ PA/PA4-Group06/PA4.md` returns none.
+
+### 2026-08-07 09:46
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "wait this was drawn with c4 syntax? it is not required try rewriting in mermaid format, becuase the arrow is suppoed to be dashed lines and the relationship above the lines position is getting into other containers as it is too long" (+ "You may use standard Mermaid flowchart/graph syntax with C4-style labeling")
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Rewrote all 4 mermaid diagrams (System Context, Level-2 Container, Level-3 FE Component, Level-3 BE Component) from C4-piggyback syntax (`C4Context`/`C4Container`/`C4Component`, `Rel_D`/`Rel_R`/`Rel_L`, `UpdateLayoutConfig`) to standard `flowchart LR`:
+  - All relationship arrows are dashed (`-. ... .->`).
+  - Edge labels trimmed to short 1–2-token forms (e.g. `SQL / :5432`, `HTTP JSON /api/v1`, `HTTPS fetch`) so the relationship text no longer spills over neighboring containers; long tech/responsibility detail is carried in node bodies (br `<br/>`-separated name + tech + responsibility, matching C4 convention) and the existing prose descriptions.
+  - External/`System_Ext` nodes (AI Provider, LLM Provider) rendered with a dashed-stroke `classDef external` (`stroke-dasharray:5 5`) per C4 convention.
+  - `subgraph` replaces `System_Boundary`/`Container_Boundary`; cylinder `[(...)]` for the database; `([...])` for the Person actor.
+  - No `UpdateLayoutConfig` needed — mermaid auto-layouts.
+
+### 2026-08-07 09:52
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "the diagram for backend api server container is a bit too overwhelming, seperate them into 2, 1 with feed service, search service, profile service and 1 with AI TLDR, interaction service, auth service"
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Split the single backend component diagram into two `flowchart LR` diagrams, each retaining the shared infrastructure (API Gateway, Data Access Layer, Shared Types, DB) so the flow stays complete:
+  - 2.2.1 Diagram A — Content & Discovery: Feed · Search · Profile.
+  - 2.2.2 Diagram B — Identity & Interaction: Auth · Interaction · AI/TL;DR (+ external LLM).
+- Added a note clarifying Gateway/DataAccess/Shared are shared infra reused across both diagrams (backend is one container); split is presentational only.
+- Renumbered "Component Descriptions" to 2.2.3 and updated the ToC anchors accordingly.

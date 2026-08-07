@@ -22,8 +22,9 @@
       - [2.1.1 Diagram](#211-diagram)
       - [2.1.2 Component Descriptions](#212-component-descriptions)
     - [2.2 Backend - Backend API Server Container](#22-backend---backend-api-server-container)
-      - [2.2.1 Diagram](#221-diagram)
-      - [2.2.2 Component Descriptions](#222-component-descriptions)
+      - [2.2.1 Diagram A — Content & Discovery](#221-diagram-a--content--discovery-feed--search--profile)
+      - [2.2.2 Diagram B — Identity & Interaction](#222-diagram-b--identity--interaction-auth--interaction--ai-tldr)
+      - [2.2.3 Component Descriptions](#223-component-descriptions)
 - [D - Image example](#d---image-example)
   - [1. Insert image rule](#1-insert-image-rule)
 
@@ -81,19 +82,16 @@ The FOZ project uses the following technologies across its stack:
 ## C4 Model - Level 1 (System Context Diagram)
 
 ```mermaid
-C4Context
-    title System Context Diagram for FOZ
+flowchart LR
+    User(["FOZ User<br/>Guest · Standard · Moderator · Admin<br/>interacts with the community"])
+    FOZ["FOZ Platform<br/>web-based community forum<br/>(React SPA · Express API · PostgreSQL)"]
+    AI["AI Provider API<br/>OpenAI · Gemini<br/><i>external LLM service</i>"]
 
-    Person(user, "FOZ User", "A general web user (Guest, Standard User, Moderator, or Admin)<br/>interacting with the community.<br/>")
-    
-    System(foz, "FOZ Platform", "A web-based forum application providing<br/>streamlined community discussions<br/>and AI summarization.")
-    
-    System_Ext(ai_api, "AI Provider API", "External LLM service<br/>(e.g., OpenAI, Gemini)<br/>for TL;DR summaries.")
+    User -. "uses<br/>HTTPS" .-> FOZ
+    FOZ -. "TL;DR summary<br/>HTTPS/REST" .-> AI
 
-    Rel_D(user, foz, "Uses forum", "HTTPS")
-    Rel_D(foz, ai_api, "Generates summary", "HTTPS/REST")
-
-    UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="1")
+    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
+    class AI external
 ```
 
 ### Diagram Explanation
@@ -111,25 +109,24 @@ C4Context
 ### 1.1 Diagram
 
 ```mermaid
-C4Container
-    title C4 Model - Level 2 (Container Diagram) - FOZ
+flowchart LR
+    User(["User<br/>reads / writes forum content<br/>via web browser"])
 
-    Person(User, "User", "Reads/writes posts, comments, reactions, profiles, and reports via a web browser")
+    subgraph FOZ["FOZ [Software System] — threads-style community forum"]
+        WebApp["Web Application<br/>React 19 · TypeScript · Vite<br/><i>SPA — UI, state, forms</i>"]
+        Backend["Backend API Server<br/>Node.js v24 · Express 5 · ESM<br/><i>REST API · auth · feed · AI · validation</i>"]
+        Database[("PostgreSQL Database<br/>postgres:16<br/><i>relational data store</i>")]
+    end
 
-    System_Boundary(FOZ_Boundary, "FOZ [Software System]", "Threads-style community forum") {
-      Container(WebApp, "Web Application", "React 19 + TypeScript / Vite", "SPA for UI, state, forms, and notifications")
-        
-      Container(Backend, "Backend API Server", "Node.js v24 / Express 5 / ESM", "REST API, auth, feed, AI summaries, validation")
-        
-      ContainerDb(Database, "PostgreSQL Database", "postgres:16", "Persistent relational data store")
-    }
+    LLM["LLM Provider<br/>Google Gemini<br/><i>external</i>"]
 
-    System_Ext(LLMProvider, "LLM Provider", "Google Gemini", "AI TL;DR summary generation")
+    User -. "HTTPS<br/>browse / submit" .-> WebApp
+    WebApp -. "HTTP JSON<br/>/api/v1" .-> Backend
+    Backend -. "SQL / :5432" .-> Database
+    Backend -. "HTTPS fetch" .-> LLM
 
-    Rel_R(User, WebApp, "HTTPS browse / submit")
-    Rel_R(WebApp, Backend, "HTTP JSON /api/v1")
-    Rel_D(Backend, Database, "SQL via Drizzle/postgres-js, :5432")
-    Rel_R(Backend, LLMProvider, "HTTPS fetch")
+    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
+    class LLM external
 ```
 
 ### 1.2 Descriptions
@@ -176,39 +173,30 @@ The two diagrams below zoom into the Web Application and Backend API Server cont
 #### 2.1.1 Diagram
 
 ```mermaid
-C4Component
-    title C4 Model - Level 3 - Web Application Container
+flowchart LR
+    UserFE(["User<br/>browses / interacts with SPA"])
+    BackendFE["Backend API Server<br/>REST /api/v1"]
 
-    Person(UserFE, "User", "Browses and interacts with the SPA")
-    Container(BackendFE, "Backend API Server", "Container", "REST API under /api/v1")
+    subgraph FE["Web Application [Container]"]
+        AppRouter["App Router<br/>react-router-dom · App.tsx"]
+        Pages["Feature Pages<br/>React — top-level screens"]
+        UI["UI Components<br/>React + Tailwind"]
+        Forms["Forms<br/>react-hook-form + Zod"]
+        ApiHooks["API Client & Hooks<br/>@tanstack/react-query"]
+        AuthStore["Auth Store<br/>zustand · stores/auth.ts"]
+        Toast["Toast Service<br/>react-hot-toast"]
+    end
 
-    Container_Boundary(FE_Container, "Web Application [Container]") {
-    Component(AppRouter, "App Router", "react-router-dom / App.tsx", "Routes and global shell")
-        
-    Component(Pages, "Feature Pages", "React", "Top-level screens")
-        
-    Component(UIComponents, "UI Components", "React + Tailwind", "Reusable presentational pieces")
-        
-    Component(Forms, "Forms", "react-hook-form + Zod", "Validation and submission")
-        
-    Component(ApiHooks, "API Client & Hooks", "@tanstack/react-query", "Data fetching and mutations")
-        
-    Component(AuthStore, "Auth Store", "zustand / stores/auth.ts", "Session state")
-        
-    Component(ToastService, "Toast Service", "react-hot-toast", "Notifications")
-    }
-
-  Rel_R(UserFE, AppRouter, "navigate")
-  Rel_D(AppRouter, Pages, "render")
-  Rel_D(Pages, UIComponents, "compose")
-  Rel_D(Pages, Forms, "use")
-  Rel_R(Pages, ApiHooks, "fetch")
-  Rel_D(Forms, ApiHooks, "submit")
-  Rel_D(ApiHooks, AuthStore, "token / session")
-  Rel_L(Pages, AuthStore, "gate UI")
-  Rel_R(UIComponents, ToastService, "notify")
-    
-  Rel_R(ApiHooks, BackendFE, "HTTP JSON")
+    UserFE -. "navigate" .-> AppRouter
+    AppRouter -. "render" .-> Pages
+    Pages -. "compose" .-> UI
+    Pages -. "use" .-> Forms
+    Pages -. "fetch" .-> ApiHooks
+    Forms -. "submit" .-> ApiHooks
+    ApiHooks -. "token / session" .-> AuthStore
+    Pages -. "gate UI" .-> AuthStore
+    UI -. "notify" .-> Toast
+    ApiHooks -. "HTTP JSON" .-> BackendFE
 ```
 
 #### 2.1.2 Component Descriptions
@@ -238,62 +226,79 @@ C4Component
 
 ### 2.2 Backend - Backend API Server Container
 
-#### 2.2.1 Diagram
+#### 2.2.1 Diagram A — Content & Discovery (Feed · Search · Profile)
 
 ```mermaid
-C4Component
-    title C4 Model - Level 3 - Backend API Server Container
+flowchart LR
+    WebAppBE["Web Application<br/>React SPA"]
+    DB_BE[("PostgreSQL<br/>postgres:16")]
 
-    Container(WebAppBE, "Web Application", "Container", "React SPA")
-    ContainerDb(DB_BE, "PostgreSQL Database", "postgres:16", "Docker foz_db")
-    System_Ext(LLM_BE, "LLM Provider", "Google Gemini", "External API")
+    subgraph BE["Backend API Server [Container]"]
+        Gateway["API Gateway<br/>Express 5 + middleware"]
+        Feed["Feed Service<br/>listPostFeed"]
+        Search["Search Service<br/>search/routes.ts"]
+        Profile["Profile Service<br/>profile.service.ts"]
+        DataAccess["Data Access Layer<br/>Drizzle repositories · client"]
+        Shared["Shared Types<br/>src/shared/schemas<br/><i>shared Zod DTOs</i>"]
+    end
 
-    Container_Boundary(BE_Container, "Backend API Server [Container]") {
-      Component(APIGateway, "API Gateway", "Express 5 + Middleware", "Routing, middleware, and error mapping")
-        
-      Component(AuthService, "Auth Service", "auth.service.ts / JWT + bcrypt", "Login, refresh, password change")
-        
-      Component(InteractionServices, "Interaction Services", "posts, comments, reactions, reports", "Posts, comments, reactions, reports")
-        
-      Component(ProfileService, "Profile Service", "profile.service.ts", "Profile read / update")
-        
-      Component(SearchService, "Search Service", "search/routes.ts", "Profile search")
-        
-      Component(AIService, "AI / TL;DR Service", "post-summary.service.ts / ai-summarizer.ts", "Post summaries")
-        
-      Component(FeedService, "Feed Service", "listPostFeed in posts.ts", "Feed enrichment")
-        
-      Component(DataAccess, "Data Access Layer", "Drizzle repositories & client", "Repositories and Drizzle client")
-        
-      Component(SharedTypes, "Shared Types", "src/shared/schemas", "Shared Zod DTOs")
-    }
+    WebAppBE -. "HTTP JSON /api/v1" .-> Gateway
 
-    Rel_R(WebAppBE, APIGateway, "HTTP JSON /api/v1")
+    Gateway -. "GET /posts" .-> Feed
+    Gateway -. "/search" .-> Search
+    Gateway -. "/profiles" .-> Profile
 
-    Rel_D(APIGateway, AuthService, "/auth")
-    Rel_D(APIGateway, InteractionServices, "/posts /comments /reactions")
-    Rel_D(APIGateway, ProfileService, "/profiles")
-    Rel_D(APIGateway, SearchService, "/search")
-    Rel_D(APIGateway, AIService, "/posts/:id/summary")
-    Rel_D(APIGateway, FeedService, "GET /posts")
+    Feed -. "feed query" .-> DataAccess
+    Search -. "ILIKE" .-> DataAccess
+    Profile -. "profiles" .-> DataAccess
 
-    Rel_R(AuthService, DataAccess, "user_accounts / refresh_sessions")
-    Rel_R(InteractionServices, DataAccess, "domain CRUD")
-    Rel_R(ProfileService, DataAccess, "profiles")
-    Rel_R(SearchService, DataAccess, "ILIKE")
-    Rel_R(AIService, DataAccess, "posts/comments / summaries")
-    Rel_R(FeedService, DataAccess, "feed query")
+    DataAccess -. "SQL / :5432" .-> DB_BE
 
-    Rel_R(AIService, LLM_BE, "HTTPS fetch")
-    Rel_D(DataAccess, DB_BE, "SQL")
-
-    Rel_L(AuthService, SharedTypes, "schemas")
-    Rel_L(InteractionServices, SharedTypes, "schemas")
-    Rel_L(ProfileService, SharedTypes, "schemas")
-    Rel_L(APIGateway, SharedTypes, "validate bodies")
+    Gateway -. "validate" .-> Shared
+    Profile -. "schemas" .-> Shared
 ```
 
-#### 2.2.2 Component Descriptions
+#### 2.2.2 Diagram B — Identity & Interaction (Auth · Interaction · AI TL;DR)
+
+```mermaid
+flowchart LR
+    WebAppBE["Web Application<br/>React SPA"]
+    DB_BE[("PostgreSQL<br/>postgres:16")]
+    LLM_BE["LLM Provider<br/>Google Gemini<br/><i>external</i>"]
+
+    subgraph BE["Backend API Server [Container]"]
+        Gateway["API Gateway<br/>Express 5 + middleware"]
+        Auth["Auth Service<br/>JWT + bcrypt"]
+        Interaction["Interaction Services<br/>posts · comments · reactions · reports"]
+        AISvc["AI / TL;DR Service<br/>post-summary · ai-summarizer"]
+        DataAccess["Data Access Layer<br/>Drizzle repositories · client"]
+        Shared["Shared Types<br/>src/shared/schemas<br/><i>shared Zod DTOs</i>"]
+    end
+
+    WebAppBE -. "HTTP JSON /api/v1" .-> Gateway
+
+    Gateway -. "/auth" .-> Auth
+    Gateway -. "/posts · /comments" .-> Interaction
+    Gateway -. "/posts/:id/summary" .-> AISvc
+
+    Auth -. "users · sessions" .-> DataAccess
+    Interaction -. "domain CRUD" .-> DataAccess
+    AISvc -. "posts · summaries" .-> DataAccess
+
+    AISvc -. "HTTPS fetch" .-> LLM_BE
+    DataAccess -. "SQL / :5432" .-> DB_BE
+
+    Gateway -. "validate" .-> Shared
+    Auth -. "schemas" .-> Shared
+    Interaction -. "schemas" .-> Shared
+
+    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
+    class LLM_BE external
+```
+
+> **Note:** The API Gateway, Data Access Layer, and Shared Types are reused across both diagrams (shared infrastructure). The split is only for presentation — the backend runs as one container.
+
+#### 2.2.3 Component Descriptions
 
 - **API Gateway (`src/backend/index.ts`)**
   - **Responsibility:** Application entry point; applies CORS, cookie parsing (`cookie-parser`), body size limits, rate limiting (`express-rate-limit`), mounts sub-routers on `apiRouter` under `/api/v1` (`/auth`, `/posts`, `/profiles`, `/search`, `/` for comments/reactions), exposes `/api/v1/health`, and runs central error handling that converts thrown errors and `ZodError` instances into uniform JSON response envelopes.
