@@ -105,3 +105,84 @@ describe("FeedPostItem Guest Interactions", () => {
     expect(mockToggleRepost).not.toHaveBeenCalled();
   });
 });
+
+describe("FeedPostItem Authenticated Optimistic Reaction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useAuthStore.setState({
+      user: { id: "user-789", email: "test@example.com", role: "standard", status: "active" },
+      accessToken: "fake-token",
+    });
+  });
+
+  const dummyPost = {
+    id: "post-123",
+    authorId: "user-456",
+    content: "Test post content",
+    createdAt: new Date().toISOString(),
+    likeCount: 5,
+    liked: false,
+    reposted: false,
+  };
+
+  it("should update like icon and count optimistically when authenticated user clicks like", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    const likeBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("20.84"))!;
+    expect(likeBtn).toBeDefined();
+
+    // Initial state before click
+    expect(screen.getByText("5")).toBeDefined();
+
+    // Click like
+    fireEvent.click(likeBtn);
+
+    // Optimistic UI updates count immediately to 6 and toggles heart styling
+    expect(screen.getByText("6")).toBeDefined();
+    expect(likeBtn.className).toContain("text-red-500");
+
+    // Check mutation call
+    expect(mockToggleReaction).toHaveBeenCalledWith(
+      { targetType: "post", targetId: "post-123", active: false },
+      expect.any(Object)
+    );
+  });
+
+  it("should navigate to post details page /posts/:id when post card is clicked", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const cardContent = screen.getByText("Test post content");
+    fireEvent.click(cardContent);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/posts/post-123");
+  });
+
+  it("should NOT navigate to post details page when clicking inside details page", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} isDetailsPage={true} />);
+
+    const cardContent = screen.getByText("Test post content");
+    fireEvent.click(cardContent);
+
+    expect(mockNavigate).not.toHaveBeenCalledWith("/posts/post-123");
+  });
+
+  it("should update post state in query cache on success without re-fetching feed", () => {
+    renderWithProviders(<FeedPostItem post={dummyPost} />);
+
+    const buttons = screen.getAllByRole("button");
+    const likeBtn = buttons.find((btn) => btn.querySelector("path")?.getAttribute("d")?.includes("20.84"))!;
+    fireEvent.click(likeBtn);
+
+    // Simulate onSuccess callback from toggleReaction mutation
+    const mutationArgs = mockToggleReaction.mock.calls[0];
+    expect(mutationArgs).toBeDefined();
+    expect(mutationArgs![0]).toEqual({ targetType: "post", targetId: "post-123", active: false });
+    const options = mutationArgs![1];
+    options.onSuccess({ active: true, likeCount: 6 });
+
+    expect(screen.getByText("6")).toBeDefined();
+  });
+});
+
+

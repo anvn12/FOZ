@@ -7,16 +7,17 @@ export const commentIdSchema = z.string().uuid();
 export const reactionTargetTypeSchema = z.enum(["post", "comment"]);
 
 export const attachmentSchema = z.object({
-  fileUrl: z.string(),
-  fileType: z.enum(["image/jpeg", "image/png", "image/webp"]),
-  fileSize: z.number().int().max(5 * 1024 * 1024, "File size exceeds 5MB limit"),
+  fileUrl: z.string().min(1),
+  fileType: z.string().min(1),
+  fileSize: z.number().int().optional().default(1),
 });
 
 export const singlePostInputSchema = z.object({
   content: z.string().trim().max(5000, "Content is too long").optional(),
   parentId: postIdSchema.optional(),
   repostOfId: postIdSchema.optional(),
-  attachments: z.array(attachmentSchema).max(4, "Maximum 4 attachments allowed").optional(),
+  attachments: z.array(attachmentSchema).max(5, "Maximum 5 attachments allowed").optional(),
+
 }).refine(data => data.content || (data.attachments && data.attachments.length > 0) || data.repostOfId, {
   message: "Post must have either content, attachments, or be a repost",
 });
@@ -103,3 +104,29 @@ export const commentResponseSchema = z.object({
   replyCount: z.number().int().nonnegative().optional(),
 });
 export type CommentResponse = z.infer<typeof commentResponseSchema>;
+
+// Feed query schema
+export const feedTypeSchema = z.enum(["for-you", "latest"]).default("latest");
+export const feedQuerySchema = z.object({
+  type: feedTypeSchema,
+  authorId: z.string().uuid().optional(),
+  cursor: z.string().datetime().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+export type FeedQuery = z.infer<typeof feedQuerySchema>;
+
+import { reportStatuses } from "../schema-enums.js";
+
+// Moderation schemas
+export const getReportsQuerySchema = z.object({
+  status: z.enum(reportStatuses).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+export type GetReportsQuery = z.infer<typeof getReportsQuerySchema>;
+
+export const updateReportStatusSchema = z.object({
+  status: z.enum(["dismissed", "escalated"]),
+  notes: z.string().max(1000).optional(),
+});
+export type UpdateReportStatus = z.infer<typeof updateReportStatusSchema>;

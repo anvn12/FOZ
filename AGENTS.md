@@ -19,4 +19,6 @@ templates, extensions, workflows) lives **in this directory** —
 `/home/shiki/FOZ/.specify/`. Always read `.specify/memory/constitution.md`
 first for binding project principles and the technology stack, and use
 `.specify/templates/` for plan/spec/tasks/checklist scaffolding.
+
+**Current plan:** `specs/013-you-feed/plan.md` — You Feed feature
 <!-- SPECKIT END -->

@@ -5,15 +5,20 @@ description: Automatically logs AI-assisted code and specification changes to ai
 
 # AI Usage Log
 
-## Instructions
+## When to log (MANDATORY — no exceptions)
 
 After each response where you modified source code files (e.g. `.js`, `.ts`, `.jsx`, `.tsx`, `.py`, `.html`, `.css`, `.scss`, `.go`, `.rs`, `.java`, `.c`, `.cpp`, `.h`, `.php`, `.rb`, `.sql`, `.json`) OR SpecKit design & specification files (e.g. `specs/*`, `spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `checklists/*`, `contracts/*`), append an entry to the team log file.
 
-### Determine the log location (do this every time)
+- Source code (`.ts`, `.js`, `.py`, `.go`, `.rs`, `.sql`, `.html`, `.css`, etc.)
+- Documentation (`.md`, `.txt`, `.rst`, `.adoc`)
+- Configuration (`.yml`, `.yaml`, `.json`, `.toml`, `.ini`, `.env.example`)
+- Specs and plans (`spec.md`, `plan.md`, `tasks.md`, `constitution.md`)
+- Shell scripts (`.sh`, `.bat`, `.ps1`)
+- Any other file in the repository
 
-1. **Find the repo root** — run `git rev-parse --show-toplevel`. This is the `<repo-root>`. ALWAYS use this, never the current working directory, so logs land in one place regardless of which subfolder you are working in.
-2. **Find the user's GitHub name** — run `gh api user --jq .login` to get the GitHub login. If `gh` is unavailable or unauthenticated, fall back to `git config user.name` and sanitize it: lowercase, replace spaces with hyphens (e.g. `Shiki Rei` → `shiki-rei`).
-3. **The log file is always** `<repo-root>/ai-logs/<username>.md`. Create the `ai-logs/` directory at the repo root if it does not exist.
+**Do NOT log only when:** the response was purely conversational with
+zero file operations (no create, edit, write, or delete). If in doubt,
+log.
 
 ### What to log
 - Any turn that creates or modifies source code files (`src/`, `lib/`, `tests/`, etc.)
@@ -25,10 +30,23 @@ After each response where you modified source code files (e.g. `.js`, `.ts`, `.j
 - `.md` files in `docs/`, `ai-logs/`, or `ideas/` (unless part of a turn modifying code/specs)
 - Changes that are strictly limited to `README.md`
 
-### Log entry format
+1. **Find the repo root** — run `git rev-parse --show-toplevel`. This is
+   the `<repo-root>`. ALWAYS use this, never the current working
+   directory, so logs land in one place regardless of which subfolder you
+   are working in.
+2. **Find the user's GitHub name** — run `gh api user --jq .login` to get
+   the GitHub login. If `gh` is unavailable or unauthenticated, fall back
+   to `git config user.name` and sanitize it: lowercase, replace spaces
+   with hyphens (e.g. `Shiki Rei` → `shiki-rei`).
+3. **The log file is always** `<repo-root>/ai-logs/<username>.md`. Create
+   the `ai-logs/` directory at the repo root if it does not exist.
 
-1. Read `<repo-root>/ai-logs/<username>.md` if it exists. If not, start with an empty string.
-2. Append the following entry (use the current local time, 24-hour format `YYYY-MM-DD HH:MM`):
+## Log entry format
+
+1. Read `<repo-root>/ai-logs/<username>.md` if it exists. If not, start
+   with an empty string.
+2. Append the following entry (use the current local time, 24-hour format
+   `YYYY-MM-DD HH:MM`):
 
 ```markdown
 
@@ -39,11 +57,17 @@ After each response where you modified source code files (e.g. `.js`, `.ts`, `.j
 **Files touched:** `<file1>`, `<file2>`, ...
 ```
 
-3. Write the full updated content back to `<repo-root>/ai-logs/<username>.md`.
+3. Write the full updated content back to
+   `<repo-root>/ai-logs/<username>.md`.
 
-### Notes
-- Only log the **current turn's prompt** — not the full conversation history.
-- List every file path that was created or modified in this turn.
+## Rules
+
+- **Prompt field is mandatory.** Always record the user's exact input that
+  triggered the file changes, even if it was a single word or a follow-up.
+- Only log the **current turn's prompt** — not the full conversation
+  history.
+- List every file path that was created, modified, or deleted in this
+  turn.
 - Use paths relative to the repo root.
 - Do not log this skill's own logging activity (do not include the log file itself in the files touched list).
 - If the agent cannot determine a username (no git repo, no gh, no git config), skip logging rather than guessing.

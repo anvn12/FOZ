@@ -4,9 +4,10 @@ import { db } from "#backend/db/client.js";
 import { userAccounts } from "#backend/db/schema/users.js";
 
 async function registerAndGetToken(email = "user@example.com", role = "standard"): Promise<{ accessToken: string; userId: string }> {
+  const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, password: "password123" });
+    .send({ email, username, password: "password123" });
   expect(res.status).toBe(201);
   const userId = res.body.user.id;
   
@@ -168,9 +169,9 @@ describe("Post Creation Integration Tests", () => {
       expect([400, 422]).toContain(res.status);
     });
 
-    it("POST /api/v1/posts rejects attaching more than 4 files to a single post", async () => {
+    it("POST /api/v1/posts rejects attaching more than 5 files to a single post", async () => {
       const { accessToken } = await registerAndGetToken();
-      const attachments = Array(5).fill({ fileUrl: "data:image/jpeg;base64,abc", fileType: "image/jpeg", fileSize: 1024 });
+      const attachments = Array(6).fill({ fileUrl: "data:image/jpeg;base64,abc", fileType: "image/jpeg", fileSize: 1024 });
       const res = await getAgent()
         .post("/api/v1/posts")
         .set("Authorization", `Bearer ${accessToken}`)

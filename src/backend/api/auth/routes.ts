@@ -1,5 +1,5 @@
 import { Router, type RequestHandler } from "express";
-import { RegisterRequest, LoginRequest, ChangePasswordRequest } from "#shared/schemas/auth.js";
+import { RegisterRequest, LoginRequest, ChangePasswordRequest, usernameSchema } from "#shared/schemas/auth.js";
 import { authRateLimiter } from "#backend/lib/rate-limit.js";
 import { requireAuth, requireGuest, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import {
@@ -13,8 +13,57 @@ import {
   clearRefreshCookieOptions,
   AuthError,
 } from "#backend/api/auth/auth.service.js";
+import { getUserById, checkUsernameAvailable } from "#backend/db/repositories/users.js";
+import { googleAuthRouter } from "./google-auth.routes.js";
 
 export const authRouter: Router = Router();
+authRouter.use(googleAuthRouter);
+
+// GET /api/v1/auth/me — returns the authenticated user from a Bearer token.
+// Used by the OAuth redirect flow to exchange an access token for a full user object.
+authRouter.get("/me", requireAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    const user = await getUserById(userId);
+    if (!user) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    return res.status(200).json({
+      user: { id: user.id, email: user.email, username: user.username, role: user.role, status: user.status },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/auth/check-username?username=...
+authRouter.get("/check-username", authRateLimiter, async (req, res, next) => {
+  try {
+    const rawUsername = typeof req.query.username === "string" ? req.query.username : "";
+    const parsed = usernameSchema.safeParse(rawUsername);
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      return res.status(200).json({
+        available: false,
+        reason: issue?.message || "Invalid username format",
+      });
+    }
+    const available = await checkUsernameAvailable(parsed.data);
+    if (!available) {
+      return res.status(200).json({
+        available: false,
+        reason: "This username is already taken",
+      });
+    }
+    return res.status(200).json({ available: true, reason: null });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 function setRefreshCookie(res: Parameters<RequestHandler>[1], cookie: {
   name: string;
@@ -30,17 +79,19 @@ function clearRefreshCookie(res: Parameters<RequestHandler>[1]) {
 
 function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
   if (err instanceof AuthError) {
-    const isDuplicate = err.status === 409;
     return res.status(err.status).json({
       error: {
         code: err.code,
-        message: isDuplicate
-          ? "An account with this email already exists"
-          : err.code === "INVALID_CREDENTIALS"
-            ? "Invalid email or password"
-            : err.code === "ACCOUNT_NOT_ACTIVE"
-              ? "Your account is not currently available"
-              : "Authentication failed",
+        message:
+          err.code === "USERNAME_TAKEN"
+            ? "This username is already taken"
+            : err.code === "EMAIL_TAKEN"
+              ? "An account with this email already exists"
+              : err.code === "INVALID_CREDENTIALS"
+                ? "Invalid email or password"
+                : err.code === "ACCOUNT_NOT_ACTIVE"
+                  ? "Your account is not currently available"
+                  : "Authentication failed",
       },
     });
   }

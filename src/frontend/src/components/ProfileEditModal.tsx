@@ -6,6 +6,9 @@ import { z } from "zod";
 import { UpdateProfileRequest } from "#shared/schemas/profile.js";
 import { useUpdateProfile, useUpdateAvatar, type Profile } from "#frontend/api/profile.js";
 import { ApiError } from "#frontend/api/auth.js";
+import { validateImageFile, compressImageClient } from "#frontend/utils/imageCompressor.js";
+import { uploadMediaToCloudinary } from "#frontend/api/upload.js";
+import { CloseIcon, MapPinIcon, LinkIcon } from "#frontend/components/icons/ProfileIcons.js";
 
 type UpdateProfileInput = z.input<typeof UpdateProfileRequest>;
 
@@ -20,7 +23,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   const updateAvatarMutation = useUpdateAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profile.avatarUrl || null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -44,19 +47,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate type
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      const msg = "Only PNG, JPEG, and GIF formats are allowed.";
-      setFileError(msg);
-      toast.error(msg);
-      if (e.target) e.target.value = "";
-      return;
-    }
-
-    // Validate size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      const msg = "Image size must be less than 2MB.";
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      const msg = validation.error || "Invalid avatar image format.";
       setFileError(msg);
       toast.error(msg);
       if (e.target) e.target.value = "";
@@ -64,23 +57,49 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     }
 
     setFileError(null);
-
-    // Convert to Base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setAvatarBase64(base64);
-      setPreviewUrl(base64);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (values: UpdateProfileInput) => {
     try {
-      if (avatarBase64) {
-        await updateAvatarMutation.mutateAsync({ avatar: avatarBase64 });
+      if (selectedFile) {
+        const toastId = toast.loading("Compressing & uploading avatar...");
+        let finalAvatarUrl = "";
+
+        try {
+          // Compress to WebP first, then stream the smaller blob to Cloudinary
+          const compressed = await compressImageClient(selectedFile, "avatar");
+          const compressedFile = new File([compressed.blob], compressed.fileName, { type: "image/webp" });
+          const asset = await uploadMediaToCloudinary(compressedFile, compressedFile.name, "avatars");
+          finalAvatarUrl = asset.url;
+          toast.success("Avatar uploaded", { id: toastId });
+        } catch (cErr) {
+          console.warn("Cloudinary upload failed, falling back to base64:", cErr);
+          try {
+            const compressed = await compressImageClient(selectedFile, "avatar");
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(compressed.blob);
+            });
+            toast.dismiss(toastId);
+          } catch (err) {
+            console.warn("Avatar compression error, using raw file fallback:", err);
+            finalAvatarUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(selectedFile);
+            });
+            toast.dismiss(toastId);
+          }
+        }
+
+        if (finalAvatarUrl) {
+          await updateAvatarMutation.mutateAsync({ avatar: finalAvatarUrl });
+        }
       }
-      // Pass values to mutateAsync which will run validations and parsing
+
       await updateProfileMutation.mutateAsync(values as any);
       toast.success("Profile updated successfully");
       onClose();
@@ -102,10 +121,10 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
           <h2 className="text-xl font-bold text-zinc-950">Edit profile</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition"
+            className="rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition"
             aria-label="Close"
           >
-            ✕
+            <CloseIcon className="w-5 h-5" />
           </button>
         </div>
 
@@ -140,6 +159,21 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
               onChange={handleFileChange}
             />
             {fileError && <p className="text-xs text-red-600 font-medium">{fileError}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700">
+              Username Handle
+            </label>
+            <input
+              id="username-handle"
+              type="text"
+              disabled
+              readOnly
+              value={`@${profile.username || profile.displayName.toLowerCase().replace(/\s+/g, "")}`}
+              className="mt-1 w-full rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-500 cursor-not-allowed font-medium"
+            />
+            <p className="mt-1 text-xs text-zinc-400">Usernames are permanent and cannot be changed.</p>
           </div>
 
           <div>
@@ -182,8 +216,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700">
-                Location
+              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+                <MapPinIcon className="w-3.5 h-3.5 text-zinc-500" />
+                <span>Location</span>
               </label>
               <input
                 id="location"
@@ -201,8 +236,9 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
             </div>
 
             <div>
-              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700">
-                Website
+              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+                <LinkIcon className="w-3.5 h-3.5 text-zinc-500" />
+                <span>Website</span>
               </label>
               <input
                 id="website"

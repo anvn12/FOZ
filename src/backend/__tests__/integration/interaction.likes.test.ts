@@ -2,9 +2,10 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { getAgent, clearDb } from "./auth.setup.js";
 
 async function registerAndGetToken(email = "user@example.com"): Promise<{ accessToken: string; userId: string }> {
+  const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, password: "password123" });
+    .send({ email, username, password: "password123" });
   expect(res.status).toBe(201);
   return {
     accessToken: res.body.accessToken,

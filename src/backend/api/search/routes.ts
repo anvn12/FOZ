@@ -1,104 +1,228 @@
 import { Router } from "express";
-import { ilike, or } from "drizzle-orm";
+import { z } from "zod";
+import { ilike, eq, and, desc, sql } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
-import { profiles } from "#backend/db/schema/index.js";
+import { posts, profiles, userAccounts, reactions, comments } from "#backend/db/schema/index.js";
+import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
 
-const MOCK_PROFILES = [
-  {
-    id: "mock1",
-    userAccountId: "mock1",
-    displayName: "Elena Rostova",
-    bio: "@erostova",
-    avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuA6UsA1UnudoPBcYpXkQ1qrW3YrY7RVfsge3p-7T8aTwLsOMlffPtZBSNev0RbOV8AmIrzdEL2eYuxHJXYuo8QRwCKL9ii0hCsaXvYrZ8vLNxllgDI4qOIPku9SO4nLeKPCXjtOIJbu4PpjSBAxxMJt4a2oquNROsEqsArrHj3yNLDN3qy0OCkVQAQbrdy04tEx6ngPbO06iygREyzre8ydigDxu9DDW7jTJrNtlsrCeCE-k8Sm07Wl",
-    location: null,
-    website: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: "mock2",
-    userAccountId: "mock2",
-    displayName: "Marcus Vance",
-    bio: "@vancedesign",
-    avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAd64GIUZFwTzXs8wJ2knlxuLkc18knI7jnOUYdVj6tR_UnjXyPPAwenwcV9of3jp79Qbn1sY1O26wNW7OO8gcui4tuaezRCc7hXD0rGrrDzhA3bXJwLm4R78rU96tsZJI_aEIyt5TysBIvgqmmrEI4YLCEYN50JZsEewsrKlA_DOw0F_E5ztF2rfvXdMQvMvPT5IHJJeFHq1SvrMTvlsAYx_fsuqll4o4kM4VVYxTOIIc2RD7VLxjL",
-    location: null,
-    website: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: "mock3",
-    userAccountId: "mock3",
-    displayName: "Sophia Chen",
-    bio: "@sophiadesign",
-    avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDDXgzz0WXoPlkH90grbE2nGPmc7pDstNa7gLjzg5mX_4RuCibjq_Dg8Cd1X3v401X3dqOENyVE815Az_LAYoq0MNoER6S11ktmjM0wpjCbjlJFM76vRqS8Bacb24PUUmdgz4u2jWWmdmUlmxguMlT2TVEAC1dpNhB8CpH_6QNiR4zzKrhHUBkl-2EW9JVBs-Y_WvENNANm50ahVXvAJ3lyrI2hz6YlsWld8OvKoS7a34wyARuUynlQ",
-    location: null,
-    website: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: "mock4",
-    userAccountId: "mock4",
-    displayName: "Alex Rivera",
-    bio: "@arivera",
-    avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAOIGgAu_Ia3aY_Temn0CPLWzrSkSEfhZc0O8L0Ot8Rod6ug8UwYQ3oDl1E8Tzy6NkQNj5cG-cTh5g7l82blPVG6rgcNtkVUKou9OIyIcIP6fs8wtkkgxxEUgEt4wNrMwrcMm9TPnr6PvarGOnckF2LpDHA7OAxh6wVqWHE4H_Qktw4UdEFc1D1HIbqdSTqWRfxhpuDRAivW5AIIIZ8pTroOCe3tTpT1BXSFO3JYajubeLdhiEMa6ID",
-    location: null,
-    website: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
+const SearchQuerySchema = z.object({
+  q: z
+    .string()
+    .trim()
+    .min(1, "Query is required")
+    .max(100, "Query must be at most 100 characters"),
+  type: z.enum(["posts", "users", "all"]).optional().default("all"),
+});
 
 const router = Router();
 
+router.get("/discovery", async (req, res, next) => {
+  try {
+    const { limit } = SearchDiscoveryQuerySchema.parse(req.query);
+    const maxLimit = Math.min(limit, 10);
+
+    // 1. Suggested Creators: Top 10 most active creators ordered by active post count
+    const rawCreators = await db
+      .select({
+        id: profiles.id,
+        userAccountId: profiles.userAccountId,
+        username: userAccounts.username,
+        displayName: profiles.displayName,
+        bio: profiles.bio,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(profiles)
+      .innerJoin(userAccounts, eq(profiles.userAccountId, userAccounts.id))
+      .where(eq(userAccounts.status, "active"))
+      .orderBy(
+        desc(
+          sql`(SELECT COUNT(*)::int FROM ${posts} WHERE ${posts.authorId} = ${profiles.userAccountId} AND ${posts.lifecycleState} = 'active')`
+        ),
+        desc(profiles.createdAt)
+      )
+      .limit(maxLimit);
+
+    // 2. Trending Discussions: Top 10 active public posts ordered by total engagement (likes + comments)
+    const activePosts = await db
+      .select({
+        id: posts.id,
+        authorId: posts.authorId,
+        content: posts.content,
+        createdAt: posts.createdAt,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(posts)
+      .innerJoin(profiles, eq(posts.authorId, profiles.userAccountId))
+      .innerJoin(userAccounts, eq(posts.authorId, userAccounts.id))
+      .where(
+        and(
+          eq(posts.lifecycleState, "active"),
+          eq(posts.visibilityState, "public"),
+          eq(userAccounts.status, "active")
+        )
+      )
+      .orderBy(
+        desc(
+          sql`(
+            (SELECT COUNT(*)::int FROM ${reactions} WHERE ${reactions.targetType} = 'post' AND ${reactions.targetId} = ${posts.id}) +
+            (SELECT COUNT(*)::int FROM ${comments} WHERE ${comments.postId} = ${posts.id} AND ${comments.lifecycleState} = 'active')
+          )`
+        ),
+        desc(posts.createdAt)
+      )
+      .limit(maxLimit);
+
+    const discussions = await Promise.all(
+      activePosts.map(async (p) => {
+        // Fetch like count
+        const [likeRes] = await db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(reactions)
+          .where(and(eq(reactions.targetType, "post"), eq(reactions.targetId, p.id)));
+
+        // Fetch comment count
+        const [commentRes] = await db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(comments)
+          .where(and(eq(comments.postId, p.id), eq(comments.lifecycleState, "active")));
+
+        const authorHandle = `@${(p.displayName || "user").toLowerCase().replace(/\s+/g, "")}`;
+
+        return {
+          id: p.id,
+          authorId: p.authorId,
+          authorName: p.displayName || "Anonymous",
+          authorHandle,
+          authorAvatarUrl: p.avatarUrl,
+          content: p.content || "",
+          createdAt: p.createdAt ? p.createdAt.toISOString() : new Date().toISOString(),
+          likeCount: likeRes?.count ?? 0,
+          commentCount: commentRes?.count ?? 0,
+        };
+      })
+    );
+
+    // 3. Trending Topics: Extracted tags or defaults
+    const defaultTopics = [
+      { id: "t1", name: "Design Systems", tag: "#DesignSystems" },
+      { id: "t2", name: "AI Architecture", tag: "AI Architecture" },
+      { id: "t3", name: "Minimalism", tag: "#Minimalism" },
+      { id: "t4", name: "UI Engineering", tag: "UI Engineering" },
+      { id: "t5", name: "Future of Work", tag: "Future of Work" },
+    ];
+
+    res.json({
+      topics: defaultTopics,
+      creators: rawCreators,
+      discussions,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/", async (req, res, next) => {
   try {
-    const q = req.query.q as string;
-    
-    if (!q || q.trim() === "") {
-      return res.json([]);
+    const { q, type } = SearchQuerySchema.parse(req.query);
+    const pattern = `%${q}%`;
+
+    let postItems: Array<{
+      id: string;
+      authorId: string;
+      body: string | null;
+      content: string | null;
+      visibilityState: string;
+      lifecycleState: string;
+      createdAt: Date;
+      type: "post";
+    }> = [];
+
+    let userItems: Array<{
+      id: string;
+      userAccountId: string;
+      profileId: string;
+      displayName: string;
+      bio: string | null;
+      avatarUrl: string | null;
+      location: string | null;
+      website: string | null;
+      createdAt: Date;
+      type: "user";
+    }> = [];
+
+    if (type === "posts" || type === "all") {
+      const matchedPosts = await db
+        .select({
+          id: posts.id,
+          authorId: posts.authorId,
+          body: posts.content,
+          content: posts.content,
+          visibilityState: posts.visibilityState,
+          lifecycleState: posts.lifecycleState,
+          createdAt: posts.createdAt,
+        })
+        .from(posts)
+        .where(
+          and(
+            ilike(posts.content, pattern),
+            eq(posts.lifecycleState, "active"),
+            eq(posts.visibilityState, "public")
+          )
+        )
+        .orderBy(desc(posts.createdAt))
+        .limit(20);
+
+      postItems = matchedPosts.map((p) => ({
+        ...p,
+        type: "post" as const,
+      }));
     }
 
-    const searchQuery = `%${q.trim()}%`;
-    const lowerQ = q.trim().toLowerCase();
-
-    let results: any[] = [];
-    try {
-      results = await db
+    if (type === "users" || type === "all") {
+      const matchedUsers = await db
         .select({
-          id: profiles.id,
+          id: profiles.userAccountId,
           userAccountId: profiles.userAccountId,
+          profileId: profiles.id,
           displayName: profiles.displayName,
           bio: profiles.bio,
           avatarUrl: profiles.avatarUrl,
           location: profiles.location,
           website: profiles.website,
           createdAt: profiles.createdAt,
-          updatedAt: profiles.updatedAt
         })
         .from(profiles)
+        .innerJoin(userAccounts, eq(profiles.userAccountId, userAccounts.id))
         .where(
-          or(
-            ilike(profiles.displayName, searchQuery),
-            ilike(profiles.bio, searchQuery)
+          and(
+            ilike(profiles.displayName, pattern),
+            eq(userAccounts.status, "active")
           )
         )
         .limit(20);
-    } catch (dbError: any) {
-      console.warn("Database search failed (is DB down?), falling back to mock data:", dbError.message);
+
+      userItems = matchedUsers.map((u) => ({
+        ...u,
+        type: "user" as const,
+      }));
     }
 
-    const mockResults = MOCK_PROFILES.filter(p => 
-      p.displayName.toLowerCase().includes(lowerQ) || 
-      p.bio.toLowerCase().includes(lowerQ)
-    );
+    let items: Array<typeof postItems[number] | typeof userItems[number]> = [];
+    if (type === "posts") {
+      items = postItems;
+    } else if (type === "users") {
+      items = userItems;
+    } else {
+      items = [...postItems, ...userItems];
+    }
 
-    const finalResults = [...results, ...mockResults];
-
-    res.json(finalResults);
-  } catch (error) {
-    next(error);
+    res.json({
+      items,
+      nextCursor: null,
+    });
+  } catch (err) {
+    next(err);
   }
 });
 

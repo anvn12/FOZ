@@ -8,9 +8,11 @@ import * as profileApi from "../../api/profile.js";
 
 vi.mock("../../api/profile.js", () => ({
   useProfile: vi.fn(),
+  useProfileByUsername: vi.fn(),
   useUpdateProfile: vi.fn(),
   useUpdateAvatar: vi.fn(),
   getProfile: vi.fn(),
+  getProfileByUsername: vi.fn(),
   updateProfile: vi.fn(),
   updateAvatar: vi.fn(),
 }));
@@ -87,6 +89,74 @@ describe("ProfilePage Component", () => {
     await waitFor(() => {
       expect(screen.getByText(longBio)).toBeDefined();
       expect(screen.getByRole("button", { name: /show less/i })).toBeDefined();
+    });
+  });
+
+  it("should render Admin badge for administrator role", async () => {
+    vi.mocked(profileApi.useProfile).mockReturnValue({
+      data: {
+        id: "profile-id",
+        userAccountId: "user-id",
+        displayName: "Admin User",
+        role: "administrator",
+        bio: "Admin bio",
+        avatarUrl: null,
+        createdAt: "2026-07-20",
+        updatedAt: "2026-07-20",
+      },
+      isLoading: false,
+      error: null,
+    } as any);
+
+    renderWithProviders(<ProfilePage />, { route: "/profiles/user-id" });
+    await waitFor(() => {
+      expect(screen.getByText("Admin")).toBeDefined();
+    });
+  });
+
+  it("should render Mod badge for moderator role", async () => {
+    vi.mocked(profileApi.useProfile).mockReturnValue({
+      data: {
+        id: "profile-id",
+        userAccountId: "user-id",
+        displayName: "Mod User",
+        role: "moderator",
+        bio: "Mod bio",
+        avatarUrl: null,
+        createdAt: "2026-07-20",
+        updatedAt: "2026-07-20",
+      },
+      isLoading: false,
+      error: null,
+    } as any);
+
+    renderWithProviders(<ProfilePage />, { route: "/profiles/user-id" });
+    await waitFor(() => {
+      expect(screen.getByText("Mod")).toBeDefined();
+    });
+  });
+
+  it("should not render any role badge for standard user", async () => {
+    vi.mocked(profileApi.useProfile).mockReturnValue({
+      data: {
+        id: "profile-id",
+        userAccountId: "user-id",
+        displayName: "Standard User",
+        role: "standard",
+        bio: "Standard bio",
+        avatarUrl: null,
+        createdAt: "2026-07-20",
+        updatedAt: "2026-07-20",
+      },
+      isLoading: false,
+      error: null,
+    } as any);
+
+    renderWithProviders(<ProfilePage />, { route: "/profiles/user-id" });
+    await waitFor(() => {
+      expect(screen.getByText("Standard User")).toBeDefined();
+      expect(screen.queryByText("Admin")).toBeNull();
+      expect(screen.queryByText("Mod")).toBeNull();
     });
   });
 });

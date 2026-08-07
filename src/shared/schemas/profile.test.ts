@@ -37,6 +37,15 @@ describe("UpdateProfileRequest Schema", () => {
     expect(parsed.success).toBe(false);
   });
 
+  it("should reject display names containing inappropriate or special characters", () => {
+    const data1 = { displayName: "𝄜" };
+    const data2 = { displayName: "𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃" };
+    const data3 = { displayName: "John 😀 Doe" };
+    expect(UpdateProfileRequest.safeParse(data1).success).toBe(false);
+    expect(UpdateProfileRequest.safeParse(data2).success).toBe(false);
+    expect(UpdateProfileRequest.safeParse(data3).success).toBe(false);
+  });
+
   it("should reject bios longer than 160 characters", () => {
     const data = {
       displayName: "Alice",
@@ -73,12 +82,20 @@ describe("UpdateAvatarRequest Schema", () => {
     expect(parsed.success).toBe(true);
   });
 
+  it("should validate a valid webp base64 image", () => {
+    const parsed = UpdateAvatarRequest.safeParse({
+      avatar: "data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA",
+    });
+    expect(parsed.success).toBe(true);
+  });
+
   it("should reject base64 images of invalid types", () => {
     const parsed = UpdateAvatarRequest.safeParse({
-      avatar: "data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      avatar: "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
     });
     expect(parsed.success).toBe(false);
   });
+
 
   it("should reject base64 payloads that exceed 2MB", () => {
     // 2.1 MB = 2.1 * 1024 * 1024 bytes approx = 2,202,000 bytes

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
 import type { Profile } from "#frontend/api/profile";
+import type { SearchDiscoveryResponse } from "#shared/schemas/search.js";
 
 interface ErrorEnvelope {
   error?: {
@@ -37,15 +38,32 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
 }
 
 export function searchProfiles(query: string) {
-  return call<Profile[]>(`/api/v1/search?q=${encodeURIComponent(query)}`, {
+  return call<{ items: Profile[]; nextCursor: string | null }>(
+    `/api/v1/search?q=${encodeURIComponent(query)}&type=users`,
+    {
+      method: "GET",
+    },
+  ).then((res) => res.items);
+}
+
+export function useSearchProfiles(query: string, enabledOverride?: boolean) {
+  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0 || query === " ";
+  return useQuery({
+    queryKey: ["search", query],
+    queryFn: () => searchProfiles(query),
+    enabled: isEnabled,
+  });
+}
+
+export function getSearchDiscovery() {
+  return call<SearchDiscoveryResponse>("/api/v1/search/discovery", {
     method: "GET",
   });
 }
 
-export function useSearchProfiles(query: string) {
+export function useSearchDiscovery() {
   return useQuery({
-    queryKey: ["search", query],
-    queryFn: () => searchProfiles(query),
-    enabled: query.trim().length > 0,
+    queryKey: ["searchDiscovery"],
+    queryFn: () => getSearchDiscovery(),
   });
 }

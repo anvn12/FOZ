@@ -1,4 +1,5 @@
-import { findProfileByUserId, updateProfile } from "#backend/db/repositories/profiles.js";
+import { findProfileByUserId, findProfileByUsername, updateProfile } from "#backend/db/repositories/profiles.js";
+import { extractCloudinaryPublicId, isCloudinaryConfigured, destroyAsset } from "#backend/services/cloudinary.js";
 
 export class ProfileError extends Error {
   constructor(
@@ -12,6 +13,14 @@ export class ProfileError extends Error {
 
 export async function getProfileByUserId(userId: string) {
   const profile = await findProfileByUserId(userId);
+  if (!profile) {
+    throw new ProfileError("NOT_FOUND", 404, "Profile not found");
+  }
+  return profile;
+}
+
+export async function getProfileByUsername(username: string) {
+  const profile = await findProfileByUsername(username);
   if (!profile) {
     throw new ProfileError("NOT_FOUND", 404, "Profile not found");
   }
@@ -38,5 +47,23 @@ export async function updateUserProfile(
   if (!updated) {
     throw new ProfileError("NOT_FOUND", 404, "Profile not found");
   }
+
+  // If avatar was changed, delete the old Cloudinary asset — best-effort, never blocks the response
+  if (
+    data.avatarUrl !== undefined &&
+    existing.avatarUrl &&
+    existing.avatarUrl !== data.avatarUrl &&
+    existing.avatarUrl.includes("res.cloudinary.com")
+  ) {
+    if (isCloudinaryConfigured()) {
+      const publicId = extractCloudinaryPublicId(existing.avatarUrl);
+      if (publicId) {
+        destroyAsset(publicId).catch((err) =>
+          console.warn(`[updateUserProfile] Failed to delete old Cloudinary avatar ${publicId}:`, err)
+        );
+      }
+    }
+  }
+
   return updated;
 }

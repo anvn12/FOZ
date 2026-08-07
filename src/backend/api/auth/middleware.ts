@@ -63,6 +63,23 @@ export const requireGuest: RequestHandler = (req, res, next) => {
   next();
 };
 
+export function requireRole(roles: string[]): RequestHandler {
+  return (req, res, next) => {
+    const user = (req as AuthedRequest).user;
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
+    if (!roles.includes(user.role)) {
+      return res
+        .status(403)
+        .json({ error: { code: "FORBIDDEN", message: "You do not have permission to access this resource" } });
+    }
+    next();
+  };
+}
+
 export function validateBody<S extends ZodTypeAny>(schema: S): RequestHandler {
   return (req, res, next) => {
     const result = schema.safeParse(req.body);

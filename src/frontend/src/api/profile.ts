@@ -6,11 +6,13 @@ import type { UpdateProfileRequest, UpdateAvatarRequest } from "#shared/schemas/
 export interface Profile {
   id: string;
   userAccountId: string;
+  username?: string;
   displayName: string;
   bio: string | null;
   location: string | null;
   website: string | null;
   avatarUrl: string | null;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -54,6 +56,12 @@ export function getProfile(userId: string) {
   });
 }
 
+export function getProfileByUsername(username: string) {
+  return call<{ profile: Profile }>(`/api/v1/profiles/by-username/${encodeURIComponent(username)}`, {
+    method: "GET",
+  });
+}
+
 export function updateProfile(input: UpdateProfileRequest) {
   return call<{ profile: Profile }>("/api/v1/profiles/me", {
     method: "PATCH",
@@ -73,6 +81,14 @@ export function useProfile(userId: string) {
     queryKey: ["profile", userId],
     queryFn: () => getProfile(userId).then(res => res.profile),
     enabled: !!userId,
+  });
+}
+
+export function useProfileByUsername(username: string) {
+  return useQuery({
+    queryKey: ["profile", "by-username", username],
+    queryFn: () => getProfileByUsername(username).then(res => res.profile),
+    enabled: !!username,
   });
 }
 

@@ -5,7 +5,10 @@ import { useToggleReaction, useToggleRepost } from "#frontend/api/interactions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { ReportModal } from "./ReportModal";
+import { HorizontalMediaGallery } from "./HorizontalMediaGallery";
 import { useAuthStore } from "#frontend/stores/auth";
+import { ExpandableText } from "./ExpandableText";
+
 import { deletePost } from "#frontend/api/interactions";
 
 export function formatRelativeTime(dateInput: string | number | Date | null | undefined): string {
@@ -40,7 +43,7 @@ export function formatRelativeTime(dateInput: string | number | Date | null | un
   return `${years}y ago`;
 }
 
-export function FeedPostItem({ post }: { post: any }) {
+export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDetailsPage?: boolean }) {
   const navigate = useNavigate();
   const { data: profile } = useProfile(post.authorId);
   const displayName = profile?.displayName || `Member ${post.authorId.slice(0, 4)}`;
@@ -49,6 +52,15 @@ export function FeedPostItem({ post }: { post: any }) {
   const [showOptions, setShowOptions] = React.useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
   const optionsMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isDetailsPage) return;
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, textarea, [role='button'], .no-card-click")) {
+      return;
+    }
+    navigate(`/posts/${post.id}`);
+  };
 
   useEffect(() => {
     if (!showOptions) return;
@@ -61,9 +73,65 @@ export function FeedPostItem({ post }: { post: any }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [showOptions]);
   
+  const [liked, setLiked] = React.useState(Boolean(post.liked));
+  const [likeCount, setLikeCount] = React.useState(Number(post.likeCount || 0));
+
+  useEffect(() => {
+    setLiked(Boolean(post.liked));
+    setLikeCount(Number(post.likeCount || 0));
+  }, [post.liked, post.likeCount]);
+
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
   const toggleRepost = useToggleRepost();
+
+  const updatePostInCache = (targetPostId: string, updates: Record<string, any>) => {
+    queryClient.setQueriesData({ queryKey: ["posts"] }, (oldData: any) => {
+      if (!oldData) return oldData;
+      if (oldData.pages && Array.isArray(oldData.pages)) {
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            items: page.items?.map((item: any) =>
+              item.id === targetPostId ? { ...item, ...updates } : item
+            ),
+          })),
+        };
+      }
+      if (oldData.items && Array.isArray(oldData.items)) {
+        return {
+          ...oldData,
+          items: oldData.items.map((item: any) =>
+            item.id === targetPostId ? { ...item, ...updates } : item
+          ),
+        };
+      }
+      return oldData;
+    });
+  };
+
+  const removePostFromCache = (targetPostId: string) => {
+    queryClient.setQueriesData({ queryKey: ["posts"] }, (oldData: any) => {
+      if (!oldData) return oldData;
+      if (oldData.pages && Array.isArray(oldData.pages)) {
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            items: page.items?.filter((item: any) => item.id !== targetPostId),
+          })),
+        };
+      }
+      if (oldData.items && Array.isArray(oldData.items)) {
+        return {
+          ...oldData,
+          items: oldData.items.filter((item: any) => item.id !== targetPostId),
+        };
+      }
+      return oldData;
+    });
+  };
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,13 +139,27 @@ export function FeedPostItem({ post }: { post: any }) {
       navigate("/login");
       return;
     }
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    const nextLiked = !prevLiked;
+    const nextCount = nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1);
+
+    setLiked(nextLiked);
+    setLikeCount(nextCount);
+
     toggleReaction.mutate(
-      { targetType: "post", targetId: post.id, active: post.liked },
+      { targetType: "post", targetId: post.id, active: prevLiked },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["posts"] });
+        onSuccess: (res: any) => {
+          const finalLiked = res && typeof res.active === "boolean" ? res.active : nextLiked;
+          const finalLikeCount = res && typeof res.likeCount === "number" ? res.likeCount : nextCount;
+          setLiked(finalLiked);
+          setLikeCount(finalLikeCount);
+          updatePostInCache(post.id, { liked: finalLiked, likeCount: finalLikeCount });
         },
         onError: () => {
+          setLiked(prevLiked);
+          setLikeCount(prevCount);
           toast.error("Failed to like post");
         }
       }
@@ -95,11 +177,13 @@ export function FeedPostItem({ post }: { post: any }) {
       navigate("/login");
       return;
     }
+    const nextReposted = !post.reposted;
     toggleRepost.mutate(
       { postId: post.id, active: post.reposted },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["posts"] });
+          toast.success(post.reposted ? "Repost removed" : "Reposted to your profile");
+          updatePostInCache(post.id, { reposted: nextReposted });
         },
         onError: () => {
           toast.error("Failed to repost");
@@ -123,7 +207,7 @@ export function FeedPostItem({ post }: { post: any }) {
       await deletePost(post.id);
       toast.success("Post deleted");
       setShowDeleteDialog(false);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      removePostFromCache(post.id);
     } catch (err: any) {
       toast.error(err.message || "Failed to delete post");
     } finally {
@@ -138,7 +222,12 @@ export function FeedPostItem({ post }: { post: any }) {
   };
   
   return (
-    <article className="p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl">
+    <article
+      onClick={handleCardClick}
+      className={`p-4 hover:bg-surface-container-low/30 transition-colors border-b border-outline-variant last:border-b-0 first:rounded-t-3xl ${
+        isDetailsPage ? "" : "cursor-pointer"
+      }`}
+    >
       <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} postId={post.id} />
       
       {/* Delete Post Confirmation Dialog */}
@@ -189,7 +278,7 @@ export function FeedPostItem({ post }: { post: any }) {
       )}
       <div className="flex items-start gap-3">
         {/* Avatar column */}
-        <div className="flex-shrink-0 relative">
+        <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${post.authorId}`} className="flex-shrink-0 relative block hover:opacity-85 transition-opacity">
           {profile?.avatarUrl ? (
             <img alt={displayName} className="w-9 h-9 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
           ) : (
@@ -197,15 +286,20 @@ export function FeedPostItem({ post }: { post: any }) {
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Content details */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <div className="flex items-center gap-1 text-[15px] min-w-0">
-              <Link to={`/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[180px] sm:max-w-[280px]">
+            <div className="flex items-center gap-1.5 text-[15px] min-w-0 flex-wrap">
+              <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${post.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[180px] sm:max-w-[240px]">
                 {displayName}
               </Link>
+              {profile?.username && (
+                <Link to={`/profiles/@${profile.username}`} className="text-secondary text-[13px] hover:underline truncate">
+                  @{profile.username}
+                </Link>
+              )}
               <span className="text-secondary text-[14px] ml-1 shrink-0">· {formatRelativeTime(post.createdAt)}</span>
             </div>
             
@@ -240,31 +334,23 @@ export function FeedPostItem({ post }: { post: any }) {
               )}
             </div>
           </div>
-          <div className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary">
-            {post.content}
-          </div>
+          <ExpandableText
+            text={post.content}
+            maxLength={280}
+            maxLines={4}
+            className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-wrap text-primary"
+          />
 
-          {post.attachments && post.attachments.length > 0 && (
-            <div className={`mt-3 grid gap-2 ${post.attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-              {post.attachments.map((att: any, idx: number) => (
-                <div key={idx} className="relative rounded-2xl overflow-hidden border border-outline-variant bg-surface-container max-h-[400px]">
-                  {att.fileType.startsWith("image/") ? (
-                    <img src={att.fileUrl} alt="attachment" className="w-full h-full object-cover" />
-                  ) : (
-                    <video src={att.fileUrl} controls className="w-full h-full object-cover" />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <HorizontalMediaGallery attachments={post.attachments} />
+
 
           {/* Reaction Row */}
           <div className="mt-3 flex items-center gap-3 text-outline">
-            <button onClick={handleLike} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${post.liked ? 'text-red-500' : 'hover:text-primary'}`}>
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={post.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <button onClick={handleLike} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? 'text-red-500' : 'hover:text-primary'}`}>
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
-              {post.likeCount > 0 && <span className="text-[13px]">{post.likeCount.toLocaleString()}</span>}
+              {likeCount > 0 && <span className="text-[13px]">{likeCount.toLocaleString()}</span>}
             </button>
             <button onClick={handleComment} className="min-w-[54px] flex items-center gap-1.5 hover:text-primary transition-colors group">
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

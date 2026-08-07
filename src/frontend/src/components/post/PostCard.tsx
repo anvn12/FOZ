@@ -1,3 +1,6 @@
+import React from "react";
+import { ExpandableText } from "#frontend/components/ExpandableText";
+
 export function PostCard({
   body,
   likeCount,
@@ -19,7 +22,12 @@ export function PostCard({
     <article className="rounded-2xl border border-outline-variant bg-surface p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-body-md text-body-md text-on-surface">{body}</p>
+          <ExpandableText
+            text={body}
+            maxLength={280}
+            maxLines={4}
+            className="font-body-md text-body-md text-on-surface"
+          />
           <p className="mt-1 text-label-sm text-outline">Likes: {likeCount}</p>
         </div>
         {isOwner && onDelete && (

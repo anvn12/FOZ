@@ -13,13 +13,17 @@ export const userAccounts = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(),
+    username: text("username").notNull(),
     passwordHash: text("password_hash").notNull(),
     role: text("role", { enum: accountRoles }).notNull(),
     status: text("status", { enum: accountStatuses }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("user_accounts_email_lower_idx").on(t.email)],
+  (t) => [
+    uniqueIndex("user_accounts_email_lower_idx").on(t.email),
+    uniqueIndex("user_accounts_username_lower_idx").on(t.username),
+  ],
 );
 
 export const profiles = pgTable(

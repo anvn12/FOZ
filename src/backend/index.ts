@@ -3,7 +3,7 @@ import express, { Router, type Express, type NextFunction, type Request, type Re
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ZodError } from "zod";
-import { env } from "#backend/env.js";
+import { env, getFrontendUrl } from "#backend/env.js";
 import { authRouter } from "#backend/api/auth/routes.js";
 import { postRouter } from "#backend/api/posts/routes.js";
 import { commentRouter } from "#backend/api/comments/routes.js";
@@ -11,16 +11,21 @@ import { reactionRouter } from "#backend/api/reactions/routes.js";
 import { AuthError } from "#backend/api/auth/auth.service.js";
 import { profileRouter } from "#backend/api/profile/routes.js";
 import { searchRouter } from "#backend/api/search/routes.js";
+import { moderationRouter } from "#backend/api/moderation/routes.js";
+import { uploadRouter } from "#backend/api/upload/routes.js";
+import { adminRouter } from "#backend/api/admin/routes.js";
+import { hashtagRouter } from "#backend/api/hashtags/routes.js";
 
 export function createApp(): Express {
   const app = express();
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "4mb" }));
+  app.use(express.json({ limit: "10mb" }));
   app.use(cookieParser());
+  app.use("/uploads", express.static("uploads"));
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean),
       credentials: true,
     }),
   );
@@ -34,9 +39,25 @@ export function createApp(): Express {
   apiRouter.use("/", reactionRouter);
   apiRouter.use("/profiles", profileRouter);
   apiRouter.use("/search", searchRouter);
+  apiRouter.use("/moderation", moderationRouter);
+  apiRouter.use("/upload", uploadRouter);
+  apiRouter.use("/admin", adminRouter);
+  apiRouter.use("/hashtags", hashtagRouter);
   app.use("/api/v1", apiRouter);
 
   app.get("/api/v1/health", (_req, res) => res.status(200).json({ ok: true }));
+
+  app.get("/", (req, res) => {
+    const frontendUrl = getFrontendUrl();
+    const host = req.headers.host || "";
+    // If request contains a token query param (e.g., from an misdirected OAuth redirect),
+    // redirect to the actual frontend URL if configured and not matching current backend host.
+    if (req.query.token && frontendUrl && !frontendUrl.includes(host)) {
+      const token = encodeURIComponent(String(req.query.token));
+      return res.redirect(`${frontendUrl}/?token=${token}`);
+    }
+    return res.status(200).json({ ok: true, message: "FOZ API Backend" });
+  });
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND", message: "Not found" } });
@@ -50,7 +71,7 @@ export function createApp(): Express {
       return res.status(413).json({
         error: {
           code: "PAYLOAD_TOO_LARGE",
-          message: "Request payload exceeds size limit (max 2MB for avatar)",
+          message: "Request payload exceeds maximum allowed size limit",
         },
       });
     }

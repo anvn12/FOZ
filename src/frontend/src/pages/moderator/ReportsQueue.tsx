@@ -1,0 +1,294 @@
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
+import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
+
+type Report = {
+  id: string;
+  targetType: string;
+  targetId: string;
+  reasonType: string;
+  details: string;
+  status: string;
+  createdAt: string;
+  reporter: {
+    id: string;
+    displayName: string;
+  };
+};
+
+export function ReportsQueuePage() {
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all"); 
+  const [escalateDialog, setEscalateDialog] = useState(false);
+  const [escalateId, setEscalateId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchReports();
+  }, [filter]);
+
+  async function fetchReports() {
+    setLoading(true);
+    try {
+      const url =
+        filter === "all"
+          ? "/api/v1/moderation/reports"
+          : `/api/v1/moderation/reports?status=${filter}`;
+
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setReports(data.reports);
+      }
+    } catch (err) {
+      toast.error("Failed to load reports queue");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateReportStatus(reportId: string, newStatus: string) {
+    try {
+      const res = await fetch(`/api/v1/moderation/reports/${reportId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        toast.success(`Report ${newStatus}`);
+        fetchReports();
+      } else {
+        toast.error("Failed to update report");
+      }
+    } catch (err) {
+      toast.error("Error updating report");
+    }
+  }
+
+  function getStatusStyle(status: string) {
+    switch (status.toLowerCase()) {
+      case "open": return "bg-primary-container text-on-primary-container";
+      case "under_review": return "bg-secondary-container text-on-secondary-container";
+      case "escalated": return "bg-error-container text-on-error-container animate-pulse";
+      case "dismissed": return "bg-surface-container-highest text-secondary";
+      default: return "bg-surface-container-highest text-secondary";
+    }
+  }
+
+  function getStatusDot(status: string) {
+    switch (status.toLowerCase()) {
+      case "open": return "bg-white";
+      case "under_review": return "bg-secondary";
+      case "escalated": return "bg-error";
+      case "dismissed": return "bg-secondary";
+      default: return "bg-secondary";
+    }
+  }
+
+  return (
+    <ModeratorLayout>
+      {/* Page Header */}
+      <div className="mb-8">
+        <div className="flex justify-between items-end">
+          <div>
+            <h2 className="font-display-lg text-display-lg text-on-surface tracking-tight">Moderation Queue</h2>
+            <p className="font-body-md text-body-md text-secondary mt-1">Review and manage reported content across the platform.</p>
+          </div>
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant text-secondary px-4 py-2 rounded-xl font-label-md hover:bg-surface-container-high transition-all">
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              Export Data
+            </button>
+            <button className="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-xl font-label-md hover:shadow-lg transition-all active:scale-95">
+              <span className="material-symbols-outlined text-[18px]">history</span>
+              Review History
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* AI Summary Card (Style Guidance) */}
+      <div className="mb-8 bg-surface-container-lowest border border-primary/20 border-l-4 border-l-primary rounded-xl p-6 shadow-sm opacity-80 grayscale-[20%]">
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/10 p-2 rounded-lg">
+            <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+          </div>
+          <div>
+            <h3 className="font-headline-sm text-headline-sm text-primary mb-1 flex items-center gap-2">
+              Queue Intelligence Summary
+              <span className="px-2 py-0.5 bg-primary/10 text-primary text-[11px] font-bold rounded uppercase tracking-wider">Coming Soon</span>
+            </h3>
+            <p className="font-body-lg text-body-lg text-secondary">
+              Predictive queue analytics and automated tagging intelligence are currently under development. This space will soon provide real-time insights into reporting spikes and content trends.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters Area */}
+      <div className="bg-surface-container-lowest rounded-xl shadow-sm p-4 mb-4 flex flex-wrap items-center gap-4 border border-outline-variant/30">
+        <div className="flex-1 min-w-[200px]">
+          <label className="block font-label-sm text-label-sm text-secondary mb-1 uppercase px-1">Status</label>
+          <select 
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="w-full bg-surface border-outline-variant rounded-lg text-body-md focus:ring-primary/20 focus:border-primary transition-all">
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="under_review">Under Review</option>
+            <option value="escalated">Escalated</option>
+            <option value="dismissed">Dismissed</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <label className="block font-label-sm text-label-sm text-secondary mb-1 uppercase px-1">Type</label>
+          <select className="w-full bg-surface border-outline-variant rounded-lg text-body-md focus:ring-primary/20 focus:border-primary transition-all">
+            <option>All Types</option>
+            <option>Post</option>
+            <option>Comment</option>
+            <option>User</option>
+          </select>
+        </div>
+        <div className="flex-[1.5] min-w-[280px]">
+          <label className="block font-label-sm text-label-sm text-secondary mb-1 uppercase px-1">Search Context</label>
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+            <input className="w-full bg-surface border-outline-variant rounded-lg pl-10 pr-4 py-[7px] text-body-md focus:ring-primary/20 focus:border-primary transition-all" placeholder="ID, content, or username..." type="text" />
+          </div>
+        </div>
+        <div className="flex items-end h-full self-end pb-1">
+          <button 
+            onClick={() => setFilter("all")}
+            className="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-lg font-label-md hover:bg-outline-variant transition-colors">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+
+      {/* Data Table Container */}
+      <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-surface-container-low border-b border-outline-variant">
+              <tr>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Report ID</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Subject/Target</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Reporter</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Reason</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Timestamp</th>
+                <th className="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-container">
+              {loading ? (
+                <tr><td colSpan={7} className="p-8 text-center text-on-surface-variant">Loading queue...</td></tr>
+              ) : reports.length === 0 ? (
+                <tr><td colSpan={7} className="p-8 text-center text-on-surface-variant">No reports found for the selected filter.</td></tr>
+              ) : (
+                reports.map((report) => (
+                  <tr key={report.id} className={`hover:bg-surface-container-low transition-colors group ${report.status === 'dismissed' ? 'opacity-70' : ''}`}>
+                    <td className="px-6 py-4 font-body-md text-body-md font-mono text-primary">#{report.id.substring(0, 6).toUpperCase()}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="font-body-md text-body-md text-on-surface font-semibold capitalize">{report.targetType}</span>
+                        {report.targetType === "post" ? (
+                          <Link to={`/posts/${report.targetId}`} target="_blank" className="text-label-sm text-primary hover:underline">View Content</Link>
+                        ) : (
+                          <span className="text-label-sm text-primary hover:underline cursor-pointer">View Context</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-body-md text-body-md text-on-surface-variant">{report.reporter.displayName}</td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-label-sm font-medium capitalize">
+                        {report.reasonType.replace("_", " ")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-label-sm font-bold ${getStatusStyle(report.status)}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full mr-2 ${getStatusDot(report.status)}`}></span> 
+                        {report.status.replace("_", " ").toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-body-md text-body-md text-secondary">
+                      {new Date(report.createdAt).toLocaleDateString()} - {new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {report.status === 'dismissed' ? (
+                        <span className="text-label-sm italic text-secondary">No further action</span>
+                      ) : (
+                        <div className="flex justify-end gap-2">
+                          <button onClick={() => updateReportStatus(report.id, "dismissed")} className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Dismiss">
+                            <span className="material-symbols-outlined text-[20px]">close</span>
+                          </button>
+                          <button onClick={() => { setEscalateId(report.id); setEscalateDialog(true); }} className="p-2 text-secondary hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Escalate">
+                            <span className="material-symbols-outlined text-[20px]">priority_high</span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* Pagination */}
+        <div className="px-6 py-4 bg-surface-container-low flex justify-between items-center border-t border-outline-variant">
+          <p className="font-label-sm text-label-sm text-secondary">Showing {reports.length} reports</p>
+          <div className="flex gap-2">
+            <button className="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-secondary hover:bg-surface-container-high">
+              <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button className="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary text-label-md">1</button>
+            <button className="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-secondary hover:bg-surface-container-high">
+              <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Escalate Dialog */}
+      {escalateDialog && (
+        <div className="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[60] flex items-center justify-center">
+          <div className="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-2xl p-8 border border-outline-variant transform transition-transform duration-300 scale-100">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-error-container p-2 rounded-lg">
+                  <span className="material-symbols-outlined text-error" style={{ fontVariationSettings: "'FILL' 1" }}>priority_high</span>
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-on-surface">Escalate Report #{escalateId?.substring(0, 6).toUpperCase()}</h3>
+              </div>
+              <button className="text-secondary hover:text-on-surface" onClick={() => setEscalateDialog(false)}>
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="font-body-md text-body-md text-secondary mb-6">You are escalating this report for higher-level administrative review. Please provide a brief justification below.</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block font-label-md text-label-md text-on-surface mb-2">Escalation Reason</label>
+                <textarea className="w-full bg-surface border-outline-variant rounded-xl text-body-md focus:ring-primary/20 focus:border-primary p-3" placeholder="Explain why this content requires specialist intervention..." rows={4}></textarea>
+              </div>
+              <div>
+                <label className="block font-label-md text-label-md text-on-surface mb-2">Priority Level</label>
+                <div className="flex gap-3">
+                  <button className="flex-1 py-2 rounded-lg border border-outline-variant font-label-md hover:bg-surface-container-high">Standard</button>
+                  <button className="flex-1 py-2 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-label-md">High Priority</button>
+                  <button className="flex-1 py-2 rounded-lg border border-outline-variant font-label-md hover:bg-error-container/20 text-error">Critical</button>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-8">
+              <button className="flex-1 py-2.5 rounded-xl border border-outline-variant text-secondary font-label-md hover:bg-surface-container-high transition-all" onClick={() => setEscalateDialog(false)}>Cancel</button>
+              <button onClick={() => { updateReportStatus(escalateId!, "escalated"); setEscalateDialog(false); }} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">Confirm Escalation</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </ModeratorLayout>
+  );
+}

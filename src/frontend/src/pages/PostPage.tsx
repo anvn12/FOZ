@@ -15,8 +15,11 @@ import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { useProfile } from "#frontend/api/profile";
+import { ExpandableText } from "#frontend/components/ExpandableText";
 
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
+import { isMobileDevice } from "#frontend/utils/device";
+import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
 
 function showError(error: Error) { toast.error(error.message || "Something went wrong. Please try again."); }
 
@@ -50,7 +53,48 @@ export function PostPage() {
     onError: showError
   });
 
-  const roots = useMemo(() => (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId), [commentsQuery.data]);
+  const [sortMode, setSortMode] = useState<SortMode>("top");
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const sortMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSortMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showSortMenu]);
+
+  const orderRef = useRef<string[]>([]);
+  const prevSortModeRef = useRef<SortMode>(sortMode);
+
+  const roots = useMemo(() => {
+    const rawItems = (commentsQuery.data?.items ?? []).filter((comment) => !comment.parentCommentId);
+    const itemMap = new Map(rawItems.map((item) => [item.id, item]));
+
+    if (prevSortModeRef.current !== sortMode || orderRef.current.length === 0) {
+      prevSortModeRef.current = sortMode;
+      const sorted = sortComments(rawItems, sortMode);
+      orderRef.current = sorted.map((item) => item.id);
+      return sorted;
+    }
+
+    const existingOrder = orderRef.current.filter((id) => itemMap.has(id));
+    const newItems = rawItems.filter((item) => !orderRef.current.includes(item.id));
+
+    if (newItems.length > 0) {
+      const sortedNew = sortComments(newItems, sortMode);
+      const newIds = sortedNew.map((item) => item.id);
+      orderRef.current = [...newIds, ...existingOrder];
+    } else {
+      orderRef.current = existingOrder;
+    }
+
+    return orderRef.current.map((id) => itemMap.get(id)!).filter(Boolean);
+  }, [commentsQuery.data, sortMode]);
 
   return (
     <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
@@ -71,14 +115,69 @@ export function PostPage() {
               <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
                 <div ref={feedRef} className="flex-1 overflow-y-auto divide-y divide-outline-variant [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="border-b border-outline-variant">
-                    <FeedPostItem post={post} />
+                    <FeedPostItem post={post} isDetailsPage={true} />
                   </div>
                   <div className="px-4">
                     <PostSummaryCard postId={post.id} />
                   </div>
 
-                  {/* Comment Input */}
-                  <div className="px-4 py-3 border-b border-outline-variant bg-surface">
+                  {/* Sort Comment & Comment Input Section */}
+                  <div className="px-4 pt-2.5 pb-3 border-b border-outline-variant bg-surface flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="relative" ref={sortMenuRef}>
+                        <button
+                          type="button"
+                          onClick={() => setShowSortMenu((prev) => !prev)}
+                          className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                          aria-expanded={showSortMenu}
+                          aria-haspopup="menu"
+                        >
+                          <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <span>{sortMode === "top" ? "Top" : "Recent"}</span>
+                          <svg className={`w-3.5 h-3.5 text-secondary transition-transform ${showSortMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </button>
+
+                        {showSortMenu && (
+                          <div className="absolute left-0 top-full mt-1 z-30 min-w-[160px] rounded-2xl border border-outline-variant bg-surface-container-lowest p-1.5 shadow-xl animate-foz-pop">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSortMode("top");
+                                setShowSortMenu(false);
+                              }}
+                              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                            >
+                              <span>Top</span>
+                              {sortMode === "top" && (
+                                <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSortMode("recent");
+                                setShowSortMenu(false);
+                              }}
+                              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-primary hover:bg-surface-container-low transition-colors"
+                            >
+                              <span>Recent</span>
+                              {sortMode === "recent" && (
+                                <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     <form onSubmit={(e) => e.preventDefault()} className="w-full">
                       <div className="relative w-full bg-surface-container rounded-2xl px-4 py-2.5 transition-all focus-within:ring-1 focus-within:ring-outline min-h-[44px]">
                         <textarea
@@ -104,8 +203,15 @@ export function PostPage() {
                             }
                           }}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              e.stopPropagation();
+                            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                              if (isMobileDevice()) return;
+                              e.preventDefault();
+                              if (!user) return navigate("/login");
+                              if (draft.trim() && !create.isPending) {
+                                create.mutate();
+                                setDraft("");
+                                e.currentTarget.style.height = "";
+                              }
                             }
                           }}
                           placeholder="Add a comment..."
@@ -195,15 +301,50 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     comment.updatedAt && new Date(comment.updatedAt).getTime() - new Date(comment.createdAt).getTime() > 1000
   );
 
+  useEffect(() => {
+    setLiked(Boolean(comment.liked));
+    setLikeCount(Number(comment.likeCount || 0));
+  }, [comment.liked, comment.likeCount]);
+
+  const updateCommentInCache = (targetCommentId: string, updates: Record<string, any>) => {
+    queryClient.setQueriesData({ queryKey: ["comments", postId] }, (oldData: any) => {
+      if (!oldData || !oldData.items) return oldData;
+      return {
+        ...oldData,
+        items: oldData.items.map((item: any) =>
+          item.id === targetCommentId ? { ...item, ...updates } : item
+        ),
+      };
+    });
+  };
+
   const react = useMutation({
-    mutationFn: () => toggleReaction({ targetType: "comment", targetId: comment.id, active: liked }),
-    onSuccess: async (result: any) => {
-      setLiked(result.active);
-      setLikeCount(result.likeCount);
-      await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    mutationFn: (targetActive: boolean) => toggleReaction({ targetType: "comment", targetId: comment.id, active: targetActive }),
+    onSuccess: (result: any) => {
+      const finalLiked = result && typeof result.active === "boolean" ? result.active : !liked;
+      const finalLikeCount = result && typeof result.likeCount === "number" ? result.likeCount : likeCount;
+      setLiked(finalLiked);
+      setLikeCount(finalLikeCount);
+      updateCommentInCache(comment.id, { liked: finalLiked, likeCount: finalLikeCount });
     },
-    onError: showError
+    onError: (err: Error, targetActive: boolean) => {
+      setLiked(targetActive);
+      setLikeCount((prev: number) => (targetActive ? prev + 1 : Math.max(0, prev - 1)));
+      showError(err);
+    }
   });
+
+  const handleCommentLike = () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    const nextLiked = !prevLiked;
+    const nextCount = nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1);
+
+    setLiked(nextLiked);
+    setLikeCount(nextCount);
+
+    react.mutate(prevLiked);
+  };
 
   const save = useMutation({
     mutationFn: () => updateComment(comment.id, { body }),
@@ -250,7 +391,7 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
       {/* Parent row: avatar lane + content */}
       <div className="flex gap-3">
         <div className="flex flex-col items-center w-8 flex-shrink-0">
-          <div className="w-8 h-8 flex-shrink-0 mt-3">
+          <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${comment.authorId}`} className="w-8 h-8 flex-shrink-0 mt-3 block hover:opacity-85 transition-opacity">
             {profile?.avatarUrl ? (
               <img alt={displayName} className="w-8 h-8 rounded-full object-cover border border-outline-variant" src={profile.avatarUrl} />
             ) : (
@@ -258,17 +399,22 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                 {displayName.charAt(0).toUpperCase()}
               </div>
             )}
-          </div>
+          </Link>
           {/* Spine line — shown when totalReplies > 0 & depth < MAX_DEPTH */}
           {totalReplies > 0 && depth < MAX_DEPTH && <div className="w-[2px] flex-1 mt-1 bg-outline-variant/40" />}
         </div>
 
         <div className="min-w-0 flex-1 pt-3 pb-2">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 text-[14px] min-w-0">
-              <Link to={`/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[160px] sm:max-w-[240px]">
+            <div className="flex items-center gap-1.5 text-[14px] min-w-0 flex-wrap">
+              <Link to={profile?.username ? `/profiles/@${profile.username}` : `/profiles/${comment.authorId}`} className="font-semibold hover:underline text-primary truncate max-w-[140px] sm:max-w-[220px]">
                 {displayName}
               </Link>
+              {profile?.username && (
+                <Link to={`/profiles/@${profile.username}`} className="text-secondary text-[12px] hover:underline truncate">
+                  @{profile.username}
+                </Link>
+              )}
               <span className="text-secondary ml-1 shrink-0">· {formatRelativeTime(comment.createdAt)}</span>
               {isEdited && <span className="text-secondary text-[12px] font-normal ml-0.5 shrink-0">(Edited)</span>}
             </div>
@@ -321,18 +467,36 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
 
           {editing ? (
             <div className="mt-2">
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary" />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    if (isMobileDevice()) return;
+                    e.preventDefault();
+                    if (body.trim() && !save.isPending) {
+                      save.mutate();
+                    }
+                  }
+                }}
+                className="w-full rounded-lg bg-surface-container p-3 outline-none focus:ring-1 focus:ring-outline text-primary"
+              />
               <div className="mt-2 flex gap-3 text-sm font-semibold">
                 <button onClick={() => save.mutate()} disabled={!body.trim()} className="text-primary hover:opacity-80">Save</button>
                 <button onClick={() => { setBody(comment.body); setEditing(false); }} className="text-secondary hover:text-primary">Cancel</button>
               </div>
             </div>
           ) : (
-            <p className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary">{comment.body}</p>
+            <ExpandableText
+              text={comment.body}
+              maxLength={240}
+              maxLines={4}
+              className="mt-1 whitespace-pre-wrap leading-6 text-[15px] text-primary"
+            />
           )}
 
           <div className="mt-2 flex items-center gap-3 text-outline">
-            <button onClick={() => act(() => react.mutate())} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
+            <button onClick={() => act(handleCommentLike)} className={`min-w-[54px] flex items-center gap-1.5 transition-colors group ${liked ? "text-red-500" : "hover:text-primary"}`}>
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -376,8 +540,14 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
                       }
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.stopPropagation();
+                      if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                        if (isMobileDevice()) return;
+                        e.preventDefault();
+                        if (replyDraft.trim() && !reply.isPending) {
+                          reply.mutate();
+                          setReplyDraft("");
+                          e.currentTarget.style.height = "";
+                        }
                       }
                     }}
                     onBlur={(e) => {

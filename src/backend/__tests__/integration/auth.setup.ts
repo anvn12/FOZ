@@ -16,10 +16,23 @@ export function getAgent(): Agent {
 }
 
 export async function clearDb(): Promise<void> {
-  await db.execute(sql`TRUNCATE TABLE refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE`);
-  // Other tables (posts, comments, reactions, etc.) may still have FK refs to
-  // user_accounts/profiles; the CASCADE above handles that.
-  await db.execute(sql`TRUNCATE TABLE posts, comments, reactions RESTART IDENTITY CASCADE`);
+  await db.execute(sql`
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS username text DEFAULT 'legacy_user';
+    CREATE TABLE IF NOT EXISTS user_social_links (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_account_id UUID NOT NULL REFERENCES user_accounts(id) ON DELETE CASCADE,
+      provider VARCHAR(20) NOT NULL,
+      provider_user_id VARCHAR(255) NOT NULL,
+      provider_email VARCHAR(255) NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+    );
+  `);
+  await db.execute(sql`TRUNCATE TABLE user_social_links, refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE`);
+  try {
+    await db.execute(sql`TRUNCATE TABLE posts, comments, reactions, forum_categories, admin_audit_logs, system_settings RESTART IDENTITY CASCADE`);
+  } catch (_e) {
+    // Ignore if optional feature tables are not populated in test DB
+  }
 }
 
 export function expectFastResponse(res: { headers: Record<string, string | string[] | undefined> }, maxMs = 500) {

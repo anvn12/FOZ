@@ -7,6 +7,7 @@ import type {
   CommentResponse,
   ReactionResponse,
   CreateReportRequest,
+  FeedQuery,
 } from "#shared/schemas/interactions";
 import type { ErrorEnvelope } from "#shared/schemas/auth";
 import { useAuthStore } from "#frontend/stores/auth";
@@ -119,5 +120,14 @@ export function reportPost(postId: string, input: CreateReportRequest) {
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export function listFeed(type: FeedQuery["type"] = "latest", cursor?: string) {
+  const params = new URLSearchParams({ type });
+  if (cursor) params.set("cursor", cursor);
+  return call<{ items: Array<PostResponse & { likeCount: number; liked: boolean }>; nextCursor: string | null; degraded?: boolean }>(
+    `/api/v1/posts?${params}`,
+    { method: "GET" },
+  );
 }
 

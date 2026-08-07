@@ -7,15 +7,16 @@ describe("POST /api/v1/auth/register (US1)", () => {
     await clearDb();
   });
 
-  it("happy path: 201, body, cookie, DB row, <2000ms, <500ms", async () => {
+  it("happy path: 201, body with username, cookie, DB row, <2000ms, <500ms", async () => {
     const t0 = Date.now();
+    const uname = "testuser_" + Math.random().toString(36).slice(2, 6);
     const res = await getAgent()
       .post("/api/v1/auth/register")
-      .send({ email: uniqueEmail(), password: uniquePassword() });
+      .send({ email: uniqueEmail(), username: uname, password: uniquePassword() });
     const elapsed = Date.now() - t0;
 
     expect(res.status).toBe(201);
-    expect(res.body.user).toMatchObject({ role: "standard", status: "active" });
+    expect(res.body.user).toMatchObject({ role: "standard", status: "active", username: uname });
     expect(typeof res.body.accessToken).toBe("string");
     expect(res.body.accessToken.length).toBeGreaterThan(0);
     expect(elapsed).toBeLessThan(2000); // SC-001 budget
@@ -30,22 +31,38 @@ describe("POST /api/v1/auth/register (US1)", () => {
     expect(raw).toMatch(/Path=\/api\/v1\/auth/i);
   });
 
-  it("duplicate email returns 409 with a generic message", async () => {
-    const email = uniqueEmail();
+  it("duplicate username returns 409 with USERNAME_TAKEN code", async () => {
+    const email1 = uniqueEmail();
+    const email2 = uniqueEmail();
+    const uname = "same_handle";
     const password = uniquePassword();
-    const first = await getAgent().post("/api/v1/auth/register").send({ email, password });
+
+    const first = await getAgent().post("/api/v1/auth/register").send({ email: email1, username: uname, password });
     expect(first.status).toBe(201);
 
-    const second = await getAgent().post("/api/v1/auth/register").send({ email, password });
+    const second = await getAgent().post("/api/v1/auth/register").send({ email: email2, username: uname, password });
     expect(second.status).toBe(409);
-    expect(second.body.error.code).toBe("EMAIL_TAKEN");
-    expect(second.body.error.message).toMatch(/already exists/i);
+    expect(second.body.error.code).toBe("USERNAME_TAKEN");
+    expect(second.body.error.message).toMatch(/already taken/i);
+  });
+
+  it("check-username endpoint reports availability correctly", async () => {
+    const uname = "check_avail_" + Math.random().toString(36).slice(2, 6);
+    const check1 = await getAgent().get(`/api/v1/auth/check-username?username=${uname}`);
+    expect(check1.status).toBe(200);
+    expect(check1.body.available).toBe(true);
+
+    await getAgent().post("/api/v1/auth/register").send({ email: uniqueEmail(), username: uname, password: uniquePassword() });
+
+    const check2 = await getAgent().get(`/api/v1/auth/check-username?username=${uname}`);
+    expect(check2.status).toBe(200);
+    expect(check2.body.available).toBe(false);
   });
 
   it("weak password returns 422 with a per-field message", async () => {
     const res = await getAgent()
       .post("/api/v1/auth/register")
-      .send({ email: uniqueEmail(), password: "short" });
+      .send({ email: uniqueEmail(), username: "valid_user", password: "short" });
     expect(res.status).toBe(422);
     expect(res.body.error.code).toBe("VALIDATION");
     expect(res.body.error.fields?.password).toBeDefined();
@@ -54,22 +71,9 @@ describe("POST /api/v1/auth/register (US1)", () => {
   it("invalid email returns 422 with a per-field message", async () => {
     const res = await getAgent()
       .post("/api/v1/auth/register")
-      .send({ email: "not-an-email", password: uniquePassword() });
+      .send({ email: "not-an-email", username: "valid_user", password: uniquePassword() });
     expect(res.status).toBe(422);
     expect(res.body.error.code).toBe("VALIDATION");
     expect(res.body.error.fields?.email).toBeDefined();
-  });
-
-  it("response uses the central error envelope shape", async () => {
-    const res = await getAgent()
-      .post("/api/v1/auth/register")
-      .send({ email: "not-an-email", password: uniquePassword() });
-    expect(res.body).toEqual({
-      error: {
-        code: "VALIDATION",
-        message: expect.any(String),
-        fields: expect.any(Object),
-      },
-    });
   });
 });

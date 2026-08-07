@@ -32,7 +32,11 @@ export const UpdateProfileRequest = z.object({
     .string()
     .trim()
     .min(1, "Display name is required")
-    .max(50, "Display name must be at most 50 characters"),
+    .max(50, "Display name must be at most 50 characters")
+.regex(
+  /^[\p{L}\p{M}\p{N}\s._'-]+$/u,
+  "Display name contains invalid or special characters"
+),
   bio: z
     .string()
     .max(160, "Bio must be at most 160 characters")
@@ -49,22 +53,33 @@ export const UpdateProfileRequest = z.object({
 });
 export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequest>;
 
-const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,[A-Za-z0-9+/=]+$/;
+const base64Regex = /^data:image\/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=]+$/;
+
+const isUrlOrBase64 = (val: string) => {
+  if (val.startsWith("http://") || val.startsWith("https://") || val.startsWith("/uploads/")) {
+    return true;
+  }
+  return base64Regex.test(val);
+};
 
 export const UpdateAvatarRequest = z.object({
   avatar: z
     .string()
-    .refine((val) => base64Regex.test(val), "Invalid image format. Only PNG, JPEG, and GIF are allowed.")
+    .min(1, "Avatar image or URL is required")
+    .refine((val) => isUrlOrBase64(val), "Invalid avatar image format or URL")
     .refine((val) => {
+      if (val.startsWith("http://") || val.startsWith("https://") || val.startsWith("/uploads/")) {
+        return true;
+      }
       const parts = val.split(",");
       const base64Data = parts[1];
       if (!base64Data) return false;
-      // Subtract padding if any for exact size calculation
       let padding = 0;
       if (val.endsWith("==")) padding = 2;
       else if (val.endsWith("=")) padding = 1;
       const sizeInBytes = (base64Data.length * 3) / 4 - padding;
-      return sizeInBytes <= 2 * 1024 * 1024; // 2MB
+      return sizeInBytes <= 2 * 1024 * 1024; // 2MB limit
     }, "Image file size exceeds 2MB limit"),
 });
+
 export type UpdateAvatarRequest = z.infer<typeof UpdateAvatarRequest>;

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("#backend/db/repositories/users.js", () => ({
   findUserByEmail: vi.fn(),
+  findUserByUsername: vi.fn(),
   getUserById: vi.fn(),
   createUserWithProfile: vi.fn(),
   updatePasswordHash: vi.fn(),
@@ -36,6 +37,7 @@ import {
 } from "#backend/api/auth/auth.service.js";
 import {
   findUserByEmail,
+  findUserByUsername,
   createUserWithProfile,
   createRefreshSession,
   issueRefreshToken,
@@ -48,6 +50,7 @@ import {
 import { verifyPassword, hashPassword } from "#backend/lib/password.js";
 
 const mockedFindUserByEmail = vi.mocked(findUserByEmail);
+const mockedFindUserByUsername = vi.mocked(findUserByUsername);
 const mockedCreateUserWithProfile = vi.mocked(createUserWithProfile);
 const mockedCreateRefreshSession = vi.mocked(createRefreshSession);
 const mockedIssueRefreshToken = vi.mocked(issueRefreshToken);
@@ -72,10 +75,12 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
 
   it("creates a user, issues a refresh session, and returns AuthResponse + cookie", async () => {
     mockedFindUserByEmail.mockResolvedValue(undefined);
+    mockedFindUserByUsername.mockResolvedValue(undefined);
     mockedCreateUserWithProfile.mockResolvedValue({
       user: {
         id: "u1",
         email: "[email protected]",
+        username: "testuser",
         role: "standard",
         status: "active",
         createdAt: new Date(),
@@ -85,12 +90,13 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
       profile: { id: "p1", userAccountId: "u1", displayName: "u1", bio: null, avatarUrl: null, location: null, website: null, createdAt: new Date(), updatedAt: new Date() },
     });
 
-    const session = await register({ email: "[email protected]", password: "abcdefgh" });
+    const session = await register({ email: "[email protected]", username: "testuser", password: "abcdefgh" });
 
     // register() returns the full AuthResponse (user + accessToken)
-    const auth = session.auth as { user: { id: string; email: string }; accessToken: string };
+    const auth = session.auth as { user: { id: string; email: string; username: string }; accessToken: string };
     expect(auth.user.id).toBe("u1");
     expect(auth.user.email).toBe("[email protected]");
+    expect(auth.user.username).toBe("testuser");
     expect(auth.accessToken).toBe("access-token-mock");
     expect(session.cookie.name).toBe("refresh_token");
     expect(session.cookie.value).toBe("id-123.secret-456");
@@ -103,13 +109,14 @@ describe("auth.service.register (tier-1, mocked repo)", () => {
     mockedFindUserByEmail.mockResolvedValue({
       id: "existing",
       email: "[email protected]",
+      username: "existinguser",
       passwordHash: "h",
       role: "standard",
       status: "active",
       createdAt: new Date(),
       updatedAt: new Date(),
     } as never);
-    await expect(register({ email: "[email protected]", password: "abcdefgh" })).rejects.toBeInstanceOf(DuplicateEmailError);
+    await expect(register({ email: "[email protected]", username: "testuser", password: "abcdefgh" })).rejects.toBeInstanceOf(DuplicateEmailError);
   });
 });
 
@@ -117,6 +124,7 @@ describe("auth.service.login (tier-1, mocked repo)", () => {
   const baseUser = {
     id: "u1",
     email: "alice" + "@" + "example.com",
+    username: "alice",
     passwordHash: "hash:abcdefgh",
     role: "standard" as const,
     status: "active" as const,

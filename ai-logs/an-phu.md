@@ -100,6 +100,76 @@
 **Files touched:** `src/frontend/src/components/AuthShell.tsx` (FozLogo now renders as a Link to "/" with hover dim; touches login, register, change-password via shared component)
 - Verified: `tsc --noEmit` clean, `vite build` green.
 
+### 2026-08-02 14:10
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "Implement feed generation, for you feed"
+**Files touched:** `specs/013-you-feed/spec.md` (new), `specs/013-you-feed/checklists/requirements.md` (new), `.specify/feature.json` (new)
+
+### 2026-08-02 14:15
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "/speckit.plan"
+**Files touched:** `specs/013-you-feed/plan.md` (rewritten), `specs/013-you-feed/research.md` (new), `specs/013-you-feed/data-model.md` (new), `specs/013-you-feed/contracts/feed-api.md` (new), `specs/013-you-feed/quickstart.md` (new), `AGENTS.md` (added plan reference)
+
+### 2026-08-02 14:19
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "/speckit.tasks aside from the plan, currently when posting a new post the user post will be at the bottom, make putting new post at the top of the feed a task also"
+**Files touched:** `specs/013-you-feed/tasks.md` (new)
+
+### 2026-08-02 14:42
+**Tool:** pi
+**Model:** MiniMax-M3
+**Prompt:** "/speckit.implement"
+**Files touched:** `src/backend/services/interactions/feed-ranking.ts` (new), `src/backend/__tests__/unit/feed-ranking.test.ts` (new), `src/backend/db/repositories/interactions.ts` (modified), `src/shared/schemas/interactions.ts` (modified), `src/backend/services/interactions/posts.ts` (modified), `src/backend/api/posts/routes.ts` (modified), `src/backend/__tests__/integration/feed.test.ts` (new), `src/frontend/src/stores/feed.ts` (new), `src/frontend/src/api/interactions.ts` (modified), `src/frontend/src/pages/feed/FeedPage.tsx` (modified), `vitest.config.ts` (modified), `specs/013-you-feed/tasks.md` (all tasks marked complete)
+
+
+
+### 2026-08-02 15:22
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "merge them, the HomePage is the main page"
+**Files touched:** `src/frontend/src/pages/HomePage.tsx`
+
+### 2026-08-02 15:35
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "the heart button does not work properly, onyl the count goes up, the heart was not colored red to indicate was hearted leading to not able to unheart/like"
+**Files touched:** `src/backend/services/interactions/posts.ts`
+
+### 2026-08-02 15:44
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "the fix only works for lastest not for you, should we have seperate route for latest (/lastest) and for you (/foryou)? because as of right now the syncing between both are very buggy"
+**Files touched:** `src/backend/services/interactions/posts.ts`
+
+### 2026-08-02 16:10
+**Tool:** pi
+**Model:** kimi k3
+**Prompt:** "we should create 2 seprate route for for you and lastest and when we switch mode, the page will be direcred to the route of that mode and the page will then be reload because of several problems/bugs i found below: 1. When i reposts in latest... 2. When i clicked the reposted button..."
+**Files touched:** `src/backend/services/interactions/posts.ts`, `src/frontend/src/App.tsx`, `src/frontend/src/pages/HomePage.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`, `src/frontend/src/pages/feed/FeedPage.tsx` (deleted), `src/frontend/src/stores/feed.ts` (deleted)
+
+### 2026-08-02 16:12
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "i think the repost function should also have a toast notiffication"
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `package-lock.json` (side effect of repairing broken jsdom install)
+
+
+### 2026-08-02 16:25
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "the user avatar in create post does not macth their new avatar after change"
+**Files touched:** `src/frontend/src/components/CreatePostModal.tsx`
+
+
+### 2026-08-02 17:30
+**Tool:** pi
+**Model:** mimo-v2.5-pro
+**Prompt:** "post with images does not appear in /for you(the post is blank) while the same post with image in latest works (the image does not disappear)"
+**Files touched:** `src/backend/db/repositories/interactions.ts`, `src/backend/services/interactions/posts.ts`
+
 ### 2026-08-07 09:40
 **Tool:** pi
 **Model:** glm-5.2
@@ -147,4 +217,3 @@
   - Gemini-only AI integration confirmed; LLM edges to an external dashed-stroked "Google Gemini" box correct in L2 and the split BE diagram.
 - Fixed 1 diagram drift: L1 System Context labeled AI provider "OpenAI · Gemini" but only Gemini is implemented (L2 already correct). Replaced with "Google Gemini".
 - Flagged (NOT touched, these are prose, not diagrams) section B "Tech Stack" list version drift for user decision: says "React 18" (actual 19), "Vite 5" (actual 8), "Tailwind CSS 3" (actual v4), "react-router-dom v6" (actual v7); zod is now v4.
-
