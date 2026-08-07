@@ -48,7 +48,7 @@
   - [1. Insert image rule](#1-insert-image-rule)
 
 # A - Revised Use-Case Specification
-*Performed by: Nguyễn Hải Trọng | Reviewed by: Phạm Định Gia Khánh*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Phạm Đinh Gia Khánh*
 
 ## Revision History
 
@@ -745,12 +745,14 @@ Allows an authenticated user to reply to a post or to another comment.
 2. The system disables the "Post Reply" button
 3. The flow resumes at step 3.
 ##### 2.2.2 Comment Exceeds Maximum Length
-1. If at step 4, the comment exceeds 5,000 characters.
-2. The system rejects the request as an invalid input and displays "Invalid request"
-3. The flow resumes at step 3.
+1. If at step 4, the submitted comment content exceeds the 5,000-character limit.
+2. The system rejects the submission and displays a validation error message ("Content is too long").
+3. The user modifies the comment body to meet the character requirement.
+4. The flow resumes at step 3.
 ##### 2.2.3 Long Comment Display
-1. If a comment exceeds 240 characters or 4 lines when displayed.
-2. The system truncates the comment
+1. When displaying a comment that exceeds 240 characters or 4 lines of text.
+2. The system automatically truncates the body text preview and appends a "See more" toggle action.
+3. The user clicks "See more" to expand and view the full comment content.
 
 ### 3. Special Requirements
 * None.
@@ -798,9 +800,9 @@ Allows a user to toggle an appreciation metric on a post or comment.
 #### 2.2 Alternative Flows
 ##### 2.2.1 Target Post or Comment Deleted / Not Found
 Deleted
-1. If the target post or comment has been deleted or is no longer available when the user reacts.
-2. The system rejects the action.
-3. The interface immediately displays "Post not found".
+1. If at step 2, the target post or comment has been deleted or is no longer available.
+2. The system rejects the reaction request with a "Not Found" error.
+3. The interface reverts the optimistic UI state and notifies the user that the content is no longer available.
 4. The use case ends.
 
 
