@@ -462,11 +462,14 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 ### 3.1 Basic Flow
 1. The use case begins when the user navigates to the application's homepage.
 2. The system queries the `posts` table for content with `visibility_state = 'public'` and `lifecycle_state = 'active'`.
-3. The system sorts the posts based on engagement algorithms (e.g., recent comment velocity, likes).
+3.The system sorts posts by their posting time, with the newest first.
 4. The system displays the feed with post titles, author avatars, and interaction counts.
 5. The user scrolls to load more posts (pagination).
 
 ### 3.2 Alternative Flows
+1. The user switches from the Latest feed to the For You feed.
+2. The system loads and displays personalized posts based on the user's interests.
+
 
 #### 3.2.1 No Posts Available
 1. If at step 2, the database returns no posts.
@@ -474,7 +477,7 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 3. The use case ends.
 
 ## 4. Special Requirements
-* **Performance:** The initial feed must load in `< 2 seconds`.
+* **Performance:** The initial feed must load in `< 2 seconds` under good network conditions.
 
 ## 5. Postconditions
 * None.
@@ -485,6 +488,12 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC07-1.png>)
+
+  **Screen 2 (Alternative Flow):**
+  ![](<./Prototype requirement/UC07-2.png>)
+
+
+ **Editor:** Khánh 
 
 # Use-Case Specification: Search Content
 
@@ -512,12 +521,22 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 3.2 Alternative Flows
 
+1. **Search feature unavailable**
+
+* The search feature is unavailable, so the user cannot perform a search.
+
+2. **No matching results**
+
+   * The user enters a search query.
+   * The system finds no matching content.
+   * The system displays **"No results for "<search query>"."**
+
 #### 3.2.1 Empty Query
 1. If at step 2, the search query is empty or just whitespace.
 2. The system displays "Please enter a search term." and halts the request.
 
 ## 4. Special Requirements
-* **Performance:** Search queries must resolve in `< 500ms`.
+* **Performance:** Search results should be displayed within 2–3 seconds under good network conditions. `.
 
 ## 5. Postconditions
 * None.
@@ -528,6 +547,9 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC08-1.png>)
+
+  **Screen 2 (Alternative Flow):**
+   ![](<./Prototype requirement/UC08-2.png>)
 
 # Use-Case Specification: View Post Details
 
@@ -554,6 +576,12 @@ Allows a user to read the full body of a post along with its entire nested comme
 
 ### 3.2 Alternative Flows
 
+1. **No comments**
+
+   * The post has no comments.
+   * The system displays **"No comments yet. Be the first to reply!"**
+
+
 #### 3.2.1 Post Removed or Hidden
 1. If at step 2, the post's `lifecycle_state` is `removed_by_moderation`.
 2. The system displays: "This post has been removed by moderators."
@@ -576,7 +604,10 @@ Allows a user to read the full body of a post along with its entire nested comme
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
+* **Screen 2 (Alternative Flow):**
+*   ![](<./Prototype requirement/UC09-2.png>)
 
+  
 # Use-Case Specification: Create Post
 
 **Project Name:** FOZ  
@@ -604,9 +635,15 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 
 ### 3.2 Alternative Flows
 
+1. **Post creation canceled**
+
+   * The user cancels the post creation.
+   * The system discards the draft and returns to the previous screen.
+
+
 #### 3.2.1 Content Validation Error
 1. If at step 4, the post body is empty.
-2. The system highlights the text area with an error.
+2. The system disallows user to click submit button.
 3. The flow resumes at step 3.
 
 #### 3.2.2 Exceeds Limits
@@ -651,7 +688,19 @@ Acts as the generalized use case for users engaging with a post via various acti
 4. The system triggers the specific extended workflow.
 
 ### 3.2 Alternative Flows
-* Not applicable (handled by extending use cases).
+
+1. The user selects **Reply**.
+
+   * The use case is extended by **UC-12: Leave Comment**.
+
+2. The user selects **Like**.
+
+   * The use case is extended by **UC-13: Like/Unlike**.
+
+3. The user selects **Report**.
+
+   * The use case is extended by **UC-16: Report Inappropriate Content**.
+
 
 ## 4. Special Requirements
 * None.
@@ -667,24 +716,22 @@ Acts as the generalized use case for users engaging with a post via various acti
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC11-1.png>)
 
-# Use-Case Specification: Leave Comment
+## Use-Case Specification: Leave Comment
 
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.0  
 **Document identifier:** FOZ-UCS-12
 
-## 1. Leave Comment
+### 1. Leave Comment
 * **Use-Case ID:** UC-12
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows an authenticated user to reply to a post or to another comment.
 
-## 2. Preconditions
-* User is authenticated.
+### 2. Flow of Events
 
-## 3. Flow of Events
-### 3.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-11 when the user clicks "Reply".
 2. The system opens a small text input field.
 3. The user types their comment and clicks "Post Reply".
@@ -692,68 +739,90 @@ Allows an authenticated user to reply to a post or to another comment.
 5. The system inserts a record into the `comments` table, mapping `post_id` and optionally `parent_comment_id`.
 6. The system updates the UI to show the new comment inline.
 
-### 3.2 Alternative Flows
+#### 2.2 Alternative Flows
+##### 2.2.1 Empty Comment
+1. If at step 4, the comment is empty or contains only whitespace.
+2. The system disables the "Post Reply" button
+3. The flow resumes at step 3.
+##### 2.2.2 Comment Exceeds Maximum Length
+1. If at step 4, the comment exceeds 5,000 characters.
+2. The system rejects the request as an invalid input and displays "Invalid request"
+3. The flow resumes at step 3.
+##### 2.2.3 Long Comment Display
+1. If a comment exceeds 240 characters or 4 lines when displayed.
+2. The system truncates the comment
 
-#### 3.2.1 Empty Comment
-1. If at step 4 the comment is empty.
-2. The system disables the "Post Reply" button.
-
-#### 3.2.2 Post or Parent Comment Not Found
-1. If at step 5, the target `post_id` or `parent_comment_id` has been deleted or hidden.
-2. The system aborts the operation and returns a "POST_NOT_FOUND" or "PARENT_COMMENT_NOT_FOUND" error.
-3. The user is notified that they cannot reply to deleted content.
-
-## 4. Special Requirements
+### 3. Special Requirements
 * None.
 
-## 5. Postconditions
+### 4. Preconditions
+* User is authenticated.
+
+### 5. Postconditions
 * A new comment is persisted to the database.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC12-1.png>)
+   ![](<./Prototype requirement/UC12-1.png>)
 
-# Use-Case Specification: Like/Unlike
+  **Screen 2 (Alternative Flow 2):**
+   ![](<./Prototype requirement/UC12-2.png>)
+
+    **Screen 3 (Alternative Flow 3):**
+   ![](<./Prototype requirement/UC12-3.png>)
+
+## Use-Case Specification: Like/Unlike
 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-13
 
-## 1. Like/Unlike
+### 1. Like/Unlike
 * **Use-Case ID:** UC-13
 * **Actor(s):** Standard User
 
-### 1.1 Brief Description
+#### 1.1 Brief Description
 Allows a user to toggle an appreciation metric on a post or comment.
 
-## 2. Preconditions
-* User is authenticated.
+### 2. Flow of Events
 
-## 3. Flow of Events
-### 3.1 Basic Flow
+#### 2.1 Basic Flow
 1. Extends UC-11 when the user clicks the "Heart/Like" icon.
 2. The system checks the `reactions` table to see if a record already exists for this `user_account_id` and `target_id`.
 3. If no record exists, the system inserts a new reaction (`reaction_kind: 'like'`) and increments the counter visually.
 4. If a record exists, the system deletes it (Unlike) and decrements the counter.
 
-### 3.2 Alternative Flows
-* None.
+#### 2.2 Alternative Flows
+##### 2.2.1 Target Post or Comment Deleted / Not Found
+Deleted
+1. If the target post or comment has been deleted or is no longer available when the user reacts.
+2. The system rejects the action.
+3. The interface immediately displays "Post not found".
+4. The use case ends.
 
-## 4. Special Requirements
-* **Performance:** Reaction toggles should feel instantaneous (optimistic UI updates).
 
-## 5. Postconditions
+### 3. Special Requirements
+* **Performance:** 
+  - **UI Response:** Reaction toggles update visually on the UI in **< 50ms** (Optimistic UI).
+  - **API Latency:** Database synchronization via API completes within **<= 500ms** under normal network conditions.
+
+### 4. Preconditions
+* User is authenticated.
+
+### 5. Postconditions
 * The `reactions` table is updated.
 
-## 6. Extension Points
+### 6. Extension Points
 * None.
 
-## 7. Prototype Requirement
+### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC13-1.png>)
+  * **Screen 2 (Alternative Flow):** 
+  ![](<./Prototype requirement/UC13-2.png>)
 
 # Use-Case Specification: Request AI Summary
 
