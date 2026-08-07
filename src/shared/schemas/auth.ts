@@ -45,6 +45,9 @@ export const RegisterRequest = z.object({
   email: emailSchema,
   username: usernameSchema,
   password: passwordSchema,
+  displayName: z.string().max(50, "Display name is too long").optional(),
+  location: z.string().max(100, "Location is too long").optional(),
+  website: z.union([z.string().url("Must be a valid URL"), z.literal("")]).optional(),
 });
 export type RegisterRequest = z.infer<typeof RegisterRequest>;
 

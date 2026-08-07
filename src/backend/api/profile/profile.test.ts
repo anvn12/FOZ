@@ -37,7 +37,7 @@ async function registerAndGetToken(email = "user@example.com"): Promise<{ access
   const username = email.split("@")[0] + "_" + Math.random().toString(36).slice(2, 6);
   const res = await getAgent()
     .post("/api/v1/auth/register")
-    .send({ email, username, password: "password123" });
+    .send({ email, password: "password123", username: `u${Math.random().toString(36).slice(2, 8)}`, displayName: "Test User", location: "loc", website: "https://foz.dev" });
   expect(res.status).toBe(201);
   return {
     accessToken: res.body.accessToken,

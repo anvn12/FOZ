@@ -34,6 +34,8 @@ export async function createUserWithProfile(args: {
   username: string;
   passwordHash: string;
   displayName: string;
+  location?: string;
+  website?: string;
 }) {
   return db.transaction(async (tx) => {
     const [user] = await tx
@@ -49,7 +51,12 @@ export async function createUserWithProfile(args: {
     if (!user) throw new Error("Failed to create user");
     const [profile] = await tx
       .insert(profiles)
-      .values({ userAccountId: user.id, displayName: args.displayName })
+      .values({ 
+        userAccountId: user.id, 
+        displayName: args.displayName,
+        location: args.location,
+        website: args.website 
+      })
       .returning();
     return { user, profile: profile! };
   });
