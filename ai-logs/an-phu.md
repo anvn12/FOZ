@@ -131,3 +131,20 @@
   - 2.2.2 Diagram B — Identity & Interaction: Auth · Interaction · AI/TL;DR (+ external LLM).
 - Added a note clarifying Gateway/DataAccess/Shared are shared infra reused across both diagrams (backend is one container); split is presentational only.
 - Renumbered "Component Descriptions" to 2.2.3 and updated the ToC anchors accordingly.
+
+### 2026-08-07 10:05
+**Tool:** pi
+**Model:** glm-5.2
+**Prompt:** "ok now go through everything and recheck to make sure the software architecture diagrams in PA4.md matches the current system architecture"
+**Files touched:** `docs/01 - PA/PA4-Group06/PA4.md`
+- Re-audited all 5 diagrams against the actual `src/` tree, `package.json`, `docker-compose.yml`, `src/backend/index.ts` route mounts, and `src/backend/services/ai-summarizer.ts`:
+  - Frontend pages (HomePage, FeedPage, PostPage, SearchPage, ProfilePage, LoginPage, RegisterPage, ChangePasswordPage) ↔ match App.tsx routes list exactly.
+  - FE components, stores, api modules ↔ match the L3 FE component diagram.
+  - Backend api/auth, api/posts, api/comments, api/reactions, api/profile, api/search ↔ match the two split backend diagrams (Feed/Search/Profile + Auth/Interaction/AI).
+  - Backend services (post-summary.service.ts, ai-summarizer.ts, services/interactions/{posts,comments,reactions,reports}.ts) ↔ match.
+  - db/repositories (interactions.ts, post-summary.repository.ts, profiles.ts, users.ts) and db/schema (users.ts, refresh-sessions.ts, interactions.ts) ↔ match the Data Access Layer component.
+  - Versions on diagrams (React 19, Vite, Tailwind v4, Node v24, Express 5, postgres:16, react-router-dom 7, @tanstack/react-query 5, zustand 5) ↔ match package.json.
+  - Gemini-only AI integration confirmed; LLM edges to an external dashed-stroked "Google Gemini" box correct in L2 and the split BE diagram.
+- Fixed 1 diagram drift: L1 System Context labeled AI provider "OpenAI · Gemini" but only Gemini is implemented (L2 already correct). Replaced with "Google Gemini".
+- Flagged (NOT touched, these are prose, not diagrams) section B "Tech Stack" list version drift for user decision: says "React 18" (actual 19), "Vite 5" (actual 8), "Tailwind CSS 3" (actual v4), "react-router-dom v6" (actual v7); zod is now v4.
+
