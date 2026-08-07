@@ -116,12 +116,12 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-      <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl border border-zinc-100 flex flex-col gap-4 animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-          <h2 className="text-xl font-bold text-zinc-950">Edit profile</h2>
+      <div className="relative w-full max-w-md rounded-xl bg-white dark:bg-zinc-950 p-6 shadow-2xl border border-zinc-100 dark:border-zinc-800 flex flex-col gap-4 animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+          <h2 className="text-xl font-bold text-zinc-950 dark:text-white">Edit profile</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition"
+            className="rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
             aria-label="Close"
           >
             <CloseIcon className="w-5 h-5" />
@@ -131,7 +131,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Avatar Upload Area */}
           <div className="flex flex-col items-center gap-2">
-            <label htmlFor="avatar-file" className="text-sm font-semibold text-zinc-700">
+            <label htmlFor="avatar-file" className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               Avatar Image
             </label>
             <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
@@ -139,10 +139,10 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
                 <img
                   src={previewUrl}
                   alt="Avatar preview"
-                  className="h-20 w-20 rounded-full object-cover border border-zinc-200 shadow-sm group-hover:opacity-85 transition"
+                  className="h-20 w-20 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shadow-sm group-hover:opacity-85 transition"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-zinc-900 text-white font-bold text-2xl shadow-sm group-hover:bg-zinc-800 transition">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-800 text-white font-bold text-2xl shadow-sm group-hover:bg-zinc-800 dark:group-hover:bg-zinc-700 transition">
                   {initials}
                 </div>
               )}
@@ -158,11 +158,11 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
               className="hidden"
               onChange={handleFileChange}
             />
-            {fileError && <p className="text-xs text-red-600 font-medium">{fileError}</p>}
+            {fileError && <p className="text-xs text-red-600 dark:text-red-400 font-medium">{fileError}</p>}
           </div>
 
           <div>
-            <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700">
+            <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               Username Handle
             </label>
             <input
@@ -171,52 +171,52 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
               disabled
               readOnly
               value={`@${profile.username || profile.displayName.toLowerCase().replace(/\s+/g, "")}`}
-              className="mt-1 w-full rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-500 cursor-not-allowed font-medium"
+              className="mt-1 w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 cursor-not-allowed font-medium"
             />
-            <p className="mt-1 text-xs text-zinc-400">Usernames are permanent and cannot be changed.</p>
+            <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">Usernames are permanent and cannot be changed.</p>
           </div>
 
           <div>
-            <label htmlFor="displayName" className="block text-sm font-semibold text-zinc-700">
+            <label htmlFor="displayName" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               Display Name
             </label>
             <input
               id="displayName"
               type="text"
               {...field("displayName")}
-              className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
+              className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 dark:bg-zinc-900 dark:text-white ${
                 errors.displayName
                   ? "border-red-500 focus:border-red-500 focus:ring-red-100"
-                  : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-100"
+                  : "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-500 focus:ring-zinc-100 dark:focus:ring-zinc-800"
               }`}
             />
             {errors.displayName && (
-              <p className="mt-1 text-xs text-red-600 font-medium">{errors.displayName.message}</p>
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{errors.displayName.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="bio" className="block text-sm font-semibold text-zinc-700">
+            <label htmlFor="bio" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               Bio
             </label>
             <textarea
               id="bio"
               rows={3}
               {...field("bio")}
-              className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
+              className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 dark:bg-zinc-900 dark:text-white ${
                 errors.bio
                   ? "border-red-500 focus:border-red-500 focus:ring-red-100"
-                  : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-100"
+                  : "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-500 focus:ring-zinc-100 dark:focus:ring-zinc-800"
               }`}
             />
             {errors.bio && (
-              <p className="mt-1 text-xs text-red-600 font-medium">{errors.bio.message}</p>
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{errors.bio.message}</p>
             )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+              <label htmlFor="location" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1">
                 <MapPinIcon className="w-3.5 h-3.5 text-zinc-500" />
                 <span>Location</span>
               </label>
@@ -224,19 +224,19 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
                 id="location"
                 type="text"
                 {...field("location")}
-                className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
+                className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 dark:bg-zinc-900 dark:text-white ${
                   errors.location
                     ? "border-red-500 focus:border-red-500 focus:ring-red-100"
-                    : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-100"
+                    : "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-500 focus:ring-zinc-100 dark:focus:ring-zinc-800"
                 }`}
               />
               {errors.location && (
-                <p className="mt-1 text-xs text-red-600 font-medium">{errors.location.message}</p>
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{errors.location.message}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700 flex items-center gap-1">
+              <label htmlFor="website" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1">
                 <LinkIcon className="w-3.5 h-3.5 text-zinc-500" />
                 <span>Website</span>
               </label>
@@ -245,34 +245,34 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
                 type="text"
                 placeholder="e.g. website.com"
                 {...field("website")}
-                className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
+                className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-600 ${
                   errors.website
                     ? "border-red-500 focus:border-red-500 focus:ring-red-100"
-                    : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-100"
+                    : "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-500 focus:ring-zinc-100 dark:focus:ring-zinc-800"
                 }`}
               />
               {errors.website && (
-                <p className="mt-1 text-xs text-red-600 font-medium">{errors.website.message}</p>
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{errors.website.message}</p>
               )}
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-100">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting || updateAvatarMutation.isPending || updateProfileMutation.isPending}
-              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition disabled:opacity-50"
+              className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || updateAvatarMutation.isPending || updateProfileMutation.isPending}
-              className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-semibold text-white hover:bg-zinc-800 transition disabled:opacity-50 flex items-center justify-center min-w-[70px]"
+              className="rounded-full bg-zinc-900 dark:bg-white px-5 py-2 text-sm font-semibold text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 transition disabled:opacity-50 flex items-center justify-center min-w-[70px]"
             >
               {isSubmitting || updateAvatarMutation.isPending || updateProfileMutation.isPending ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white dark:border-black/30 dark:border-t-black" />
               ) : (
                 "Save"
               )}
