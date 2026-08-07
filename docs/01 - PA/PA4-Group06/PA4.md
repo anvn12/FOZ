@@ -60,14 +60,12 @@ The FOZ project uses the following technologies across its stack:
   - `@tanstack/react-query` v5 for server state (fetching, caching, and synchronizing data).
   - `zustand` v5 for lightweight client-side state management.
 - **Forms & Validation**: `react-hook-form` coupled with Zod for robust client-side validation.
-- **Realtime**: `socket.io-client` v4 for real-time features like live feed updates.
 - **UI Notifications**: `react-hot-toast` for toast notifications.
 
 ### Backend
 - **Runtime**: Node.js (current LTS) utilizing ES Modules (ESM).
 - **Framework**: Express with hand-wired Zod validation middleware and a central error handler.
 - **Database ORM**: Drizzle ORM (SQL-visible approach) along with `drizzle-kit` for managing schema migrations.
-- **Realtime Server**: `socket.io` server attached to Express's HTTP server for realtime events.
 - **Authentication**: 
   - JWT (JSON Web Tokens) for access control (15-minute access token in memory, 7-day refresh token stored in an HttpOnly, SameSite=Lax cookie).
   - `bcrypt` for secure password hashing.
@@ -92,7 +90,7 @@ C4Context
     
     System_Ext(ai_api, "AI Provider API", "External LLM service<br/>(e.g., OpenAI, Gemini)<br/>for TL;DR summaries.")
 
-    Rel_D(user, foz, "Uses forum", "HTTPS/WSS")
+    Rel_D(user, foz, "Uses forum", "HTTPS")
     Rel_D(foz, ai_api, "Generates summary", "HTTPS/REST")
 
     UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="1")
@@ -100,13 +98,13 @@ C4Context
 
 ### Diagram Explanation
 
-- **FOZ User (Actor)**: Represents all users interacting with the application. Depending on their role (Guest, Standard User, Moderator, Admin), they can view content, participate in discussions, manage profiles, report inappropriate content, or administrate the platform. Users interact with the FOZ Platform via a modern web browser over secure HTTPS and WebSocket (WSS) connections.
-- **FOZ Platform (System)**: The core software system being built. It encompasses the frontend React application, the Node.js/Express backend API, and the PostgreSQL database. It handles user authentication, content management (posts, comments, attachments), realtime feed updates, and interactions (likes, reports).
+- **FOZ User (Actor)**: Represents all users interacting with the application. Depending on their role (Guest, Standard User, Moderator, Admin), they can view content, participate in discussions, manage profiles, report inappropriate content, or administrate the platform. Users interact with the FOZ Platform via a modern web browser over secure HTTPS.
+- **FOZ Platform (System)**: The core software system being built. It encompasses the frontend React application, the Node.js/Express backend API, and the PostgreSQL database. It handles user authentication, content management (posts, comments, attachments), and interactions (likes, reports).
 - **AI Provider API (External System)**: An external third-party service (such as OpenAI or Google Gemini). The FOZ Platform securely communicates with this API over HTTPS/REST to send post and top-comment text payloads in order to receive concise, AI-generated summaries for the "Post Summarize (TL;DR)" feature. It sits completely outside the internal control of the system but is a critical dependency for this specific feature.
 
 # C - Software Architecture: Container Diagram and Component Diagram
 
-*Work performed by: Nguyễn Hải Nam | Reviewed and edited by:*
+*Work performed by: Nguyễn Hải Nam | Reviewed and edited by: Võ An Phú*
 
 ## 1. C4 Model - Level 2 (Container Diagram)
 
@@ -128,9 +126,9 @@ C4Container
 
     System_Ext(LLMProvider, "LLM Provider", "Google Gemini", "AI TL;DR summary generation")
 
-    Rel_R(User, WebApp, "browse / submit")
+    Rel_R(User, WebApp, "HTTPS browse / submit")
     Rel_R(WebApp, Backend, "HTTP JSON /api/v1")
-    Rel_D(Backend, Database, "SQL")
+    Rel_D(Backend, Database, "SQL via Drizzle/postgres-js, :5432")
     Rel_R(Backend, LLMProvider, "HTTPS fetch")
 ```
 
@@ -142,7 +140,7 @@ The FOZ system is decomposed into three runtime containers plus one external act
 
 - **Container - Web Application**
   - **Responsibility / Services**: A single-page application (SPA) that renders the complete user interface and handles all user interactions — page routing, fetching and caching server state, managing client session state (access token, user info), validating form input, showing notifications, and displaying AI TL;DR summaries. It has no direct database access; all data is retrieved from the Backend API Server via HTTP/HTTPS REST calls.
-  - **Technology**: React 19 + TypeScript built with Vite, styled with Tailwind CSS v4; `react-router-dom` for client routing, `@tanstack/react-query` for server state caching and synchronization, `zustand` for client auth state, `react-hook-form` + `@hookform/resolvers` for form handling, `react-hot-toast` for transient notifications, and `socket.io-client` in devDependencies for real-time notification support. Tested with Vitest and `@testing-library/react`.
+  - **Technology**: React 19 + TypeScript built with Vite, styled with Tailwind CSS v4; `react-router-dom` for client routing, `@tanstack/react-query` for server state caching and synchronization, `zustand` for client auth state, `react-hook-form` + `@hookform/resolvers` for form handling, and `react-hot-toast` for transient notifications. Tested with Vitest and `@testing-library/react`.
   - **Communication**: Receives HTTPS requests from the User browser; sends JSON REST calls to the Backend API Server over HTTP/HTTPS under `/api/v1`. In development, the Vite dev server proxies `/api/v1` requests to `http://localhost:4000`. Authenticated requests include an `Authorization: Bearer <token>` header, and auth refresh requests send HTTP-only credentials.
 
 - **Container - Backend API Server**
@@ -198,8 +196,6 @@ C4Component
     Component(AuthStore, "Auth Store", "zustand / stores/auth.ts", "Session state")
         
     Component(ToastService, "Toast Service", "react-hot-toast", "Notifications")
-        
-    Component(RealtimeClient, "Realtime Client", "socket.io-client", "Socket client")
     }
 
   Rel_R(UserFE, AppRouter, "navigate")
@@ -238,10 +234,6 @@ C4Component
 - **Toast Service (`react-hot-toast`)**
   - **Responsibility:** Displays transient toast notifications for actions such as post creation, profile saving, password updates, and API errors.
   - **Relationships:** Triggered by UI Components, Forms, and API hook error callbacks.
-- **Realtime Client (`socket.io-client`)**
-  - **Responsibility:** Client socket package included in devDependencies to support WebSocket real-time notification events.
-  - **Relationships:** Client package dependency available for real-time event subscriptions, operating alongside the primary REST API communication flow.
-
 ---
 
 ### 2.2 Backend - Backend API Server Container
@@ -270,8 +262,6 @@ C4Component
       Component(AIService, "AI / TL;DR Service", "post-summary.service.ts / ai-summarizer.ts", "Post summaries")
         
       Component(FeedService, "Feed Service", "listPostFeed in posts.ts", "Feed enrichment")
-        
-      Component(RealtimeServer, "Realtime Server", "socket.io server", "Socket events")
         
       Component(DataAccess, "Data Access Layer", "Drizzle repositories & client", "Repositories and Drizzle client")
         
@@ -326,9 +316,6 @@ C4Component
 - **Feed Service (`listPostFeed` in `src/backend/services/interactions/posts.ts`)**
   - **Responsibility:** Fetches active public posts, resolves repost origins, and enriches post items with like counts, comment counts, user reaction statuses, attachments, and author profile details.
   - **Relationships:** Routed by API Gateway (`GET /api/v1/posts`); queries `posts`, `comments`, `reactions`, `post_attachments`, and `profiles` tables via Data Access Layer.
-- **Realtime Server (`socket.io`)**
-  - **Responsibility:** Real-time event communication infrastructure configured on the Express HTTP server to broadcast live forum updates.
-  - **Relationships:** Server infrastructure for WebSocket client connections, operating alongside the primary Express REST API.
 - **Data Access Layer (`src/backend/db/`)**
   - **Responsibility:** Drizzle ORM client (`db/client.ts`), schema definitions (`users.ts`, `refresh-sessions.ts`, `interactions.ts`), repository functions (`interactions.ts`, `profiles.ts`, `post-summary.repository.ts`), and database migrations managed via `drizzle-kit`.
   - **Relationships:** Invoked by Auth, Interaction, Profile, Search, AI, and Feed services; executes SQL queries over TCP port 5432 to PostgreSQL Database.
