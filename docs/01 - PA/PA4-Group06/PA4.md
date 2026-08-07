@@ -82,7 +82,7 @@ The FOZ project uses the following technologies across its stack:
 ## C4 Model - Level 1 (System Context Diagram)
 
 ```mermaid
-flowchart LR
+flowchart TD
     User(["FOZ User<br/>Guest · Standard · Moderator · Admin<br/>interacts with the community"])
     FOZ["FOZ Platform<br/>web-based community forum<br/>(React SPA · Express API · PostgreSQL)"]
     AI["AI Provider API<br/>OpenAI · Gemini<br/><i>external LLM service</i>"]
@@ -109,7 +109,7 @@ flowchart LR
 ### 1.1 Diagram
 
 ```mermaid
-flowchart LR
+flowchart TD
     User(["User<br/>reads / writes forum content<br/>via web browser"])
 
     subgraph FOZ["FOZ [Software System] — threads-style community forum"]
@@ -173,7 +173,7 @@ The two diagrams below zoom into the Web Application and Backend API Server cont
 #### 2.1.1 Diagram
 
 ```mermaid
-flowchart LR
+flowchart TD
     UserFE(["User<br/>browses / interacts with SPA"])
     BackendFE["Backend API Server<br/>REST /api/v1"]
 
@@ -229,7 +229,7 @@ flowchart LR
 #### 2.2.1 Diagram A — Content & Discovery (Feed · Search · Profile)
 
 ```mermaid
-flowchart LR
+flowchart TD
     WebAppBE["Web Application<br/>React SPA"]
     DB_BE[("PostgreSQL<br/>postgres:16")]
 
@@ -261,7 +261,7 @@ flowchart LR
 #### 2.2.2 Diagram B — Identity & Interaction (Auth · Interaction · AI TL;DR)
 
 ```mermaid
-flowchart LR
+flowchart TD
     WebAppBE["Web Application<br/>React SPA"]
     DB_BE[("PostgreSQL<br/>postgres:16")]
     LLM_BE["LLM Provider<br/>Google Gemini<br/><i>external</i>"]
