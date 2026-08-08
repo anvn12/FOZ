@@ -583,7 +583,7 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 1. The user enters a search query.
 2. The system finds no matching content.
-3. The system displays **"No results for "<search query>"."**
+3. The system displays **"No results for search query."**
 
 
 ## 4. Special Requirements
