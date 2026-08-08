@@ -283,33 +283,33 @@ flowchart TD
         end
     end
 
-    Router --> FeedPages
-    Router --> PostPage
-    Router --> ProfilePage
-    Router --> SearchPage
-    Router --> AuthPages
-    Router --> ModPages
-    Router --> AdminPages
-    Router --> NavBar
+    Router -- "routes to" --> FeedPages
+    Router -- "routes to" --> PostPage
+    Router -- "routes to" --> ProfilePage
+    Router -- "routes to" --> SearchPage
+    Router -- "routes to" --> AuthPages
+    Router -- "routes to" --> ModPages
+    Router -- "routes to" --> AdminPages
+    Router -- "renders" --> NavBar
 
-    FeedPages --> FeedItem
-    FeedPages --> CreatePost
-    PostPage --> CommentTree
-    PostPage --> SummaryCard
-    PostPage --> MediaGallery
-    PostPage --> ReportModal
-    ProfilePage --> FeedItem
+    FeedPages -- "renders post cards" --> FeedItem
+    FeedPages -- "opens create dialog" --> CreatePost
+    PostPage -- "renders comment thread" --> CommentTree
+    PostPage -- "displays AI TL;DR" --> SummaryCard
+    PostPage -- "displays attachments" --> MediaGallery
+    PostPage -- "opens report dialog" --> ReportModal
+    ProfilePage -- "renders user posts" --> FeedItem
 
-    FeedPages --> QueryLayer
-    PostPage --> QueryLayer
-    ProfilePage --> QueryLayer
-    SearchPage --> QueryLayer
-    ModPages --> QueryLayer
-    AdminPages --> QueryLayer
-    AuthPages --> AuthStore
+    FeedPages -- "queries & mutates" --> QueryLayer
+    PostPage -- "queries & mutates" --> QueryLayer
+    ProfilePage -- "queries & mutates" --> QueryLayer
+    SearchPage -- "queries" --> QueryLayer
+    ModPages -- "queries & mutates" --> QueryLayer
+    AdminPages -- "queries & mutates" --> QueryLayer
+    AuthPages -- "reads/writes session" --> AuthStore
 
-    QueryLayer --> APIClient
-    AuthStore --> APIClient
+    QueryLayer -- "delegates HTTP calls" --> APIClient
+    AuthStore -- "injects Bearer token" --> APIClient
     APIClient -- "HTTPS JSON /api/v1/*" --> API_EXT
 
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
@@ -438,18 +438,18 @@ flowchart TD
     GW_A -- "/hashtags" --> HashtagR
     GW_A -- "/upload" --> UploadR
 
-    PostR --> PostSvc
-    PostR --> FeedRank
-    CommentR --> CommentSvc
-    SearchR --> DAL_A
-    ProfileR --> DAL_A
-    HashtagR --> DAL_A
-    UploadR --> ImgProc
-    ImgProc --> CloudSvc
+    PostR -- "delegates CRUD" --> PostSvc
+    PostR -- "delegates For-You" --> FeedRank
+    CommentR -- "delegates CRUD" --> CommentSvc
+    SearchR -- "queries" --> DAL_A
+    ProfileR -- "reads/writes" --> DAL_A
+    HashtagR -- "queries" --> DAL_A
+    UploadR -- "sends buffer" --> ImgProc
+    ImgProc -- "streams optimized image" --> CloudSvc
 
-    PostSvc --> DAL_A
-    FeedRank --> DAL_A
-    CommentSvc --> DAL_A
+    PostSvc -- "reads/writes" --> DAL_A
+    FeedRank -- "reads engagement data" --> DAL_A
+    CommentSvc -- "reads/writes" --> DAL_A
     CloudSvc -- "HTTPS" --> Cloud_A
 
     DAL_A -- "SQL / :5432" --> DB_A
@@ -511,24 +511,24 @@ flowchart TD
     GW_B -- "/admin" --> AdminR
     GW_B -- "/summary" --> SumR
 
-    AuthR --> AuthSvc
-    AuthR --> SocialAuth
-    SocialAuth --> OAuthProv
-    ReactionR --> ReactionSvc
-    ModR --> ReportSvc
-    AdminR --> AdminSvc
-    SumR --> PostSumSvc
+    AuthR -- "delegates credential auth" --> AuthSvc
+    AuthR -- "delegates OAuth flow" --> SocialAuth
+    SocialAuth -- "exchanges code for profile" --> OAuthProv
+    ReactionR -- "delegates toggle" --> ReactionSvc
+    ModR -- "delegates report ops" --> ReportSvc
+    AdminR -- "delegates admin ops" --> AdminSvc
+    SumR -- "delegates summary lifecycle" --> PostSumSvc
 
-    AuthSvc --> JWTLib
-    AuthSvc --> PwdLib
-    AuthSvc --> DAL_B
-    SocialAuth --> DAL_B
+    AuthSvc -- "signs/verifies tokens" --> JWTLib
+    AuthSvc -- "hashes/compares passwords" --> PwdLib
+    AuthSvc -- "reads/writes users & sessions" --> DAL_B
+    SocialAuth -- "reads/writes users & links" --> DAL_B
     OAuthProv -- "HTTPS" --> Google_B
-    ReactionSvc --> DAL_B
-    ReportSvc --> DAL_B
-    AdminSvc --> DAL_B
-    PostSumSvc --> AISvc
-    PostSumSvc --> DAL_B
+    ReactionSvc -- "toggles reactions" --> DAL_B
+    ReportSvc -- "reads/writes reports" --> DAL_B
+    AdminSvc -- "reads/writes admin data" --> DAL_B
+    PostSumSvc -- "requests AI generation" --> AISvc
+    PostSumSvc -- "caches summaries" --> DAL_B
     AISvc -- "HTTPS REST" --> Gemini_B
 
     DAL_B -- "SQL / :5432" --> DB_B
