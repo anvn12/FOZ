@@ -1983,3 +1983,45 @@
 **Model:** Gemini 3.6 Flash
 **Prompt:** "on register page, the logo is bigger than on login page. fix it so that they are the same size"
 **Files touched:** `src/frontend/src/pages/RegisterPage.tsx`
+
+### 2026-08-08 22:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/02-speckit.specify Fix: Menu should have Log in button for guest, also a settings..."
+**Files touched:** `specs/023-guest-login-settings/spec.md`, `specs/023-guest-login-settings/checklists/requirements.md`
+
+### 2026-08-08 22:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/023-guest-login-settings/spec.md`, `.specify/feature.json`
+
+### 2026-08-08 22:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/023-guest-login-settings/plan.md`, `specs/023-guest-login-settings/research.md`, `specs/023-guest-login-settings/data-model.md`, `specs/023-guest-login-settings/quickstart.md`, `specs/023-guest-login-settings/contracts/menu-navigation.yaml`
+
+### 2026-08-08 22:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/023-guest-login-settings/tasks.md`
+
+### 2026-08-08 22:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`, `specs/023-guest-login-settings/tasks.md`
+
+### 2026-08-08 22:58
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "settings is not clickable, also the order should be similar to settings of standard user (just swap log out to log in)"
+**Files touched:** `src/frontend/src/App.tsx`, `src/frontend/src/pages/SettingsPage.tsx`, `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-08 22:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "in guest settings, remove Account Settings"
+**Files touched:** `src/frontend/src/pages/SettingsPage.tsx`

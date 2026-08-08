@@ -1,0 +1,45 @@
+# Navigation Menu UI Component Contract
+component: NavBar
+path: src/frontend/src/components/NavBar.tsx
+description: Contract specifying menu items and behavior based on user authentication status.
+
+menu_items:
+  guest_mode:
+    - id: log-in
+      label: "Log in"
+      icon: login-icon
+      action: navigate
+      target: "/login"
+      priority: primary
+    - id: settings
+      label: "Settings"
+      icon: settings-icon
+      action: navigate
+      target: "/settings"
+      priority: secondary
+    - id: report-problem
+      label: "Report a Problem"
+      icon: report-icon
+      action: toast
+      target: null
+      priority: secondary
+
+  authenticated_mode:
+    - id: settings
+      label: "Settings"
+      icon: settings-icon
+      action: navigate
+      target: "/settings"
+      priority: secondary
+    - id: report-problem
+      label: "Report a Problem"
+      icon: report-icon
+      action: toast
+      target: null
+      priority: secondary
+    - id: log-out
+      label: "Log out"
+      icon: logout-icon
+      action: modal
+      target: "LogoutDialog"
+      priority: danger

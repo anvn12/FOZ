@@ -49,7 +49,7 @@ export function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/onboarding/avatar" element={<OnboardingAvatarPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
-        <Route path="/settings" element={<RequireRole roles={["standard", "moderator", "administrator"]}><SettingsPage /></RequireRole>} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profiles/@:username" element={<ProfilePage />} />
         <Route path="/profiles/:userId" element={<ProfilePage />} />
 
