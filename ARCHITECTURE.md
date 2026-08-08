@@ -1,9 +1,9 @@
 # FOZ Software Architecture Document
 
 > **Version**: 1.0.0  
-> **Last Updated**: 2026-08-07
+> **Last Updated**: 2026-08-08
 >
-> This document formally describes the software architecture of the **FOZ** community forum platform, covering all features delivered across PA1 through PA4. All diagrams follow C4 Model conventions rendered in standard Mermaid flowchart syntax.
+> Architecture overview of the **FOZ** community forum, covering PA1–PA4. Diagrams use C4 Model conventions rendered in Mermaid.
 
 ---
 
@@ -24,8 +24,6 @@
 # B - Software Architecture: System Context Diagram
 
 ## 1. Technology Stack
-
-The FOZ project uses the following technologies across its stack:
 
 ### Frontend
 
@@ -86,7 +84,7 @@ The FOZ project uses the following technologies across its stack:
 
 ## 2. C4 Level 1 - System Context Diagram
 
-The System Context diagram shows the FOZ system as a single box, the actors who use it, and the external systems it depends on.
+This diagram shows FOZ as a single box, the actors who interact with it, and the external systems it depends on.
 
 ```mermaid
 flowchart TD
@@ -125,18 +123,18 @@ flowchart TD
 
 ### Diagram Explanation
 
-The **FOZ Forum Platform** is the central system. Four types of actors interact with it:
+Four actor types interact with the system:
 
-- **Guest User**: An unauthenticated visitor who can browse the public feed, view post detail pages, search for posts/users/hashtags, and view user profiles. Guests **cannot** create content, react, report, or trigger AI features.
-- **Standard User**: A registered and authenticated member who can perform all guest actions plus create posts (with text and image attachments), comment (including nested replies), react (like) to posts and comments, edit/delete their own content, manage their profile (display name, bio, avatar, location, website), report content or users, request AI-generated TL;DR summaries, and change their password.
-- **Moderator**: Has standard user privileges plus access to the moderation queue. Moderators can review reports, flag violations (escalate), or dismiss reports. They **cannot** issue punishments directly - this enforces separation of powers.
-- **Administrator**: Has moderator privileges plus access to the admin dashboard. Administrators manage users (warn, suspend, ban), manage forum categories, configure system settings, view audit logs, and issue punishments for flagged violations.
+- **Guest** — Unauthenticated. Can browse the feed, search, and view profiles. Cannot create content, react, report, or use AI features.
+- **Standard User** — Authenticated member. Everything a guest can do, plus creating posts (text + images), commenting (nested replies), reacting, editing/deleting own content, managing their profile, reporting, requesting AI TL;DR summaries, and changing their password.
+- **Moderator** — Standard user privileges plus the moderation queue (review, flag, or dismiss reports). Cannot issue punishments directly — this enforces separation of powers.
+- **Administrator** — Moderator privileges plus the admin dashboard: user management (warn, suspend, ban), category management, system settings, audit logs, and punishment issuance.
 
 The system depends on three external services:
 
-- **Google OAuth 2.0**: Handles social login. The backend exchanges an authorization code for an access token, fetches the user's Google profile, and links or creates a FOZ account.
-- **Google Generative AI (Gemini)**: Provides AI-powered summarization of posts and their comments. The AI summarizer service sends prompts to the Gemini API and parses structured JSON responses. A fallback provider chain (multiple Gemini model versions) ensures resilience.
-- **Cloudinary**: Handles cloud-based image storage. Post attachments and profile avatars are uploaded to Cloudinary via a streaming API, with CDN-delivered URLs stored in the database.
+- **Google OAuth 2.0** — Social login. The backend exchanges an auth code for a token, fetches the Google profile, and links or creates a FOZ account.
+- **Google Generative AI (Gemini)** — AI post/comment summarization. Uses a fallback chain across multiple Gemini model versions for resilience.
+- **Cloudinary** — Image storage and CDN. Attachments and avatars are streamed to Cloudinary; CDN URLs are stored in the database.
 
 ---
 
@@ -144,7 +142,7 @@ The system depends on three external services:
 
 ## 3. C4 Level 2 - Container Diagram
 
-The Container diagram zooms into the FOZ system to show the major containers - the deployable units - the technology each uses, and how they communicate. A container is a separately runnable/deployable unit that holds the system's code and/or data; each container runs in its own process and communicates with the others over a network.
+Zooms into FOZ to show its deployable units (containers), the technology each uses, and how they talk to each other. In C4 terms a "container" is a separately runnable process or data store.
 
 ### 3.1 Diagram
 
@@ -189,40 +187,23 @@ flowchart TD
 
 ### 3.2 Container Descriptions
 
-- **Container - Web Application (SPA)**
-  - **Responsibility / Services**: A single-page application that renders the complete user interface and handles all user interactions - page routing, fetching and caching server state, managing client session state (access token, user info), validating form input, showing notifications, and displaying AI TL;DR summaries. It delivers the post feed (latest and "for you"), post detail with comments and reactions, user profiles, search (posts, users, hashtags), profile management, moderator dashboard and report queue, admin dashboard with user/category/settings/audit-log management, and authentication screens (login, register, onboarding, password change). It has no direct database access; all data is retrieved from the Backend API Server via HTTP/HTTPS REST calls.
-  - **Technology**: React 19 + TypeScript built with Vite 8, styled with Tailwind CSS v4; `react-router-dom` for client routing, `@tanstack/react-query` for server state caching and synchronization, `zustand` for client auth state, `react-hook-form` + `@hookform/resolvers` for form handling, `react-hot-toast` for transient notifications. Tested with Vitest and `@testing-library/react`.
-  - **Communication**: Receives HTTPS requests from the User browser; sends JSON REST calls to the Backend API Server over HTTP/HTTPS under `/api/v1`. In development, the Vite dev server proxies `/api/v1` requests to `http://localhost:4000`. In production, the Vercel deployment rewrites `/api/v1/*` to the Render-hosted backend. Authenticated requests include an `Authorization: Bearer <token>` header, and auth refresh requests send HTTP-only credentials.
+- **Web Application (SPA)** — Renders the entire forum UI: feed (latest + for-you), post detail with comments/reactions, profiles, search, moderation queue, admin dashboard, and auth screens. No direct DB access, all data comes from the API via REST.
+  - **Technology**: React 19 + TypeScript + Vite 8, styled with Tailwind CSS v4. Key libs: `react-router-dom` (routing), `@tanstack/react-query` (server-state cache), `zustand` (auth state), `react-hook-form` (forms), `react-hot-toast` (toasts). Tested with Vitest + Testing Library.
+  - **Communication**: Sends JSON requests to `/api/v1/*`. Dev: Vite proxies to `localhost:4000`. Prod: Vercel rewrites to the Render backend. Auth uses `Bearer` tokens; refresh uses an HttpOnly cookie.
 
-- **Container - Backend API Server**
-  - **Responsibility / Services**: Hosts the REST API under the `/api/v1` prefix, exposing services for `auth`, `posts`, `comments`, `reactions`, `profiles`, `search`, `upload`, `moderation`, `admin`, `hashtags`, and a `/api/v1/health` status probe. It runs the AI / TL;DR post summary service (`post-summary.service.ts` backed by `ai-summarizer.ts`), the feed enrichment service (`listPostFeed`), hand-wired Zod request validation middleware, rate limiting (`express-rate-limit`), cookie parsing (`cookie-parser`), CORS middleware, and a central error handler that maps thrown errors and `ZodError`s to consistent HTTP error envelopes.
-  - **Technology**: Node.js (v24 ESM) with Express 5; `jsonwebtoken` + `bcrypt` for user authentication; `express-rate-limit`, `cookie-parser`, `cors`; Drizzle ORM (`drizzle-orm` + `postgres-js`) with `drizzle-kit` database migrations; `zod` for request schema validation; `multer` for multipart file uploads; `sharp` for server-side image processing; fail-fast env validation (`env.ts`).
-  - **Communication**:
-    - **Web Application**: Receives HTTPS JSON requests.
-    - **PostgreSQL Database**: Connects via `postgres.js` driver (TCP, port 5432, connection pool max 10).
-    - **Google OAuth 2.0**: Exchanges authorization codes for tokens and fetches user profiles (HTTPS).
-    - **Gemini API**: Sends structured prompts for post/comment summarization and parses JSON responses (HTTPS REST).
-    - **Cloudinary**: Streams image uploads and issues delete requests (HTTPS).
+- **Backend API Server** — RESTful API under `/api/v1` covering auth, posts, comments, reactions, profiles, search, upload, moderation, admin, hashtags, and a `/health` probe. Includes AI summarization, Zod validation, rate limiting, CORS, and a central error handler.
+  - **Technology**: Node.js v24 (ESM) + Express 5. Auth: `jsonwebtoken` + `bcrypt`. DB: Drizzle ORM + `postgres.js` + `drizzle-kit` migrations. Validation: `zod`. Uploads: `multer` + `sharp`. Env: fail-fast Zod validation at startup.
+  - **Communication**: Receives JSON from the SPA. Connects to Postgres via `postgres.js` (TCP :5432, pool max 10). Calls Google OAuth, Gemini, and Cloudinary over HTTPS.
 
-- **Container - PostgreSQL Database**
-  - **Responsibility / Services**: Persists all application relational data - user accounts (with role and status), user profiles, HTTP-only refresh sessions, posts (with parent/repost references), post attachments, comments (with nested threading), reactions (likes), content reports, admin audit logs, forum categories, system settings, hashtags, post–hashtag associations, post summaries, and user–social-link mappings.
-  - **Technology**: `postgres:16` running as the Docker service `foz_db` (port 5432, volume `foz_pg_data`, database `foz_dev`), accessed via Drizzle ORM (`postgres-js`); database migrations are managed using `drizzle-kit`.
-  - **Communication**: Only accepts database connections (PostgreSQL wire protocol over TCP port 5432) from the Backend API Server via Drizzle ORM; it is isolated from direct access by the browser or Web Application.
+- **PostgreSQL Database** — Stores all relational data: users, profiles, refresh sessions, posts, attachments, comments, reactions, reports, audit logs, categories, settings, hashtags, summaries, and social links.
+  - **Technology**: `postgres:16` Docker service (`foz_db`, port 5432, volume `foz_pg_data`, database `foz_dev`). Migrations via `drizzle-kit`.
+  - **Communication**: Accepts connections only from the Backend API Server (TCP :5432). No browser or SPA access.
 
+- **Google OAuth 2.0** *(external)* — Social login. Backend exchanges auth codes for tokens and fetches user profiles. HTTPS only, called by the backend.
 
+- **Google Generative AI / Gemini** *(external)* — On-demand AI TL;DR summaries (post snapshot, highlights, sentiment). Uses `gemini-2.5-flash` / `gemini-1.5-flash` / `gemini-2.0-flash` with a fallback chain. HTTPS only, called by the backend.
 
-- **External System - Google OAuth 2.0**
-  - **Responsibility / Services**: Provides social authentication (Google Sign-In). The backend exchanges an authorization code for an access token, fetches the user's Google profile, and links or creates a FOZ account.
-  - **Communication**: Receives outbound HTTPS calls from the Backend API Server; does not communicate directly with the Web Application or browser.
-
-- **External System - Google Generative AI (Gemini)**
-  - **Responsibility / Services**: Generates structured AI TL;DR summaries (post snapshot, key discussion highlights, and sentiment) on demand for forum posts.
-  - **Technology**: Google Gemini HTTP API (`gemini-2.5-flash` / `gemini-1.5-flash` / `gemini-2.0-flash`) called via native `fetch` with a fallback provider chain.
-  - **Communication**: Receives outbound HTTPS calls from the Backend API Server; does not communicate directly with the Web Application or browser.
-
-- **External System - Cloudinary**
-  - **Responsibility / Services**: Cloud-based image/media storage and CDN delivery. Post attachments and profile avatars are uploaded via a streaming API, with CDN-delivered URLs stored in the database.
-  - **Communication**: Receives outbound HTTPS calls from the Backend API Server for image uploads and deletions.
+- **Cloudinary** *(external)* — Image storage and CDN. Attachments and avatars are streamed up; CDN URLs are persisted in Postgres. HTTPS only, called by the backend.
 
 ### 3.3 Relationships Summary
 
@@ -240,7 +221,7 @@ flowchart TD
 
 ## 4. C4 Level 3 - Component Diagrams
 
-The diagrams below zoom into the Web Application and Backend API Server containers, detailing their primary internal components and interactions. The PostgreSQL Database and external systems are shown for context.
+These diagrams zoom into the Web Application and Backend API Server containers to show their internal components. The database and external systems appear for context.
 
 ### 4.1 Frontend - Web Application
 
@@ -355,9 +336,7 @@ flowchart TD
   - **Responsibility**: Moderator dashboard with report statistics and a reports queue page where moderators can review, flag (escalate), or dismiss user reports.
   - **Relationships**: Uses QueryLayer; guarded by RequireRole.
 
-- **Admin Pages (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`)**
-  - **Responsibility**: Full admin panel: dashboard (site statistics), user management (role changes, suspensions, bans), report management, forum category CRUD, system settings, and audit log viewer.
-  - **Relationships**: Uses QueryLayer; guarded by AdminGuard.
+- **Admin Pages** (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. Guarded by AdminGuard.
 
 - **Auth Store (`src/frontend/src/stores/auth.ts`)**
   - **Responsibility**: Zustand store managing client-side authentication state: `user` object, `accessToken`, `setSession`, `clearSession`, and `silentRefresh` (automatic token renewal via the refresh cookie).
@@ -399,7 +378,7 @@ flowchart TD
 
 ### 4.2 Backend - API Server
 
-The backend component diagram is split into two focused diagrams for readability. Diagram A covers content and discovery flows; Diagram B covers identity, governance, and AI flows.
+The backend is split into two diagrams for readability: **Diagram A** covers content and discovery (posts, comments, search, profiles, hashtags, media); **Diagram B** covers identity, governance, and AI (auth, OAuth, reactions, reports, moderation, admin, TL;DR).
 
 #### 4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media)
 
@@ -548,13 +527,13 @@ flowchart TD
     class DAL_B,Shared_B comp
 ```
 
-> **Note:** The API Gateway, Data Access Layer, and Shared Types are reused across both diagrams (shared infrastructure). The split is only for presentation clarity - the backend runs as **one container**.
+> **Note:** The API Gateway, DAL, and Shared Types appear in both diagrams (shared infrastructure). The split is purely for presentation — the backend runs as **one container**.
 
 #### 4.2.3 Component Descriptions
 
 ##### Middleware Pipeline (API Gateway)
 
-The API Gateway (`src/backend/index.ts`) applies middleware in the following order before routing:
+Middleware applied (in order) before routing in `src/backend/index.ts`:
 
 | Component | Responsibility | Source |
 |---|---|---|
