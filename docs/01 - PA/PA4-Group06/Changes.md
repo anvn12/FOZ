@@ -2,79 +2,102 @@
 
 ## 4A. Revised Use-Case Specification
 
-Based on the TA feedback from PA3-2026, the following revisions were made to the Use-Case Specification document to provide more specific and concrete details, especially around alternative flows, and to ensure project-wide synchronization with the actual codebase:
 
-1. **Reordered Sections for Clarity (All Use Cases):**
-   - Moved the **Preconditions** section to appear immediately before the **Flow of Events**. This creates a logical flow where the prerequisites are clearly stated before describing the sequence of actions.
+1. **Per-Use-Case Content Changes:**
 
-2. **Enhanced Alternative Flows (Project-Wide Synchronization):**
-   - **UC-01 (Sign Up):** Added detailed alternative flows for `Password Too Long` (enforcing the strict 128 character max limit) and `Rate Limit Exceeded` (enforcing the 100 requests per 15 minutes limit).
-   - **UC-02 (Log In):** Updated the rate limit specification in the alternative flow and special requirements from 10 attempts to the correctly implemented 100 attempts per 15 minutes.
-   - **UC-04 (Manage Profile):** Added a concrete validation error alternative flow specifying exact database schema constraints (Display Name max 50 chars, Bio max 160 chars, Location max 100 chars, Website max 200 chars).
-   - **UC-05 (Change Password):** Added alternative flow for when the new password identically matches the old password (Zod schema constraint).
-   - **UC-06 (Change Avatar):** Synchronized the maximum file size limit with the actual codebase (updated from 5MB to 2MB).
-   - **UC-09 (View Post Details):** Added alternative flow for 404 Post Not Found when querying a non-existent or deleted ID.
-   - **UC-10 (Create Post):** Enhanced alternative flows to explicitly list system constraints (max 5,000 characters per post, maximum of 5 media attachments, and maximum of 10 posts in a chained thread).
-   - **UC-12 (Leave Comment):** Added alternative flow handling POST_NOT_FOUND and PARENT_COMMENT_NOT_FOUND exceptions directly from the backend service layer.
-   - **UC-14 (Request AI Summary):** Added alternative flows for `Rate Limit Exceeded` (10 requests/min), `Zero or Short Comment Thread` (fallback indicator for posts with 0 or minimal comments), and `AI Engine Failure` (graceful local fallback summary generation).
-   - **UC-15 (Delete Own Post):** Added alternative flows for `User Cancels Deletion` and `Post Not Found or Forbidden` exception handling.
-   - **UC-16 (Report Inappropriate Content):** Updated the reporting reasons to perfectly match the implemented codebase (`Harassment`, `Spam`, `Inappropriate`, `Other`). Added detailed alternative flows for `Content Already Reported by User` duplicate prevention and `Validation Error` for details exceeding the 1000 character limit.
-   - **UC-17 (Review Reports):** Updated basic flow to cover querying `open` or `under_review` reports and explicit content deletion, linking extension point `UC-18`.
-   - **UC-18 (Forward Report to Admin):** Added alternative flows for `Moderator Cancels Escalation` and `Report Not Found or Already Processed`.
-   - **UC-19 (Delete Any Content):** Enhanced basic flow to specify mandatory administrative rationale and hard deletion in database (`posts`/`comments`), and added alternative flows for `Admin Cancels Deletion` and `Content Not Found or Already Deleted`.
-   - **UC-20 (Permanently Remove User):** Refined basic flow for User Action Modal with mandatory administrative rationale requirement (min 5 characters) and database table purging, and added alternative flows for `Admin Cancels Deletion` and `Missing Rationale or Insufficient Rationale Length`.
-   - **UC-21 (Assign Moderator Role):** Updated basic flow to specify User Action Modal role selection, recording entries in `audit_logs`, and added alternative flows for `Admin Cancels Role Assignment` and `Missing Rationale or Insufficient Rationale Length`.
+   - **UC-01 (Sign Up):**
+     - Added the `username` field to the basic flow to reflect the actual database schema.
+     - Added alternative flows: `Password Too Long` (128-char max), `Rate Limit Exceeded` (100 requests / 15 min), `Confirm Password Does Not Match`, `Username Already Taken`, `Sign Up with Google Account`, and `Google Sign Up Username Collision` (auto-appends a numeric counter when the base username is taken).
+     - Prototype requirements expanded from 2 to 9 screens (3 screens for the username-collision flow).
 
-   - **UC-01 (Sign Up - Additional Pass):** Integrated the 'Username' field into the basic flow to reflect actual database schema. Added alternative flows for 'Username Already Taken' and 'Sign Up with Google Account' (as Google OAuth is fully implemented in the backend routes).
+   - **UC-02 (Log In):**
+     - Rate limit corrected from 10 to **100 attempts per 15 minutes** in the alternative flow and special requirements.
+     - Added alternative flows: `Rate Limit Exceeded`, `Sign In with Google Account`, and `Log In with Non-Existent Google Account` (auto-provisions a new account on the fly instead of rejecting).
+     - Prototype requirements expanded from 2 to 6 screens.
 
-   - **UC-02 (Log In - Additional Pass):** Added alternative flow for 'Sign In with Google Account' to align with the frontend and backend OAuth integrations.
+   - **UC-03 (Log Out):**
+     - Added alternative flow `User Cancels Log Out`.
+     - Prototype requirements expanded from 1 to 2 screens.
 
-   - **UC-06 (Change Avatar - Additional Pass):** Reverted the 'Wrong File Type' alternative flow back to 'File Too Large' because the browser's native file picker strictly prevents selecting non-image formats, making the 'Wrong File Type' flow impossible to test in the UI.
+   - **UC-04 (Manage Profile):**
+     - Added alternative flows: `Validation Errors` (exact schema limits: Display Name 50, Bio 160, Location 100, Website 200 chars) and `User Cancels`.
+     - Prototype requirements expanded from 1 to 3 screens.
 
-   - **UC-06 (Change Avatar - Correction):** Corrected the 'File Too Large' alternative flow to trigger at 25MB instead of 2MB, accurately reflecting the frontend client's raw upload limit before compression.
-3. **Include more prototype requirements for detailed alternative flows in each use case**
-   - **UC-01 (Sign Up):** 
-     - Added the 'Username' field to the basic flow to accurately reflect the database schema.
-     - Added alternative flow for `Password Too Long` (enforcing the strict 128 character max limit).
-     - Added alternative flow for `Rate Limit Exceeded` (enforcing the 100 requests per 15 minutes limit implemented via `authRateLimiter`).
-     - Added alternative flow for `Username Already Taken`.
-     - Added alternative flow for `Sign Up with Google Account`.
-     - Added alternative flow for `Google Sign Up Username Collision`, detailing the automatic generation of a unique username (by appending a numeric counter) when the base email prefix is already taken.
-   
-   - **UC-02 (Log In):** 
-     - Updated the rate limit specification in the alternative flow and special requirements from 10 attempts to the correctly implemented 100 attempts per 15 minutes.
-     - Added alternative flow for `Sign In with Google Account`.
-     - Added alternative flow for `Log In with Non-Existent Google Account`, specifying that logging in with a non-existent Google account will not reject the user, but seamlessly auto-provision a new account and username on the fly.
-   
-   - **UC-04 (Manage Profile):** 
-     - Added a concrete validation error alternative flow specifying exact database schema constraints (Display Name max 50 chars, Bio max 160 chars, Location max 100 chars, Website max 200 chars).
-   
-   - **UC-05 (Change Password):** 
-     - Added alternative flow for when the new password identically matches the old password (Zod schema constraint).
-   
-   - **UC-06 (Change Avatar):** 
-     - Synchronized the maximum file size limit with the actual codebase by setting the `File Too Large` alternative flow to trigger at 25MB, reflecting the frontend client's raw upload limit prior to heavy compression. (Removed the 'Wrong File Type' flow since native browser behavior prevents selecting invalid file types entirely).
-   
-   - **UC-09 (View Post Details):** 
-     - Added alternative flow for 404 Post Not Found when querying a non-existent or deleted ID.
-   
-   - **UC-10 (Create Post):** 
-     - Enhanced alternative flows to explicitly list system constraints (max 5,000 characters per post, maximum of 5 media attachments, and maximum of 10 posts in a chained thread).
-   
-   - **UC-12 (Leave Comment):** 
-     - Added alternative flow handling `POST_NOT_FOUND` and `PARENT_COMMENT_NOT_FOUND` exceptions directly from the backend service layer.
-   
-   - **UC-14 (Request AI Summary):** 
-     - Added an alternative flow for `Rate Limit Exceeded` when a user exceeds 10 summary requests within 1 minute.
-   
-   - **UC-15 (Delete Own Post):** 
-     - Added alternative flow handling `POST_NOT_FOUND` or `POST_FORBIDDEN` exceptions.
-   
-   - **UC-16 (Report Inappropriate Content):** 
-     - Updated the reporting reasons to perfectly match the implemented codebase (`Harassment`, `Spam`, `Inappropriate`, `Other`). 
-     - Added a detailed validation error alternative flow for details exceeding the 1000 character limit.
+   - **UC-05 (Change Password):**
+     - Added alternative flows: `New Password Matches Old Password` (Zod constraint), `Confirm Password Does Not Match`, `Weak New Password`, and `User Cancels`.
+     - Prototype requirements expanded from 1 to 5 screens.
+
+   - **UC-06 (Change Avatar):**
+     - `File Too Large` limit synchronized with the codebase: **25MB raw upload limit** (client-side, before compression), replacing the old 5MB limit; special requirements updated accordingly.
+     - Added alternative flows: `User Cancels` and `Wrong File Type`.
+     - Prototype requirements expanded from 1 to 3 screens.
+
+   - **UC-07 (Browse Feed):**
+     - Basic flow clarified: posts sorted by posting time (newest first).
+     - Added alternative flow `Switch feed mode` (Latest ↔ For You).
+     - Prototype requirements expanded from 1 to 3 screens.
+
+   - **UC-08 (Search Content):**
+     - Reworked alternative flows: `Search feature unavailable` (search button hidden until a valid query is entered) and `No matching results` ("No results for search query.").
+     - Performance requirement updated to 2–3 seconds under good network conditions.
+     - Prototype requirements expanded from 1 to 3 screens.
+
+   - **UC-09 (View Post Details):**
+     - Added alternative flows: `No comments` and `Post Not Found` (404 for non-existent or `removed_by_moderation` posts), replacing the previous `Post Removed or Hidden` flow.
+     - Prototype requirements expanded from 1 to 2 screens.
+
+   - **UC-10 (Create Post):**
+     - Added alternative flows: `Post creation canceled`, updated `Content Validation Error` (submit button disabled on empty body), and `Exceeds Limits` (5,000 chars / 5 media attachments / 10 chained thread posts).
+     - Prototype requirements expanded from 1 to 3 screens.
+
+   - **UC-11 (Interact with Post):**
+     - Added alternative flows making the extension points explicit: `Reply` → UC-12, `Like` → UC-13, `Report` → UC-16.
+
+   - **UC-12 (Leave Comment):**
+     - `Empty Comment` flow updated to include whitespace-only input.
+     - Added alternative flows: `Comment Exceeds Maximum Length` (5,000-char limit) and `Long Comment Display` (truncation with "Read more" toggle).
+     - Prototype requirements expanded from 1 to 3 screens.
+
+   - **UC-13 (Like/Unlike):**
+     - Added alternative flow `Target Post or Comment Deleted / Not Found` (reverts optimistic UI on failure).
+     - Special requirements detailed: UI response < 50ms (optimistic), API sync ≤ 500ms.
+     - Prototype requirements expanded from 1 to 2 screens.
+
+   - **UC-14 (Request AI Summary):**
+     - Actor restricted to **Standard User** (AI requests require authentication; guests removed).
+     - Basic flow reworked: verifies post accessibility and per-user rate limit; samples up to 10 comments using a deduplicated 4:3:3 ratio (4 most liked, 3 most replied-to, 3 most recent); sends a sanitized payload through a provider fallback chain; validates the AI response before display.
+     - Added alternative flows: `Post Not Found or No Longer Accessible`, `AI Provider Error` (fallback provider attempt), `Invalid AI Response`, and `Rate Limit Exceeded` (10 requests / min per user).
+     - Special requirements added: authentication, rate limit, payload sanitization; persistent caching is out of scope for v1.
+
+   - **UC-15 (Delete Own Post):**
+     - Clarified as a **soft delete**: `lifecycle_state` set to `hidden` atomically; post removed from feeds and search results while the record is retained.
+     - Added alternative flows: `Post Not Found or Forbidden` and `Update Failure`; expanded `User Cancels Deletion` (Cancel, close dialog, or Escape).
+     - Added special requirements: ownership check at API boundary, visibility rules, data retention.
+
+   - **UC-16 (Report Inappropriate Content):**
+     - Reporting reasons synchronized with the codebase: `Harassment`, `Spam`, `Inappropriate`, `Other`; `Other` requires details; details limited to 1,000 chars.
+     - Added alternative flows: `User Cancels Report`, `Validation Error`, `Content Already Reported by User` (unique open report per reporter/target), `Content Not Found or No Longer Reportable`, `Reporting Rate Limit Exceeded` (10 reports / 15 min), and `Report Submission Failure`.
+
+   - **UC-17 (Review Reports):**
+     - Reworked basic flow: role-based queues (Moderators: `open`/`under_review`; Administrators: `escalated`), atomic report claiming, mandatory decision rationale of at least 5 words, dismiss/escalate actions, and Administrator invocation of UC-19.
+     - Added alternative flows: `No Reports Available`, `Actor Leaves Without a Decision`, `Report Not Found or Already Processed`, `Reported Content No Longer Exists`, `Unauthorized Action`, and `Missing or Insufficient Decision Rationale`.
+     - Added special requirements: separation of powers (Moderators must not permanently remove content or punish users), concurrency, decision rationale, and audit logging.
+
+   - **UC-18 (Forward Report to Admin):**
+     - Escalation now requires a rationale of at least 5 words; status change, moderation review, and audit entry are written in one transaction.
+     - Added alternative flows: `Moderator Cancels Escalation`, `Missing or Insufficient Escalation Rationale`, `Report Not Found`, `Report Already Processed`, and `Escalation Update Failure`.
+
+   - **UC-19 (Delete Any Content):**
+     - Changed from a lifecycle-state update to a **permanent hard delete** in one transaction (target + dependent comments/replies, reactions, attachments; related report closed; `audit_logs` entry), requiring an administrative rationale of at least 5 words.
+     - Added alternative flows: `Administrator Cancels Deletion`, `Missing or Insufficient Rationale`, `Content Not Found or Already Deleted`, `Target Not Eligible for Force Deletion`, and `Deletion Transaction Fails`.
+
+   - **UC-20 (Permanently Remove User):**
+     - Scope changed from "ban user" to **permanent account removal**: User Management page → User Action Modal with a mandatory rationale of at least 5 words; one transaction revokes all `refresh_sessions`, purges profile, submitted reports, posts, comments, reactions, and attachments, deletes the `user_accounts` record, and writes a `USER_DELETE` audit entry.
+     - Added alternative flows: `Administrator Cancels Deletion`, `Missing or Insufficient Rationale`, `Target Not Found or Already Removed`, `Target No Longer Eligible` (administrators and protected accounts excluded), and `Data-Wipe Transaction Fails`.
+
+   - **UC-21 (Assign Moderator Role):**
+     - Basic flow reworked: User Management page → "Assign Moderator" → User Action Modal with role selection and a rationale of at least 5 words; role change and audit entry (`previous_role`/`new_role`) committed atomically.
+     - Added alternative flows: `Administrator Cancels Role Assignment`, `Missing or Insufficient Rationale`, `Target Not Found or Not Eligible`, `Concurrent Role Update`, and `Role Update or Audit Failure`.
 
 3. **Expanded Prototype Requirements:**
-   - To ensure a comprehensive mapping between documentation and the actual User Interface, we rigorously expanded the Prototype Requirements section for every single use case.
-   - For every Alternative Flow added (such as Validation Errors, Rate Limits, Missing Permissions, or External OAuth logic), a dedicated placeholder screen was introduced into the prototype requirements list (e.g., `Alt Flow - Username Already Taken`, `Alt Flow - File Too Large`, `Alt Flow - Rate Limit Exceeded`). 
-   - This explicitly mandates that the UI/UX design team must account for, and visually design, the specific error states, edge cases, and graceful degradation paths identified during the backend synchronization process.
+   - Every use case now includes dedicated prototype screens for each new alternative flow (validation errors, rate limits, OAuth flows, cancellations, and failure paths), so the UI/UX design team must account for all error states and edge cases identified during the revision.
