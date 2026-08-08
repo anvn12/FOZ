@@ -1,3 +1,46 @@
+<div style="text-align: center; margin: 0 auto; padding: 40px 20px; min-height: 85vh; display: flex; flex-direction: column;">
+  <div style="text-transform: uppercase; line-height: 1.8;">
+    <div>VNUHCM - University of Science</div>
+    <div>Faculty of Information Technology</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="margin: 20px 0;">
+    <h1 style="margin: 0; padding: 0 0 10px 0; font-size: 2.2em; border: none;">PA4 Report</h1>
+    <div style="font-size: 1.2em; font-weight: bold;">Group 6: PDF</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 40px;">
+    CSC13002 - Introduction to Software Engineering
+  </div>
+
+  <div style="display: flex; justify-content: space-between; margin: 0 5%; text-align: left; line-height: 1.8;">
+    <div style="width: 50%;">
+      <div style="font-style: italic;">Author:</div>
+      <div>Nguyễn Tuấn An - 24127011</div>
+      <div>Nguyễn Hải Nam - 24127088</div>
+      <div>Nguyễn Hải Trọng - 24127311</div>
+      <div>Phạm Đinh Gia Khánh - 24127420</div>
+      <div>Võ An Phú - 24127494</div>
+    </div>
+    <div style="width: 45%;">
+      <div style="font-style: italic;">Lecturer:</div>
+      <div>Ms. Nguyễn Thị Minh Tuyền</div>
+      <div>Mr. Hồ Tuấn Thanh</div>
+      <div>Mr. Mai Anh Tuấn</div>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding-top: 60px;">
+    July 08th, 2026
+  </div>
+</div>
+
+<div style="page-break-after: always;"></div>
+
 # Table of Contents
 
 - [A - Revised Use-Case Specification](#a---revised-use-case-specification)
@@ -363,6 +406,8 @@
 		- [Scrum Meetings](#scrum-meetings)
 		- [Sprint Review](#sprint-review)
 		- [Jira Board](#jira-board)
+
+<div style="page-break-after: always;"></div>
 
 # A - Revised Use-Case Specification
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Phạm Đinh Gia Khánh*
@@ -2673,4 +2718,5 @@ What lessons we could learn: the importance of learning and grinding.
 
 ### Jira Board
 
-<insert board>
+![Jira Board 1](./images/jira1.png)
+![Jira Board 2](./images/jira2.png)
