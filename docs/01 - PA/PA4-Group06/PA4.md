@@ -751,8 +751,8 @@ Allows an authenticated user to reply to a post or to another comment.
 4. The flow resumes at step 3.
 ##### 2.2.3 Long Comment Display
 1. When displaying a comment that exceeds 240 characters or 4 lines of text.
-2. The system automatically truncates the body text preview and appends a "See more" toggle action.
-3. The user clicks "See more" to expand and view the full comment content.
+2. The system automatically truncates the body text preview and appends a "Read more" toggle action.
+3. The user clicks "Read more" to expand and view the full comment content.
 
 ### 3. Special Requirements
 * None.
@@ -771,7 +771,7 @@ Allows an authenticated user to reply to a post or to another comment.
    ![](<./Prototype requirement/UC12-1.png>)
 
   **Screen 2 (Alternative Flow 2):**
-   ![](<./Prototype requirement/UC12-2.png>)
+   ![](<./Prototype requirement/UC12-2.jpg>)
 
     **Screen 3 (Alternative Flow 3):**
    ![](<./Prototype requirement/UC12-3.png>)
