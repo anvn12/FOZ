@@ -1509,299 +1509,852 @@ Allows an Administrator to promote an eligible Standard User to the Moderator ro
 * **Screen 3 (Alternative Flow 2):**
   ![](<./Prototype requirement/UC21-3.png>)
 
+
 # B - Software Architecture: System Context Diagram
 
-*Work performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam*
+*Work performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Hải Nam, Võ An Phú, Nguyễn Tuấn An | Edited by: Võ An Phú, Nguyễn Tuấn An*
 
-## Tech Stack
-
-The FOZ project uses the following technologies across its stack:
+## 1. Technology Stack
 
 ### Frontend
-- **Framework & Language**: React 19 with TypeScript 6 for building a robust and type-safe UI.
-- **Build Tool**: Vite 8 for fast, modern web development and bundling.
-- **Styling**: Tailwind CSS v4 (`@tailwindcss/postcss`) for utility-first styling, without UI component libraries.
-- **Routing**: `react-router-dom` v7 for client-side navigation.
-- **State Management**: 
-  - `@tanstack/react-query` v5 for server state (fetching, caching, and synchronizing data).
-  - `zustand` v5 for lightweight client-side state management.
-- **Forms & Validation**: `react-hook-form` v7 coupled with Zod v4 for robust client-side validation.
-- **UI Notifications**: `react-hot-toast` for toast notifications.
+
+| Technology | Purpose |
+|---|---|
+| **React 19** | UI component framework (SPA) |
+| **TypeScript 6** | Type-safe application code |
+| **Vite 8** | Build tool and dev server with HMR |
+| **Tailwind CSS 4** | Utility-first styling (vanilla config, no UI library) |
+| **react-router-dom 7** | Client-side routing |
+| **@tanstack/react-query 5** | Server-state management and caching |
+| **zustand 5** | Lightweight client-state management (auth store) |
+| **react-hook-form 7** | Form state management and validation |
+| **react-hot-toast 2** | Toast notification system |
+| **react-icons 5** | Icon library |
+| **Vitest 4** | Unit testing framework |
 
 ### Backend
-- **Runtime**: Node.js v24 (current LTS) utilizing ES Modules (ESM).
-- **Framework**: Express 5 with hand-wired Zod validation middleware and a central error handler.
-- **Database ORM**: Drizzle ORM (SQL-visible approach) along with `drizzle-kit` for managing schema migrations.
-- **Authentication**: 
-  - JWT (JSON Web Tokens) for access control (15-minute access token in memory, 7-day refresh token stored in an HttpOnly, SameSite=Lax cookie).
-  - `bcrypt` for secure password hashing.
-- **Validation**: Zod v4 used strictly at inbound trust boundaries (request bodies, query params).
+
+| Technology | Purpose |
+|---|---|
+| **Node.js (LTS ≥ 24)** | JavaScript runtime (ESM) |
+| **Express 5** | Web framework for RESTful API |
+| **TypeScript 6** | Type-safe server code |
+| **Drizzle ORM** | SQL-visible ORM with type-safe queries |
+| **drizzle-kit** | Database migration tooling |
+| **Zod 4** | Runtime schema validation at API boundaries |
+| **bcrypt 6** | Password hashing |
+| **jsonwebtoken 9** | JWT access and refresh token management |
+| **express-rate-limit 8** | Rate limiting for abuse-prone endpoints |
+| **multer 2** | Multipart file upload handling |
+| **sharp 0.35** | Server-side image processing and optimization |
+| **cookie-parser** | HTTP cookie parsing for refresh tokens |
+| **Vitest 4** | Unit and integration testing |
 
 ### Database
-- **Database Engine**: PostgreSQL 16 running locally via Docker (`docker-compose.yml`) for robust, relational data persistence.
 
-### External APIs / Services
-- **AI / LLM Provider**: Integration with the Google Gemini API (e.g., `gemini-2.5-flash`) strictly for the "Post Summarize (TL;DR)" feature, utilizing a direct `fetch`-based provider fallback loop.
+| Technology | Purpose |
+|---|---|
+| **PostgreSQL 16** | Primary relational database (provisioned via Docker) |
+| **postgres.js** | Node.js PostgreSQL client driver |
 
+### External Services
 
-## C4 Model - Level 1 (System Context Diagram)
+| Service | Purpose |
+|---|---|
+| **Cloudinary** | Cloud-based image/media storage and CDN delivery |
+| **Google Generative AI API** (Gemini) | AI-powered post & comment summarization (TL;DR) with fallback provider chain |
+| **Google OAuth 2.0** | Social authentication (Google Sign-In) |
+
+### Shared Module
+
+| Technology | Purpose |
+|---|---|
+| **`src/shared/`** | Zod schemas, DTOs, enums - single source of truth imported by both frontend and backend via `#shared/*` path aliases. No npm workspace, no codegen, no tRPC. |
+
+---
+
+## 2. C4 Level 1 - System Context Diagram
+
+This diagram shows FOZ as a single box, the actors who interact with it, and the external systems it depends on.
 
 ```mermaid
 flowchart TD
-    User(["FOZ User<br/>Guest · Standard · Moderator · Admin<br/>interacts with the community"])
-    FOZ["FOZ Platform<br/>web-based community forum<br/>(React SPA · Express API · PostgreSQL)"]
-    AI["AI Provider API<br/>Google Gemini<br/><i>external LLM service</i>"]
+    subgraph actors [" "]
+        Guest(["Guest User<br/><i>Unauthenticated visitor</i><br/>Browses posts and profiles"])
+        Standard(["Standard User<br/><i>Registered member</i><br/>Creates posts, comments,<br/>reacts, reports content"])
+        Moderator(["Moderator<br/><i>Content moderator</i><br/>Reviews reports,<br/>flags violations"])
+        Admin(["Administrator<br/><i>System administrator</i><br/>Manages users, categories,<br/>issues punishments"])
+    end
 
-    User -. "uses<br/>HTTPS" .-> FOZ
-    FOZ -. "TL;DR summary<br/>HTTPS/REST" .-> AI
+    FOZ["FOZ Forum Platform<br/><i>Software System</i><br/><br/>A threads-style community forum<br/>where users create posts, comment,<br/>react, search, and interact with<br/>AI-generated summaries"]
 
-    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
-    class AI external
+    subgraph external [" "]
+        Google["Google OAuth 2.0<br/><i>External System</i><br/>Provides social login<br/>authentication"]
+        Gemini["Google Generative AI<br/>(Gemini API)<br/><i>External System</i><br/>Powers AI post/comment<br/>summarization (TL;DR)"]
+        Cloudinary["Cloudinary<br/><i>External System</i><br/>Cloud image storage,<br/>transformation, and CDN"]
+    end
+
+    Guest -. "Browses feed, searches<br/>posts, views profiles<br/>[HTTPS]" .-> FOZ
+    Standard -. "Creates posts, comments,<br/>reacts, uploads media,<br/>requests AI summaries<br/>[HTTPS]" .-> FOZ
+    Moderator -. "Reviews reports queue,<br/>flags or dismisses reports<br/>[HTTPS]" .-> FOZ
+    Admin -. "Manages users, categories,<br/>system settings, audit logs,<br/>issues punishments<br/>[HTTPS]" .-> FOZ
+
+    FOZ -. "Exchanges OAuth<br/>authorization code<br/>for user profile<br/>[HTTPS]" .-> Google
+    FOZ -. "Sends post + comments<br/>for summarization<br/>[HTTPS REST]" .-> Gemini
+    FOZ -. "Uploads/deletes images<br/>via stream API<br/>[HTTPS]" .-> Cloudinary
+
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef person fill:#08427b,stroke:#073b6e,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+
+    class FOZ system
+    class Guest,Standard,Moderator,Admin person
+    class Google,Gemini,Cloudinary ext
 ```
 
 ### Diagram Explanation
 
-- **FOZ User (Actor)**: Represents all users interacting with the application. Depending on their role (Guest, Standard User, Moderator, Admin), they can view content, participate in discussions, manage profiles, report inappropriate content, or administrate the platform. Users interact with the FOZ Platform via a modern web browser over secure HTTPS.
-- **FOZ Platform (System)**: The core software system being built. It encompasses the frontend React application, the Node.js/Express backend API, and the PostgreSQL database. It handles user authentication, content management (posts, comments, attachments), and interactions (likes, reports).
-- **AI Provider API (External System)**: An external third-party LLM service (Google Gemini, e.g. `gemini-2.5-flash`). The FOZ Platform securely communicates with this API over HTTPS/REST to send post and top-comment text payloads in order to receive concise, AI-generated summaries for the "Post Summarize (TL;DR)" feature. It sits completely outside the internal control of the system but is a critical dependency for this specific feature.
+Four actor types interact with the system:
+
+- **Guest** — Unauthenticated. Can browse the feed, search, and view profiles. Cannot create content, react, report, or use AI features.
+- **Standard User** — Authenticated member. Everything a guest can do, plus creating posts (text + images), commenting (nested replies), reacting, editing/deleting own content, managing their profile, reporting, requesting AI TL;DR summaries, and changing their password.
+- **Moderator** — Standard user privileges plus the moderation queue (review, flag, or dismiss reports). Cannot issue punishments directly — this enforces separation of powers.
+- **Administrator** — Moderator privileges plus the admin dashboard: user management (warn, suspend, ban), category management, system settings, audit logs, and punishment issuance.
+
+The system depends on three external services:
+
+- **Google OAuth 2.0** — Social login. The backend exchanges an auth code for a token, fetches the Google profile, and links or creates a FOZ account.
+- **Google Generative AI (Gemini)** — AI post/comment summarization. Uses a fallback chain across multiple Gemini model versions for resilience.
+- **Cloudinary** — Image storage and CDN. Attachments and avatars are streamed to Cloudinary; CDN URLs are stored in the database.
+
+---
 
 # C - Software Architecture: Container Diagram and Component Diagram
 
-*Work performed by: Nguyễn Hải Nam | Reviewed and edited by: Võ An Phú*
+*Work performed by: Nguyễn Hải Nam | Reviewed by: Võ An Phú, Nguyễn Tuấn An | Edited by: Võ An Phú, Nguyễn Tuấn An*
 
-## 1. C4 Model - Level 2 (Container Diagram)
+## 3. C4 Level 2 - Container Diagram
+
+Zooms into FOZ to show its deployable units (containers), the technology each uses, and how they talk to each other. In C4 terms a "container" is a separately runnable process or data store.
+
+### 3.1 Diagram
+
+```mermaid
+flowchart TD
+    Guest(["Guest User"])
+    Standard(["Standard User"])
+    Moderator(["Moderator"])
+    Admin(["Administrator"])
+
+    subgraph foz ["FOZ Forum Platform"]
+        SPA["Web Application<br/><i>React 19 · TypeScript · Vite 8</i><br/><br/>SPA delivering forum UI:<br/>feed, post detail, profile,<br/>search, moderation panel,<br/>admin dashboard.<br/>Styled with Tailwind CSS."]
+
+        API["Backend API Server<br/><i>Node.js v24 · Express 5 · ESM</i><br/><br/>RESTful API under /api/v1<br/>auth · validation · business logic<br/>rate limiting · CORS"]
+
+        DB[("PostgreSQL Database<br/><i>postgres:16</i><br/><br/>User accounts, profiles, posts,<br/>comments, reactions, reports,<br/>audit logs, categories, hashtags,<br/>summaries, system settings")]
+    end
+
+    Google["Google OAuth 2.0"]
+    Gemini["Google Generative AI"]
+    Cloudinary["Cloudinary"]
+
+    Guest -. "Visits pages [HTTPS]" .-> SPA
+    Standard -. "Interacts with forum [HTTPS]" .-> SPA
+    Moderator -. "Reviews reports [HTTPS]" .-> SPA
+    Admin -. "Manages system [HTTPS]" .-> SPA
+
+    SPA -. "JSON REST calls<br/>[HTTPS /api/v1/*]" .-> API
+    API -. "Reads/writes data<br/>[postgres.js, TCP :5432]" .-> DB
+    API -. "Exchanges OAuth code<br/>[HTTPS]" .-> Google
+    API -. "Summarization requests<br/>[HTTPS REST]" .-> Gemini
+    API -. "Uploads/deletes images<br/>[HTTPS]" .-> Cloudinary
+
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef person fill:#08427b,stroke:#073b6e,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+
+    class SPA,API,DB system
+    class Guest,Standard,Moderator,Admin person
+    class Google,Gemini,Cloudinary ext
+```
+
+### 3.2 Container Descriptions
+
+- **Web Application (SPA)** — Renders the entire forum UI: feed (latest + for-you), post detail with comments/reactions, profiles, search, moderation queue, admin dashboard, and auth screens. No direct DB access, all data comes from the API via REST.
+  - **Technology**: React 19 + TypeScript + Vite 8, styled with Tailwind CSS v4. Key libs: `react-router-dom` (routing), `@tanstack/react-query` (server-state cache), `zustand` (auth state), `react-hook-form` (forms), `react-hot-toast` (toasts). Tested with Vitest + Testing Library.
+  - **Communication**: Sends JSON requests to `/api/v1/*`. Dev: Vite proxies to `localhost:4000`. Prod: Vercel rewrites to the Render backend. Auth uses `Bearer` tokens; refresh uses an HttpOnly cookie.
+
+- **Backend API Server** — RESTful API under `/api/v1` covering auth, posts, comments, reactions, profiles, search, upload, moderation, admin, hashtags, and a `/health` probe. Includes AI summarization, Zod validation, rate limiting, CORS, and a central error handler.
+  - **Technology**: Node.js v24 (ESM) + Express 5. Auth: `jsonwebtoken` + `bcrypt`. DB: Drizzle ORM + `postgres.js` + `drizzle-kit` migrations. Validation: `zod`. Uploads: `multer` + `sharp`. Env: fail-fast Zod validation at startup.
+  - **Communication**: Receives JSON from the SPA. Connects to Postgres via `postgres.js` (TCP :5432, pool max 10). Calls Google OAuth, Gemini, and Cloudinary over HTTPS.
+
+- **PostgreSQL Database** — Stores all relational data: users, profiles, refresh sessions, posts, attachments, comments, reactions, reports, audit logs, categories, settings, hashtags, summaries, and social links.
+  - **Technology**: `postgres:16` Docker service (`foz_db`, port 5432, volume `foz_pg_data`, database `foz_dev`). Migrations via `drizzle-kit`.
+  - **Communication**: Accepts connections only from the Backend API Server (TCP :5432). No browser or SPA access.
+
+- **Google OAuth 2.0** *(external)* — Social login. Backend exchanges auth codes for tokens and fetches user profiles. HTTPS only, called by the backend.
+
+- **Google Generative AI / Gemini** *(external)* — On-demand AI TL;DR summaries (post snapshot, highlights, sentiment). Uses `gemini-2.5-flash` / `gemini-1.5-flash` / `gemini-2.0-flash` with a fallback chain. HTTPS only, called by the backend.
+
+- **Cloudinary** *(external)* — Image storage and CDN. Attachments and avatars are streamed up; CDN URLs are persisted in Postgres. HTTPS only, called by the backend.
+
+### 3.3 Relationships Summary
+
+| From | To | Protocol | Description |
+|---|---|---|---|
+| User (all roles) | Web Application | HTTPS | Browsing, form submission, and UI interaction |
+| Web Application | Backend API Server | HTTP/HTTPS JSON | REST calls to `/api/v1/*`. Dev: Vite proxies to `localhost:4000`. Authenticated calls pass `Bearer` tokens; refresh uses HTTP-only credentials |
+| Backend API Server | PostgreSQL Database | SQL over TCP :5432 | Drizzle ORM queries via `postgres-js` driver |
+| Backend API Server | Google OAuth 2.0 | HTTPS | Exchanges authorization codes for tokens, fetches user profiles |
+| Backend API Server | Google Gemini API | HTTPS REST | Sends structured prompts, receives AI-generated summaries |
+| Backend API Server | Cloudinary | HTTPS | Streams image uploads and issues delete requests |
+
+
+---
+
+## 4. C4 Level 3 - Component Diagrams
+
+These diagrams zoom into the Web Application and Backend API Server containers to show their internal components. The database and external systems appear for context.
+
+### 4.1 Frontend - Web Application
+
+#### 4.1.1 Diagram
+
+```mermaid
+flowchart TD
+    API_EXT["Backend API Server<br/>[container: Node.js · Express 5]"]
+
+    subgraph spa ["Web Application - React 19 + Vite 8"]
+
+        subgraph routing ["Routing & Layout Layer"]
+            Router["App Router<br/>[component: React Router]<br/><br/>Client-side routes with<br/>role-based guards<br/>(RequireRole, AdminGuard)"]
+        end
+
+        subgraph pages ["Page Components"]
+            FeedPages["Feed Pages<br/>[component: React page component]<br/><br/>Latest and For-You feed<br/>with infinite scroll and<br/>trending hashtags widget"]
+            PostPage["Post Detail Page<br/>[component: React page component]<br/><br/>Full post view, comments,<br/>nested replies, reactions,<br/>TL;DR summary, media,<br/>reporting"]
+            ProfilePage["Profile Page<br/>[component: React page component]<br/><br/>User profile with posts,<br/>bio, avatar, edit modal"]
+            SearchPage["Search Page<br/>[component: React page component]<br/><br/>Full-text search for<br/>posts, users, hashtags<br/>with tab filters"]
+            AuthPages["Auth Pages<br/>[component: React page component]<br/><br/>Credential and social<br/>login flows, registration,<br/>avatar onboarding"]
+            ModPages["Moderator Pages<br/>[component: React page component]<br/><br/>Report review queue<br/>with escalate/dismiss"]
+            AdminPages["Admin Pages<br/>[component: React page component]<br/><br/>Full admin panel"]
+        end
+
+        subgraph state ["State & Data Layer"]
+            AuthStore["Auth Store<br/>[component: Zustand store]<br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
+            APIClient["API Client<br/>[component: TypeScript fetch client]<br/><br/>Typed fetch functions and<br/>react-query hooks for<br/>each backend resource"]
+        end
+    end
+
+    Router -. "routes to" .-> FeedPages
+    Router -. "routes to" .-> PostPage
+    Router -. "routes to" .-> ProfilePage
+    Router -. "routes to" .-> SearchPage
+    Router -. "routes to" .-> AuthPages
+    Router -. "routes to" .-> ModPages
+    Router -. "routes to" .-> AdminPages
+
+    FeedPages -. "calls API" .-> APIClient
+    PostPage -. "calls API" .-> APIClient
+    ProfilePage -. "calls API" .-> APIClient
+    SearchPage -. "calls API" .-> APIClient
+    ModPages -. "calls API" .-> APIClient
+    AdminPages -. "calls API" .-> APIClient
+    AuthPages -. "reads/writes session" .-> AuthStore
+    AuthPages -. "calls API" .-> APIClient
+
+    AuthStore -. "injects Bearer token" .-> APIClient
+    APIClient -. "HTTPS JSON /api/v1/*" .-> API_EXT
+
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
+
+    class API_EXT system
+    class Router,FeedPages,PostPage,ProfilePage,SearchPage,AuthPages,ModPages,AdminPages comp
+    class AuthStore,APIClient comp
+```
+
+#### 4.1.2 Component Descriptions
+
+- **App Router (`App.tsx`)**
+  - **Responsibility**: Declares all client-side routes (`/latest`, `/foryou`, `/posts/:id`, `/profiles/@:username`, `/search`, `/login`, `/register`, `/moderator`, `/admin/*`, etc.) and wraps protected routes with `RequireRole` and `AdminGuard` components that check the auth store for the required role.
+  - **Relationships**: Receives navigation actions from the User; renders matching Page Components; injects global layout and dialog controls.
+
+- **Feed Pages (`HomePage`)**
+  - **Responsibility**: Renders the post feed in two modes: "Latest" (chronological) and "For You" (engagement-ranked). Supports infinite scroll via cursor-based pagination. Includes a TrendingHashtagsWidget sidebar.
+  - **Relationships**: Calls APIClient for post, feed, and reaction data.
+
+- **Post Detail Page (`PostPage`)**
+  - **Responsibility**: Full post view with body text, media gallery, reaction controls, comment thread with nested replies, AI-generated TL;DR summary card, report button, and post edit/delete for the owner.
+  - **Relationships**: Calls APIClient for post, comment, reaction, summary, and report data.
+
+- **Profile Page (`ProfilePage`)**
+  - **Responsibility**: Displays a user's profile (display name, bio, avatar, location, website) and their posts. Includes a ProfileEditModal for the profile owner to update their information and upload avatars.
+  - **Relationships**: Calls APIClient for profile and user post data.
+
+- **Search Page (`SearchPage`)**
+  - **Responsibility**: Provides full-text search across posts, users, and hashtags with tab-based result filtering.
+  - **Relationships**: Calls APIClient for search queries.
+
+- **Auth Pages (`LoginPage`, `RegisterPage`, `OnboardingPage`, `ChangePasswordPage`)**
+  - **Responsibility**: Login page (email/password + Google OAuth), register page (with Zod-validated form), onboarding avatar upload, and change-password page.
+  - **Relationships**: Uses Auth Store to persist session; calls APIClient for auth endpoints.
+
+- **Moderator Pages (`ModDashboard`, `ReportsQueue`)**
+  - **Responsibility**: Moderator dashboard with report statistics and a reports queue page where moderators can review, flag (escalate), or dismiss user reports.
+  - **Relationships**: Calls APIClient for moderation endpoints; guarded by RequireRole.
+
+- **Admin Pages** (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. Guarded by AdminGuard. Calls APIClient for admin endpoints.
+
+- **Auth Store (`src/frontend/src/stores/auth.ts`)**
+  - **Responsibility**: Zustand store managing client-side authentication state: `user` object, `accessToken`, `setSession`, `clearSession`, and `silentRefresh` (automatic token renewal via the refresh cookie).
+  - **Relationships**: Read by APIClient for Bearer token injection; updated by Auth Pages upon login, registration, or session restoration.
+
+- **API Client (`src/frontend/src/api/`)**
+  - **Responsibility**: Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`, `upload.ts`, `admin.ts`, `hashtags.ts`) providing typed `fetch` wrappers with `Bearer` authorization headers and `@tanstack/react-query` hooks for caching and data sync.
+  - **Relationships**: Invoked by all page components; reads access tokens from Auth Store; executes REST calls to Backend API Server.
+
+---
+
+### 4.2 Backend - API Server
+
+The backend is split into two diagrams for readability: **Diagram A** covers content and discovery (posts, comments, search, profiles, hashtags, media, reports, AI TL;DR); **Diagram B** covers identity and governance (auth, OAuth, reactions, moderation, admin).
+
+**Why AI TL;DR is in Diagram A:** the summary endpoints live on the Post Router (`/posts/:postId/summary`), and the summary service / AI summarizer are wired from there, not from a standalone router.
+
+**Why no Report Service in Diagram B:** report *creation* lives on the Post Router (Diagram A); the Moderation Router only reads/updates reports directly against the database and has no service layer.
+
+#### 4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media · Reports · AI TL;DR)
+
+```mermaid
+flowchart TD
+    WebApp_A["Web Application<br/>[container: React SPA]"]
+    DB_A[("PostgreSQL<br/>[container: postgres:16]")]
+    Cloud_A["Cloudinary<br/>[external: Cloudinary]"]
+    Gemini_A["Gemini API<br/>[external: Google Generative AI]"]
+
+    subgraph BE_A ["Backend API Server [Container]"]
+        GW_A["API Gateway<br/>[component: Express middleware pipeline]<br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
+
+        PostR["Post Router<br/>[component: Express Router]<br/><br/>Post CRUD, feed (latest,<br/>for-you, popular), repost,<br/>report submission,<br/>AI summary endpoints"]
+        CommentR["Comment Router<br/>[component: Express Router]<br/><br/>Comment CRUD,<br/>author comments,<br/>nested replies"]
+        SearchR["Search Router<br/>[component: Express Router]<br/><br/>Full-text search<br/>(posts, users) +<br/>discovery feed"]
+        ProfileR["Profile Router<br/>[component: Express Router]<br/><br/>Get/update profile,<br/>avatar upload"]
+        HashtagR["Hashtag Router<br/>[component: Express Router]<br/><br/>Trending hashtags,<br/>hashtag feed"]
+        UploadR["Upload Router<br/>[component: Express Router]<br/><br/>Local image upload +<br/>Cloudinary upload/delete"]
+
+        PostSvc["Post Service<br/>[component: TypeScript service]<br/><br/>Post CRUD logic,<br/>feed assembly (incl.<br/>For-You ranking),<br/>attachment handling"]
+        CommentSvc["Comment Service<br/>[component: TypeScript service]<br/><br/>Comment CRUD,<br/>nested reply logic"]
+        ProfileSvc["Profile Service<br/>[component: TypeScript service]<br/><br/>Profile read/update,<br/>avatar change cleanup"]
+        ReportSvc["Report Service<br/>[component: TypeScript service]<br/><br/>Report creation against<br/>posts/comments"]
+        ImgProc["Image Processor<br/>[component: sharp image pipeline]<br/><br/>sharp: resize, WebP,<br/>EXIF strip, size cap"]
+        CloudSvc["Cloudinary Service<br/>[component: Cloudinary SDK wrapper]<br/><br/>Stream upload, asset<br/>deletion, public-id parsing"]
+        PostSumSvc["Post Summary Service<br/>[component: TypeScript service]<br/><br/>Summary lifecycle:<br/>cache check, generate,<br/>upsert in DB"]
+        AISvc["AI Summarizer<br/>[component: TypeScript service]<br/><br/>LLM prompt building,<br/>Gemini fallback chain,<br/>JSON parsing"]
+
+        Shared_A["Shared Types<br/>[component: Zod schemas]<br/><br/>Zod DTOs · enums"]
+    end
+
+    WebApp_A -. "HTTP JSON /api/v1" .-> GW_A
+
+    GW_A -. "/posts" .-> PostR
+    GW_A -. "/ (comments)" .-> CommentR
+    GW_A -. "/search" .-> SearchR
+    GW_A -. "/profiles" .-> ProfileR
+    GW_A -. "/hashtags" .-> HashtagR
+    GW_A -. "/upload" .-> UploadR
+
+    PostR -. "delegates CRUD" .-> PostSvc
+    PostR -. "delegates summary" .-> PostSumSvc
+    PostR -. "creates reports" .-> ReportSvc
+    PostR -. "syncs hashtags" .-> DB_A
+    CommentR -. "delegates CRUD" .-> CommentSvc
+    ProfileR -. "delegates" .-> ProfileSvc
+    UploadR -. "processes image" .-> ImgProc
+    UploadR -. "streams to Cloudinary" .-> CloudSvc
+    PostSumSvc -. "requests AI generation" .-> AISvc
+
+    PostSvc -. "reads/writes" .-> DB_A
+    PostSvc -. "deletes assets on post delete" .-> CloudSvc
+    CommentSvc -. "reads/writes" .-> DB_A
+    SearchR -. "queries" .-> DB_A
+    ProfileSvc -. "reads/writes" .-> DB_A
+    ProfileSvc -. "deletes old avatars" .-> CloudSvc
+    HashtagR -. "queries" .-> DB_A
+    ReportSvc -. "reads/writes" .-> DB_A
+    PostSumSvc -. "caches summaries" .-> DB_A
+    CloudSvc -. "HTTPS" .-> Cloud_A
+    AISvc -. "HTTPS REST" .-> Gemini_A
+
+    GW_A -. "validate" .-> Shared_A
+    PostSvc -. "schemas" .-> Shared_A
+
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+
+    class WebApp_A,DB_A system
+    class Cloud_A,Gemini_A ext
+    class GW_A,PostR,CommentR,SearchR,ProfileR,HashtagR,UploadR comp
+    class PostSvc,CommentSvc,ProfileSvc,ReportSvc,ImgProc,CloudSvc,PostSumSvc,AISvc comp
+    class Shared_A comp
+```
+
+#### 4.2.2 Diagram B - Identity, Governance & AI (Auth · OAuth · Reactions · Moderation · Admin)
+
+```mermaid
+flowchart TD
+    WebApp_B["Web Application<br/>[container: React SPA]"]
+    DB_B[("PostgreSQL<br/>[container: postgres:16]")]
+    Google_B["Google OAuth 2.0<br/>[external: Google OAuth 2.0]"]
+
+    subgraph BE_B ["Backend API Server [Container]"]
+        GW_B["API Gateway<br/>[component: Express middleware pipeline]<br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
+
+        AuthR["Auth Router<br/>[component: Express Router]<br/><br/>Register, login, refresh,<br/>logout, me, check-username,<br/>Google OAuth callback"]
+        ReactionR["Reaction Router<br/>[component: Express Router]<br/><br/>Like/unlike on posts<br/>and comments"]
+        ModR["Moderation Router<br/>[component: Express Router]<br/><br/>Report queue, metrics,<br/>escalate/dismiss/delete"]
+        AdminR["Admin Router<br/>[component: Express Router]<br/><br/>User mgmt, categories,<br/>settings, audit logs,<br/>instant content removal"]
+
+        AuthSvc["Auth Service<br/>[component: TypeScript service]<br/><br/>Password hashing (bcrypt),<br/>JWT signing/verification,<br/>refresh rotation, cookies"]
+        SocialAuth["Social Auth Service<br/>[component: TypeScript service]<br/><br/>OAuth profile linking,<br/>account creation,<br/>username generation"]
+        OAuthProv["OAuth Providers<br/>[component: TypeScript service]<br/><br/>Google code exchange,<br/>profile fetching"]
+        ReactionSvc["Reaction Service<br/>[component: TypeScript service]<br/><br/>likeTarget / unlikeTarget<br/>on posts and comments"]
+        AdminSvc["Admin Service<br/>[component: TypeScript service]<br/><br/>User role/status mgmt,<br/>category CRUD, settings,<br/>stats, audit logging"]
+
+        EnvCfg["Env Config<br/>[component: Zod config validator]<br/><br/>Fail-fast env validation<br/>at startup"]
+
+        Shared_B["Shared Types<br/>[component: Zod schemas]<br/><br/>Zod DTOs · enums"]
+    end
+
+    WebApp_B -. "HTTP JSON /api/v1" .-> GW_B
+
+    GW_B -. "/auth" .-> AuthR
+    GW_B -. "/ (reactions)" .-> ReactionR
+    GW_B -. "/moderation" .-> ModR
+    GW_B -. "/admin" .-> AdminR
+
+    AuthR -. "delegates credential auth" .-> AuthSvc
+    AuthR -. "delegates OAuth flow" .-> SocialAuth
+    SocialAuth -. "exchanges code for profile" .-> OAuthProv
+    ReactionR -. "delegates like/unlike" .-> ReactionSvc
+    AdminR -. "delegates admin ops" .-> AdminSvc
+
+    AuthSvc -. "reads/writes users & sessions" .-> DB_B
+    SocialAuth -. "reads/writes users & links" .-> DB_B
+    OAuthProv -. "HTTPS" .-> Google_B
+    ReactionSvc -. "likes/unlikes" .-> DB_B
+    ModR -. "queries/updates reports" .-> DB_B
+    AdminSvc -. "reads/writes admin data" .-> DB_B
+
+    GW_B -. "validate" .-> Shared_B
+    AuthSvc -. "schemas" .-> Shared_B
+
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+
+    class WebApp_B,DB_B system
+    class Google_B ext
+    class GW_B,AuthR,ReactionR,ModR,AdminR comp
+    class AuthSvc,SocialAuth,OAuthProv,ReactionSvc,AdminSvc comp
+    class EnvCfg comp
+    class Shared_B comp
+```
+
+> **Note:** The API Gateway and Shared Types appear in both diagrams (shared infrastructure). The split is purely for presentation — the backend runs as **one container**.
+
+#### 4.2.3 Component Descriptions
+
+##### Middleware Pipeline (API Gateway)
+
+Middleware applied (in order) before routing in `src/backend/index.ts`:
+
+| Component | Responsibility | Source |
+|---|---|---|
+| **CORS Middleware** | Enforces origin-based CORS policy with credentials support. Allowed origins are configurable via `CORS_ORIGIN` env var. | `src/backend/index.ts` |
+| **Auth Middleware** | Extracts and verifies the JWT access token from the `Authorization: Bearer` header. Hydrates `req.user` with `{ sub, role, status }`. Routes can be optionally or mandatorily authenticated (`requireAuth`, `optionalAuth`). | `src/backend/api/auth/` |
+| **Rate Limiter** | Applies configurable per-window rate limits to abuse-prone endpoints (auth, AI summarization). Uses `express-rate-limit` with in-memory store. | `src/backend/lib/rate-limit.ts` |
+| **Zod Validation** | Validates request bodies and parameters against Zod schemas from `src/shared/` at the API boundary. Rejects invalid requests with structured 422 error responses. | Inline in route handlers |
+| **Central Error Handler** | The single place that maps thrown errors to HTTP JSON responses: `ZodError` -> 422, `AuthError` -> status from error, payload-too-large -> 413, unhandled -> 500. No error swallowing anywhere else. | `src/backend/index.ts` |
+
+##### Route Layer
+
+| Router | Mount Point | Endpoints |
+|---|---|---|
+| **Auth Router** | `/api/v1/auth` | `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, `GET /me`, `GET /check-username`, `GET /google`, `GET /google/callback`, `PATCH /password` |
+| **Post Router** | `/api/v1/posts` | `GET /` (feed via `?type=latest\|for-you`, `?authorId=`), `POST /`, `PATCH /:postId`, `DELETE /:postId`, `POST /:postId/repost`, `DELETE /:postId/repost`, `POST /:postId/report`, `GET /:postId/summary`, `POST /:postId/summary/refresh` |
+| **Comment Router** | mounted at `/` (no prefix) | `GET /posts/:postId/comments`, `POST /posts/:postId/comments`, `GET /comments` (by `?authorId=`), `PATCH /comments/:commentId`, `DELETE /comments/:commentId` |
+| **Reaction Router** | mounted at `/` (no prefix) | `POST /posts/:postId/reaction`, `DELETE /posts/:postId/reaction`, `POST /comments/:commentId/reaction`, `DELETE /comments/:commentId/reaction` (like/unlike on posts and comments) |
+| **Profile Router** | `/api/v1/profiles` | `GET /by-username/:username`, `GET /:userId`, `PATCH /me`, `POST /me/avatar` |
+| **Search Router** | `/api/v1/search` | `GET /discovery` (suggested creators, trending discussions, topics), `GET /` (unified search, `?type=posts\|users\|all`) |
+| **Upload Router** | `/api/v1/upload` | `POST /image` (multer → sharp → local disk), `POST /cloudinary` (stream upload), `DELETE /cloudinary/{*publicId}` |
+| **Moderation Router** | `/api/v1/moderation` | `GET /metrics`, `GET /reports`, `PATCH /reports/:reportId/status`, `POST /reports/:reportId/action` (delete_content / dismiss / escalate) |
+| **Admin Router** | `/api/v1/admin` | `GET /metrics`, `GET /users`, `PUT /users/:userId/role`, `DELETE /users/:userId`, `GET /audit-logs`, `GET /reports`, `DELETE /content/:type/:id`, `GET/POST /categories`, `PUT /categories/:id`, `DELETE /categories/:id`, `GET /settings`, `PUT /settings` |
+| **Hashtag Router** | `/api/v1/hashtags` | `GET /trending`, `GET /:tag/posts` |
+
+##### Service Layer
+
+| Component | Responsibility | Key Relationships |
+|---|---|---|
+| **Auth Service** (`src/backend/api/auth/auth.service.ts`) | Core authentication logic: password hashing and verification (bcrypt), JWT access token signing and verification (HS256, 15-min TTL), refresh token issuance with rotation (7-day, HttpOnly cookie), cookie construction, and session management. Defines the `AuthError` class used by the central error handler. | Reads/writes `user_accounts`, `profiles`, `refresh_sessions` tables. |
+| **Social Auth Service** (`src/backend/api/auth/social-auth.service.ts`) | Handles the OAuth account-linking flow: finds existing social links, links social profiles to existing email-matched accounts, or creates new user accounts with generated usernames. Issues session tokens matching the standard auth flow. | Calls OAuth Providers; reads/writes `user_accounts`, `user_social_links` tables. |
+| **OAuth Providers** (`src/backend/api/auth/oauth-providers.ts`) | Implements provider-specific OAuth logic. Currently supports Google: exchanges authorization codes for tokens via the Google token endpoint, then fetches the user profile from the Google userinfo API. | Calls Google OAuth 2.0 (external). |
+| **Post Service** (`src/backend/services/interactions/posts.ts`) | Business logic for post CRUD: creation (with content and attachments), reading (single post with author/reactions/comment count), updating, soft-deletion (respecting ownership), repost create/remove, and feed assembly with cursor-based pagination. Includes the For-You feed algorithm (engagement-weighted scoring via `feed-ranking.ts`). Hashtag sync on create/update is done by the **Post Router** directly, not this service. | Reads/writes `posts`, `post_attachments`; calls Cloudinary Service to delete attachments on post delete. |
+| **Comment Service** (`src/backend/services/interactions/comments.ts`) | Business logic for comment CRUD: creation (with post-existence check and optional parent-comment for nesting), updating, and soft-deletion with ownership enforcement. | Reads/writes `comments` table. |
+| **Reaction Service** (`src/backend/services/interactions/reactions.ts`) | Like/unlike logic: `likeTarget` adds a reaction, `unlikeTarget` removes it. Currently supports the "like" reaction kind on both posts and comments. | Reads/writes `reactions` table. |
+| **Report Service** (`src/backend/services/interactions/reports.ts`) | Creates user reports against posts or comments with a reason type and optional details. Report creation is invoked by the **Post Router** (`POST /posts/:postId/report`); the Moderation Router reads/updates reports directly via `db` and does not use this service. | Reads/writes `reports` table. Called by Post Router. |
+| **AI Summarizer** (`src/backend/services/ai-summarizer.ts`) | Core AI logic: builds a structured prompt from post content and comment bodies, calls the Gemini API with a fallback chain of model versions (`gemini-2.5-flash` -> `gemini-1.5-flash` -> `gemini-2.0-flash`), parses the JSON response into `{ postSnapshot, keyHighlights, sentiment }`, and falls back to a text-truncation heuristic if all API calls fail. | Calls Gemini API (external). |
+| **Post Summary Service** (`src/backend/services/post-summary.service.ts`) | Orchestrates the summary lifecycle: checks if a cached summary exists and is still fresh, triggers AI Summarizer if not, and upserts the result into the database. | Uses AI Summarizer; reads/writes `post_summaries` table. |
+| **Profile Service** (`src/backend/api/profile/profile.service.ts`) | Profile read by user ID / username and update. On avatar change, deletes the previous Cloudinary avatar asset (best-effort). Defines the `ProfileError` class. | Reads/writes `profiles`; calls Cloudinary Service for old-avatar cleanup. |
+| **Image Processor** (`src/backend/services/image-processor.ts`) | Wraps `sharp`: validates format, auto-orients, resizes to per-upload-type limits, converts to WebP, strips EXIF, and enforces a 2MB output cap with quality step-down. | Used by Upload Router (`POST /upload/image`); writes to local disk, no DB or Cloudinary. |
+| **Cloudinary Service** (`src/backend/services/cloudinary.ts`) | Wraps the Cloudinary SDK: streams file buffers to Cloudinary's upload API, extracts public IDs from URLs, and deletes assets. | Calls Cloudinary (external). Used by Upload Router (`/upload/cloudinary`), Post Service (attachment cleanup), and Profile Service (avatar cleanup). |
+| **Admin Service** | Admin business logic: dashboard statistics (user/post/comment/report counts), user management (role changes, status changes with audit logging), forum category CRUD, system settings management, and audit log retrieval. | Reads/writes `admin_audit_logs`, `forum_categories`, `system_settings`, `reports`, `user_accounts` tables. |
+
+##### Data Access (`src/backend/db/`)
+
+Database access is handled by Drizzle ORM repository modules. These are an implementation detail of the service layer — each service imports the repositories it needs directly. Key tables:
+
+| Table Group | Tables | Used By |
+|---|---|---|
+| **User & Auth** | `user_accounts`, `profiles`, `refresh_sessions`, `user_social_links` | Auth Service, Social Auth Service |
+| **Content** | `posts`, `comments`, `reactions`, `post_attachments` | Post Service, Comment Service, Reaction Service |
+| **Reports & Moderation** | `reports` | Report Service, Admin Service |
+| **Hashtags** | `hashtags`, `post_hashtags` | Post Service, Hashtag Router |
+| **Summaries** | `post_summaries` | Post Summary Service |
+| **Admin** | `admin_audit_logs`, `forum_categories`, `system_settings` | Admin Service |
+
+##### Infrastructure
+
+| Component | Responsibility |
+|---|---|
+| **Env Config** (`src/backend/env.ts`) | Validates all environment variables at startup using a Zod schema. Fails fast with clear error messages if required variables are missing or malformed. Exports the typed `env` object used throughout the backend. |
+
+# D - Deployment Diagram
+
+*Work performed by: Nguyễn Tuấn An | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
+
+> **Version**: 1.1.0
+> **Last Updated**: 2026-08-07
+>
+> This document maps the containers defined in the Architecture Document to the physical and cloud infrastructure that runs them, for both **development** and **production** environments. Diagrams use Mermaid syntax following C4 deployment conventions.
+
+---
+
+**NOTE:** Due to data leak concerns, there are some variables that are not included in this document. 
+
+## 1. Production Deployment Diagram
 
 ### 1.1 Diagram
 
 ```mermaid
-flowchart TD
-    User(["User<br/>reads / writes forum content<br/>via web browser"])
+flowchart LR
+    Browser["User Browser"]
 
-    subgraph FOZ["FOZ [Software System] — threads-style community forum"]
-        WebApp["Web Application<br/>React 19 · TypeScript · Vite<br/><i>SPA — UI, state, forms</i>"]
-        Backend["Backend API Server<br/>Node.js v24 · Express 5 · ESM<br/><i>REST API · auth · feed · AI · validation</i>"]
-        Database[("PostgreSQL Database<br/>postgres:16<br/><i>relational data store</i>")]
+    subgraph vercel ["Vercel CDN — Free Tier"]
+        SPA["Web Application SPA\nReact 19 · Vite 8"]
     end
 
-    LLM["LLM Provider<br/>Google Gemini<br/><i>external</i>"]
+    subgraph render ["Render Web Service — Free Tier"]
+        API["Backend API Server\nNode.js v24 · Express 5"]
+    end
 
-    User -. "HTTPS<br/>browse / submit" .-> WebApp
-    WebApp -. "HTTP JSON<br/>/api/v1" .-> Backend
-    Backend -. "SQL / :5432" .-> Database
-    Backend -. "HTTPS fetch" .-> LLM
+    subgraph neon ["Neon — Serverless PostgreSQL"]
+        DB[("PostgreSQL 16")]
+    end
 
-    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
-    class LLM external
+    subgraph google ["Google Cloud Platform"]
+        GoogleOAuth["Google OAuth 2.0"]
+        GeminiAPI["Gemini API"]
+    end
+
+    Cloudinary["Cloudinary CDN"]
+
+    Browser -- "HTTPS :443\nStatic assets" --> SPA
+    SPA -. "Vercel rewrite\n/api/v1/* → Render\nHTTPS :443" .-> API
+    API -- "SQL over TLS\npostgres.js :5432" --> DB
+    API -- "HTTPS :443\nOAuth exchange" --> GoogleOAuth
+    API -- "HTTPS :443\nAI summarization" --> GeminiAPI
+    API -- "HTTPS :443\nImage upload/delete" --> Cloudinary
+    Browser -- "HTTPS :443\nCDN image URLs" --> Cloudinary
+
+    classDef container fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+    classDef client fill:#08427b,stroke:#073b6e,color:#fff
+    classDef db fill:#2d6a4f,stroke:#1b4332,color:#fff
+
+    class Browser client
+    class SPA,API container
+    class DB db
+    class GoogleOAuth,GeminiAPI,Cloudinary ext
 ```
 
-### 1.2 Descriptions
+#### How the request flows
 
-The FOZ system is decomposed into three runtime containers plus one external actor (the user) and one external system (the LLM provider). A container is a separately runnable/deployable unit that holds the system's code and/or data; each container runs in its own process and communicates with the others over a network.
+1. The **User Browser** loads static assets (HTML, JS, CSS) from **Vercel CDN** over HTTPS.
+2. Once the React SPA is running in the browser, all API calls go to the same Vercel domain under `/api/v1/*`.
+3. **Vercel rewrite rules** (defined in `vercel.json`) transparently proxy those requests to `https://foz-backend.onrender.com/api/v1/*` — the browser never contacts Render directly.
+4. The **Backend API Server** on Render connects to **Neon PostgreSQL** via the `postgres.js` driver (TLS-encrypted, port 5432), and makes outbound HTTPS calls to **Google OAuth 2.0**, **Gemini API**, and **Cloudinary** as needed.
+5. The browser loads images directly from **Cloudinary CDN** URLs stored in the database.
 
-- **Person - User**: A visitor to the forum (guest, standard user, moderator, or administrator). Reads and writes posts, comments, reactions, profiles, and reports through a web browser. Communicates with the Web Application over HTTPS (the entry point into the system).
+### 1.2 Node Descriptions
 
-- **Container - Web Application**
-  - **Responsibility / Services**: A single-page application (SPA) that renders the complete user interface and handles all user interactions — page routing, fetching and caching server state, managing client session state (access token, user info), validating form input, showing notifications, and displaying AI TL;DR summaries. It has no direct database access; all data is retrieved from the Backend API Server via HTTP/HTTPS REST calls.
-  - **Technology**: React 19 + TypeScript built with Vite, styled with Tailwind CSS v4; `react-router-dom` for client routing, `@tanstack/react-query` for server state caching and synchronization, `zustand` for client auth state, `react-hook-form` + `@hookform/resolvers` for form handling, and `react-hot-toast` for transient notifications. Tested with Vitest and `@testing-library/react`.
-  - **Communication**: Receives HTTPS requests from the User browser; sends JSON REST calls to the Backend API Server over HTTP/HTTPS under `/api/v1`. In development, the Vite dev server proxies `/api/v1` requests to `http://localhost:4000`. Authenticated requests include an `Authorization: Bearer <token>` header, and auth refresh requests send HTTP-only credentials.
+| Node                             | Infrastructure / Cloud Service                                                        | Containers Deployed                                                                                                      | Notes                                                                                                                                                                                                                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User Device**                  | Desktop or mobile device running a modern web browser (Chrome, Firefox, Safari, Edge) | **Web Application (SPA)** — downloaded and executed client-side as static JS/CSS/HTML                                    | The React 19 SPA runs entirely in the browser after the initial page load. All server communication is via REST API calls.                                                                                                                                                                    |
+| **Vercel — Edge Network / CDN**  | **Vercel** (free tier). Global edge CDN with serverless rewrite rules.                | **Web Application (SPA)** — static build output (`src/frontend/dist`) served from Vercel's CDN.                          | Vercel serves the static SPA bundle and uses rewrite rules (`vercel.json`) to proxy all `/api/v1/*` requests to the Render-hosted backend (`foz-backend.onrender.com`). This eliminates CORS issues in production and provides a unified domain for the user. Build command: `npm run build`. |
+| **Render — Web Service**         | **Render** (free tier). Managed web-service hosting.                                  | **Backend API Server** — Node.js v24 Express 5 application running as a Render Web Service.                              | The backend runs as a single long-lived process. Render provides the env var used for Google OAuth callback URL construction. The free tier has cold-start latency on idle instances.                                                                                                         |
+| **Neon — Serverless PostgreSQL** | **Neon** (free tier). Serverless PostgreSQL with auto-scaling.                        | **PostgreSQL Database** — `postgres:16`-compatible managed database.                                                     | Neon provides a serverless PostgreSQL-compatible endpoint. The backend connects via `DATABASE_URL` using the `postgres.js` driver over TLS-encrypted TCP on port 5432. Schema migrations are managed via `drizzle-kit`.                                                                       |
+| **Google Cloud Platform**        | **Google Cloud** (API-based services).                                                | **Google OAuth 2.0** — social login identity provider. **Google Generative AI (Gemini API)** — AI summarization service. | Two independent Google services: OAuth 2.0 for authentication and Gemini API for post/comment TL;DR summarization with a fallback model chain (`gemini-2.5-flash` → `gemini-1.5-flash` → `gemini-2.0-flash`).                                                                                 |
+| **Cloudinary**                   | **Cloudinary** (free tier). Cloud-based media management and CDN.                     | **Cloudinary Media Service** — image storage, transformation, and CDN delivery.                                          | Post attachments and profile avatars are uploaded from the backend via Cloudinary's streaming API. CDN URLs are stored in the database and served directly to browsers for read access.                                                                                                       |
 
-- **Container - Backend API Server**
-  - **Responsibility / Services**: Hosts the REST API under the `/api/v1` prefix, exposing services for `auth`, `posts`, `comments`, `reactions`, `profiles`, `search`, and a `/api/v1/health` status probe. It runs the AI / TL;DR post summary service (`post-summary.service.ts` backed by `ai-summarizer.ts`), the feed enrichment service (`listPostFeed`), hand-wired Zod request validation middleware, rate limiting (`express-rate-limit`), cookie parsing (`cookie-parser`), CORS middleware, and a central error handler that maps thrown errors and `ZodError`s to consistent HTTP error envelopes.
-  - **Technology**: Node.js (v24 ESM) with Express 5; `jsonwebtoken` + `bcrypt` for user authentication; `express-rate-limit`, `cookie-parser`, `cors`; Drizzle ORM (`drizzle-orm` + `postgres-js`) with `drizzle-kit` database migrations; `zod` for request schema validation; fail-fast env validation (`env.ts`).
-  - **Communication**: Receives HTTP/HTTPS JSON requests from the Web Application; reads and writes the PostgreSQL Database via SQL over TCP port 5432 using Drizzle ORM; executes outbound HTTPS `fetch` calls to the Google Gemini API (`generativelanguage.googleapis.com`) to generate AI TL;DR summaries.
+### 1.3 Communication Protocols Summary
 
-- **Container - PostgreSQL Database**
-  - **Responsibility / Services**: Persists all application relational data — user accounts, user profiles, HTTP-only refresh sessions, posts, post attachments, comments, reactions (likes), content reports, and AI post summaries.
-  - **Technology**: `postgres:16` running as the Docker service `foz_db` (port 5432, volume `foz_pg_data`, database `foz_dev`), accessed via Drizzle ORM (`postgres-js`); database migrations are managed using `drizzle-kit`.
-  - **Communication**: Only accepts database connections (PostgreSQL wire protocol over TCP port 5432) from the Backend API Server via Drizzle ORM; it is isolated from direct access by the browser or Web Application.
-
-- **External System - LLM Provider (Google Gemini)**
-  - **Responsibility / Services**: Generates structured AI TL;DR summaries (post snapshot, key discussion highlights, and sentiment) on demand for forum posts.
-  - **Technology**: Google Gemini HTTP API (`gemini-2.5-flash` / `gemini-1.5-flash`) called via native `fetch` with a fallback summarizer mechanism.
-  - **Communication**: Receives outbound HTTPS calls from the Backend API Server; does not communicate directly with the Web Application or browser.
-
-### 1.3 Relationships Summary
-
-- **User → Web Application**: HTTPS browsing, form submission, and UI interaction.
-- **Web Application → Backend API Server**: JSON REST calls to `/api/v1` over HTTP/HTTPS. In development, the Vite dev server proxies `/api/v1` to `http://localhost:4000`. Authenticated calls pass access tokens as `Bearer` headers and send HTTP-only credentials for session refresh.
-- **Backend API Server → PostgreSQL Database**: SQL queries over TCP port 5432 executed through Drizzle ORM driver (`postgres-js`).
-- **Backend API Server → LLM Provider**: Outbound HTTPS `fetch` calls carrying prompt payloads to retrieve AI post summaries.
+| From | To | Protocol | Port | Description |
+|---|---|---|---|---|
+| User Browser | Vercel CDN | HTTPS | 443 | Initial SPA download (HTML, JS, CSS, static assets) |
+| Vercel CDN (rewrite) | Render Backend | HTTPS | 443 | Vercel transparently rewrites `/api/v1/*` to `foz-backend.onrender.com`. The browser never contacts Render directly. Authenticated requests include `Authorization: Bearer <token>` header; refresh uses HTTP-only cookies. |
+| Render Backend | Neon PostgreSQL | PostgreSQL wire protocol over TLS | 5432 | SQL queries via `postgres.js` driver through Drizzle ORM |
+| Render Backend | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
+| Render Backend | Google Gemini API | HTTPS REST | 443 | Structured prompt submission and JSON response parsing |
+| Render Backend | Cloudinary | HTTPS | 443 | Image stream upload and asset deletion |
+| User Browser | Cloudinary CDN | HTTPS | 443 | Direct image retrieval via CDN-delivered URLs |
 
 ---
 
-## 2. C4 Model - Level 3 (Component Diagram)
+## 2. Development Deployment Diagram
 
-The two diagrams below zoom into the Web Application and Backend API Server containers, detailing their primary internal components and interactions. The PostgreSQL Database and LLM Provider are shown for external context.
-
-### 2.1 Frontend - Web Application Container
-
-#### 2.1.1 Diagram
+### 2.1 Diagram
 
 ```mermaid
-flowchart TD
-    UserFE(["User<br/>browses / interacts with SPA"])
-    BackendFE["Backend API Server<br/>REST /api/v1"]
+flowchart LR
+    Browser_Dev["Developer Browser"]
 
-    subgraph FE["Web Application [Container]"]
-        AppRouter["App Router<br/>react-router-dom · App.tsx"]
-        Pages["Feature Pages<br/>React — top-level screens"]
-        UI["UI Components<br/>React + Tailwind"]
-        Forms["Forms<br/>react-hook-form + Zod"]
-        ApiHooks["API Client & Hooks<br/>@tanstack/react-query"]
-        AuthStore["Auth Store<br/>zustand · stores/auth.ts"]
-        Toast["Toast Service<br/>react-hot-toast"]
+    subgraph local ["Developer's Local Machine"]
+        SPA_Dev["Vite Dev Server :5173\nReact 19 SPA + HMR"]
+        API_Dev["Express Dev Server :4000\nNode.js v24 · Express 5\ntsx watch"]
+        DB_Dev[("Docker: foz_db\nPostgreSQL 16\ndb: foz_dev")]
+        Shared_Dev["Shared Module\nsrc/shared/\nZod schemas · DTOs · enums"]
     end
 
-    UserFE -. "navigate" .-> AppRouter
-    AppRouter -. "render" .-> Pages
-    Pages -. "compose" .-> UI
-    Pages -. "use" .-> Forms
-    Pages -. "fetch" .-> ApiHooks
-    Forms -. "submit" .-> ApiHooks
-    ApiHooks -. "token / session" .-> AuthStore
-    Pages -. "gate UI" .-> AuthStore
-    UI -. "notify" .-> Toast
-    ApiHooks -. "HTTP JSON" .-> BackendFE
+    subgraph ext_services ["External Services"]
+        GoogleOAuth_Dev["Google OAuth 2.0"]
+        GeminiAPI_Dev["Gemini API"]
+        CloudinaryCDN_Dev["Cloudinary"]
+    end
+
+    Browser_Dev -- "HTTP :5173\n+ HMR WebSocket" --> SPA_Dev
+    SPA_Dev -- "Vite proxy\n/api/v1/* → :4000\nHTTP" --> API_Dev
+    API_Dev -- "SQL over TCP :5432\nuser: foz / db: foz_dev" --> DB_Dev
+    API_Dev -- "HTTPS :443" --> GoogleOAuth_Dev
+    API_Dev -- "HTTPS :443" --> GeminiAPI_Dev
+    API_Dev -- "HTTPS :443" --> CloudinaryCDN_Dev
+
+    Shared_Dev -. "Build-time import\n#shared/* alias" .-> SPA_Dev
+    Shared_Dev -. "Build-time import\nTS paths mapping" .-> API_Dev
+
+    classDef container fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef ext fill:#f5a623,stroke:#d4901c,color:#000
+    classDef client fill:#08427b,stroke:#073b6e,color:#fff
+    classDef db fill:#2d6a4f,stroke:#1b4332,color:#fff
+    classDef shared fill:#7b2d8b,stroke:#5a1d6b,color:#fff
+
+    class Browser_Dev client
+    class SPA_Dev,API_Dev container
+    class DB_Dev db
+    class GoogleOAuth_Dev,GeminiAPI_Dev,CloudinaryCDN_Dev ext
+    class Shared_Dev shared
 ```
 
-#### 2.1.2 Component Descriptions
+#### Key development details
 
-- **App Router (`App.tsx`)**
-  - **Responsibility:** Declares URL routing mapping (`/`, `/search`, `/feed`, `/posts/:postId`, `/login`, `/register`, `/change-password`, `/profiles/:userId`).
-  - **Relationships:** Receives navigation actions from the User; renders matching Feature Pages; injects global layout and dialog controls (`LogoutDialog`).
-- **Feature Pages (`src/frontend/src/pages/`)**
-  - **Responsibility:** Top-level page views (`HomePage`, `FeedPage`, `PostPage`, `SearchPage`, `ProfilePage`, `LoginPage`, `RegisterPage`, `ChangePasswordPage`) that assemble layout components and manage page-level state.
-  - **Relationships:** Rendered by App Router; composes UI Components; embeds Forms; invokes API Client & Hooks for data fetching; reads Auth Store state to gate authenticated controls.
-- **UI Components (`src/frontend/src/components/`)**
-  - **Responsibility:** Reusable presentational components, including header navigation (`NavBar`), post feeds (`FeedPostItem`, `PostCard`), comment discussions (`CommentThread`), reactions (`ReactionButton`), modal dialogs (`CreatePostModal`, `ProfileEditModal`, `ReportModal`, `LogoutDialog`), and the AI feature component (`PostSummaryCard`).
-  - **Relationships:** Composed by Feature Pages; triggers Toast Service notifications on successful actions or API errors.
-- **Forms (`react-hook-form`)**
-  - **Responsibility:** Form input handling, error state tracking, and schema validation (`@hookform/resolvers` + Zod schemas from `src/shared/schemas`) for authentication, post creation, commenting, profile updates, and reporting.
-  - **Relationships:** Embedded inside Feature Pages and Modal UI Components; invokes API Client & Hooks mutations on submit.
-- **API Client & Hooks (`src/frontend/src/api/`)**
-  - **Responsibility:** Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`) providing `fetch` wrappers with `Bearer` authorization headers alongside `@tanstack/react-query` hooks (`useQuery`, `useMutation`) for caching and data sync.
-  - **Relationships:** Invoked by Feature Pages and Forms; reads access tokens from Auth Store; executes REST calls to Backend API Server under `/api/v1`.
-- **Auth Store (`src/frontend/src/stores/auth.ts`)**
-  - **Responsibility:** `zustand` state store managing `accessToken`, active `user` profile data, and session actions (`setAccessToken`, `setUser`, `logout`).
-  - **Relationships:** Read by API Client & Hooks for token injection; updated by Auth API hooks upon login, registration, or session restoration.
-- **Toast Service (`react-hot-toast`)**
-  - **Responsibility:** Displays transient toast notifications for actions such as post creation, profile saving, password updates, and API errors.
-  - **Relationships:** Triggered by UI Components, Forms, and API hook error callbacks.
+- **Vite proxy**: The Vite config (`src/frontend/vite.config.ts`) proxies both `/api/v1` and `/health` to `http://localhost:4000`, eliminating CORS issues during local development.
+- **Backend runner**: The backend is launched via `tsx watch src/backend/index.ts` (defined as the `dev:be` script in `package.json`), which provides hot-reload on file changes.
+- **Database**: PostgreSQL 16 runs as Docker service `foz_db` via `docker-compose.yml` with credentials `foz/foz`, database `foz_dev`, data persisted in volume `foz_pg_data`, and a health check (`pg_isready -U foz -d foz_dev`).
+- **Shared Module**: Not a running process — `src/shared/` is imported at build time by both Vite (via `#shared` alias) and the backend (via TypeScript `paths` mapping).
+
+### 2.2 Node Descriptions
+
+| Node | Infrastructure | Containers / Processes Running | Notes |
+|---|---|---|---|
+| **Developer Browser** | Local browser (Chrome, Firefox, Edge) | **Web Application (SPA)** — React app loaded from `http://localhost:5173` | HMR (Hot Module Replacement) via Vite's WebSocket connection provides instant feedback during development. |
+| **Vite Dev Server** | Local machine, Node.js process on **port 5173** | **Web Application (SPA)** — Vite 8 dev server serving the React 19 SPA with HMR | Proxies `/api/v1` and `/health` to `http://localhost:4000`. |
+| **Express Dev Server** | Local machine, Node.js process on **port 4000** | **Backend API Server** — Express 5 RESTful API running in development mode | Launched via `tsx watch` for hot-reload. Environment variables loaded from `.env` file. |
+| **Docker Container (foz_db)** | Local machine, **Docker** running `docker-compose.yml` | **PostgreSQL 16** — `postgres:16` image as service `foz_db` | Credentials: user `foz`, password `foz`, database `foz_dev`. Port `5432` exposed to localhost. Data persisted in Docker volume `foz_pg_data`. |
+| **Shared Module** | Local filesystem (`src/shared/`) | **Shared Module** — TypeScript source (Zod schemas, DTOs, enums) | Not a running process. Consumed at build time via `#shared/*` path aliases. Changes trigger HMR/rebuild in consumers. |
+| **Google Cloud Platform** | Google Cloud (same APIs as production) | **Google OAuth 2.0**, **Gemini API** | Requires `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `AI_API_KEY` in `.env`. OAuth callback defaults to `http://localhost:4000/api/v1/auth/google/callback`. |
+| **Cloudinary** | Cloudinary Cloud (same API as production) | **Cloudinary Media Service** | Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in `.env`. |
+
+### 2.3 Communication Protocols Summary
+
+| From | To | Protocol | Port | Description |
+|---|---|---|---|---|
+| Browser | Vite Dev Server | HTTP + WebSocket | 5173 | Page loads and HMR updates |
+| Vite Dev Server | Express Dev Server | HTTP (Vite proxy) | 4000 | Proxied REST API calls (`/api/v1/*` and `/health` → `localhost:4000`) |
+| Express Dev Server | Docker PostgreSQL | PostgreSQL wire protocol (TCP) | 5432 | SQL queries via `postgres.js` / Drizzle ORM (unencrypted locally) |
+| Express Dev Server | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
+| Express Dev Server | Gemini API | HTTPS REST | 443 | AI summarization requests |
+| Express Dev Server | Cloudinary | HTTPS | 443 | Image upload and deletion |
+
 ---
 
-### 2.2 Backend - Backend API Server Container
+## 3. Environment Comparison
 
-#### 2.2.1 Diagram A — Content & Discovery (Feed · Search · Profile)
+| Aspect                   | Development                                             | Production                                                     |
+| ------------------------ | ------------------------------------------------------- | -------------------------------------------------------------- |
+| **Frontend Hosting**     | Vite dev server on `localhost:5173`                     | Vercel Edge CDN (global, static build)                         |
+| **Backend Hosting**      | Express on `localhost:4000` via `tsx watch`             | Render Web Service (`foz-backend.onrender.com`)                |
+| **Database**             | Docker container `foz_db` (`postgres:16`, local)        | Neon Serverless PostgreSQL (cloud, TLS-encrypted)              |
+| **API Proxying**         | Vite proxy (`/api/v1` and `/health` → `localhost:4000`) | Vercel rewrite rules (`/api/v1/*` → Render)                    |
+| **TLS/HTTPS**            | HTTP (no TLS locally)                                   | HTTPS everywhere (Vercel, Render, Neon all enforce TLS)        |
+| **Image Storage**        | Cloudinary (same cloud service)                         | Cloudinary (same cloud service)                                |
+| **OAuth Callback**       | `http://localhost:4000/api/v1/auth/google/callback`     | `https://foz-backend.onrender.com/api/v1/auth/google/callback` |
+| **Shared Module**        | Live source imports with HMR rebuild                    | Compiled into static bundles at build time                     |
+| **Database Credentials** | Hardcoded in `docker-compose.yml` (`foz/foz`)           | Managed via Neon dashboard + `DATABASE_URL` env var            |
+| **Cold Start**           | None (always running)                                   | Render free tier has cold-start on idle                        |
 
-```mermaid
-flowchart TD
-    WebAppBE["Web Application<br/>React SPA"]
-    DB_BE[("PostgreSQL<br/>postgres:16")]
+# E - Implement 2 Functional Groups using Spec Kit
 
-    subgraph BE["Backend API Server [Container]"]
-        Gateway["API Gateway<br/>Express 5 + middleware"]
-        Feed["Feed Service<br/>listPostFeed"]
-        Search["Search Service<br/>search/routes.ts"]
-        Profile["Profile Service<br/>profile.service.ts"]
-        DataAccess["Data Access Layer<br/>Drizzle repositories · client"]
-        Shared["Shared Types<br/>src/shared/schemas<br/><i>shared Zod DTOs</i>"]
-    end
+*Work performed by: Võ An Phú | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
 
-    WebAppBE -. "HTTP JSON /api/v1" .-> Gateway
+- **Video Demo:** can be found at: `youtube-link.txt` or `https://youtu.be/ETm_nWagoRE?si=to6VentWdVtbCzoN`
+- **Source Code:** source code for current progress can be found at folder: `src/`
+- **Spec Kit Artifacts:** generated Spec Kit artifacts for current progress can be found at folder: `specs/`
 
-    Gateway -. "GET /posts" .-> Feed
-    Gateway -. "/search" .-> Search
-    Gateway -. "/profiles" .-> Profile
+# F - AI Usage Report and Weekly Report
 
-    Feed -. "feed query" .-> DataAccess
-    Search -. "ILIKE" .-> DataAccess
-    Profile -. "profiles" .-> DataAccess
+*Work performed by: Nguyễn Tuấn An | Reviewed by: Phạm Đinh Gia Khánh | Edited by: Phạm Đinh Gia Khánh*
 
-    DataAccess -. "SQL / :5432" .-> DB_BE
+## AI Usage Report
 
-    Gateway -. "validate" .-> Shared
-    Profile -. "schemas" .-> Shared
-```
+### Declaration of No AI Use
 
-#### 2.2.2 Diagram B — Identity & Interaction (Auth · Interaction · AI TL;DR)
+We declare that no AI tools were used in peer review tasks.
 
-```mermaid
-flowchart TD
-    WebAppBE["Web Application<br/>React SPA"]
-    DB_BE[("PostgreSQL<br/>postgres:16")]
-    LLM_BE["LLM Provider<br/>Google Gemini<br/><i>external</i>"]
+### AI Usage Notes
 
-    subgraph BE["Backend API Server [Container]"]
-        Gateway["API Gateway<br/>Express 5 + middleware"]
-        Auth["Auth Service<br/>JWT + bcrypt"]
-        Interaction["Interaction Services<br/>posts · comments · reactions · reports"]
-        AISvc["AI / TL;DR Service<br/>post-summary · ai-summarizer"]
-        DataAccess["Data Access Layer<br/>Drizzle repositories · client"]
-        Shared["Shared Types<br/>src/shared/schemas<br/><i>shared Zod DTOs</i>"]
-    end
+AI Usage Report of each member can be found in folder: `ai-logs/`
 
-    WebAppBE -. "HTTP JSON /api/v1" .-> Gateway
+### Weekly Report
 
-    Gateway -. "/auth" .-> Auth
-    Gateway -. "/posts · /comments" .-> Interaction
-    Gateway -. "/posts/:id/summary" .-> AISvc
+#### Sprint Planning
 
-    Auth -. "users · sessions" .-> DataAccess
-    Interaction -. "domain CRUD" .-> DataAccess
-    AISvc -. "posts · summaries" .-> DataAccess
+=========== 25/7, Sprint 4 planning ===============
 
-    AISvc -. "HTTPS fetch" .-> LLM_BE
-    DataAccess -. "SQL / :5432" .-> DB_BE
+Team members present:
 
-    Gateway -. "validate" .-> Shared
-    Auth -. "schemas" .-> Shared
-    Interaction -. "schemas" .-> Shared
+- Nguyễn Tuấn An
+- Nguyễn Hải Nam
+- Nguyễn Hải Trọng
+- Phạm Đinh Gia Khánh
+- Võ An Phú
 
-    classDef external stroke:#666,stroke-dasharray:5 5,color:#555
-    class LLM_BE external
-```
+Team members absent: None
 
-> **Note:** The API Gateway, Data Access Layer, and Shared Types are reused across both diagrams (shared infrastructure). The split is only for presentation — the backend runs as one container.
+Reports:
 
-#### 2.2.3 Component Descriptions
+- Nguyễn Tuấn An:
+  - List all possible tasks for PA4 and for project development process, getting ideas from the team members to make sure all tasks are covered.
+  - Estimate time for each task and assign them to team members.
 
-- **API Gateway (`src/backend/index.ts`)**
-  - **Responsibility:** Application entry point; applies CORS, cookie parsing (`cookie-parser`), body size limits, rate limiting (`express-rate-limit`), mounts sub-routers on `apiRouter` under `/api/v1` (`/auth`, `/posts`, `/profiles`, `/search`, `/` for comments/reactions), exposes `/api/v1/health`, and runs central error handling that converts thrown errors and `ZodError` instances into uniform JSON response envelopes.
-  - **Relationships:** Receives incoming REST requests from Web Application; routes requests to Auth, Interaction, Profile, Search, AI, and Feed services; validates requests using Shared Types schemas.
-- **Auth Service (`src/backend/api/auth/`)**
-  - **Responsibility:** Authentication flows — user registration, login, logout, refresh session rotation, and password changes. Issues short-lived JWT access tokens (15 minutes) and rotates 7-day HTTP-only refresh tokens (stored as bcrypt hashes in `refresh_sessions`). Enforces `requireAuth` and `optionalAuth` middleware for role and session checks.
-  - **Relationships:** Routed by API Gateway; interacts with Data Access Layer (`user_accounts`, `refresh_sessions`); uses Shared Types auth schemas.
-- **Interaction Services (`src/backend/services/interactions/`)**
-  - **Responsibility:** Domain logic for discussion interactions — post creation/editing/deletion, thread reposts, post attachments, hierarchical commenting, like/unlike reactions, and content reporting (`reports.ts`).
-  - **Relationships:** Routed by API Gateway; executes database queries through Data Access Layer (`posts`, `comments`, `reactions`, `reports`, `post_attachments`); utilizes Shared Types schemas.
-- **Profile Service (`src/backend/api/profile/`)**
-  - **Responsibility:** Retrieves and updates user public profile records (`displayName`, `bio`, `avatarUrl`, `location`, `website`).
-  - **Relationships:** Routed by API Gateway; reads and updates `profiles` table via Data Access Layer; uses Shared Types profile schemas.
-- **Search Service (`src/backend/api/search/`)**
-  - **Responsibility:** Executes case-insensitive `ILIKE` search queries against user display names and bios, returning matching user profiles (with mock fallback data if database query fails).
-  - **Relationships:** Routed by API Gateway; queries `profiles` table through Data Access Layer.
-- **AI / TL;DR Service (`src/backend/services/post-summary.service.ts` & `ai-summarizer.ts`)**
-  - **Responsibility:** On-demand AI post summarization. Samples top post comments, invokes Google Gemini API (`generativelanguage.googleapis.com`) via HTTPS `fetch` (with fallback text summarization), and persists/serves cached summary data (`postSnapshot`, `keyHighlights`, `sentiment`, `commentCount`) in the `post_summaries` table.
-  - **Relationships:** Exposed via `/api/v1/posts/:postId/summary` and `/api/v1/posts/:postId/summary/refresh`; reads posts and comments from Data Access Layer; writes to `post_summaries`; makes outbound HTTPS calls to LLM Provider (Google Gemini).
-- **Feed Service (`listPostFeed` in `src/backend/services/interactions/posts.ts`)**
-  - **Responsibility:** Fetches active public posts, resolves repost origins, and enriches post items with like counts, comment counts, user reaction statuses, attachments, and author profile details.
-  - **Relationships:** Routed by API Gateway (`GET /api/v1/posts`); queries `posts`, `comments`, `reactions`, `post_attachments`, and `profiles` tables via Data Access Layer.
-- **Data Access Layer (`src/backend/db/`)**
-  - **Responsibility:** Drizzle ORM client (`db/client.ts`), schema definitions (`users.ts`, `refresh-sessions.ts`, `interactions.ts`), repository functions (`interactions.ts`, `profiles.ts`, `post-summary.repository.ts`), and database migrations managed via `drizzle-kit`.
-  - **Relationships:** Invoked by Auth, Interaction, Profile, Search, AI, and Feed services; executes SQL queries over TCP port 5432 to PostgreSQL Database.
-- **Shared Types (`src/shared/`)**
-  - **Responsibility:** Single source of truth for DTO interfaces, Zod validation schemas (`auth.ts`, `interactions.ts`, `profile.ts`, `post-summary.ts`), and domain enums (`schema-enums.ts`) shared across frontend and backend.
-  - **Relationships:** Imported at compile time by API Gateway, backend services, and frontend API clients (represented with dashed relationships in diagrams).
+Actions:
 
+- All team members agreed to the tasks and their assignments.
 
-# D - Image example
+Summary of the meeting:
 
-*Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
+- The team has finalized the list of tasks for the sprint, including both PA4 and project development process tasks. All team members have agreed on their assignments and estimated time for each task.
 
-## 1. Insert image rule
+#### Scrum Meetings
 
-Insert as markdown format `![Name](image link)`
+=========== 2/8, Scrum 1 ===============
 
-Example as below:
+Nguyễn Tuấn An
+
+1. Fix ai usage log skill, fix post creation function, implement post summarize function, fix UI in home + comment sections, deploy app to website, add image compression, add multiple images scrolling effect 
+2. Write report D, plan for PA5
+3. None
+
+Nguyễn Hải Nam
+
+1. Write and Draw Software Architecture: Container Diagram and Component Diagram, Implement Admin view, Review Software Architecture: System Context Diagram
+2. Integration and System test
+3. None
+
+Nguyễn Hải Trọng
+
+1. Write and Draw Software Architecture:  System Context Diagram
+2. Review report D and write report A
+3. None
+
+Phạm Đinh Gia Khánh
+
+1. Design Admin UI, implement Moderator view
+2. Review report A
+3. None
+
+Võ An Phú
+
+1. Implemented for you feed, fixed create post pro5 picture out of sync, fix picture not showing in /foryou
+2. Write report and make video for E, review C report
+3. None
+
+=========== 8/8, Scrum 2 ===============
+
+Nguyễn Tuấn An
+
+1. Integrate cloud for storing image; fix cloud problems; design draft logo; polish TLDR, home icon, menu box; design and add favicon; fix for you button on guest; add guide when hovering navbar; add client side process for fast Like response; fix redirect when register, login; add click post to view detail, view full image, click profile picture to view profile; add read more button; fix comment UX; add sort comment; fix search use mock data; redesign login UI; implement login with Google
+2. Plan for PA5, assign tasks to team members.
+3. None
+
+Nguyễn Hải Nam
+
+1. What have I done since last week?
+2. What will I do until next week?
+3. What issues / problems /obstacles do I have?
+
+Nguyễn Hải Trọng
+
+1. What have I done since last week?
+2. What will I do until next week?
+3. What issues / problems /obstacles do I have?
+
+Phạm Đinh Gia Khánh
+
+1. Implement post report, upgrade signup design,  review and edit  A report,
+2. Waiting for new tasks, optimize some functions
+3. None
+
+Võ An Phú
+
+1. Make video for E: Post creation, For you feed generation; Review and edit C report; implemented setting; fix dark mode readmore
+2. Wait task
+3. None
+
+#### Sprint Review
+
+=========== 8/8 Sprint Review ===============
+
+Team members present:
+
+- Nguyễn Tuấn An
+- Nguyễn Hải Nam
+- Nguyễn Hải Trọng
+- Phạm Đinh Gia Khánh
+- Võ An Phú
+
+Team members absent: None
+
+What went well: discover several potential vulnerabilities, revise project based on lecturers' feedbacks.
+
+What went wrong: some tasks quality not good and need refinement.
+
+What problems and what caused the problems: foundation of knowledge weak.
+
+What can be done differently in the next sprint to improve: team members should learn more.
+
+What lessons we could learn: the importance of learning and grinding.
+
+### Jira Board
 
 ![Jira Board 1](./PA2-Group06/images/jira1.png)

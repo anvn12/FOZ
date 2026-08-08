@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: Image Upload & Compression API
+  version: 1.0.0
+  description: Endpoints for image verification, compression fallback, and asset persistence.
+paths:
+  /api/v1/upload/image:
+    post:
+      summary: Upload, verify, and compress an image asset
+      description: Accepts compressed client blobs or raw image files, validates format/headers, strips sensitive EXIF metadata, converts to WebP, and stores asset.
+      operationId: uploadImage
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+                - uploadType
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: The image file payload (max 25MB raw, processed to WebP <= 2MB).
+                uploadType:
+                  type: string
+                  enum: [feed_post, avatar]
+                  description: Context for dimension bounding (feed_post=1600x1600, avatar=512x512).
+                clientCompressed:
+                  type: boolean
+                  description: Flag indicating if client pre-compression was successfully applied.
+      responses:
+        '201':
+          description: Image uploaded and processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "550e8400-e29b-41d4-a716-446655440000"
+                      url:
+                        type: string
+                        example: "/uploads/images/2026/08/550e8400.webp"
+                      originalSize:
+                        type: integer
+                        example: 5242880
+                      compressedSize:
+                        type: integer
+                        example: 412000
+                      width:
+                        type: integer
+                        example: 1600
+                      height:
+                        type: integer
+                        example: 1200
+                      mimeType:
+                        type: string
+                        example: "image/webp"
+        '400':
+          description: Invalid file format, dimensions, or unparseable binary header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          description: File size exceeds maximum allowed limits (raw > 25MB or output > 2MB).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized request.
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              example: "INVALID_FILE_TYPE"
+            message:
+              type: string
+              example: "Unsupported image format. Allowed formats: JPEG, PNG, WebP, HEIC."
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

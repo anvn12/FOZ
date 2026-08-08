@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1785570821897,
+      "tag": "0000_overjoyed_joshua_kane",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786000000000,
+      "tag": "0006_admin_dashboard",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786000001000,
+      "tag": "0007_user_social_links",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786000002000,
+      "tag": "0008_username_column",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786000003000,
+      "tag": "0009_hashtags",
+      "breakpoints": true
+    }
+  ]
+}
