@@ -1099,7 +1099,7 @@ Allows an authenticated user to report an active post or comment that may violat
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC16-1.png>)
 
-* **Screen 2 (Alternative Flow 1):** 
+* **Screen 2 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC16-3.png>)
 
 * **Screen 3 (Alternative Flow 2):** 
@@ -1265,7 +1265,7 @@ Allows a Moderator to escalate a report that may require an administrative decis
 * **Screen 2 (Alternative Flow 1):** 
   ![](<./Prototype requirement/UC18-2.png>)
 
-* **Screen 3 (Alternative Flow 2):** 
+* **Screen 3 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC18-3.png>)
 
 # Use-Case Specification: Delete Any Content
@@ -1346,7 +1346,7 @@ Allows an Administrator to permanently delete an authorized post or comment and 
 * **Screen 2 (Alternative Flow 1):** 
   ![](<./Prototype requirement/UC19-2.png>)
 
-* **Screen 3 (Alternative Flow 2):** 
+* **Screen 3 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC19-3.png>)
 
 # Use-Case Specification: Permanently Remove User
