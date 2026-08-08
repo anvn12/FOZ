@@ -789,7 +789,8 @@ Allows a user to toggle an appreciation metric on a post or comment.
 Generates an AI-powered TL;DR of a lengthy post and its comments for quick reading.
 
 ## 2. Preconditions
-* The post must have sufficient text/comments to summarize.
+* A valid post must exist in the database and be accessible to the user (Guest or Standard User).
+* The post must not be hidden or deleted.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
@@ -813,9 +814,11 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
 
 ## 4. Special Requirements
 * **Performance:** AI generation must complete in `< 5 seconds`.
+* **Rate Limit:** 10 requests per 1-minute window.
 
 ## 5. Postconditions
 * A cached summary is stored in the database.
+* The generate AI summary is renderred on screen.
 
 ## 6. Extension Points
 * None.
@@ -823,6 +826,12 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC14-1.png>)
+
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC14-2.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC14-3.png>)
 
 # Use-Case Specification: Delete Own Post
 
@@ -872,13 +881,21 @@ Allows a user to permanently remove a post they authored.
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC15-1.png>)
 
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC15-2.1.png>)
+  ![](<./Prototype requirement/UC15-2.2.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC15-3.png>)
+  
+
 # Use-Case Specification: Report Inappropriate Content
 
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-16
 
-## 1. Report Inappropriate Content
+## 1. Report Inappropriate Contento;pyy
 * **Use-Case ID:** UC-16
 * **Actor(s):** Standard User
 
@@ -920,6 +937,12 @@ Allows users to flag posts or comments that violate community guidelines.
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC16-1.png>)
 
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC16-3.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC16-2.png>)
+
 # Use-Case Specification: Review Reports
 
 **Project Name:** FOZ  
@@ -939,11 +962,11 @@ Allows elevated users to view and take action on content flagged by the communit
 ## 3. Flow of Events
 ### 3.1 Basic Flow
 1. The use case begins when a Moderator opens the Moderation Dashboard.
-2. The system queries the `reports` table where status is `open`.
-3. The moderator selects a report to review the flagged content.
-4. The moderator decides to "Dismiss" or "Remove Content".
-5. The system updates the report status to `closed`.
-6. The system logs the action in the `moderation_reviews` table.
+2. The system queries the `reports` table where status is `open` or `under_review`.
+3. The Moderator selects a report to review the flagged post or comment content.
+4. The Moderator decides to "Dismiss" or "Remove Content".
+5. The system updates the `reports` status to `dismissed` or `closed`.
+6. If "Remove Content" was selected, the system deletes the targeted post or comment from public view.
 
 ### 3.2 Alternative Flows
 
@@ -988,7 +1011,14 @@ Allows a Moderator to escalate severe violations to an Administrator.
 5. The report is moved to the Admin-only queue.
 
 ### 3.2 Alternative Flows
-* None.
+#### 3.2.1 Moderator Cancels Escalation
+1. If at step 2 the Moderator clicks "Cancel" or closes the escalation modal.
+2. The modal closes, no database changes are made, and the report remains in the Moderator queue.
+
+#### 3.2.2 Report Not Found or Already Processed
+1. If at step 3 the report ID does not exist in the database or has already been resolved/deleted by another moderator.
+2. The system aborts the operation and returns a "NOT_FOUND" (404) error response.
+3. The use case ends.
 
 ## 4. Special Requirements
 * None.
@@ -1002,6 +1032,12 @@ Allows a Moderator to escalate severe violations to an Administrator.
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC18-1.png>)
+
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC18-2.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC18-3.png>)
 
 # Use-Case Specification: Delete Any Content
 
@@ -1021,14 +1057,23 @@ Allows an Administrator to instantly and permanently remove any post or comment 
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin views any content.
+1. The use case begins when an Admin views an escalated report or content item in the Admin Dashboard.
 2. The Admin selects the "Force Delete" override option.
-3. The Admin confirms the deletion.
-4. The system updates the `lifecycle_state` to `removed_by_administration` in the `posts` or `comments` table.
-5. The content is immediately scrubbed from all public feeds.
+3. The system opens a confirmation modal requiring an administrative rationale.
+4. The Admin inputs the rationale and confirms the deletion.
+5. The system permanently deletes the target record from the `posts` or `comments` table.
+6. The system records an entry in the `audit_logs` table.
+7. The content is immediately scrubbed from all public feeds and moderation queues.
 
 ### 3.2 Alternative Flows
-* None.
+#### 3.2.1 Admin Cancels Deletion
+1. If at step 4 the Admin clicks "Cancel" or closes the modal.
+2. The modal closes, no data is deleted, and the content remains intact.
+
+#### 3.2.2 Content Not Found or Already Deleted
+1. If at step 5 the target post or comment has already been deleted or cannot be found.
+2. The system aborts the operation and returns a "NOT_FOUND" (404) error response.
+3. The use case ends.
 
 ## 4. Special Requirements
 * None.
@@ -1043,6 +1088,12 @@ Allows an Administrator to instantly and permanently remove any post or comment 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC19-1.png>)
 
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC19-2.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC19-3.png>)
+
 # Use-Case Specification: Permanently Remove User
 
 **Project Name:** FOZ  
@@ -1054,23 +1105,32 @@ Allows an Administrator to instantly and permanently remove any post or comment 
 * **Actor(s):** Administrator
 
 ### 1.1 Brief Description
-Allows an Administrator to ban a user and optionally purge all their data from the system.
+Allows an Administrator to permanently delete a user account, revoke active sessions, and purge user data.
 
 ## 2. Preconditions
 * User role MUST be `administrator`.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin opens a user's profile.
-2. The Admin clicks "Ban User".
-3. The Admin selects whether to keep or wipe the user's past content.
-4. The Admin clicks "Confirm Ban".
-5. The system updates the `user_accounts` status to `banned`.
-6. The system revokes all active `refresh_sessions` for that user.
-7. The user is forcibly logged out and cannot re-authenticate.
+1. The use case begins when an Admin opens the User Management page.
+2. The Admin clicks "Delete" next to the target user account.
+3. The system opens the User Action Modal, requiring the Admin to enter an administrative rationale (at least 5 characters).
+4. The Admin clicks "Delete Account".
+5. The system purges the user's profile, posts, comments, reactions, and `user_accounts` record.
+6. The system revokes all active `refresh_sessions` and logs the action to `audit_logs` (`USER_DELETE`).
+7. The target user is forcibly logged out and cannot re-authenticate.
 
 ### 3.2 Alternative Flows
-* None.
+#### 3.2.1 Admin Cancels Deletion
+1. If at step 3 the Admin clicks "Cancel".
+2. The modal closes and no account data is deleted..
+
+#### 3.2.2 Missing Rationale or Insufficient Rationale Length
+1. If at step 3 the Admin clicks "Delete Account" without entering an administrative rationale or an administrative rationale shorter than 5 characters.
+2. The system displays a validation error: "Rationale must be at least 5 characters long for account deletion.".
+3. The modal remains open, and the deletion is prevented.
+4. The use case ends.
+
 
 ## 4. Special Requirements
 * **Data Integrity:** If data wipe is selected, cascading deletes must properly handle foreign keys to prevent orphan records.
@@ -1085,6 +1145,12 @@ Allows an Administrator to ban a user and optionally purge all their data from t
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC20-1.png>)
 
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC20-3.png>)
+
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC20-2.png>)
+
 # Use-Case Specification: Assign Moderator Role
 
 **Project Name:** FOZ  
@@ -1096,31 +1162,38 @@ Allows an Administrator to ban a user and optionally purge all their data from t
 * **Actor(s):** Administrator
 
 ### 1.1 Brief Description
-Allows an Administrator to elevate a Standard User to a Moderator.
+Allows an Administrator to elevate a Standard User to a Moderator or modify user roles.
 
 ## 2. Preconditions
-* User role MUST be `administrator`. Target user must be `active`.
+* User role MUST be `administrator`. Target user account must exist.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin views a Standard User's profile or account settings.
-2. The Admin selects "Change Role" and chooses "Moderator".
-3. The Admin confirms the action.
-4. The system updates the `role` field in the `user_accounts` table to `moderator`.
-5. The system records the transition in the `role_history` table (previous_role: `standard`, new_role: `moderator`).
-6. The target user gains moderator privileges upon their next API request.
+1. The use case begins when an Admin opens the User Management page.
+2. The Admin selects "Assign Mod" next to a target user.
+3. The system opens the User Action Modal displaying current account role details.
+4. The Admin selects "Moderator" from the new role dropdown and optionally provides a rationale.
+5. The Admin clicks "Confirm Role Update".
+6. The system updates the `role` column in the `user_accounts` table to `moderator`.
+7. The system records an entry in the `audit_logs` table.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 User is already a Moderator
-1. If at step 2 the user's role is already `moderator`.
-2. The system disables the "Make Moderator" button.
+#### 3.2.1 Admin Cancels Role Assignment
+1. If at step 4 the Admin clicks "Cancel".
+2. The modal closes and no role changes are made.
+
+#### 3.2.2 Missing Rationale or Insufficient Rationale Length
+1. If at step 4 the Admin clicks "Confirm Role Update" without entering a rationale or with a rationale shorter than 5 characters.
+2. The system displays a validation error: "Invalid request".
+3. The modal remains open, and the role update is prevented.
+4. The use case ends.
 
 ## 4. Special Requirements
 * None.
 
 ## 5. Postconditions
-* Target user role is elevated. History is logged in `role_history`.
+* Target user role is updated to `moderator` in `user_accounts` and an audit entry is logged to `audit_logs`.
 
 ## 6. Extension Points
 * None.
@@ -1129,6 +1202,12 @@ Allows an Administrator to elevate a Standard User to a Moderator.
 * **Screen 1 (Basic Flow):**
   ![](<./Prototype requirement/UC21-1.png>)
   **The Admin will assign Moderator role in the User Management**
+
+* **Screen 2 (Alternative Flow 1):**
+  ![](<./Prototype requirement/UC21-2.png>)
+
+* **Screen 3 (Alternative Flow 2):**
+  ![](<./Prototype requirement/UC21-3.png>)
 
 # B - Software Architecture: System Context Diagram
 
