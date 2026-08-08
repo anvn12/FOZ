@@ -161,8 +161,6 @@ flowchart TD
         API["Backend API Server<br/><i>Node.js v24 · Express 5 · ESM</i><br/><br/>RESTful API under /api/v1<br/>auth · validation · business logic<br/>rate limiting · CORS"]
 
         DB[("PostgreSQL Database<br/><i>postgres:16</i><br/><br/>User accounts, profiles, posts,<br/>comments, reactions, reports,<br/>audit logs, categories, hashtags,<br/>summaries, system settings")]
-
-        Shared["Shared Module<br/><i>TypeScript · Zod</i><br/><br/>Zod schemas, DTOs, enums -<br/>single source of truth.<br/>Imported at build time via<br/>path aliases."]
     end
 
     Google["Google OAuth 2.0"]
@@ -180,14 +178,11 @@ flowchart TD
     API -- "Summarization requests<br/>[HTTPS REST]" --> Gemini
     API -- "Uploads/deletes images<br/>[HTTPS]" --> Cloudinary
 
-    Shared -. "Imported at<br/>build time" .-> SPA
-    Shared -. "Imported at<br/>build time" .-> API
-
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef person fill:#08427b,stroke:#073b6e,color:#fff
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
 
-    class SPA,API,DB,Shared system
+    class SPA,API,DB system
     class Guest,Standard,Moderator,Admin person
     class Google,Gemini,Cloudinary ext
 ```
@@ -214,10 +209,7 @@ flowchart TD
   - **Technology**: `postgres:16` running as the Docker service `foz_db` (port 5432, volume `foz_pg_data`, database `foz_dev`), accessed via Drizzle ORM (`postgres-js`); database migrations are managed using `drizzle-kit`.
   - **Communication**: Only accepts database connections (PostgreSQL wire protocol over TCP port 5432) from the Backend API Server via Drizzle ORM; it is isolated from direct access by the browser or Web Application.
 
-- **Container - Shared Module (`src/shared/`)**
-  - **Responsibility / Services**: Houses the single source of truth for cross-cutting contracts - Zod schemas, DTO types, and enum definitions (account roles, account statuses, content lifecycle/visibility states, reaction kinds, report statuses, moderation outcomes, etc.). Both the Web Application and Backend API Server import from this module at build time via `#shared/*` path aliases.
-  - **Technology**: TypeScript, Zod.
-  - **Communication**: No runtime communication. The shared module is imported at build time by both the Web Application (via Vite alias) and the Backend API Server (via TypeScript path mapping). No npm workspace package, no codegen, no tRPC.
+
 
 - **External System - Google OAuth 2.0**
   - **Responsibility / Services**: Provides social authentication (Google Sign-In). The backend exchanges an authorization code for an access token, fetches the user's Google profile, and links or creates a FOZ account.
@@ -242,8 +234,7 @@ flowchart TD
 | Backend API Server | Google OAuth 2.0 | HTTPS | Exchanges authorization codes for tokens, fetches user profiles |
 | Backend API Server | Google Gemini API | HTTPS REST | Sends structured prompts, receives AI-generated summaries |
 | Backend API Server | Cloudinary | HTTPS | Streams image uploads and issues delete requests |
-| Shared Module | Web Application | Build-time import | Path aliases (`#shared/*`) via Vite |
-| Shared Module | Backend API Server | Build-time import | Path aliases (`#shared/*`) via TypeScript paths |
+
 
 ---
 
