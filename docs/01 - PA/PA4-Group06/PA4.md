@@ -1180,7 +1180,7 @@ Allows an Administrator to elevate a Standard User to a Moderator or modify user
 1. The use case begins when an Admin opens the User Management page.
 2. The Admin selects "Assign Mod" next to a target user.
 3. The system opens the User Action Modal displaying current account role details.
-4. The Admin selects "Moderator" from the new role dropdown and optionally provides a rationale.
+4. The Admin selects "Moderator" from the new role dropdown and must provides a sufficent length rationale.
 5. The Admin clicks "Confirm Role Update".
 6. The system updates the `role` column in the `user_accounts` table to `moderator`.
 7. The system records an entry in the `audit_logs` table.
