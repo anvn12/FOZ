@@ -62,4 +62,20 @@ describe("NavBar Hamburger Menu Click Outside", () => {
     const homeLink = screen.getAllByLabelText("Home")[0];
     expect(homeLink!.className).toContain("text-primary");
   });
+
+  it("should display Log in button and Settings option in dropdown menu for guest users", () => {
+    renderWithProviders(<NavBar />);
+
+    const moreButton = screen.getByLabelText("More");
+
+    // Open More dropdown menu in guest mode
+    fireEvent.click(moreButton);
+
+    // Verify both "Log in" and "Settings" menu items are present
+    expect(screen.getAllByText("Log in").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("Settings")).toBeDefined();
+    expect(screen.getByText("Report a Problem")).toBeDefined();
+  });
 });
+
+
