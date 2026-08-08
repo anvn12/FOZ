@@ -229,38 +229,27 @@ These diagrams zoom into the Web Application and Backend API Server containers t
 
 ```mermaid
 flowchart TD
-    API_EXT["Backend API Server<br/><i>Container</i>"]
+    API_EXT["Backend API Server<br/>[container: Node.js · Express 5]"]
 
     subgraph spa ["Web Application - React 19 + Vite 8"]
 
         subgraph routing ["Routing & Layout Layer"]
-            Router["App Router<br/><i>react-router-dom · App.tsx</i><br/><br/>Client-side routes with<br/>role-based guards<br/>(RequireRole, AdminGuard)"]
-            NavBar["NavBar<br/><i>Component</i><br/><br/>Global navigation bar<br/>with links, search,<br/>user menu, create-post"]
+            Router["App Router<br/>[component: react-router-dom · App.tsx]<br/><br/>Client-side routes with<br/>role-based guards<br/>(RequireRole, AdminGuard)"]
         end
 
         subgraph pages ["Page Components"]
-            FeedPages["Feed Pages<br/><i>HomePage</i><br/><br/>Latest and For-You feed<br/>with infinite scroll and<br/>trending hashtags widget"]
-            PostPage["Post Detail Page<br/><i>PostPage</i><br/><br/>Full post view, comments,<br/>nested replies, reactions,<br/>TL;DR summary, media,<br/>reporting"]
-            ProfilePage["Profile Page<br/><i>ProfilePage</i><br/><br/>User profile with posts,<br/>bio, avatar, edit modal"]
-            SearchPage["Search Page<br/><i>SearchPage</i><br/><br/>Full-text search for<br/>posts, users, hashtags<br/>with tab filters"]
-            AuthPages["Auth Pages<br/><i>Login, Register,<br/>Onboarding, ChangePassword</i><br/><br/>Credential and social<br/>login flows, registration,<br/>avatar onboarding"]
-            ModPages["Moderator Pages<br/><i>Dashboard, ReportsQueue</i><br/><br/>Report review queue<br/>with escalate/dismiss"]
-            AdminPages["Admin Pages<br/><i>Dashboard, Users, Reports,<br/>Categories, Settings,<br/>AuditLogs</i><br/><br/>Full admin panel"]
+            FeedPages["Feed Pages<br/>[component: HomePage]<br/><br/>Latest and For-You feed<br/>with infinite scroll and<br/>trending hashtags widget"]
+            PostPage["Post Detail Page<br/>[component: PostPage]<br/><br/>Full post view, comments,<br/>nested replies, reactions,<br/>TL;DR summary, media,<br/>reporting"]
+            ProfilePage["Profile Page<br/>[component: ProfilePage]<br/><br/>User profile with posts,<br/>bio, avatar, edit modal"]
+            SearchPage["Search Page<br/>[component: SearchPage]<br/><br/>Full-text search for<br/>posts, users, hashtags<br/>with tab filters"]
+            AuthPages["Auth Pages<br/>[component: Login, Register,<br/>Onboarding, ChangePassword]<br/><br/>Credential and social<br/>login flows, registration,<br/>avatar onboarding"]
+            ModPages["Moderator Pages<br/>[component: Dashboard, ReportsQueue]<br/><br/>Report review queue<br/>with escalate/dismiss"]
+            AdminPages["Admin Pages<br/>[component: Dashboard, Users, Reports,<br/>Categories, Settings,<br/>AuditLogs]<br/><br/>Full admin panel"]
         end
 
         subgraph state ["State & Data Layer"]
-            AuthStore["Auth Store<br/><i>zustand · stores/auth.ts</i><br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
-            QueryLayer["Query Layer<br/><i>@tanstack/react-query</i><br/><br/>Server-state cache:<br/>queries and mutations<br/>for all API resources"]
-            APIClient["API Client<br/><i>fetch wrappers · src/api/</i><br/><br/>Typed fetch functions<br/>for each backend resource"]
-        end
-
-        subgraph ui ["Shared UI Components"]
-            CreatePost["CreatePostModal<br/><i>Component</i><br/><br/>Post creation form<br/>with rich text, images,<br/>hashtag support"]
-            FeedItem["FeedPostItem<br/><i>Component</i><br/><br/>Post card with reactions,<br/>repost, comment count"]
-            CommentTree["Comment Components<br/><i>Component</i><br/><br/>Threaded comment tree<br/>with nested replies<br/>and inline reactions"]
-            ReportModal["ReportModal<br/><i>Component</i><br/><br/>Report dialog for posts,<br/>comments, and users"]
-            MediaGallery["Media Components<br/><i>Component</i><br/><br/>Image uploader, gallery,<br/>full-screen viewer"]
-            SummaryCard["PostSummaryCard<br/><i>Component</i><br/><br/>AI-generated TL;DR<br/>with highlights and<br/>sentiment"]
+            AuthStore["Auth Store<br/>[component: zustand · stores/auth.ts]<br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
+            APIClient["API Client<br/>[component: fetch wrappers · src/api/]<br/><br/>Typed fetch functions and<br/>react-query hooks for<br/>each backend resource"]
         end
     end
 
@@ -271,25 +260,16 @@ flowchart TD
     Router -- "routes to" --> AuthPages
     Router -- "routes to" --> ModPages
     Router -- "routes to" --> AdminPages
-    Router -- "renders" --> NavBar
 
-    FeedPages -- "renders post cards" --> FeedItem
-    FeedPages -- "opens create dialog" --> CreatePost
-    PostPage -- "renders comment thread" --> CommentTree
-    PostPage -- "displays AI TL;DR" --> SummaryCard
-    PostPage -- "displays attachments" --> MediaGallery
-    PostPage -- "opens report dialog" --> ReportModal
-    ProfilePage -- "renders user posts" --> FeedItem
-
-    FeedPages -- "queries & mutates" --> QueryLayer
-    PostPage -- "queries & mutates" --> QueryLayer
-    ProfilePage -- "queries & mutates" --> QueryLayer
-    SearchPage -- "queries" --> QueryLayer
-    ModPages -- "queries & mutates" --> QueryLayer
-    AdminPages -- "queries & mutates" --> QueryLayer
+    FeedPages -- "calls API" --> APIClient
+    PostPage -- "calls API" --> APIClient
+    ProfilePage -- "calls API" --> APIClient
+    SearchPage -- "calls API" --> APIClient
+    ModPages -- "calls API" --> APIClient
+    AdminPages -- "calls API" --> APIClient
     AuthPages -- "reads/writes session" --> AuthStore
+    AuthPages -- "calls API" --> APIClient
 
-    QueryLayer -- "delegates HTTP calls" --> APIClient
     AuthStore -- "injects Bearer token" --> APIClient
     APIClient -- "HTTPS JSON /api/v1/*" --> API_EXT
 
@@ -297,9 +277,8 @@ flowchart TD
     classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
 
     class API_EXT system
-    class Router,NavBar,FeedPages,PostPage,ProfilePage,SearchPage,AuthPages,ModPages,AdminPages comp
-    class AuthStore,QueryLayer,APIClient comp
-    class CreatePost,FeedItem,CommentTree,ReportModal,MediaGallery,SummaryCard comp
+    class Router,FeedPages,PostPage,ProfilePage,SearchPage,AuthPages,ModPages,AdminPages comp
+    class AuthStore,APIClient comp
 ```
 
 #### 4.1.2 Component Descriptions
@@ -308,71 +287,39 @@ flowchart TD
   - **Responsibility**: Declares all client-side routes (`/latest`, `/foryou`, `/posts/:id`, `/profiles/@:username`, `/search`, `/login`, `/register`, `/moderator`, `/admin/*`, etc.) and wraps protected routes with `RequireRole` and `AdminGuard` components that check the auth store for the required role.
   - **Relationships**: Receives navigation actions from the User; renders matching Page Components; injects global layout and dialog controls.
 
-- **NavBar**
-  - **Responsibility**: Persistent global navigation bar rendered on feed and profile pages. Contains links to Home, Search, profile; user avatar menu (profile, settings, logout); and a create-post button for authenticated users.
-  - **Relationships**: Reads from Auth Store; triggers CreatePostModal.
-
 - **Feed Pages (`HomePage`)**
   - **Responsibility**: Renders the post feed in two modes: "Latest" (chronological) and "For You" (engagement-ranked). Supports infinite scroll via cursor-based pagination. Includes a TrendingHashtagsWidget sidebar.
-  - **Relationships**: Uses FeedPostItem for each post; uses QueryLayer for data fetching.
+  - **Relationships**: Calls APIClient for post, feed, and reaction data.
 
 - **Post Detail Page (`PostPage`)**
   - **Responsibility**: Full post view with body text, media gallery, reaction controls, comment thread with nested replies, AI-generated TL;DR summary card, report button, and post edit/delete for the owner.
-  - **Relationships**: Uses CommentTree, SummaryCard, MediaGallery, ReportModal; uses QueryLayer.
+  - **Relationships**: Calls APIClient for post, comment, reaction, summary, and report data.
 
 - **Profile Page (`ProfilePage`)**
   - **Responsibility**: Displays a user's profile (display name, bio, avatar, location, website) and their posts. Includes a ProfileEditModal for the profile owner to update their information and upload avatars.
-  - **Relationships**: Uses FeedItem for user's posts; uses QueryLayer.
+  - **Relationships**: Calls APIClient for profile and user post data.
 
 - **Search Page (`SearchPage`)**
   - **Responsibility**: Provides full-text search across posts, users, and hashtags with tab-based result filtering.
-  - **Relationships**: Uses QueryLayer.
+  - **Relationships**: Calls APIClient for search queries.
 
 - **Auth Pages (`LoginPage`, `RegisterPage`, `OnboardingPage`, `ChangePasswordPage`)**
   - **Responsibility**: Login page (email/password + Google OAuth), register page (with Zod-validated form), onboarding avatar upload, and change-password page.
-  - **Relationships**: Uses Auth Store to persist session; uses APIClient.
+  - **Relationships**: Uses Auth Store to persist session; calls APIClient for auth endpoints.
 
 - **Moderator Pages (`ModDashboard`, `ReportsQueue`)**
   - **Responsibility**: Moderator dashboard with report statistics and a reports queue page where moderators can review, flag (escalate), or dismiss user reports.
-  - **Relationships**: Uses QueryLayer; guarded by RequireRole.
+  - **Relationships**: Calls APIClient for moderation endpoints; guarded by RequireRole.
 
-- **Admin Pages** (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. Guarded by AdminGuard.
+- **Admin Pages** (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. Guarded by AdminGuard. Calls APIClient for admin endpoints.
 
 - **Auth Store (`src/frontend/src/stores/auth.ts`)**
   - **Responsibility**: Zustand store managing client-side authentication state: `user` object, `accessToken`, `setSession`, `clearSession`, and `silentRefresh` (automatic token renewal via the refresh cookie).
-  - **Relationships**: Read by API Client & Hooks for token injection; updated by Auth API hooks upon login, registration, or session restoration.
-
-- **Query Layer (@tanstack/react-query)**
-  - **Responsibility**: React Query `QueryClient` instance providing server-state caching, automatic refetching, optimistic updates, and mutations for all API resources.
-  - **Relationships**: Delegates actual HTTP calls to APIClient.
+  - **Relationships**: Read by APIClient for Bearer token injection; updated by Auth Pages upon login, registration, or session restoration.
 
 - **API Client (`src/frontend/src/api/`)**
-  - **Responsibility**: Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`, `upload.ts`, `admin.ts`, `hashtags.ts`) providing typed `fetch` wrappers with `Bearer` authorization headers alongside `@tanstack/react-query` hooks for caching and data sync.
-  - **Relationships**: Invoked by Feature Pages and Forms; reads access tokens from Auth Store; executes REST calls to Backend API Server.
-
-- **CreatePostModal**
-  - **Responsibility**: Modal dialog for creating new posts with text content, image attachments (via ImageUploader -> Cloudinary), and hashtag extraction.
-  - **Relationships**: Uses APIClient (upload, post creation).
-
-- **FeedPostItem**
-  - **Responsibility**: Reusable post card showing author info, post content (with expandable text and hashtag links), media thumbnail, reaction controls, comment count, and repost indicator.
-  - **Relationships**: Used by Feed Pages and Profile Page.
-
-- **Comment Components**
-  - **Responsibility**: Threaded comment tree supporting nested replies, inline reactions, edit/delete for comment owners, and report.
-  - **Relationships**: Used by PostPage.
-
-- **ReportModal**
-  - **Responsibility**: Modal dialog for submitting reports against posts, comments, or users, with reason type selection and optional details text.
-  - **Relationships**: Used by PostPage and FeedPostItem.
-
-- **Media Components**
-  - **Responsibility**: `ImageUploader` (drag-and-drop image selection with preview), `HorizontalMediaGallery` (carousel for post attachments), and `ImageViewerModal` (full-screen image viewer).
-  - **Relationships**: Used by CreatePostModal, PostPage, Profile.
-
-- **PostSummaryCard**
-  - **Responsibility**: Displays AI-generated TL;DR summary with post snapshot, key highlights list, and sentiment badge. Includes a generate/refresh button for authenticated users.
-  - **Relationships**: Used by PostPage; triggers summary API via QueryLayer.
+  - **Responsibility**: Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`, `upload.ts`, `admin.ts`, `hashtags.ts`) providing typed `fetch` wrappers with `Bearer` authorization headers and `@tanstack/react-query` hooks for caching and data sync.
+  - **Relationships**: Invoked by all page components; reads access tokens from Auth Store; executes REST calls to Backend API Server.
 
 ---
 
