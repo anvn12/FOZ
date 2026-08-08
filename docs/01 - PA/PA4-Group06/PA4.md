@@ -776,7 +776,7 @@ Allows a user to toggle an appreciation metric on a post or comment.
   ![](<./Prototype requirement/UC13-1.png>)
 
 # Use-Case Specification: Request AI Summary
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
@@ -784,42 +784,57 @@ Allows a user to toggle an appreciation metric on a post or comment.
 
 ## 1. Request AI Summary
 * **Use-Case ID:** UC-14
-* **Actor(s):** Guest, Standard User
+* **Actor(s):** Standard User
 
 ### 1.1 Brief Description
-Generates an AI-powered TL;DR of a lengthy post and its comments for quick reading.
+Allows an authenticated user to request an on-demand AI-generated TL;DR of a post and its comments.
 
 ## 2. Preconditions
-* A valid post must exist in the database and be accessible to the user (Guest or Standard User).
-* The post must not be hidden or deleted.
+* The user is authenticated and their account status is `active`.
+* A valid post exists, is accessible to the user, and is not hidden or deleted.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. Extends UC-09 when the user clicks "Generate TL;DR".
-2. The system checks the `post_summaries` table for a recently cached summary.
-3. If not cached, the system fetches the post text and top comments.
-4. The system sends the payload to the external AI Engine.
-5. The AI returns the summary.
-6. The system caches the result in `post_summaries` and displays it in a modal.
+1. Extends UC-09 when the authenticated user clicks "Generate TL;DR".
+2. The system verifies that the post is still accessible and applies the per-user summary rate limit.
+3. The system retrieves the post body and up to 10 active comments using a deduplicated 4:3:3 sample: four most liked, three most replied to by direct first-level replies, and three most recent. If fewer than 10 active comments exist, it retrieves all of them. Hidden, deleted, or moderated comments are excluded.
+4. The system sends only the required post and comment text to the configured AI provider chain over HTTPS.
+5. The AI provider returns a summary, and the system validates that the response contains usable summary text.
+6. The system displays the generated summary in a modal.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 AI Service Error
-1. If at step 5 the AI API times out or errors.
-2. The system displays: "AI Summary is currently unavailable."
+#### 3.2.1 Post Not Found or No Longer Accessible
+1. If at step 2 or step 3 the post has been deleted, hidden, or cannot be found.
+2. The system displays: "This post is no longer available."
+3. The use case ends.
 
-#### 3.2.2 Rate Limit Exceeded
-1. If the user makes more than 10 summary requests within 1 minute.
-2. The system rejects the request and displays "Too many summary requests, please try again in a minute."
+#### 3.2.2 AI Provider Error
+1. If at step 4 the primary AI provider times out, returns an error, or exceeds its quota.
+2. The system attempts the configured fallback provider.
+3. If every configured provider fails, the system displays: "AI Summary is currently unavailable."
+4. The use case ends. If a fallback provider succeeds, the flow resumes at step 5.
+
+#### 3.2.3 Invalid AI Response
+1. If at step 5 the provider returns an empty, malformed, or unusable summary.
+2. The system does not display the response and shows: "AI Summary is currently unavailable."
+3. The use case ends.
+
+#### 3.2.4 Rate Limit Exceeded
+1. If at step 2 the user has already completed 10 summary requests in the rolling one-minute window.
+2. The system rejects the request and displays: "Too many summary requests, please try again in a minute."
 3. The use case ends.
 
 ## 4. Special Requirements
-* **Performance:** AI generation must complete in `< 5 seconds`.
-* **Rate Limit:** 10 requests per 1-minute window.
+* **Authentication:** Only authenticated Standard Users may trigger an AI request; the API must enforce this requirement.
+* **Performance:** The complete provider chain must return a usable summary within `< 5 seconds`.
+* **Rate Limit:** Maximum 10 requests per authenticated user in a rolling one-minute window.
+* **Security:** User-generated text must be sanitized before it is sent to the external provider, and account identifiers or unrelated personal data must not be included in the payload.
+* **Persistence:** The summary is displayed for the current request and is not persistently cached in v1.
 
 ## 5. Postconditions
-* A cached summary is stored in the database.
-* The generate AI summary is renderred on screen.
+* On success, the generated summary is displayed to the user.
+* On failure or rate limiting, no summary is displayed and the post remains unchanged.
 
 ## 6. Extension Points
 * None.
@@ -835,7 +850,7 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
   ![](<./Prototype requirement/UC14-3.png>)
 
 # Use-Case Specification: Delete Own Post
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
@@ -846,35 +861,44 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
 * **Actor(s):** Standard User
 
 ### 1.1 Brief Description
-Allows a user to permanently remove a post they authored.
+Allows an authenticated user to soft-delete a post they authored so that it is hidden from public view while its record is retained.
 
 ## 2. Preconditions
-* User is authenticated and is the `author_id` of the post.
+* The user is authenticated and their account status is `active`.
+* The target post exists, is currently active, and the user is its `author_id`.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when the user clicks the "Delete" option on their own post.
-2. The system displays a confirmation dialog.
+1. The use case begins when the user clicks the "Delete" option on their own active post.
+2. The system displays a confirmation dialog identifying the post that will be hidden.
 3. The user confirms the deletion.
-4. The system updates the post's `lifecycle_state` to `hidden` or sets `deleted_at` timestamp in the `posts` table (soft delete).
-5. The system removes the post from the feed and redirects the user home.
+4. The system atomically updates the post's `lifecycle_state` to `hidden` in the `posts` table.
+5. The system removes the post from public feeds and search results, then redirects the user to the home feed.
 
 ### 3.2 Alternative Flows
 
 #### 3.2.1 User Cancels Deletion
-1. If at step 3 the user clicks "Cancel".
-2. The dialog closes and no database changes are made.
+1. If at step 3 the user clicks "Cancel", closes the dialog, or presses Escape.
+2. The dialog closes, no database changes are made, and the use case ends.
 
 #### 3.2.2 Post Not Found or Forbidden
-1. If at step 4, the post has already been deleted or the user is not the author.
-2. The system aborts the operation and returns a "POST_NOT_FOUND" or "POST_FORBIDDEN" error.
+1. If at step 4 the post no longer exists, is already hidden, or the user is not its author.
+2. The system makes no changes and displays: "This post cannot be deleted or you do not have permission to delete it."
+3. The use case ends.
+
+#### 3.2.3 Update Failure
+1. If at step 4 the database update fails.
+2. The system rolls back the operation and displays: "The post could not be deleted. Please try again."
 3. The use case ends.
 
 ## 4. Special Requirements
-* None.
+* **Authorization:** Ownership must be checked at the API boundary as well as in the user interface.
+* **Visibility:** Hidden posts must be excluded from public feeds, search results, and normal post-detail views.
+* **Data Retention:** The post record, comments, reactions, and attachments are retained after this soft delete; this use case does not permanently purge them.
 
 ## 5. Postconditions
-* The post is marked deleted and hidden from public view.
+* The post's `lifecycle_state` is `hidden`.
+* The post no longer appears in public feeds or search results.
 
 ## 6. Extension Points
 * None.
@@ -892,46 +916,71 @@ Allows a user to permanently remove a post they authored.
   
 
 # Use-Case Specification: Report Inappropriate Content
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-16
 
-## 1. Report Inappropriate Contento;pyy
+## 1. Report Inappropriate Content
 * **Use-Case ID:** UC-16
 * **Actor(s):** Standard User
 
 ### 1.1 Brief Description
-Allows users to flag posts or comments that violate community guidelines.
+Allows an authenticated user to report an active post or comment that may violate the community guidelines.
 
 ## 2. Preconditions
-* User is authenticated.
+* The user is authenticated and their account status is `active`.
+* The target is an existing, active post or comment that can be reported.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when a user clicks "Report" on a piece of content.
-2. The system displays a modal with a list of reporting reasons (Harassment, Spam, Inappropriate, Other).
-3. The user selects a reason and clicks "Submit Report".
-4. The system records the data in the `reports` table (status: `open`).
-5. The system displays a "Thank you for your report" toast.
+1. The use case begins when the user clicks "Report" on an active post or comment.
+2. The system displays a report modal with the target content, the required reasons `Harassment`, `Spam`, `Inappropriate`, and `Other`, and an optional details field.
+3. The user selects one reason, enters optional details of no more than 1,000 characters, and clicks "Submit Report". If the reason is `Other`, the user must provide details explaining the report.
+4. The system validates the target, reason, details, duplicate-report rule, and reporting rate limit.
+5. The system inserts a row into `reports` containing `reporter_id`, `subject_type`, `subject_id`, `reason`, `details`, and `status = 'open'`.
+6. The system displays a "Thank you for your report" toast.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 Content Already Reported by User
-1. If at step 4, a report from this `reporter_id` for this `subject_id` already exists.
-2. The system ignores the duplicate and displays "You have already reported this content."
+#### 3.2.1 User Cancels Report
+1. If at step 2 or step 3 the user closes the modal, clicks "Cancel", or presses Escape.
+2. The system discards the entered data, makes no database changes, and the use case ends.
 
 #### 3.2.2 Validation Error
-1. If the user submits additional details exceeding 1000 characters.
-2. The system highlights the text area with a validation error.
+1. If at step 4 no reason is selected, the `Other` reason has no details, or the details exceed 1,000 characters.
+2. The system highlights the invalid field and displays a specific validation error.
 3. The flow resumes at step 3.
 
+#### 3.2.3 Content Already Reported by User
+1. If at step 4 an open report already exists for the same `reporter_id`, `subject_type`, and `subject_id`.
+2. The system does not insert another row and displays: "You have already reported this content."
+3. The use case ends.
+
+#### 3.2.4 Content Not Found or No Longer Reportable
+1. If at step 4 the target has been deleted, hidden, or cannot be found.
+2. The system does not create a report and displays: "This content is no longer available for reporting."
+3. The use case ends.
+
+#### 3.2.5 Reporting Rate Limit Exceeded
+1. If at step 4 the user has already submitted 10 reports in the rolling 15-minute window.
+2. The system rejects the request and displays: "Too many reports. Please try again later."
+3. The use case ends.
+
+#### 3.2.6 Report Submission Failure
+1. If at step 5 the database insert fails.
+2. The system rolls back the operation and displays: "The report could not be submitted. Please try again."
+3. The use case ends.
+
 ## 4. Special Requirements
-* None.
+* **Security:** Details must be sanitized and validated at the API boundary.
+* **Rate Limit:** Maximum 10 report submissions per authenticated user in a rolling 15-minute window.
+* **Data Integrity:** A uniqueness constraint must prevent duplicate open reports for the same reporter and target.
 
 ## 5. Postconditions
-* A new row is added to the `reports` table.
+* On success, one new row exists in `reports` with status `open`.
+* On cancellation, validation failure, duplicate submission, or an unavailable target, no new report row is created.
 
 ## 6. Extension Points
 * None.
@@ -947,10 +996,10 @@ Allows users to flag posts or comments that violate community guidelines.
   ![](<./Prototype requirement/UC16-2.png>)
 
 # Use-Case Specification: Review Reports
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1<br>
 **Document identifier:** FOZ-UCS-17
 
 ## 1. Review Reports
@@ -958,43 +1007,83 @@ Allows users to flag posts or comments that violate community guidelines.
 * **Actor(s):** Moderator, Administrator
 
 ### 1.1 Brief Description
-Allows elevated users to view and take action on content flagged by the community.
+Allows Moderators to review community reports and dismiss or escalate them, and allows Administrators to review escalated reports and dismiss or apply an authorized administrative action.
 
 ## 2. Preconditions
-* User role must be `moderator` or `administrator`.
+* The user is authenticated and has role `moderator` or `administrator`.
+* The selected report exists and has not already been resolved.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when a Moderator opens the Moderation Dashboard.
-2. The system queries the `reports` table where status is `open` or `under_review`.
-3. The Moderator selects a report to review the flagged post or comment content.
-4. The Moderator decides to "Dismiss" or "Remove Content".
-5. The system updates the `reports` status to `dismissed` or `closed`.
-6. If "Remove Content" was selected, the system deletes the targeted post or comment from public view.
+1. A Moderator opens the Moderation Dashboard, or an Administrator opens the Admin Dashboard.
+2. The system displays reports assigned to the actor or available in that actor's queue: Moderators see unassigned reports with status `open` and their own `under_review` reports, while Administrators see `escalated` reports and their own `under_review` reports.
+3. The actor selects a report. If the report is unassigned and eligible for the actor's queue, the system atomically assigns it to the actor and changes its status to `under_review`; if it is already `under_review`, the system verifies that it is assigned to the actor. The system then displays the reported content, report details, and prior review history.
+4. The actor enters a decision rationale of at least five words and selects an action:
+   * A Moderator selects `Dismiss` or `Escalate to Admin`.
+   * An Administrator selects `Dismiss` or invokes UC-19 to permanently delete the reported content.
+5. If the actor selects `Dismiss`, the system changes the report status to `dismissed` and records the decision rationale, actor, timestamp, and optional review notes in `moderation_reviews` and `audit_logs`.
+6. If the Moderator selects `Escalate to Admin`, the system passes the decision rationale to UC-18.
+7. If the Administrator invokes UC-19 and the deletion succeeds, UC-19 records the administrative rationale, closes the related report, and the system displays the completed review.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 Escalation Required
-1. Handled by extension point UC-18.
+#### 3.2.1 No Reports Available
+1. If at step 2 no eligible reports are found.
+2. The system displays: "No reports require review."
+3. The use case ends.
+
+#### 3.2.2 Actor Leaves Without a Decision
+1. If at step 4 the actor closes the report without selecting an action.
+2. If the actor claimed the report during this use case, the system restores it to the previous queue status (`open` for a Moderator or `escalated` for an Administrator) and clears the assignment. If it was already assigned to the actor, the system leaves it `under_review`.
+3. The system records no decision and the use case ends.
+
+#### 3.2.3 Report Not Found or Already Processed
+1. If at step 3 the report does not exist or another reviewer has already claimed or resolved it.
+2. The system displays the current report state and returns a not-found or conflict error without overwriting the other review.
+3. The use case ends.
+
+#### 3.2.4 Reported Content No Longer Exists
+1. If at step 3 the reported post or comment has already been removed.
+2. The system marks the report `closed` with closure code `content_unavailable`, records the closure rationale "Reported content is no longer available.", and informs the actor that no further content action is possible.
+3. The use case ends.
+
+#### 3.2.5 Unauthorized Action
+1. If at step 4 the actor attempts an action not permitted for their role, such as a Moderator attempting to delete content.
+2. The system rejects the action, displays an authorization error, and leaves the report in its current review state.
+3. The use case ends.
+
+#### 3.2.6 Missing or Insufficient Decision Rationale
+1. If at step 4 the actor selects an action without entering a rationale or enters a rationale shorter than five words after trimming whitespace.
+2. The system displays: "A rationale of at least 5 words is required for every moderation decision."
+3. The action is prevented, the report remains in its current review state, and the decision form remains open.
+4. The flow resumes at step 4.
 
 ## 4. Special Requirements
-* None.
+* **Authorization:** Moderator and Administrator permissions must be enforced at the API boundary, not only in the dashboard.
+* **Separation of Powers:** Moderators may dismiss or escalate reports but must not permanently remove content or punish users.
+* **Concurrency:** Only one reviewer may claim a report at a time, and state transitions must be conditional on the current report status.
+* **Decision Rationale:** Every Moderator or Administrator decision must include a non-empty rationale of at least five words after trimming whitespace.
+* **Audit:** Every dismiss, escalation, content removal, and closure must record the decision rationale without storing unnecessary sensitive data.
 
 ## 5. Postconditions
-* Report status is updated and a moderation review is logged.
+* A dismissed report has status `dismissed`, a decision rationale of at least five words, and a moderation review and audit entry.
+* An escalated report has status `escalated` after UC-18 completes, with the Moderator's decision rationale recorded.
+* A successfully force-deleted report has status `closed` after UC-19 completes, with the Administrator's rationale recorded.
+* If the actor cancels before making a decision, no moderation decision is recorded.
 
 ## 6. Extension Points
 * **Forward Report to Admin:** Extended via UC-18.
+* **Force Delete Content:** Invokes UC-19 for Administrator actions.
 
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC17-1.png>)
 
 # Use-Case Specification: Forward Report to Admin
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1<br>
 **Document identifier:** FOZ-UCS-18
 
 ## 1. Forward Report to Admin
@@ -1002,34 +1091,59 @@ Allows elevated users to view and take action on content flagged by the communit
 * **Actor(s):** Moderator
 
 ### 1.1 Brief Description
-Allows a Moderator to escalate severe violations to an Administrator.
+Allows a Moderator to escalate a report that may require an administrative decision or punishment beyond the Moderator's authority.
 
 ## 2. Preconditions
-* User role is `moderator`.
+* The user is authenticated and has role `moderator`.
+* The report exists, is currently `under_review`, and has not been dismissed, escalated, or closed.
+* The reported content is still available for administrative review.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. Extends UC-17 when a Moderator reviews a highly sensitive report.
-2. The Moderator clicks "Escalate to Admin" and optionally adds notes.
-3. The system updates the `reports` table status to `escalated`.
-4. The system logs the escalation in the `moderation_reviews` table.
-5. The report is moved to the Admin-only queue.
+1. Extends UC-17 when a Moderator selects `Escalate to Admin` for a report requiring administrative review.
+2. The system opens an escalation modal showing the report and requiring an escalation rationale of at least five words.
+3. The Moderator enters the escalation rationale and clicks "Escalate to Admin".
+4. The system validates the report state and escalation rationale.
+5. In one transaction, the system changes the report status to `escalated`, records the decision, Moderator, timestamp, and escalation rationale in `moderation_reviews`, and records the escalation in `audit_logs`.
+6. The system places the report in the Admin-only queue.
 
 ### 3.2 Alternative Flows
-#### 3.2.1 Moderator Cancels Escalation
-1. If at step 2 the Moderator clicks "Cancel" or closes the escalation modal.
-2. The modal closes, no database changes are made, and the report remains in the Moderator queue.
 
-#### 3.2.2 Report Not Found or Already Processed
-1. If at step 3 the report ID does not exist in the database or has already been resolved/deleted by another moderator.
-2. The system aborts the operation and returns a "NOT_FOUND" (404) error response.
+#### 3.2.1 Moderator Cancels Escalation
+1. If at step 3 the Moderator clicks "Cancel", closes the modal, or presses Escape.
+2. The modal closes, no database changes are made, and the report remains `under_review`.
+3. The use case ends.
+
+#### 3.2.2 Missing or Insufficient Escalation Rationale
+1. If at step 4 the Moderator submits no rationale or a rationale shorter than five words after trimming whitespace.
+2. The system displays: "A rationale of at least 5 words is required to escalate a report."
+3. The modal remains open, escalation is prevented, and the flow resumes at step 3.
+
+#### 3.2.3 Report Not Found
+1. If at step 4 or step 5 the report does not exist.
+2. The system aborts the transaction and displays: "This report is no longer available."
+3. The use case ends.
+
+#### 3.2.4 Report Already Processed
+1. If at step 4 or step 5 the report is no longer `under_review` because another reviewer processed it.
+2. The system aborts the transaction, returns a conflict response, and displays the report's current state.
+3. The use case ends.
+
+#### 3.2.5 Escalation Update Failure
+1. If at step 5 any status, review-log, or audit-log operation fails.
+2. The system rolls back all changes and displays: "The report could not be escalated. Please try again."
 3. The use case ends.
 
 ## 4. Special Requirements
-* None.
+* **Authorization:** The Moderator role must be enforced at the API boundary.
+* **Decision Rationale:** The escalation rationale must contain at least five words after trimming whitespace.
+* **Audit:** The escalation decision and non-sensitive escalation rationale must be auditable.
+* **Atomicity:** The report status, moderation review, and audit entry must be updated consistently; Admin queue visibility is derived from the resulting `escalated` status.
 
 ## 5. Postconditions
-* Report status is updated to escalated.
+* The report status is `escalated`.
+* A moderation review and audit entry record the escalation rationale.
+* The report is visible in the Admin-only queue.
 
 ## 6. Extension Points
 * None.
@@ -1045,10 +1159,10 @@ Allows a Moderator to escalate severe violations to an Administrator.
   ![](<./Prototype requirement/UC18-3.png>)
 
 # Use-Case Specification: Delete Any Content
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1<br>
 **Document identifier:** FOZ-UCS-19
 
 ## 1. Delete Any Content
@@ -1056,36 +1170,61 @@ Allows a Moderator to escalate severe violations to an Administrator.
 * **Actor(s):** Administrator
 
 ### 1.1 Brief Description
-Allows an Administrator to instantly and permanently remove any post or comment from the database.
+Allows an Administrator to permanently delete an authorized post or comment and its dependent comments, replies, reactions, and attachments.
 
 ## 2. Preconditions
-* User role MUST be `administrator`.
+* The user is authenticated and has role `administrator`.
+* The target is an existing active post or comment selected from an escalated report or an authorized Admin content view.
+* The target is eligible for permanent deletion and has not already been deleted.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin views an escalated report or content item in the Admin Dashboard.
-2. The Admin selects the "Force Delete" override option.
-3. The system opens a confirmation modal requiring an administrative rationale.
-4. The Admin inputs the rationale and confirms the deletion.
-5. The system permanently deletes the target record from the `posts` or `comments` table.
-6. The system records an entry in the `audit_logs` table.
-7. The content is immediately scrubbed from all public feeds and moderation queues.
+1. The use case begins when an Administrator views an eligible target in the Admin Dashboard.
+2. The Administrator selects the "Force Delete" option.
+3. The system opens a confirmation modal showing the target and requiring an administrative rationale.
+4. The Administrator enters a rationale of at least five words and clicks "Confirm Deletion".
+5. The system validates the rationale, authorization, target state, and target type.
+6. In one transaction, the system permanently deletes the target and its dependent comments or replies, reactions, and attachments, updates any related report to `closed`, and records a `CONTENT_FORCE_DELETE` entry in `audit_logs` containing the actor, target type, target ID, timestamp, and rationale.
+7. The system invalidates affected feed, search, and moderation-queue data and displays a success message.
 
 ### 3.2 Alternative Flows
-#### 3.2.1 Admin Cancels Deletion
-1. If at step 4 the Admin clicks "Cancel" or closes the modal.
-2. The modal closes, no data is deleted, and the content remains intact.
 
-#### 3.2.2 Content Not Found or Already Deleted
-1. If at step 5 the target post or comment has already been deleted or cannot be found.
-2. The system aborts the operation and returns a "NOT_FOUND" (404) error response.
+#### 3.2.1 Administrator Cancels Deletion
+1. If at step 4 the Administrator clicks "Cancel", closes the modal, or presses Escape.
+2. The modal closes, no data is deleted, and the content remains intact.
+3. The use case ends.
+
+#### 3.2.2 Missing or Insufficient Rationale
+1. If at step 4 the Administrator clicks "Confirm Deletion" without entering a rationale or with a rationale shorter than five words after trimming whitespace.
+2. The system displays: "Rationale must be at least 5 words long for content deletion."
+3. The modal remains open, the deletion is prevented, and the flow resumes at step 4.
+
+#### 3.2.3 Content Not Found or Already Deleted
+1. If at step 5 the target post or comment no longer exists or has already been deleted.
+2. The system makes no changes and displays: "This content is no longer available."
+3. The use case ends.
+
+#### 3.2.4 Target Not Eligible for Force Deletion
+1. If at step 5 the target is not an authorized target or its related report is in a state that does not permit permanent deletion.
+2. The system rejects the request, records no deletion, and displays: "This content cannot be permanently deleted in its current state."
+3. The use case ends.
+
+#### 3.2.5 Deletion Transaction Fails
+1. If at step 6 the content, dependent-record, report, or audit update fails.
+2. The system rolls back the entire transaction and displays: "The content could not be deleted. Please try again."
 3. The use case ends.
 
 ## 4. Special Requirements
-* None.
+* **Authorization:** Administrator permission must be enforced at the API boundary.
+* **Audit:** Permanent deletion must be recorded with the action, actor, target, timestamp, and rationale.
+* **Data Integrity:** Dependent comments, replies, reactions, attachments, and related report references must be handled without orphan records.
+* **Atomicity:** Content deletion and audit logging must succeed or fail together.
 
 ## 5. Postconditions
-* Content is permanently removed from public view.
+* The target content and its dependent comments or replies, reactions, and attachments no longer exist in the database.
+* Related reports are closed or otherwise marked as resolved.
+* The deletion is absent from public feeds, search results, and moderation queues.
+* A corresponding audit entry exists.
 
 ## 6. Extension Points
 * None.
@@ -1101,10 +1240,10 @@ Allows an Administrator to instantly and permanently remove any post or comment 
   ![](<./Prototype requirement/UC19-3.png>)
 
 # Use-Case Specification: Permanently Remove User
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1<br>
 **Document identifier:** FOZ-UCS-20
 
 ## 1. Permanently Remove User
@@ -1112,38 +1251,60 @@ Allows an Administrator to instantly and permanently remove any post or comment 
 * **Actor(s):** Administrator
 
 ### 1.1 Brief Description
-Allows an Administrator to permanently delete a user account, revoke active sessions, and purge user data.
+Allows an Administrator to permanently remove an eligible user account, revoke all active sessions, and purge its profile, submitted reports, posts, comments, reactions, and attachments.
 
 ## 2. Preconditions
-* User role MUST be `administrator`.
+* The user is authenticated and has role `administrator`.
+* The target account exists, has role `standard` or `moderator`, and is not the acting Administrator's account.
+* Administrator accounts are not eligible for removal through this use case.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin opens the User Management page.
-2. The Admin clicks "Delete" next to the target user account.
-3. The system opens the User Action Modal, requiring the Admin to enter an administrative rationale (at least 5 characters).
-4. The Admin clicks "Delete Account".
-5. The system purges the user's profile, posts, comments, reactions, and `user_accounts` record.
-6. The system revokes all active `refresh_sessions` and logs the action to `audit_logs` (`USER_DELETE`).
-7. The target user is forcibly logged out and cannot re-authenticate.
+1. The use case begins when an Administrator opens the User Management page.
+2. The Administrator clicks "Delete" next to the target user account.
+3. The system opens the User Action Modal, explains that the action is permanent, and requires an administrative rationale of at least five words.
+4. The Administrator enters the rationale and clicks "Delete Account".
+5. The system validates the rationale, target account role, target state, and Administrator authorization.
+6. In one transaction, the system revokes all active `refresh_sessions`, removes the user's profile, submitted reports, posts, comments, reactions, and attachments, deletes the `user_accounts` record, and records a `USER_DELETE` entry in `audit_logs` containing the actor, target, timestamp, and rationale.
+7. The system invalidates the deleted user's session state and displays a success message. Because the account no longer exists, the user cannot authenticate again.
 
 ### 3.2 Alternative Flows
-#### 3.2.1 Admin Cancels Deletion
-1. If at step 3 the Admin clicks "Cancel".
-2. The modal closes and no account data is deleted..
 
-#### 3.2.2 Missing Rationale or Insufficient Rationale Length
-1. If at step 3 the Admin clicks "Delete Account" without entering an administrative rationale or an administrative rationale shorter than 5 characters.
-2. The system displays a validation error: "Rationale must be at least 5 characters long for account deletion.".
-3. The modal remains open, and the deletion is prevented.
-4. The use case ends.
+#### 3.2.1 Administrator Cancels Deletion
+1. If at step 4 the Administrator clicks "Cancel", closes the modal, or presses Escape.
+2. The modal closes, no account data is deleted, and the use case ends.
 
+#### 3.2.2 Missing or Insufficient Rationale
+1. If at step 4 the Administrator clicks "Delete Account" without entering a rationale or with a rationale shorter than five words after trimming whitespace.
+2. The system displays: "Rationale must be at least 5 words long for account deletion."
+3. The modal remains open, the deletion is prevented, and the flow resumes at step 4.
+
+#### 3.2.3 Target Not Found or Already Removed
+1. If at step 5 the target account no longer exists or has already been removed.
+2. The system makes no changes and displays: "This user account is no longer available."
+3. The use case ends.
+
+#### 3.2.4 Target No Longer Eligible
+1. If at step 5 the target account's role has changed to `administrator`, the target is the acting Administrator, or account-protection rules otherwise make the target ineligible.
+2. The system rejects the request, displays: "This account cannot be permanently removed.", and makes no changes.
+3. The use case ends.
+
+#### 3.2.5 Data-Wipe Transaction Fails
+1. If at step 6 a dependent-record deletion, session revocation, account deletion, or audit-log operation fails.
+2. The system rolls back the entire transaction and displays: "The user account could not be removed. Please try again."
+3. The use case ends.
 
 ## 4. Special Requirements
-* **Data Integrity:** If data wipe is selected, cascading deletes must properly handle foreign keys to prevent orphan records.
+* **Authorization:** Administrator permission and target-account eligibility rules must be enforced at the API boundary.
+* **Data Integrity:** Dependent records must be removed in a transaction with foreign keys handled correctly; no orphan records may remain.
+* **Audit:** The account-removal action must be logged without storing unnecessary sensitive data.
+* **Atomicity:** Session revocation, data removal, account deletion, and audit logging must succeed or fail together.
 
 ## 5. Postconditions
-* The target account is banned and active sessions are destroyed.
+* The target `user_accounts` record no longer exists.
+* The target user's profile, submitted reports, posts, comments, reactions, and attachments have been removed.
+* All active sessions for the target user are revoked.
+* A corresponding `USER_DELETE` audit entry exists.
 
 ## 6. Extension Points
 * None.
@@ -1159,10 +1320,10 @@ Allows an Administrator to permanently delete a user account, revoke active sess
   ![](<./Prototype requirement/UC20-2.png>)
 
 # Use-Case Specification: Assign Moderator Role
-*Reviewed and Edited by: Nguyen Hai Nam*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1<br>
 **Document identifier:** FOZ-UCS-21
 
 ## 1. Assign Moderator Role
@@ -1170,38 +1331,59 @@ Allows an Administrator to permanently delete a user account, revoke active sess
 * **Actor(s):** Administrator
 
 ### 1.1 Brief Description
-Allows an Administrator to elevate a Standard User to a Moderator or modify user roles.
+Allows an Administrator to promote an eligible Standard User to the Moderator role.
 
 ## 2. Preconditions
-* User role MUST be `administrator`. Target user account must exist.
+* The user is authenticated and has role `administrator`.
+* The target account exists, is active, and currently has role `standard`.
+* The target account is not the acting Administrator's account; administrator accounts are not eligible for this role assignment.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when an Admin opens the User Management page.
-2. The Admin selects "Assign Mod" next to a target user.
-3. The system opens the User Action Modal displaying current account role details.
-4. The Admin selects "Moderator" from the new role dropdown and must provides a sufficent length rationale.
-5. The Admin clicks "Confirm Role Update".
-6. The system updates the `role` column in the `user_accounts` table to `moderator`.
-7. The system records an entry in the `audit_logs` table.
+1. The use case begins when an Administrator opens the User Management page.
+2. The Administrator selects "Assign Moderator" next to a target Standard User.
+3. The system opens the User Action Modal displaying the target's current role and the permitted new role.
+4. The Administrator selects `Moderator` and enters an administrative rationale of at least five words.
+5. The Administrator clicks "Confirm Role Update".
+6. The system validates the rationale, target account, current role, and Administrator authorization.
+7. In one transaction, the system changes the target's `role` from `standard` to `moderator` and records an audit entry containing the Administrator, target user, previous role, new role, timestamp, and rationale.
+8. The system displays a success message and refreshes the User Management page.
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1 Admin Cancels Role Assignment
-1. If at step 4 the Admin clicks "Cancel".
-2. The modal closes and no role changes are made.
+#### 3.2.1 Administrator Cancels Role Assignment
+1. If at step 5 the Administrator clicks "Cancel", closes the modal, or presses Escape.
+2. The modal closes, no role changes are made, and the use case ends.
 
-#### 3.2.2 Missing Rationale or Insufficient Rationale Length
-1. If at step 4 the Admin clicks "Confirm Role Update" without entering a rationale or with a rationale shorter than 5 characters.
-2. The system displays a validation error: "Invalid request".
-3. The modal remains open, and the role update is prevented.
-4. The use case ends.
+#### 3.2.2 Missing or Insufficient Rationale
+1. If at step 5 the Administrator clicks "Confirm Role Update" without entering a rationale or with a rationale shorter than five words after trimming whitespace.
+2. The system displays: "Rationale must be at least 5 words long for role assignment."
+3. The modal remains open, the role update is prevented, and the flow resumes at step 4.
+
+#### 3.2.3 Target Not Found or Not Eligible
+1. If at step 6 the target account no longer exists, is inactive, is banned, or no longer has role `standard`.
+2. The system rejects the request, displays: "This user is not eligible for Moderator assignment.", and makes no role change.
+3. The use case ends.
+
+#### 3.2.4 Concurrent Role Update
+1. If at step 7 another Administrator changes the target role before this transaction commits.
+2. The system rolls back this request, displays the target's current role, and asks the Administrator to refresh the User Management page.
+3. The use case ends.
+
+#### 3.2.5 Role Update or Audit Failure
+1. If at step 7 the role update or audit write fails.
+2. The system rolls back the transaction and displays: "The role could not be updated. Please try again."
+3. The use case ends.
 
 ## 4. Special Requirements
-* None.
+* **Authorization:** Administrator permission and the allowed `standard` → `moderator` transition must be enforced at the API boundary.
+* **Audit:** The previous role, new role, actor, target, timestamp, and rationale must be recorded.
+* **Atomicity:** The role update and audit entry must succeed or fail together.
 
 ## 5. Postconditions
-* Target user role is updated to `moderator` in `user_accounts` and an audit entry is logged to `audit_logs`.
+* The target user's role is `moderator` in `user_accounts`.
+* An audit entry records the successful role transition.
+* If an alternative flow occurs, the target role remains unchanged.
 
 ## 6. Extension Points
 * None.
