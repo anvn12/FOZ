@@ -467,11 +467,13 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 5. The user scrolls to load more posts (pagination).
 
 ### 3.2 Alternative Flows
+
+#### 3.2.1 Switch feed mode
 1. The user switches from the Latest feed to the For You feed.
 2. The system loads and displays personalized posts based on the user's interests.
 
 
-#### 3.2.1 No Posts Available
+#### 3.2.2 No Posts Available
 1. If at step 2, the database returns no posts.
 2. The system displays a "No discussions found. Be the first to post!" placeholder.
 3. The use case ends.
@@ -489,11 +491,11 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC07-1.png>)
 
-  **Screen 2 (Alternative Flow):**
+  **Screen 2 (Alternative Flow 1):**
   ![](<./Prototype requirement/UC07-2.png>)
-
-
- **Editor:** Khánh 
+  
+  **Screen 3 (Alternative Flow 3):**
+  ![](<./Prototype requirement/UC07-3.png>)
 
 # Use-Case Specification: Search Content
 
@@ -521,19 +523,17 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 3.2 Alternative Flows
 
-1. **Search feature unavailable**
+#### 3.2.1. **Search feature unavailable**
 
-* The search feature is unavailable, so the user cannot perform a search.
-
-2. **No matching results**
-
-   * The user enters a search query.
-   * The system finds no matching content.
-   * The system displays **"No results for "<search query>"."**
-
-#### 3.2.1 Empty Query
 1. If at step 2, the search query is empty or just whitespace.
-2. The system displays "Please enter a search term." and halts the request.
+2. The system does not display the search button until valid index is entered
+
+#### 3.2.2. **No matching results**
+
+1. The user enters a search query.
+2. The system finds no matching content.
+3. The system displays **"No results for "<search query>"."**
+
 
 ## 4. Special Requirements
 * **Performance:** Search results should be displayed within 2–3 seconds under good network conditions. `.
@@ -548,8 +548,11 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC08-1.png>)
 
-  **Screen 2 (Alternative Flow):**
-   ![](<./Prototype requirement/UC08-2.png>)
+ **Screen 2 (Alternative Flow 1):**
+  ![](<./Prototype requirement/UC08-3.png>)
+
+  **Screen 3 (Alternative Flow 2):**
+  ![](<./Prototype requirement/UC08-2.png>)
 
 # Use-Case Specification: View Post Details
 
@@ -576,19 +579,13 @@ Allows a user to read the full body of a post along with its entire nested comme
 
 ### 3.2 Alternative Flows
 
-1. **No comments**
+#### 3.2.1 No comments
 
-   * The post has no comments.
-   * The system displays **"No comments yet. Be the first to reply!"**
-
-
-#### 3.2.1 Post Removed or Hidden
-1. If at step 2, the post's `lifecycle_state` is `removed_by_moderation`.
-2. The system displays: "This post has been removed by moderators."
-3. The use case ends.
+1. The post has no comments.
+2. The system displays **"No comments yet. Be the first to reply!"**
 
 #### 3.2.2 Post Not Found
-1. If at step 2, the requested Post ID does not exist in the database.
+1. If at step 2, the requested Post ID does not exist in the database, or the post's lifecycle_state is removed_by_moderation.
 2. The system displays a 404 Not Found error page.
 3. The use case ends.
 
@@ -604,8 +601,11 @@ Allows a user to read the full body of a post along with its entire nested comme
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
-* **Screen 2 (Alternative Flow):**
+* **Screen 2 (Alternative Flow 1):**
 *   ![](<./Prototype requirement/UC09-2.png>)
+
+ * **Screen 2 (Alternative Flow 2):**
+*   ![](<./Prototype requirement/UC13-2.png>) 
 
   
 # Use-Case Specification: Create Post
@@ -635,18 +635,18 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 
 ### 3.2 Alternative Flows
 
-1. **Post creation canceled**
+#### 3.2.1. **Post creation canceled**
 
-   * The user cancels the post creation.
-   * The system discards the draft and returns to the previous screen.
+1. The user cancels the post creation.
+2. The system discards the draft and returns to the previous screen.
 
 
-#### 3.2.1 Content Validation Error
+#### 3.2.2 Content Validation Error
 1. If at step 4, the post body is empty.
 2. The system disallows user to click submit button.
 3. The flow resumes at step 3.
 
-#### 3.2.2 Exceeds Limits
+#### 3.2.3 Exceeds Limits
 1. If at step 4, the post body exceeds 5,000 characters, or there are more than 5 media attachments, or the chained thread exceeds 10 posts.
 2. The system aborts and displays a validation error message.
 3. The flow resumes at step 3.
@@ -663,6 +663,11 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC10-1.png>)
+  * **Screen 2 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC10-2.png>)
+  * **Screen 2 (Alternative Flow 3):** 
+  ![](<./Prototype requirement/UC10-3.png>)
+
 
 # Use-Case Specification: Interact with Post
 
@@ -689,15 +694,15 @@ Acts as the generalized use case for users engaging with a post via various acti
 
 ### 3.2 Alternative Flows
 
-1. The user selects **Reply**.
+#### 3.2.1. The user selects **Reply**.
 
    * The use case is extended by **UC-12: Leave Comment**.
 
-2. The user selects **Like**.
+#### 3.2.2. The user selects **Like**.
 
    * The use case is extended by **UC-13: Like/Unlike**.
 
-3. The user selects **Report**.
+#### 3.2.3. The user selects **Report**.
 
    * The use case is extended by **UC-16: Report Inappropriate Content**.
 
@@ -799,7 +804,7 @@ Allows a user to toggle an appreciation metric on a post or comment.
 
 #### 2.2 Alternative Flows
 ##### 2.2.1 Target Post or Comment Deleted / Not Found
-Deleted
+
 1. If at step 2, the target post or comment has been deleted or is no longer available.
 2. The system rejects the reaction request with a "Not Found" error.
 3. The interface reverts the optimistic UI state and notifies the user that the content is no longer available.
