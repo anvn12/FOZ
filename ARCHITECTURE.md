@@ -103,14 +103,14 @@ flowchart TD
         Cloudinary["Cloudinary<br/><i>External System</i><br/>Cloud image storage,<br/>transformation, and CDN"]
     end
 
-    Guest -- "Browses feed, searches<br/>posts, views profiles<br/>[HTTPS]" --> FOZ
-    Standard -- "Creates posts, comments,<br/>reacts, uploads media,<br/>requests AI summaries<br/>[HTTPS]" --> FOZ
-    Moderator -- "Reviews reports queue,<br/>flags or dismisses reports<br/>[HTTPS]" --> FOZ
-    Admin -- "Manages users, categories,<br/>system settings, audit logs,<br/>issues punishments<br/>[HTTPS]" --> FOZ
+    Guest -. "Browses feed, searches<br/>posts, views profiles<br/>[HTTPS]" .-> FOZ
+    Standard -. "Creates posts, comments,<br/>reacts, uploads media,<br/>requests AI summaries<br/>[HTTPS]" .-> FOZ
+    Moderator -. "Reviews reports queue,<br/>flags or dismisses reports<br/>[HTTPS]" .-> FOZ
+    Admin -. "Manages users, categories,<br/>system settings, audit logs,<br/>issues punishments<br/>[HTTPS]" .-> FOZ
 
-    FOZ -- "Exchanges OAuth<br/>authorization code<br/>for user profile<br/>[HTTPS]" --> Google
-    FOZ -- "Sends post + comments<br/>for summarization<br/>[HTTPS REST]" --> Gemini
-    FOZ -- "Uploads/deletes images<br/>via stream API<br/>[HTTPS]" --> Cloudinary
+    FOZ -. "Exchanges OAuth<br/>authorization code<br/>for user profile<br/>[HTTPS]" .-> Google
+    FOZ -. "Sends post + comments<br/>for summarization<br/>[HTTPS REST]" .-> Gemini
+    FOZ -. "Uploads/deletes images<br/>via stream API<br/>[HTTPS]" .-> Cloudinary
 
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef person fill:#08427b,stroke:#073b6e,color:#fff
@@ -165,16 +165,16 @@ flowchart TD
     Gemini["Google Generative AI"]
     Cloudinary["Cloudinary"]
 
-    Guest -- "Visits pages [HTTPS]" --> SPA
-    Standard -- "Interacts with forum [HTTPS]" --> SPA
-    Moderator -- "Reviews reports [HTTPS]" --> SPA
-    Admin -- "Manages system [HTTPS]" --> SPA
+    Guest -. "Visits pages [HTTPS]" .-> SPA
+    Standard -. "Interacts with forum [HTTPS]" .-> SPA
+    Moderator -. "Reviews reports [HTTPS]" .-> SPA
+    Admin -. "Manages system [HTTPS]" .-> SPA
 
-    SPA -- "JSON REST calls<br/>[HTTPS /api/v1/*]" --> API
-    API -- "Reads/writes data<br/>[postgres.js, TCP :5432]" --> DB
-    API -- "Exchanges OAuth code<br/>[HTTPS]" --> Google
-    API -- "Summarization requests<br/>[HTTPS REST]" --> Gemini
-    API -- "Uploads/deletes images<br/>[HTTPS]" --> Cloudinary
+    SPA -. "JSON REST calls<br/>[HTTPS /api/v1/*]" .-> API
+    API -. "Reads/writes data<br/>[postgres.js, TCP :5432]" .-> DB
+    API -. "Exchanges OAuth code<br/>[HTTPS]" .-> Google
+    API -. "Summarization requests<br/>[HTTPS REST]" .-> Gemini
+    API -. "Uploads/deletes images<br/>[HTTPS]" .-> Cloudinary
 
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef person fill:#08427b,stroke:#073b6e,color:#fff
@@ -234,44 +234,44 @@ flowchart TD
     subgraph spa ["Web Application - React 19 + Vite 8"]
 
         subgraph routing ["Routing & Layout Layer"]
-            Router["App Router<br/>[component: react-router-dom · App.tsx]<br/><br/>Client-side routes with<br/>role-based guards<br/>(RequireRole, AdminGuard)"]
+            Router["App Router<br/>[component: React Router]<br/><br/>Client-side routes with<br/>role-based guards<br/>(RequireRole, AdminGuard)"]
         end
 
         subgraph pages ["Page Components"]
-            FeedPages["Feed Pages<br/>[component: HomePage]<br/><br/>Latest and For-You feed<br/>with infinite scroll and<br/>trending hashtags widget"]
-            PostPage["Post Detail Page<br/>[component: PostPage]<br/><br/>Full post view, comments,<br/>nested replies, reactions,<br/>TL;DR summary, media,<br/>reporting"]
-            ProfilePage["Profile Page<br/>[component: ProfilePage]<br/><br/>User profile with posts,<br/>bio, avatar, edit modal"]
-            SearchPage["Search Page<br/>[component: SearchPage]<br/><br/>Full-text search for<br/>posts, users, hashtags<br/>with tab filters"]
-            AuthPages["Auth Pages<br/>[component: Login, Register,<br/>Onboarding, ChangePassword]<br/><br/>Credential and social<br/>login flows, registration,<br/>avatar onboarding"]
-            ModPages["Moderator Pages<br/>[component: Dashboard, ReportsQueue]<br/><br/>Report review queue<br/>with escalate/dismiss"]
-            AdminPages["Admin Pages<br/>[component: Dashboard, Users, Reports,<br/>Categories, Settings,<br/>AuditLogs]<br/><br/>Full admin panel"]
+            FeedPages["Feed Pages<br/>[component: React page component]<br/><br/>Latest and For-You feed<br/>with infinite scroll and<br/>trending hashtags widget"]
+            PostPage["Post Detail Page<br/>[component: React page component]<br/><br/>Full post view, comments,<br/>nested replies, reactions,<br/>TL;DR summary, media,<br/>reporting"]
+            ProfilePage["Profile Page<br/>[component: React page component]<br/><br/>User profile with posts,<br/>bio, avatar, edit modal"]
+            SearchPage["Search Page<br/>[component: React page component]<br/><br/>Full-text search for<br/>posts, users, hashtags<br/>with tab filters"]
+            AuthPages["Auth Pages<br/>[component: React page component]<br/><br/>Credential and social<br/>login flows, registration,<br/>avatar onboarding"]
+            ModPages["Moderator Pages<br/>[component: React page component]<br/><br/>Report review queue<br/>with escalate/dismiss"]
+            AdminPages["Admin Pages<br/>[component: React page component]<br/><br/>Full admin panel"]
         end
 
         subgraph state ["State & Data Layer"]
-            AuthStore["Auth Store<br/>[component: zustand · stores/auth.ts]<br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
-            APIClient["API Client<br/>[component: fetch wrappers · src/api/]<br/><br/>Typed fetch functions and<br/>react-query hooks for<br/>each backend resource"]
+            AuthStore["Auth Store<br/>[component: Zustand store]<br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
+            APIClient["API Client<br/>[component: TypeScript fetch client]<br/><br/>Typed fetch functions and<br/>react-query hooks for<br/>each backend resource"]
         end
     end
 
-    Router -- "routes to" --> FeedPages
-    Router -- "routes to" --> PostPage
-    Router -- "routes to" --> ProfilePage
-    Router -- "routes to" --> SearchPage
-    Router -- "routes to" --> AuthPages
-    Router -- "routes to" --> ModPages
-    Router -- "routes to" --> AdminPages
+    Router -. "routes to" .-> FeedPages
+    Router -. "routes to" .-> PostPage
+    Router -. "routes to" .-> ProfilePage
+    Router -. "routes to" .-> SearchPage
+    Router -. "routes to" .-> AuthPages
+    Router -. "routes to" .-> ModPages
+    Router -. "routes to" .-> AdminPages
 
-    FeedPages -- "calls API" --> APIClient
-    PostPage -- "calls API" --> APIClient
-    ProfilePage -- "calls API" --> APIClient
-    SearchPage -- "calls API" --> APIClient
-    ModPages -- "calls API" --> APIClient
-    AdminPages -- "calls API" --> APIClient
-    AuthPages -- "reads/writes session" --> AuthStore
-    AuthPages -- "calls API" --> APIClient
+    FeedPages -. "calls API" .-> APIClient
+    PostPage -. "calls API" .-> APIClient
+    ProfilePage -. "calls API" .-> APIClient
+    SearchPage -. "calls API" .-> APIClient
+    ModPages -. "calls API" .-> APIClient
+    AdminPages -. "calls API" .-> APIClient
+    AuthPages -. "reads/writes session" .-> AuthStore
+    AuthPages -. "calls API" .-> APIClient
 
-    AuthStore -- "injects Bearer token" --> APIClient
-    APIClient -- "HTTPS JSON /api/v1/*" --> API_EXT
+    AuthStore -. "injects Bearer token" .-> APIClient
+    APIClient -. "HTTPS JSON /api/v1/*" .-> API_EXT
 
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
@@ -325,60 +325,73 @@ flowchart TD
 
 ### 4.2 Backend - API Server
 
-The backend is split into two diagrams for readability: **Diagram A** covers content and discovery (posts, comments, search, profiles, hashtags, media); **Diagram B** covers identity, governance, and AI (auth, OAuth, reactions, reports, moderation, admin, TL;DR).
+The backend is split into two diagrams for readability: **Diagram A** covers content and discovery (posts, comments, search, profiles, hashtags, media, reports, AI TL;DR); **Diagram B** covers identity and governance (auth, OAuth, reactions, moderation, admin).
 
-#### 4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media)
+**Why AI TL;DR is in Diagram A:** the summary endpoints live on the Post Router (`/posts/:postId/summary`), and the summary service / AI summarizer are wired from there, not from a standalone router.
+
+**Why no Report Service in Diagram B:** report *creation* lives on the Post Router (Diagram A); the Moderation Router only reads/updates reports directly against the database and has no service layer.
+
+#### 4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media · Reports · AI TL;DR)
 
 ```mermaid
 flowchart TD
-    WebApp_A["Web Application<br/><i>React SPA</i>"]
-    DB_A[("PostgreSQL<br/><i>postgres:16</i>")]
-    Cloud_A["Cloudinary<br/><i>external</i>"]
+    WebApp_A["Web Application<br/>[container: React SPA]"]
+    DB_A[("PostgreSQL<br/>[container: postgres:16]")]
+    Cloud_A["Cloudinary<br/>[external: Cloudinary]"]
+    Gemini_A["Gemini API<br/>[external: Google Generative AI]"]
 
     subgraph BE_A ["Backend API Server [Container]"]
-        GW_A["API Gateway<br/><i>Express 5 + middleware</i><br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
+        GW_A["API Gateway<br/>[component: Express middleware pipeline]<br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
 
-        PostR["Post Router<br/><i>/api/v1/posts/*</i><br/><br/>Post CRUD, feed<br/>(latest, for-you),<br/>repost, user posts"]
-        CommentR["Comment Router<br/><i>/posts/:id/comments/*</i><br/><br/>Comment CRUD,<br/>nested replies"]
-        SearchR["Search Router<br/><i>/api/v1/search/*</i><br/><br/>Full-text search<br/>posts, users, hashtags"]
-        ProfileR["Profile Router<br/><i>/api/v1/profiles/*</i><br/><br/>Get/update profile,<br/>avatar upload"]
-        HashtagR["Hashtag Router<br/><i>/api/v1/hashtags/*</i><br/><br/>Trending hashtags,<br/>hashtag feed"]
-        UploadR["Upload Router<br/><i>/api/v1/upload/*</i><br/><br/>Image upload<br/>via multer pipeline"]
+        PostR["Post Router<br/>[component: Express Router]<br/><br/>Post CRUD, feed (latest,<br/>for-you, popular), repost,<br/>report submission,<br/>AI summary endpoints"]
+        CommentR["Comment Router<br/>[component: Express Router]<br/><br/>Comment CRUD,<br/>author comments,<br/>nested replies"]
+        SearchR["Search Router<br/>[component: Express Router]<br/><br/>Full-text search<br/>(posts, users) +<br/>discovery feed"]
+        ProfileR["Profile Router<br/>[component: Express Router]<br/><br/>Get/update profile,<br/>avatar upload"]
+        HashtagR["Hashtag Router<br/>[component: Express Router]<br/><br/>Trending hashtags,<br/>hashtag feed"]
+        UploadR["Upload Router<br/>[component: Express Router]<br/><br/>Local image upload +<br/>Cloudinary upload/delete"]
 
-        PostSvc["Post Service<br/><i>posts.ts</i><br/><br/>Post CRUD logic,<br/>feed assembly,<br/>attachment handling,<br/>hashtag extraction"]
-        FeedRank["Feed Ranking<br/><i>Component</i><br/><br/>For-You algorithm:<br/>engagement-weighted<br/>post scoring"]
-        CommentSvc["Comment Service<br/><i>comments.ts</i><br/><br/>Comment CRUD,<br/>nested reply logic"]
-        ImgProc["Image Processor<br/><i>sharp</i><br/><br/>Resize, WebP conversion,<br/>optimization"]
-        CloudSvc["Cloudinary Service<br/><i>Component</i><br/><br/>Stream upload,<br/>asset deletion,<br/>URL parsing"]
+        PostSvc["Post Service<br/>[component: TypeScript service]<br/><br/>Post CRUD logic,<br/>feed assembly (incl.<br/>For-You ranking),<br/>attachment handling"]
+        CommentSvc["Comment Service<br/>[component: TypeScript service]<br/><br/>Comment CRUD,<br/>nested reply logic"]
+        ProfileSvc["Profile Service<br/>[component: TypeScript service]<br/><br/>Profile read/update,<br/>avatar change cleanup"]
+        ReportSvc["Report Service<br/>[component: TypeScript service]<br/><br/>Report creation against<br/>posts/comments"]
+        ImgProc["Image Processor<br/>[component: sharp image pipeline]<br/><br/>sharp: resize, WebP,<br/>EXIF strip, size cap"]
+        CloudSvc["Cloudinary Service<br/>[component: Cloudinary SDK wrapper]<br/><br/>Stream upload, asset<br/>deletion, public-id parsing"]
+        PostSumSvc["Post Summary Service<br/>[component: TypeScript service]<br/><br/>Summary lifecycle:<br/>cache check, generate,<br/>upsert in DB"]
+        AISvc["AI Summarizer<br/>[component: TypeScript service]<br/><br/>LLM prompt building,<br/>Gemini fallback chain,<br/>JSON parsing"]
 
-        DAL_A["Data Access Layer<br/><i>Drizzle ORM</i><br/><br/>Interactions · Hashtag ·<br/>Profile repositories"]
-        Shared_A["Shared Types<br/><i>src/shared/schemas</i><br/><br/>Zod DTOs · enums"]
+        Shared_A["Shared Types<br/>[component: Zod schemas]<br/><br/>Zod DTOs · enums"]
     end
 
-    WebApp_A -- "HTTP JSON /api/v1" --> GW_A
+    WebApp_A -. "HTTP JSON /api/v1" .-> GW_A
 
-    GW_A -- "/posts" --> PostR
-    GW_A -- "/comments" --> CommentR
-    GW_A -- "/search" --> SearchR
-    GW_A -- "/profiles" --> ProfileR
-    GW_A -- "/hashtags" --> HashtagR
-    GW_A -- "/upload" --> UploadR
+    GW_A -. "/posts" .-> PostR
+    GW_A -. "/ (comments)" .-> CommentR
+    GW_A -. "/search" .-> SearchR
+    GW_A -. "/profiles" .-> ProfileR
+    GW_A -. "/hashtags" .-> HashtagR
+    GW_A -. "/upload" .-> UploadR
 
-    PostR -- "delegates CRUD" --> PostSvc
-    PostR -- "delegates For-You" --> FeedRank
-    CommentR -- "delegates CRUD" --> CommentSvc
-    SearchR -- "queries" --> DAL_A
-    ProfileR -- "reads/writes" --> DAL_A
-    HashtagR -- "queries" --> DAL_A
-    UploadR -- "sends buffer" --> ImgProc
-    ImgProc -- "streams optimized image" --> CloudSvc
+    PostR -. "delegates CRUD" .-> PostSvc
+    PostR -. "delegates summary" .-> PostSumSvc
+    PostR -. "creates reports" .-> ReportSvc
+    PostR -. "syncs hashtags" .-> DB_A
+    CommentR -. "delegates CRUD" .-> CommentSvc
+    ProfileR -. "delegates" .-> ProfileSvc
+    UploadR -. "processes image" .-> ImgProc
+    UploadR -. "streams to Cloudinary" .-> CloudSvc
+    PostSumSvc -. "requests AI generation" .-> AISvc
 
-    PostSvc -- "reads/writes" --> DAL_A
-    FeedRank -- "reads engagement data" --> DAL_A
-    CommentSvc -- "reads/writes" --> DAL_A
-    CloudSvc -- "HTTPS" --> Cloud_A
-
-    DAL_A -- "SQL / :5432" --> DB_A
+    PostSvc -. "reads/writes" .-> DB_A
+    PostSvc -. "deletes assets on post delete" .-> CloudSvc
+    CommentSvc -. "reads/writes" .-> DB_A
+    SearchR -. "queries" .-> DB_A
+    ProfileSvc -. "reads/writes" .-> DB_A
+    ProfileSvc -. "deletes old avatars" .-> CloudSvc
+    HashtagR -. "queries" .-> DB_A
+    ReportSvc -. "reads/writes" .-> DB_A
+    PostSumSvc -. "caches summaries" .-> DB_A
+    CloudSvc -. "HTTPS" .-> Cloud_A
+    AISvc -. "HTTPS REST" .-> Gemini_A
 
     GW_A -. "validate" .-> Shared_A
     PostSvc -. "schemas" .-> Shared_A
@@ -388,76 +401,58 @@ flowchart TD
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
 
     class WebApp_A,DB_A system
-    class Cloud_A ext
+    class Cloud_A,Gemini_A ext
     class GW_A,PostR,CommentR,SearchR,ProfileR,HashtagR,UploadR comp
-    class PostSvc,FeedRank,CommentSvc,ImgProc,CloudSvc comp
-    class DAL_A,Shared_A comp
+    class PostSvc,CommentSvc,ProfileSvc,ReportSvc,ImgProc,CloudSvc,PostSumSvc,AISvc comp
+    class Shared_A comp
 ```
 
-#### 4.2.2 Diagram B - Identity, Governance & AI (Auth · OAuth · Reactions · Reports · Moderation · Admin · AI TL;DR)
+#### 4.2.2 Diagram B - Identity, Governance & AI (Auth · OAuth · Reactions · Moderation · Admin)
 
 ```mermaid
 flowchart TD
-    WebApp_B["Web Application<br/><i>React SPA</i>"]
-    DB_B[("PostgreSQL<br/><i>postgres:16</i>")]
-    Google_B["Google OAuth 2.0<br/><i>external</i>"]
-    Gemini_B["Gemini API<br/><i>external</i>"]
+    WebApp_B["Web Application<br/>[container: React SPA]"]
+    DB_B[("PostgreSQL<br/>[container: postgres:16]")]
+    Google_B["Google OAuth 2.0<br/>[external: Google OAuth 2.0]"]
 
     subgraph BE_B ["Backend API Server [Container]"]
-        GW_B["API Gateway<br/><i>Express 5 + middleware</i><br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
+        GW_B["API Gateway<br/>[component: Express middleware pipeline]<br/><br/>CORS · cookie-parser ·<br/>rate limiting · auth ·<br/>Zod validation ·<br/>central error handler"]
 
-        AuthR["Auth Router<br/><i>/api/v1/auth/*</i><br/><br/>Register, login,<br/>refresh, logout, me,<br/>Google OAuth callback"]
-        ReactionR["Reaction Router<br/><i>/posts/:id/reactions/*</i><br/><br/>Toggle reactions<br/>on posts/comments"]
-        ModR["Moderation Router<br/><i>/api/v1/moderation/*</i><br/><br/>Submit, list, escalate,<br/>dismiss reports"]
-        AdminR["Admin Router<br/><i>/api/v1/admin/*</i><br/><br/>User mgmt, categories,<br/>settings, audit logs"]
-        SumR["Summary Endpoint<br/><i>/posts/:id/summary</i><br/><br/>Get/refresh AI<br/>post summaries"]
+        AuthR["Auth Router<br/>[component: Express Router]<br/><br/>Register, login, refresh,<br/>logout, me, check-username,<br/>Google OAuth callback"]
+        ReactionR["Reaction Router<br/>[component: Express Router]<br/><br/>Like/unlike on posts<br/>and comments"]
+        ModR["Moderation Router<br/>[component: Express Router]<br/><br/>Report queue, metrics,<br/>escalate/dismiss/delete"]
+        AdminR["Admin Router<br/>[component: Express Router]<br/><br/>User mgmt, categories,<br/>settings, audit logs,<br/>instant content removal"]
 
-        AuthSvc["Auth Service<br/><i>auth.service.ts</i><br/><br/>Password auth, token<br/>issuance, refresh<br/>rotation, cookies"]
-        SocialAuth["Social Auth Service<br/><i>social-auth.service.ts</i><br/><br/>OAuth profile linking,<br/>account creation,<br/>username generation"]
-        OAuthProv["OAuth Providers<br/><i>oauth-providers.ts</i><br/><br/>Google code exchange,<br/>profile fetching"]
-        ReactionSvc["Reaction Service<br/><i>reactions.ts</i><br/><br/>Toggle/remove<br/>reaction logic"]
-        ReportSvc["Report Service<br/><i>reports.ts</i><br/><br/>Report creation<br/>and retrieval"]
-        AdminSvc["Admin Service<br/><i>admin.service.ts</i><br/><br/>User role/status mgmt,<br/>category CRUD, settings,<br/>stats, audit logging"]
-        PostSumSvc["Post Summary Service<br/><i>post-summary.service.ts</i><br/><br/>Summary orchestration:<br/>stale check, generate,<br/>cache in DB"]
-        AISvc["AI Summarizer<br/><i>ai-summarizer.ts</i><br/><br/>LLM prompt building,<br/>Gemini fallback chain,<br/>JSON parsing"]
+        AuthSvc["Auth Service<br/>[component: TypeScript service]<br/><br/>Password hashing (bcrypt),<br/>JWT signing/verification,<br/>refresh rotation, cookies"]
+        SocialAuth["Social Auth Service<br/>[component: TypeScript service]<br/><br/>OAuth profile linking,<br/>account creation,<br/>username generation"]
+        OAuthProv["OAuth Providers<br/>[component: TypeScript service]<br/><br/>Google code exchange,<br/>profile fetching"]
+        ReactionSvc["Reaction Service<br/>[component: TypeScript service]<br/><br/>likeTarget / unlikeTarget<br/>on posts and comments"]
+        AdminSvc["Admin Service<br/>[component: TypeScript service]<br/><br/>User role/status mgmt,<br/>category CRUD, settings,<br/>stats, audit logging"]
 
-        JWTLib["JWT Library<br/><i>jsonwebtoken</i><br/><br/>Sign/verify tokens"]
-        PwdLib["Password Library<br/><i>bcrypt</i><br/><br/>Hash/compare passwords"]
-        EnvCfg["Env Config<br/><i>Zod · env.ts</i><br/><br/>Fail-fast env validation"]
+        EnvCfg["Env Config<br/>[component: Zod config validator]<br/><br/>Fail-fast env validation<br/>at startup"]
 
-        DAL_B["Data Access Layer<br/><i>Drizzle ORM</i><br/><br/>User · Interactions ·<br/>Admin · Summary<br/>repositories"]
-        Shared_B["Shared Types<br/><i>src/shared/schemas</i><br/><br/>Zod DTOs · enums"]
+        Shared_B["Shared Types<br/>[component: Zod schemas]<br/><br/>Zod DTOs · enums"]
     end
 
-    WebApp_B -- "HTTP JSON /api/v1" --> GW_B
+    WebApp_B -. "HTTP JSON /api/v1" .-> GW_B
 
-    GW_B -- "/auth" --> AuthR
-    GW_B -- "/reactions" --> ReactionR
-    GW_B -- "/moderation" --> ModR
-    GW_B -- "/admin" --> AdminR
-    GW_B -- "/summary" --> SumR
+    GW_B -. "/auth" .-> AuthR
+    GW_B -. "/ (reactions)" .-> ReactionR
+    GW_B -. "/moderation" .-> ModR
+    GW_B -. "/admin" .-> AdminR
 
-    AuthR -- "delegates credential auth" --> AuthSvc
-    AuthR -- "delegates OAuth flow" --> SocialAuth
-    SocialAuth -- "exchanges code for profile" --> OAuthProv
-    ReactionR -- "delegates toggle" --> ReactionSvc
-    ModR -- "delegates report ops" --> ReportSvc
-    AdminR -- "delegates admin ops" --> AdminSvc
-    SumR -- "delegates summary lifecycle" --> PostSumSvc
+    AuthR -. "delegates credential auth" .-> AuthSvc
+    AuthR -. "delegates OAuth flow" .-> SocialAuth
+    SocialAuth -. "exchanges code for profile" .-> OAuthProv
+    ReactionR -. "delegates like/unlike" .-> ReactionSvc
+    AdminR -. "delegates admin ops" .-> AdminSvc
 
-    AuthSvc -- "signs/verifies tokens" --> JWTLib
-    AuthSvc -- "hashes/compares passwords" --> PwdLib
-    AuthSvc -- "reads/writes users & sessions" --> DAL_B
-    SocialAuth -- "reads/writes users & links" --> DAL_B
-    OAuthProv -- "HTTPS" --> Google_B
-    ReactionSvc -- "toggles reactions" --> DAL_B
-    ReportSvc -- "reads/writes reports" --> DAL_B
-    AdminSvc -- "reads/writes admin data" --> DAL_B
-    PostSumSvc -- "requests AI generation" --> AISvc
-    PostSumSvc -- "caches summaries" --> DAL_B
-    AISvc -- "HTTPS REST" --> Gemini_B
-
-    DAL_B -- "SQL / :5432" --> DB_B
+    AuthSvc -. "reads/writes users & sessions" .-> DB_B
+    SocialAuth -. "reads/writes users & links" .-> DB_B
+    OAuthProv -. "HTTPS" .-> Google_B
+    ReactionSvc -. "likes/unlikes" .-> DB_B
+    ModR -. "queries/updates reports" .-> DB_B
+    AdminSvc -. "reads/writes admin data" .-> DB_B
 
     GW_B -. "validate" .-> Shared_B
     AuthSvc -. "schemas" .-> Shared_B
@@ -467,14 +462,14 @@ flowchart TD
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
 
     class WebApp_B,DB_B system
-    class Google_B,Gemini_B ext
-    class GW_B,AuthR,ReactionR,ModR,AdminR,SumR comp
-    class AuthSvc,SocialAuth,OAuthProv,ReactionSvc,ReportSvc,AdminSvc,PostSumSvc,AISvc comp
-    class JWTLib,PwdLib,EnvCfg comp
-    class DAL_B,Shared_B comp
+    class Google_B ext
+    class GW_B,AuthR,ReactionR,ModR,AdminR comp
+    class AuthSvc,SocialAuth,OAuthProv,ReactionSvc,AdminSvc comp
+    class EnvCfg comp
+    class Shared_B comp
 ```
 
-> **Note:** The API Gateway, DAL, and Shared Types appear in both diagrams (shared infrastructure). The split is purely for presentation — the backend runs as **one container**.
+> **Note:** The API Gateway and Shared Types appear in both diagrams (shared infrastructure). The split is purely for presentation — the backend runs as **one container**.
 
 #### 4.2.3 Component Descriptions
 
@@ -492,52 +487,52 @@ Middleware applied (in order) before routing in `src/backend/index.ts`:
 
 ##### Route Layer
 
-| Router | Path Prefix | Responsibility |
+| Router | Mount Point | Endpoints |
 |---|---|---|
-| **Auth Router** | `/api/v1/auth` | `POST /register`, `POST /login`, `POST /refresh`, `DELETE /logout`, `GET /me`, `GET /google` (initiate OAuth), `GET /google/callback`, `POST /change-password` |
-| **Post Router** | `/api/v1/posts` | `GET /` (feed), `GET /for-you`, `POST /` (create), `GET /:id`, `PATCH /:id`, `DELETE /:id`, `POST /:id/repost`, `GET /user/:userId` |
-| **Comment Router** | `/api/v1/posts/:postId/comments` | `GET /`, `POST /`, `PATCH /:commentId`, `DELETE /:commentId` |
-| **Reaction Router** | `/api/v1/posts/:targetId/reactions` | `POST /` (toggle like on post or comment) |
-| **Profile Router** | `/api/v1/profiles` | `GET /me`, `PATCH /me`, `GET /:userId`, `GET /username/:username` |
-| **Search Router** | `/api/v1/search` | `GET /` (unified search with type filter: posts, users, hashtags) |
-| **Upload Router** | `/api/v1/upload` | `POST /` (image upload via multer -> sharp -> Cloudinary) |
-| **Moderation Router** | `/api/v1/moderation` | `POST /reports` (submit), `GET /reports` (queue), `PATCH /reports/:id` (escalate/dismiss) |
-| **Admin Router** | `/api/v1/admin` | `GET /stats`, `GET/PATCH /users`, `GET /audit-logs`, `GET/POST/PATCH/DELETE /categories`, `GET/PATCH /settings`, `GET/PATCH /reports` |
+| **Auth Router** | `/api/v1/auth` | `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, `GET /me`, `GET /check-username`, `GET /google`, `GET /google/callback`, `PATCH /password` |
+| **Post Router** | `/api/v1/posts` | `GET /` (feed via `?type=latest\|for-you`, `?authorId=`), `POST /`, `PATCH /:postId`, `DELETE /:postId`, `POST /:postId/repost`, `DELETE /:postId/repost`, `POST /:postId/report`, `GET /:postId/summary`, `POST /:postId/summary/refresh` |
+| **Comment Router** | mounted at `/` (no prefix) | `GET /posts/:postId/comments`, `POST /posts/:postId/comments`, `GET /comments` (by `?authorId=`), `PATCH /comments/:commentId`, `DELETE /comments/:commentId` |
+| **Reaction Router** | mounted at `/` (no prefix) | `POST /posts/:postId/reaction`, `DELETE /posts/:postId/reaction`, `POST /comments/:commentId/reaction`, `DELETE /comments/:commentId/reaction` (like/unlike on posts and comments) |
+| **Profile Router** | `/api/v1/profiles` | `GET /by-username/:username`, `GET /:userId`, `PATCH /me`, `POST /me/avatar` |
+| **Search Router** | `/api/v1/search` | `GET /discovery` (suggested creators, trending discussions, topics), `GET /` (unified search, `?type=posts\|users\|all`) |
+| **Upload Router** | `/api/v1/upload` | `POST /image` (multer → sharp → local disk), `POST /cloudinary` (stream upload), `DELETE /cloudinary/{*publicId}` |
+| **Moderation Router** | `/api/v1/moderation` | `GET /metrics`, `GET /reports`, `PATCH /reports/:reportId/status`, `POST /reports/:reportId/action` (delete_content / dismiss / escalate) |
+| **Admin Router** | `/api/v1/admin` | `GET /metrics`, `GET /users`, `PUT /users/:userId/role`, `DELETE /users/:userId`, `GET /audit-logs`, `GET /reports`, `DELETE /content/:type/:id`, `GET/POST /categories`, `PUT /categories/:id`, `DELETE /categories/:id`, `GET /settings`, `PUT /settings` |
 | **Hashtag Router** | `/api/v1/hashtags` | `GET /trending`, `GET /:tag/posts` |
 
 ##### Service Layer
 
 | Component | Responsibility | Key Relationships |
 |---|---|---|
-| **Auth Service** (`src/backend/api/auth/auth.service.ts`) | Core authentication logic: password verification, JWT access token signing (HS256, 15-min TTL), refresh token issuance with rotation (7-day, HttpOnly cookie), cookie construction, and session management. Defines the `AuthError` class used by the central error handler. | Uses JWT Library, Password Library, User Repository. |
-| **Social Auth Service** (`src/backend/api/auth/social-auth.service.ts`) | Handles the OAuth account-linking flow: finds existing social links, links social profiles to existing email-matched accounts, or creates new user accounts with generated usernames. Issues session tokens matching the standard auth flow. | Uses OAuth Providers, User Repository. |
+| **Auth Service** (`src/backend/api/auth/auth.service.ts`) | Core authentication logic: password hashing and verification (bcrypt), JWT access token signing and verification (HS256, 15-min TTL), refresh token issuance with rotation (7-day, HttpOnly cookie), cookie construction, and session management. Defines the `AuthError` class used by the central error handler. | Reads/writes `user_accounts`, `profiles`, `refresh_sessions` tables. |
+| **Social Auth Service** (`src/backend/api/auth/social-auth.service.ts`) | Handles the OAuth account-linking flow: finds existing social links, links social profiles to existing email-matched accounts, or creates new user accounts with generated usernames. Issues session tokens matching the standard auth flow. | Calls OAuth Providers; reads/writes `user_accounts`, `user_social_links` tables. |
 | **OAuth Providers** (`src/backend/api/auth/oauth-providers.ts`) | Implements provider-specific OAuth logic. Currently supports Google: exchanges authorization codes for tokens via the Google token endpoint, then fetches the user profile from the Google userinfo API. | Calls Google OAuth 2.0 (external). |
-| **Post Service** (`src/backend/services/interactions/posts.ts`) | Business logic for post CRUD: creation (with content, attachments, and hashtag extraction), reading (single post with author/reactions/comment count), updating, soft-deletion (respecting ownership), and feed assembly with cursor-based pagination. | Uses Interactions Repository, Hashtag Repository. |
-| **Feed Ranking** | Implements the "For You" feed algorithm: scores posts based on engagement metrics (reaction count, comment count, recency) to produce a ranked feed. | Uses Interactions Repository. |
-| **Comment Service** (`src/backend/services/interactions/comments.ts`) | Business logic for comment CRUD: creation (with post-existence check and optional parent-comment for nesting), updating, and soft-deletion with ownership enforcement. | Uses Interactions Repository. |
-| **Reaction Service** (`src/backend/services/interactions/reactions.ts`) | Toggle-style reaction logic: adds a reaction if it doesn't exist, removes it if it does. Currently supports the "like" reaction kind on both posts and comments. | Uses Interactions Repository. |
-| **Report Service** (`src/backend/services/interactions/reports.ts`) | Creates user reports against posts, comments, or other users with a reason type and optional details. Retrieves reports for the moderation queue. | Uses Interactions Repository. |
+| **Post Service** (`src/backend/services/interactions/posts.ts`) | Business logic for post CRUD: creation (with content and attachments), reading (single post with author/reactions/comment count), updating, soft-deletion (respecting ownership), repost create/remove, and feed assembly with cursor-based pagination. Includes the For-You feed algorithm (engagement-weighted scoring via `feed-ranking.ts`). Hashtag sync on create/update is done by the **Post Router** directly, not this service. | Reads/writes `posts`, `post_attachments`; calls Cloudinary Service to delete attachments on post delete. |
+| **Comment Service** (`src/backend/services/interactions/comments.ts`) | Business logic for comment CRUD: creation (with post-existence check and optional parent-comment for nesting), updating, and soft-deletion with ownership enforcement. | Reads/writes `comments` table. |
+| **Reaction Service** (`src/backend/services/interactions/reactions.ts`) | Like/unlike logic: `likeTarget` adds a reaction, `unlikeTarget` removes it. Currently supports the "like" reaction kind on both posts and comments. | Reads/writes `reactions` table. |
+| **Report Service** (`src/backend/services/interactions/reports.ts`) | Creates user reports against posts or comments with a reason type and optional details. Report creation is invoked by the **Post Router** (`POST /posts/:postId/report`); the Moderation Router reads/updates reports directly via `db` and does not use this service. | Reads/writes `reports` table. Called by Post Router. |
 | **AI Summarizer** (`src/backend/services/ai-summarizer.ts`) | Core AI logic: builds a structured prompt from post content and comment bodies, calls the Gemini API with a fallback chain of model versions (`gemini-2.5-flash` -> `gemini-1.5-flash` -> `gemini-2.0-flash`), parses the JSON response into `{ postSnapshot, keyHighlights, sentiment }`, and falls back to a text-truncation heuristic if all API calls fail. | Calls Gemini API (external). |
-| **Post Summary Service** (`src/backend/services/post-summary.service.ts`) | Orchestrates the summary lifecycle: checks if a cached summary exists and is still fresh, triggers AI Summarizer if not, and upserts the result into the database. | Uses AI Summarizer, Summary Repository. |
-| **Cloudinary Service** | Wraps the Cloudinary SDK: configures credentials from env, streams file buffers to Cloudinary's upload API, extracts public IDs from URLs, and deletes assets. | Calls Cloudinary (external). |
-| **Image Processor** | Uses `sharp` to resize, reformat (to WebP), and optimize uploaded images before they are sent to Cloudinary. Ensures consistent image dimensions and file sizes. | Used by Upload Router. |
-| **Admin Service** | Admin business logic: dashboard statistics (user/post/comment/report counts), user management (role changes, status changes with audit logging), forum category CRUD, system settings management, and audit log retrieval. | Uses Admin Repository, User Repository. |
+| **Post Summary Service** (`src/backend/services/post-summary.service.ts`) | Orchestrates the summary lifecycle: checks if a cached summary exists and is still fresh, triggers AI Summarizer if not, and upserts the result into the database. | Uses AI Summarizer; reads/writes `post_summaries` table. |
+| **Profile Service** (`src/backend/api/profile/profile.service.ts`) | Profile read by user ID / username and update. On avatar change, deletes the previous Cloudinary avatar asset (best-effort). Defines the `ProfileError` class. | Reads/writes `profiles`; calls Cloudinary Service for old-avatar cleanup. |
+| **Image Processor** (`src/backend/services/image-processor.ts`) | Wraps `sharp`: validates format, auto-orients, resizes to per-upload-type limits, converts to WebP, strips EXIF, and enforces a 2MB output cap with quality step-down. | Used by Upload Router (`POST /upload/image`); writes to local disk, no DB or Cloudinary. |
+| **Cloudinary Service** (`src/backend/services/cloudinary.ts`) | Wraps the Cloudinary SDK: streams file buffers to Cloudinary's upload API, extracts public IDs from URLs, and deletes assets. | Calls Cloudinary (external). Used by Upload Router (`/upload/cloudinary`), Post Service (attachment cleanup), and Profile Service (avatar cleanup). |
+| **Admin Service** | Admin business logic: dashboard statistics (user/post/comment/report counts), user management (role changes, status changes with audit logging), forum category CRUD, system settings management, and audit log retrieval. | Reads/writes `admin_audit_logs`, `forum_categories`, `system_settings`, `reports`, `user_accounts` tables. |
 
-##### Data Access Layer (`src/backend/db/`)
+##### Data Access (`src/backend/db/`)
 
-| Component | Responsibility | Database Tables |
+Database access is handled by Drizzle ORM repository modules. These are an implementation detail of the service layer — each service imports the repositories it needs directly. Key tables:
+
+| Table Group | Tables | Used By |
 |---|---|---|
-| **User Repository** | Queries for user accounts and profiles: find by ID, email, or username; create users; update profiles; issue refresh tokens; manage refresh sessions. | `user_accounts`, `profiles`, `refresh_sessions`, `user_social_links` |
-| **Interactions Repository** | Queries for posts, comments, reactions, reports, and attachments. Handles feed queries with pagination, post-with-relations fetching, comment trees, reaction toggling, and report management. | `posts`, `comments`, `reactions`, `reports`, `post_attachments` |
-| **Hashtag Repository** | Manages hashtag entities and their associations with posts. Supports trending hashtag queries (by post count) and hashtag-based post feeds. | `hashtags`, `post_hashtags` |
-| **Summary Repository** (`src/backend/db/post-summary.repository.ts`) | Upserts and retrieves AI-generated post summaries. Handles staleness checks based on comment count changes. | `post_summaries` |
-| **Admin Repository** | Queries for admin operations: audit log insertion and retrieval, forum category CRUD, system settings reads/writes, and aggregate statistics. | `admin_audit_logs`, `forum_categories`, `system_settings` |
-| **Profile Repository** (`src/backend/db/profiles.ts`) | Dedicated profile queries: get profile by user ID, update profile fields (display name, bio, avatar URL, location, website). | `profiles` |
+| **User & Auth** | `user_accounts`, `profiles`, `refresh_sessions`, `user_social_links` | Auth Service, Social Auth Service |
+| **Content** | `posts`, `comments`, `reactions`, `post_attachments` | Post Service, Comment Service, Reaction Service |
+| **Reports & Moderation** | `reports` | Report Service, Admin Service |
+| **Hashtags** | `hashtags`, `post_hashtags` | Post Service, Hashtag Router |
+| **Summaries** | `post_summaries` | Post Summary Service |
+| **Admin** | `admin_audit_logs`, `forum_categories`, `system_settings` | Admin Service |
 
-##### Library Layer
+##### Infrastructure
 
 | Component | Responsibility |
 |---|---|
-| **JWT Library** (`jsonwebtoken`) | Wraps `jsonwebtoken` to sign access tokens with `HS256` and configurable TTL, and to verify tokens extracting the payload `{ sub, role, status }`. |
-| **Password Library** (`bcrypt`) | Wraps `bcrypt` for password hashing (configurable cost factor) and comparison. |
 | **Env Config** (`src/backend/env.ts`) | Validates all environment variables at startup using a Zod schema. Fails fast with clear error messages if required variables are missing or malformed. Exports the typed `env` object used throughout the backend. |
