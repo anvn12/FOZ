@@ -511,17 +511,19 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when the user navigates to the application's homepage.
-2. The system queries the `posts` table for content with `visibility_state = 'public'` and `lifecycle_state = 'active'`.
-3.The system sorts posts by their posting time, with the newest first.
-4. The system displays the feed with post titles, author avatars, and interaction counts.
-5. The user scrolls to load more posts (pagination).
+1. The use case begins when the user navigates to the application's homepage, which presents the feed tabs "For You" (default) and "Latest".
+2. The system queries the `posts` table for content with `visibility_state = 'public'` and `deleted_at IS NULL`, unwrapping reposts so the original post content is shown.
+3. The system orders the posts according to the selected feed mode:
+   * **For You:** personalized ranking based on viewer affinity, engagement, and recency; guests and viewers with no interaction history receive a popularity-ranked feed.
+   * **Latest:** sorted by posting time, with the newest first.
+4. The system displays the feed with post content, author avatars, and interaction counts (likes, comments, reposts).
+5. The user scrolls to load more posts (cursor-based pagination).
 
 ### 3.2 Alternative Flows
 
 #### 3.2.1 Switch feed mode
-1. The user switches from the Latest feed to the For You feed.
-2. The system loads and displays personalized posts based on the user's interests.
+1. The user switches between the "For You" and "Latest" feed tabs.
+2. The system reloads and displays the posts according to the newly selected mode.
 
 
 #### 3.2.2 No Posts Available
