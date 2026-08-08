@@ -1,51 +1,3 @@
-# Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [A - Revised Use-Case Specification](#a---revised-use-case-specification)
-	 - [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
-   - [Use-Case Specification: Log In](#use-case-specification-log-in)
-   - [Use-Case Specification: Log Out](#use-case-specification-log-out)
-   - [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
-   - [Use-Case Specification: Change Password](#use-case-specification-change-password)
-   - [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
-   - [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
-   - [Use-Case Specification: Search Content](#use-case-specification-search-content)
-   - [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
-   - [Use-Case Specification: Create Post](#use-case-specification-create-post)
-   - [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
-   - [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
-   - [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
-   - [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
-   - [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
-   - [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
-   - [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
-   - [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
-   - [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
-   - [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
-   - [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
-- [B - Software Architecture: System Context Diagram](#b---software-architecture-system-context-diagram)
-  - [Tech Stack](#tech-stack)
-    - [Frontend](#frontend)
-    - [Backend](#backend)
-    - [Database](#database)
-    - [External APIs / Services](#external-apis--services)
-  - [C4 Model - Level 1 (System Context Diagram)](#c4-model---level-1-system-context-diagram)
-    - [Diagram Explanation](#diagram-explanation)
-- [C - Software Architecture: Container Diagram and Component Diagram](#c---software-architecture-container-diagram-and-component-diagram)
-  - [1. C4 Model - Level 2 (Container Diagram)](#1-c4-model---level-2-container-diagram)
-    - [1.1 Diagram](#11-diagram)
-    - [1.2 Descriptions](#12-descriptions)
-    - [1.3 Relationships Summary](#13-relationships-summary)
-  - [2. C4 Model - Level 3 (Component Diagram)](#2-c4-model---level-3-component-diagram)
-    - [2.1 Frontend - Web Application Container](#21-frontend---web-application-container)
-      - [2.1.1 Diagram](#211-diagram)
-      - [2.1.2 Component Descriptions](#212-component-descriptions)
-    - [2.2 Backend - Backend API Server Container](#22-backend---backend-api-server-container)
-      - [2.2.1 Diagram A — Content & Discovery](#221-diagram-a--content--discovery-feed--search--profile)
-      - [2.2.2 Diagram B — Identity & Interaction](#222-diagram-b--identity--interaction-auth--interaction--ai-tldr)
-      - [2.2.3 Component Descriptions](#223-component-descriptions)
-- [D - Image example](#d---image-example)
-  - [1. Insert image rule](#1-insert-image-rule)
 
 # A - Revised Use-Case Specification
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Phạm Đinh Gia Khánh*
@@ -2235,9 +2187,9 @@ We declare that no AI tools were used in peer review tasks.
 
 AI Usage Report of each member can be found in folder: `ai-logs/`
 
-### Weekly Report
+## Weekly Report
 
-#### Sprint Planning
+### Sprint Planning
 
 =========== 25/7, Sprint 4 planning ===============
 
@@ -2265,7 +2217,7 @@ Summary of the meeting:
 
 - The team has finalized the list of tasks for the sprint, including both PA4 and project development process tasks. All team members have agreed on their assignments and estimated time for each task.
 
-#### Scrum Meetings
+### Scrum Meetings
 
 =========== 2/8, Scrum 1 ===============
 
@@ -2303,21 +2255,21 @@ Võ An Phú
 
 Nguyễn Tuấn An
 
-1. Integrate cloud for storing image; fix cloud problems; design draft logo; polish TLDR, home icon, menu box; design and add favicon; fix for you button on guest; add guide when hovering navbar; add client side process for fast Like response; fix redirect when register, login; add click post to view detail, view full image, click profile picture to view profile; add read more button; fix comment UX; add sort comment; fix search use mock data; redesign login UI; implement login with Google
+1. Integrate cloud; design logo; fix for you button on guest; add guide when hovering navbar; add client side process for fast Like response; fix redirect when register/login; add click post/image to view detail; add read more button; add sort comment; fix search use mock data; redesign login UI; implement login with Google; redesign report format; Review and edit B C reports; write D report
 2. Plan for PA5, assign tasks to team members.
 3. None
 
 Nguyễn Hải Nam
 
-1. What have I done since last week?
-2. What will I do until next week?
-3. What issues / problems /obstacles do I have?
+1. Revised and rewrite UC14 to UC21, Implement hashtag feature, polish profile page ui
+2. Waiting for new tasks
+3. None
 
 Nguyễn Hải Trọng
 
-1. What have I done since last week?
-2. What will I do until next week?
-3. What issues / problems /obstacles do I have?
+1. Write part B and edit UC01 to UC06 in report A
+2. Waiting for new tasks for PA5, fixing some issues in Github
+3. None
 
 Phạm Đinh Gia Khánh
 
@@ -2331,7 +2283,7 @@ Võ An Phú
 2. Wait task
 3. None
 
-#### Sprint Review
+### Sprint Review
 
 =========== 8/8 Sprint Review ===============
 
@@ -2357,4 +2309,4 @@ What lessons we could learn: the importance of learning and grinding.
 
 ### Jira Board
 
-![Jira Board 1](./PA2-Group06/images/jira1.png)
+<insert board>
