@@ -58,7 +58,7 @@
 | 06/Aug/2026 | 1.1 | Update the Alternative Flow and Reordered sections for clarity | Nguyễn Hải Trọng |
 
 # Use-Case Specification: Sign Up
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-01
@@ -122,9 +122,14 @@ This use case allows an unauthenticated guest to create a new user account and p
 1. If at step 2, the user chooses to "Continue with Google".
 2. The system redirects the user to the Google OAuth consent screen.
 3. The user successfully authenticates with Google.
-4. The system automatically provisions a `user_accounts` and `profiles` record using the Google profile data.
-5. The system issues access and refresh tokens, bypassing steps 3-6.
+4. The system automatically provisions a `user_accounts` and `profiles` record using the Google profile data, deriving a unique username from their email prefix.
+5. The system issues access and refresh tokens, bypassing standard registration validation.
 6. The flow resumes at step 8.
+
+#### 3.2.8 Google Sign Up Username Collision
+1. If at step 4 of the Google Sign Up flow, the derived base username is already taken by another user or is a reserved keyword.
+2. The system automatically generates a unique username by appending a numeric counter to the base name.
+3. The system proceeds to provision the account with the newly generated username.
 
 ## 4. Special Requirements
 * **Security:** Passwords must be hashed via bcrypt with a minimum cost of 12. Plaintext passwords must never be logged.
@@ -152,9 +157,16 @@ This use case allows an unauthenticated guest to create a new user account and p
     ![](<./Prototype requirement/UC01-7.png>)
 * **Screen 8 (Alt Flow - Sign Up with Google Account):**
     ![](<./Prototype requirement/UC01-8.png>)
+* **Screen 9 (Alt Flow - Google Sign Up Username Collision):**
+    ![](<./Prototype requirement/UC01-9-1.png>)
+    This is the email to test the alternative flow.
+    ![](<./Prototype requirement/UC01-9-2.png>)
+    The website already has an username that matches the Google account .
+    ![](<./Prototype requirement/UC01-9-3.png>)
+    The system automatically generates a unique username by appending number "1" to the base name.
 
 # Use-Case Specification: Log In
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-02
@@ -199,9 +211,15 @@ This use case describes how a registered Guest accesses their account by providi
 1. If at step 2, the user chooses to "Sign in with Google".
 2. The system redirects the user to the Google OAuth consent screen.
 3. The user successfully authenticates with Google.
-4. The system verifies the Google profile exists in `user_accounts`.
-5. The system issues an Access Token and sets a Refresh Token cookie, bypassing standard password verification.
+4. The system checks the database for an existing Google social link or matching email.
+5. The system verifies the account is active, issues an Access Token, and sets a Refresh Token cookie.
 6. The flow resumes at step 6.
+
+#### 3.2.5 Log In with Non-Existent Google Account
+1. If at step 4 of the Google Sign In flow, the system finds no existing user account associated with the Google profile or email.
+2. The system automatically provisions a new user account on the fly (including auto-generating a unique username) instead of rejecting the login.
+3. The login attempt is seamlessly converted into a successful registration.
+4. The flow resumes at step 5 of the Google Sign In flow.
 
 ## 4. Special Requirements
 * **Rate Limiting:** Maximum 100 attempts per 15 minutes to prevent brute-force attacks.
@@ -223,9 +241,14 @@ This use case describes how a registered Guest accesses their account by providi
     ![](<./Prototype requirement/UC02-4.png>)
 * **Screen 5 (Alt Flow - Sign In with Google Account):**
     ![](<./Prototype requirement/UC02-5.png>)
+* **Screen 6 (Alt Flow - Log In with Non-Existent Google Account):**
+    ![](<./Prototype requirement/UC02-6-1.png>)
+    This email hasn't been logged in to the website.
+    ![](<./Prototype requirement/UC02-6-2.png>)
+    After login, the system automatically creates a new user account.
 
 # Use-Case Specification: Log Out
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
 **Version:** 1.0  
 **Document identifier:** FOZ-UCS-03
@@ -275,7 +298,7 @@ Allows an authenticated user to securely end their active session on the current
   ![](<./Prototype requirement/UC03-2.png>)
 
 # Use-Case Specification: Manage Profile
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-04
@@ -335,7 +358,7 @@ Allows the user to update their public-facing information such as display name, 
   ![](<./Prototype requirement/UC04-3.png>)
 
 # Use-Case Specification: Change Password
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-05
@@ -410,7 +433,7 @@ Allows an authenticated user to change their password securely by verifying thei
   ![](<./Prototype requirement/UC05-5.png>)
 
 # Use-Case Specification: Change Avatar
-*Edited by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An*
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
 **Version:** 1.1  
 **Document identifier:** FOZ-UCS-06
@@ -446,8 +469,13 @@ Allows an authenticated user to upload a new profile picture.
 2. The system aborts the upload process.
 3. The use case ends.
 
+#### 3.2.3 Wrong File Type
+1. If at step 3, the file uploaded is not a supported image format (e.g., PDF, DOCX).
+2. The system aborts the upload and displays "Invalid file format. Please upload an image."
+3. The flow resumes at step 1.
+
 ## 4. Special Requirements
-* **Space:** Raw image uploads can be up to 25MB, but they are compressed heavily on the client and server to conserve server storage.
+* **Space:** Raw images are compressed heavily on the client and server to conserve server storage.
 
 ## 5. Postconditions
 * The new avatar is visible publicly on the user's profile.
@@ -461,6 +489,9 @@ Allows an authenticated user to upload a new profile picture.
 * **Screen 2 (Alt Flow - File Too Large):**
   ![](<./Prototype requirement/UC06-2-1.png>)
   ![](<./Prototype requirement/UC06-2.png>)
+* **Screen 3 (Alt Flow - Wrong File Type):**
+  ![](<./Prototype requirement/UC06-3-1.png>)
+  ![](<./Prototype requirement/UC06-3-2.png>)
 
 # Use-Case Specification: Browse Feed
 
