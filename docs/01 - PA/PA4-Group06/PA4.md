@@ -547,7 +547,7 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
   **Screen 2 (Alternative Flow 1):**
   ![](<./Prototype requirement/UC07-2.png>)
   
-  **Screen 3 (Alternative Flow 3):**
+  **Screen 3 (Alternative Flow 2):**
   ![](<./Prototype requirement/UC07-3.png>)
 
 # Use-Case Specification: Search Content

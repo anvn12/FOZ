@@ -33,7 +33,9 @@
      - Prototype requirements expanded from 1 to 3 screens.
 
    - **UC-07 (Browse Feed):**
-     - Basic flow clarified: posts sorted by posting time (newest first).
+     - Basic flow corrected to match the implemented feed endpoints: the homepage presents "For You" (default) and "Latest" feed tabs; the system queries `posts` with `visibility_state = 'public'` and `deleted_at IS NULL`, unwrapping reposts to show the original content.
+     - Sorting is now mode-specific: **For You** ranks posts by viewer affinity, engagement, and recency (guests and viewers without interaction history receive a popularity-ranked feed), while **Latest** sorts by posting time with the newest first.
+     - Pagination clarified as cursor-based (scroll-to-load-more).
      - Added alternative flow `Switch feed mode` (Latest ↔ For You).
      - Prototype requirements expanded from 1 to 3 screens.
 
