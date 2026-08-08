@@ -539,7 +539,9 @@ Database access is handled by Drizzle ORM repository modules. These are an imple
 
 *Work performed by: Võ An Phú | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
 
-The demo can be found at: `youtube-link.txt` or `https://youtu.be/ETm_nWagoRE?si=to6VentWdVtbCzoN`
+- **Video Demo:** can be found at: `youtube-link.txt` or `https://youtu.be/ETm_nWagoRE?si=to6VentWdVtbCzoN`
+- **Source Code:** source code for current progress can be found at folder: `src/`
+- **Spec Kit Artifacts:** generated Spec Kit artifacts for current progress can be found at folder: `specs/`
 
 # F - AI Usage Report and Weekly Report
 

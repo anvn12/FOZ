@@ -1,0 +1,133 @@
+openapi: 3.0.3
+info:
+  title: Search & Discovery API
+  version: 1.0.0
+  description: Endpoints for search discovery widgets (Trending Topics, Suggested Creators, Trending Discussions) and search inputs.
+paths:
+  /api/v1/search/discovery:
+    get:
+      summary: Fetch search discovery widgets data
+      description: Returns dynamic lists of trending topics, suggested creators, and trending discussions.
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Max items to return per discovery section
+      responses:
+        '200':
+          description: Search discovery data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchDiscoveryResponse'
+
+  /api/v1/search:
+    get:
+      summary: Search posts and user profiles
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Query string. If empty or missing, lists default/all items for requested type.
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [posts, users, all]
+            default: all
+      responses:
+        '200':
+          description: Search results retrieved successfully
+
+components:
+  schemas:
+    SearchDiscoveryResponse:
+      type: object
+      required:
+        - topics
+        - creators
+        - discussions
+      properties:
+        topics:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryTopic'
+        creators:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryCreator'
+        discussions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryDiscussion'
+
+    DiscoveryTopic:
+      type: object
+      required:
+        - id
+        - name
+        - tag
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+        postCount:
+          type: integer
+
+    DiscoveryCreator:
+      type: object
+      required:
+        - id
+        - userAccountId
+        - displayName
+      properties:
+        id:
+          type: string
+        userAccountId:
+          type: string
+        displayName:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+
+    DiscoveryDiscussion:
+      type: object
+      required:
+        - id
+        - authorId
+        - authorName
+        - authorHandle
+        - content
+        - createdAt
+        - likeCount
+        - commentCount
+      properties:
+        id:
+          type: string
+        authorId:
+          type: string
+        authorName:
+          type: string
+        authorHandle:
+          type: string
+        authorAvatarUrl:
+          type: string
+          nullable: true
+        content:
+          type: string
+        createdAt:
+          type: string
+        likeCount:
+          type: integer
+        commentCount:
+          type: integer
