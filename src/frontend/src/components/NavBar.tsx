@@ -386,26 +386,36 @@ export function NavBar() {
         <Link to="/" className="absolute left-1/2 -translate-x-1/2 text-2xl font-black tracking-tighter text-primary">
           FOZ
         </Link>
-        <Link
-          to="/search"
-          className={`p-2 -mr-2 rounded-xl transition-colors flex items-center justify-center ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"
-            }`}
-          aria-label="Search"
-        >
-          <svg
-            aria-hidden="true"
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/search"
+            className={`p-2 rounded-xl transition-colors flex items-center justify-center ${isSearchActive ? "text-primary" : "text-outline hover:text-primary"
+              }`}
+            aria-label="Search"
           >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" x2="16.65" y1="21" y2="16.65" />
-          </svg>
-        </Link>
+            <svg
+              aria-hidden="true"
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" x2="16.65" y1="21" y2="16.65" />
+            </svg>
+          </Link>
+          {!user && (
+            <Link
+              to="/login"
+              className="bg-primary text-on-primary font-semibold text-xs px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
+            >
+              Log in
+            </Link>
+          )}
+        </div>
       </header>
 
       {/* ======================================= */}
