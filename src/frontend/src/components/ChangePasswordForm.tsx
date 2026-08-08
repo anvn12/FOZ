@@ -76,6 +76,25 @@ export function ChangePasswordForm({ onSuccess }: ChangePasswordFormProps) {
         )}
       </div>
 
+      <div className="space-y-1.5">
+        <label
+          htmlFor="settings-confirmNewPassword"
+          className="block px-1 font-label-md text-label-md text-primary"
+        >
+          Confirm new password
+        </label>
+        <PasswordInput
+          id="settings-confirmNewPassword"
+          autoComplete="new-password"
+          placeholder="Confirm your new password"
+          invalid={Boolean(errors.confirmNewPassword)}
+          registration={field("confirmNewPassword")}
+        />
+        {errors.confirmNewPassword && (
+          <p className="px-1 text-label-sm text-error">{errors.confirmNewPassword.message}</p>
+        )}
+      </div>
+
       <button
         type="submit"
         disabled={isSubmitting}
