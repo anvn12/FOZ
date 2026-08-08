@@ -688,7 +688,7 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 
 ### 3.2 Alternative Flows
 
-#### 3.2.1. **Post creation canceled**
+#### 3.2.1. Post creation canceled
 
 1. The user cancels the post creation.
 2. The system discards the draft and returns to the previous screen.
@@ -716,9 +716,9 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC10-1.png>)
-  * **Screen 2 (Alternative Flow 2):** 
+* **Screen 2 (Alternative Flow 2):**
   ![](<./Prototype requirement/UC10-2.png>)
-  * **Screen 2 (Alternative Flow 3):** 
+* **Screen 2 (Alternative Flow 3):**
   ![](<./Prototype requirement/UC10-3.png>)
 
 
@@ -769,6 +769,7 @@ Acts as the generalized use case for users engaging with a post via various acti
 ## 6. Extension Points
 * **Leave Comment:** Extended via UC-12.
 * **Like/Unlike:** Extended via UC-13.
+* **Report Inappropriate Content:** Extended via UC-16.
 
 ## 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
@@ -828,10 +829,10 @@ Allows an authenticated user to reply to a post or to another comment.
 * **Screen 1 (Basic Flow):** 
    ![](<./Prototype requirement/UC12-1.png>)
 
-  **Screen 2 (Alternative Flow 2):**
+* **Screen 2 (Alternative Flow 2):**
    ![](<./Prototype requirement/UC12-2.jpg>)
 
-    **Screen 3 (Alternative Flow 3):**
+* **Screen 3 (Alternative Flow 3):**
    ![](<./Prototype requirement/UC12-3.png>)
 
 ## Use-Case Specification: Like/Unlike
@@ -881,7 +882,7 @@ Allows a user to toggle an appreciation metric on a post or comment.
 ### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC13-1.png>)
-  * **Screen 2 (Alternative Flow):** 
+* **Screen 2 (Alternative Flow):**
   ![](<./Prototype requirement/UC13-2.png>)
 
 # Use-Case Specification: Request AI Summary
@@ -921,12 +922,12 @@ Allows an authenticated user to request an on-demand AI-generated TL;DR of a pos
 #### 3.2.2 AI Provider Error
 1. If at step 4 the primary AI provider times out, returns an error, or exceeds its quota.
 2. The system attempts the configured fallback provider.
-3. If every configured provider fails, the system displays: "AI Summary is currently unavailable."
+3. If every configured provider fails, the system displays: "Failed to load summary"
 4. The use case ends. If a fallback provider succeeds, the flow resumes at step 5.
 
 #### 3.2.3 Invalid AI Response
 1. If at step 5 the provider returns an empty, malformed, or unusable summary.
-2. The system does not display the response and shows: "AI Summary is currently unavailable."
+2. The system does not display the response and shows: "Failed to load summary"
 3. The use case ends.
 
 #### 3.2.4 Rate Limit Exceeded
@@ -952,10 +953,10 @@ Allows an authenticated user to request an on-demand AI-generated TL;DR of a pos
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC14-1.png>)
 
-* **Screen 2 (Alternative Flow 1):** 
+* **Screen 2 (Alternative Flow 2):**
   ![](<./Prototype requirement/UC14-2.png>)
 
-* **Screen 3 (Alternative Flow 2):** 
+* **Screen 3 (Alternative Flow 4):**
   ![](<./Prototype requirement/UC14-3.png>)
 
 # Use-Case Specification: Delete Own Post
@@ -970,19 +971,19 @@ Allows an authenticated user to request an on-demand AI-generated TL;DR of a pos
 * **Actor(s):** Standard User
 
 ### 1.1 Brief Description
-Allows an authenticated user to soft-delete a post they authored so that it is hidden from public view while its record is retained.
+Allows an authenticated user to permanently delete a post they authored. The post record is removed from the database and becomes inaccessible to everyone, including the author; it cannot be restored.
 
 ## 2. Preconditions
 * The user is authenticated and their account status is `active`.
-* The target post exists, is currently active, and the user is its `author_id`.
+* The target post exists and the user is its `author_id`.
 
 ## 3. Flow of Events
 ### 3.1 Basic Flow
-1. The use case begins when the user clicks the "Delete" option on their own active post.
-2. The system displays a confirmation dialog identifying the post that will be hidden.
+1. The use case begins when the user clicks the "Delete" option on their own post.
+2. The system displays a confirmation dialog warning that the deletion is permanent and irreversible.
 3. The user confirms the deletion.
-4. The system atomically updates the post's `lifecycle_state` to `hidden` in the `posts` table.
-5. The system removes the post from public feeds and search results, then redirects the user to the home feed.
+4. The system verifies ownership at the API boundary, then the backend deletes the post row from the `posts` table; dependent comments and attachments are removed via cascade.
+5. The system removes the post from all public feeds, search results, and post-detail views, then redirects the user to the home feed.
 
 ### 3.2 Alternative Flows
 
@@ -991,23 +992,23 @@ Allows an authenticated user to soft-delete a post they authored so that it is h
 2. The dialog closes, no database changes are made, and the use case ends.
 
 #### 3.2.2 Post Not Found or Forbidden
-1. If at step 4 the post no longer exists, is already hidden, or the user is not its author.
+1. If at step 4 the post no longer exists or the user is not its author.
 2. The system makes no changes and displays: "This post cannot be deleted or you do not have permission to delete it."
 3. The use case ends.
 
-#### 3.2.3 Update Failure
-1. If at step 4 the database update fails.
-2. The system rolls back the operation and displays: "The post could not be deleted. Please try again."
+#### 3.2.3 Deletion Failure
+1. If at step 4 the database deletion fails.
+2. The system displays: "The post could not be deleted. Please try again." and leaves the post unchanged.
 3. The use case ends.
 
 ## 4. Special Requirements
 * **Authorization:** Ownership must be checked at the API boundary as well as in the user interface.
-* **Visibility:** Hidden posts must be excluded from public feeds, search results, and normal post-detail views.
-* **Data Retention:** The post record, comments, reactions, and attachments are retained after this soft delete; this use case does not permanently purge them.
+* **Permanence:** The deletion is a hard delete — the record is removed from the `posts` table and is not recoverable by the author or any application user.
+* **Data Integrity:** Dependent comments and attachments are removed via cascade; uploaded media assets are destroyed best-effort in the background.
 
 ## 5. Postconditions
-* The post's `lifecycle_state` is `hidden`.
-* The post no longer appears in public feeds or search results.
+* The post record no longer exists in the `posts` table.
+* The post is inaccessible to the author, the public, and all application queries.
 
 ## 6. Extension Points
 * None.

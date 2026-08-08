@@ -72,9 +72,10 @@
      - Special requirements added: authentication, rate limit, payload sanitization; persistent caching is out of scope for v1.
 
    - **UC-15 (Delete Own Post):**
-     - Clarified as a **soft delete**: `lifecycle_state` set to `hidden` atomically; post removed from feeds and search results while the record is retained.
-     - Added alternative flows: `Post Not Found or Forbidden` and `Update Failure`; expanded `User Cancels Deletion` (Cancel, close dialog, or Escape).
-     - Added special requirements: ownership check at API boundary, visibility rules, data retention.
+     - Corrected to match the implemented `deletePost` endpoint: the post is **permanently hard-deleted** (row removed from the `posts` table; dependent comments and attachments removed via cascade; Cloudinary assets destroyed best-effort).
+     - Clarified that the deleted post is inaccessible to everyone — the author, the public, and all application queries — and cannot be restored.
+     - Added alternative flows: `Post Not Found or Forbidden` and `Deletion Failure`; expanded `User Cancels Deletion` (Cancel, close dialog, or Escape).
+     - Added special requirements: ownership check at API boundary, permanence of the delete, and data integrity via cascade.
 
    - **UC-16 (Report Inappropriate Content):**
      - Reporting reasons synchronized with the codebase: `Harassment`, `Spam`, `Inappropriate`, `Other`; `Other` requires details; details limited to 1,000 chars.
