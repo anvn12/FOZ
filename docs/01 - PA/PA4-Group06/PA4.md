@@ -776,6 +776,7 @@ Allows a user to toggle an appreciation metric on a post or comment.
   ![](<./Prototype requirement/UC13-1.png>)
 
 # Use-Case Specification: Request AI Summary
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
@@ -834,6 +835,7 @@ Generates an AI-powered TL;DR of a lengthy post and its comments for quick readi
   ![](<./Prototype requirement/UC14-3.png>)
 
 # Use-Case Specification: Delete Own Post
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
@@ -890,6 +892,7 @@ Allows a user to permanently remove a post they authored.
   
 
 # Use-Case Specification: Report Inappropriate Content
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.1  
@@ -944,6 +947,7 @@ Allows users to flag posts or comments that violate community guidelines.
   ![](<./Prototype requirement/UC16-2.png>)
 
 # Use-Case Specification: Review Reports
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.0  
@@ -987,6 +991,7 @@ Allows elevated users to view and take action on content flagged by the communit
   ![](<./Prototype requirement/UC17-1.png>)
 
 # Use-Case Specification: Forward Report to Admin
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.0  
@@ -1040,6 +1045,7 @@ Allows a Moderator to escalate severe violations to an Administrator.
   ![](<./Prototype requirement/UC18-3.png>)
 
 # Use-Case Specification: Delete Any Content
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.0  
@@ -1095,6 +1101,7 @@ Allows an Administrator to instantly and permanently remove any post or comment 
   ![](<./Prototype requirement/UC19-3.png>)
 
 # Use-Case Specification: Permanently Remove User
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.0  
@@ -1152,6 +1159,7 @@ Allows an Administrator to permanently delete a user account, revoke active sess
   ![](<./Prototype requirement/UC20-2.png>)
 
 # Use-Case Specification: Assign Moderator Role
+*Reviewed and Edited by: Nguyen Hai Nam*
 
 **Project Name:** FOZ  
 **Version:** 1.0  
