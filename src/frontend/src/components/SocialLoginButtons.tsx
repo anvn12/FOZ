@@ -12,14 +12,14 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="w-full mt-3">
+    <div className="w-full mt-3 ">
       {/* Full-width Google Button */}
       <button
         type="button"
         aria-label="Continue with Google account"
         disabled={disabled || loadingProvider !== null}
         onClick={() => onSelectProvider("google")}
-        className="w-full min-h-[44px] py-3 px-4 rounded-xl border border-outline-variant bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        className="w-full min-h-[44px] py-3 px-4 rounded-full border border-outline-variant bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {loadingProvider === "google" ? (
           <span className="material-symbols-outlined animate-spin text-on-surface">

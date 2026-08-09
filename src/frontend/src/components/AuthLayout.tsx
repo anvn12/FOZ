@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import ColorBends from "./ColorBends";
+import { FozLogo } from "./FozLogo";
 
 interface CarouselSlide {
   id: string;
@@ -101,45 +103,42 @@ function TrendingCarousel() {
  * text wordmark (like NavBar), bordered card, design-system tokens only,
  * so light/dark mode follow the app theme automatically.
  */
-export function AuthLayout({
-  headline,
-  children,
-}: {
-  headline: ReactNode;
-  children: ReactNode;
-}) {
+export function AuthLayout({ headline, children }: { headline: ReactNode; children: ReactNode }) {
   return (
-    <div className="bg-background text-on-background min-h-screen flex flex-col antialiased overflow-x-hidden relative">
-      <nav className="w-full absolute top-0 left-0 z-50 flex justify-center md:justify-between items-center px-4 md:px-16 py-4 md:py-6">
-        <Link to="/" className="text-3xl font-black tracking-tighter text-primary select-none">
-          FOZ
-        </Link>
-      </nav>
-
-      <main className="flex-1 flex flex-col md:flex-row w-full max-w-6xl mx-auto min-h-screen relative z-10 items-center justify-center pt-20 md:pt-16 pb-8 px-4 gap-6">
-        <div className="w-full text-center mt-2 md:hidden mb-2">
-          <h1 className="text-3xl font-black tracking-tighter text-primary">{headline}</h1>
-        </div>
-
-        <div className="hidden md:flex w-1/2 h-full flex-col justify-center px-8 lg:px-12 relative items-center">
-          <div className="max-w-md z-10">
-            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-primary leading-[1.05] mb-4">
-              {headline}
-            </h1>
-            <p className="text-body-lg font-body-lg text-secondary mb-8 max-w-sm">
-              Explore the things you love, connect with the community, and discover new insights
-              in real-time.
-            </p>
-            <TrendingCarousel />
+    <div className="bg-background text-on-background min-h-screen grid md:grid-cols-2 grid-cols-1 antialiased overflow-x-hidden relative">
+      <main className=" flex col-span-1 bg-background p-6 ">
+        <div className="w-full rounded-2xl overflow-hidden relative bg-zinc-900">
+          <div className="absolute inset-0">
+            <ColorBends colors={["#7C9CFF", "#B497CF", "#8A5CFF"]} speed={0.15} intensity={1.2} noise={0.1} />
           </div>
-        </div>
+          
+          <nav className="w-full absolute top-10 lg:left-10 z-50 flex justify-center md:justify-between items-center">
+            <Link to="/" className="text-3xl font-black tracking-tighter text-primary select-none cursor-pointer">
+              <FozLogo showText={false} whiteOverlay/>
+            </Link>
+          </nav>
+          <div className="w-full absolute top-1/2 text-center mt-2 md:hidden mb-2">
+            <h1 className="text-4xl font-black tracking-tighter text-white">{headline}</h1>
+          </div>
 
-        <div className="w-full md:w-1/2 flex items-center justify-center px-0 md:px-6">
-          <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-5 md:p-8 shadow-sm relative z-10 flex flex-col max-h-[85vh] overflow-y-auto">
-            {children}
+          <div className="hidden md:flex w-full h-full flex-col justify-end items-start px-8 relative pb-8 ">
+            <div className=" z-10 ">
+              <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4">
+                {headline}
+              </h1>
+              <p className="text-body-lg font-body-lg text-white max-w-sm">
+                Explore the things you love, connect with the community, and discover new insights
+                in real-time.
+              </p>
+            </div>
           </div>
         </div>
       </main>
+      <div className="w-[80%] mx-auto pt-10 md:pt-0 flex md:items-center md:justify-center px-0 md:px-6">
+        <div className="w-full md:p-8  relative z-10 flex flex-col overflow-y-auto">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

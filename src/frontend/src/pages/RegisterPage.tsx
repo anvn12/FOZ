@@ -9,6 +9,7 @@ import { useRegister, initiateSocialAuth, ApiError } from "#frontend/api/auth";
 import { SocialLoginButtons } from "#frontend/components/SocialLoginButtons";
 import { isMobileDevice } from "#frontend/utils/device";
 import { AuthLayout } from "#frontend/components/AuthLayout";
+import { LuArrowRight } from "react-icons/lu";
 
 const formSchema = RegisterRequest.extend({
   confirmPassword: z.string().min(1, "Confirm your password"),
@@ -26,6 +27,7 @@ export function RegisterPage() {
   const navigate = useNavigate();
   const register = useRegister();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [socialLoading, setSocialLoading] = useState<"google" | null>(null);
 
   const {
@@ -74,16 +76,29 @@ export function RegisterPage() {
     <AuthLayout
       headline={
         <>
-          Join <br /> FOZ.
+          Join FOZ.
         </>
       }
     >
-      <h2 className="font-headline-md text-headline-md text-primary mb-6 text-center">
+      <h2 className="font-headline-md text-4xl text-primary mb-4 text-left tracking-tighter">
         Create an account
       </h2>
 
+      <h1 className="text-sm tracking-tighter mb-8">
+        Already have an account? <span className="font-bold hover:underline"><a href="/login">Log in instead</a></span>
+      </h1>
+
+      {/* <div className="mt-4 pt-4 border-t border-outline-variant text-center">
+        <Link
+          to="/login"
+          className="block w-full min-h-11 py-3 rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center justify-center"
+        >
+          Already have an account? Log in
+        </Link>
+      </div> */}
+
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
-        <div className="grid grid-cols-2 gap-4">
+        <div className=" gap-4">
           <div>
             <label htmlFor="username" className="block mb-1.5 text-label-md font-label-md text-on-surface-variant">
               Username <span className="text-error">*</span>
@@ -102,7 +117,7 @@ export function RegisterPage() {
               </p>
             )}
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="displayName" className="block mb-1.5 text-label-md font-label-md text-on-surface-variant">
               Display Name
             </label>
@@ -119,7 +134,7 @@ export function RegisterPage() {
                 {errors.displayName.message}
               </p>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div>
@@ -140,7 +155,8 @@ export function RegisterPage() {
           )}
         </div>
 
-        <div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
           <label htmlFor="password" className="block mb-1.5 text-label-md font-label-md text-on-surface-variant">
             Password <span className="text-error">*</span>
           </label>
@@ -177,47 +193,55 @@ export function RegisterPage() {
           <div className="relative">
             <input
               id="confirmPassword"
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               autoComplete="new-password"
               placeholder="Confirm Password"
               aria-invalid={errors.confirmPassword ? true : undefined}
               {...field("confirmPassword")}
               className={`${INPUT_CLASS} pr-12`}
             />
+            <button
+              type="button"
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center min-h-[44px] text-outline hover:text-primary transition-colors focus:outline-none cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {showConfirmPassword ? "visibility" : "visibility_off"}
+              </span>
+            </button>
+            
           </div>
+          
           {errors.confirmPassword && (
             <p className="mt-1 px-1 text-xs text-error font-medium">
               {errors.confirmPassword.message}
             </p>
           )}
         </div>
+        </div>
 
         <button
           type="submit"
           disabled={isSubmitting || register.isPending}
-          className="w-full min-h-[44px] py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md mt-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:opacity-80 transition-opacity"
+          className="w-full min-h-11 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md mt-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:opacity-80 transition-opacity"
         >
           <span>{isSubmitting || register.isPending ? "Creating account…" : "Sign up"}</span>
           {!isSubmitting && !register.isPending && (
-            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            // <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            <LuArrowRight size={16}/>
           )}
         </button>
       </form>
-
-      <SocialLoginButtons
+      <div className="pt-2">
+        <SocialLoginButtons
         onSelectProvider={handleSocialSelect}
         loadingProvider={socialLoading}
         disabled={isSubmitting || register.isPending}
       />
-
-      <div className="mt-4 pt-4 border-t border-outline-variant text-center">
-        <Link
-          to="/login"
-          className="block w-full min-h-[44px] py-3 rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center justify-center"
-        >
-          Already have an account? Log in
-        </Link>
       </div>
+
+      
     </AuthLayout>
   );
 }
