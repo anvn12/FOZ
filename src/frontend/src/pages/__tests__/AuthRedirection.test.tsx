@@ -35,16 +35,12 @@ describe("Auth Redirection Flow", () => {
     const emailInput = screen.getByPlaceholderText("Email address");
     const usernameInput = screen.getByPlaceholderText("Username");
     const displayNameInput = screen.getByPlaceholderText("Display Name");
-    const locationInput = screen.getByPlaceholderText("Location");
-    const websiteInput = screen.getByPlaceholderText("Website");
     const passwordInput = screen.getByPlaceholderText("Password");
     const confirmPasswordInput = screen.getByPlaceholderText("Confirm Password");
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(usernameInput, { target: { value: "testuser" } });
     fireEvent.change(displayNameInput, { target: { value: "Test User" } });
-    fireEvent.change(locationInput, { target: { value: "New York" } });
-    fireEvent.change(websiteInput, { target: { value: "https://example.com" } });
     fireEvent.change(passwordInput, { target: { value: "Password123!" } });
     fireEvent.change(confirmPasswordInput, { target: { value: "Password123!" } });
 
