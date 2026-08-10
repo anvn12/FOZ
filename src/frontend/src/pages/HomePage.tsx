@@ -93,7 +93,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
             </header>
 
             {/* Feed Container */}
-            <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
+            <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border-2 md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
               <div ref={feedRef} className="flex-1 overflow-y-auto divide-y divide-outline-variant [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {isLoading && <div className="p-4 text-center text-outline">Loading posts...</div>}
                 {!isLoading && posts.length === 0 && <div className="p-4 text-center text-outline">No posts yet. Be the first to share something!</div>}

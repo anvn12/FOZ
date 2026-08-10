@@ -108,7 +108,7 @@ export function NavBar() {
       {/* ======================================= */}
       {/* DESKTOP/TABLET: Left Sidebar Navigation */}
       {/* ======================================= */}
-      <nav className="hidden md:flex fixed left-0 top-0 bottom-0 w-20 md:w-24 flex-col items-center py-6 border-r border-outline-variant bg-surface z-50">
+      <nav className="hidden md:flex fixed left-0 top-0 bottom-0 w-20 md:w-24 flex-col items-center py-6 border-r-2 border-outline-variant bg-surface z-50">
         {/* Brand Logo */}
         <div className="mb-12 cursor-pointer">
           <Link to="/" className="text-3xl font-black tracking-tighter text-primary">
@@ -292,7 +292,7 @@ export function NavBar() {
       {/* ======================================= */}
       {/* MOBILE: Top App Bar & Menu Dropdown     */}
       {/* ======================================= */}
-      <header className="fixed top-0 inset-x-0 z-50 h-[60px] bg-surface/90 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between px-4 md:hidden">
+      <header className="fixed top-0 inset-x-0 z-50 h-[60px] bg-surface/90 backdrop-blur-xl border-b-2 border-outline-variant flex items-center justify-between px-4 md:hidden">
         <div ref={mobileMenuRef} className="relative flex items-center justify-start">
           <button
             aria-label="Menu"
@@ -383,7 +383,7 @@ export function NavBar() {
       {/* ======================================= */}
       {/* MOBILE: Bottom Navigation Bar           */}
       {/* ======================================= */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-outline-variant bg-surface backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom,0px)]">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-outline-variant bg-surface backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom,0px)]">
         <div className="grid grid-cols-3 h-14 w-full max-w-md mx-auto items-center justify-items-center">
           <Link
             to="/"

@@ -269,7 +269,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
       )}
 
       {post.repostedBy && (
-        <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold pl-12 min-w-0">
+        <div className="flex items-center gap-2 mb-2 text-secondary text-[13px] font-semibold min-w-0">
           <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
           <Link to={`/profiles/${post.repostedBy.id}`} className="hover:underline hover:text-primary truncate">
             {post.repostedBy.displayName} reposted
