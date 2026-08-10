@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar.js";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -12,7 +11,6 @@ import { TrendingHashtagsWidget } from "#frontend/components/TrendingHashtagsWid
 
 
 export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
-  const user = useAuthStore((state) => state.user);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["posts", feedType],
     queryFn: ({ pageParam }) => listFeed(feedType, pageParam as string | undefined),
@@ -42,37 +40,41 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
         <div className="flex-1 w-full flex justify-center md:pl-24 h-full">
           <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
             {/* Top Sticky Header */}
-            <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex justify-center items-center h-14 flex-shrink-0">
-              <h1 className="text-[17px] font-semibold text-primary">Home</h1>
+            <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex-shrink-0">
+              {/* Feed Tabs — full navigation so each mode loads fresh state */}
+              <nav className="flex h-14" role="tablist" aria-label="Feed type">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={feedType === "for-you"}
+                  onClick={() => { window.location.href = "/foryou"; }}
+                  className={`relative flex-1 flex items-center justify-center text-[15px] font-semibold transition-colors ${feedType === "for-you"
+                      ? "text-primary"
+                      : "text-secondary hover:bg-surface-container-highest"
+                    }`}
+                >
+                  For You
+                  {feedType === "for-you" && (
+                    <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-12 rounded-full bg-primary" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={feedType === "latest"}
+                  onClick={() => { window.location.href = "/latest"; }}
+                  className={`relative flex-1 flex items-center justify-center text-[15px] font-semibold transition-colors ${feedType === "latest"
+                      ? "text-primary"
+                      : "text-secondary hover:bg-surface-container-highest"
+                    }`}
+                >
+                  Latest
+                  {feedType === "latest" && (
+                    <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-12 rounded-full bg-primary" />
+                  )}
+                </button>
+              </nav>
             </header>
-
-            {/* Feed Tabs — full navigation so each mode loads fresh state */}
-            <nav className="flex gap-1 px-4 py-2 flex-shrink-0" role="tablist" aria-label="Feed type">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={feedType === "for-you"}
-                onClick={() => { window.location.href = "/foryou"; }}
-                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${feedType === "for-you"
-                    ? "bg-primary text-on-primary"
-                    : "text-secondary hover:bg-surface-container-highest"
-                  }`}
-              >
-                For You
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={feedType === "latest"}
-                onClick={() => { window.location.href = "/latest"; }}
-                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${feedType === "latest"
-                    ? "bg-primary text-on-primary"
-                    : "text-secondary hover:bg-surface-container-highest"
-                  }`}
-              >
-                Latest
-              </button>
-            </nav>
 
             {/* Feed Container */}
             <div className="flex-1 min-h-0 flex flex-col md:my-2 md:border md:border-outline-variant md:rounded-3xl bg-surface overflow-hidden">
@@ -80,7 +82,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
                 {isLoading && <div className="p-4 text-center text-outline">Loading posts...</div>}
                 {!isLoading && posts.length === 0 && <div className="p-4 text-center text-outline">No posts yet. Be the first to share something!</div>}
                 {posts.map((post) => (
-                  <FeedPostItem key={(post as any).repostId ?? post.id} post={post} />
+                  <FeedPostItem key={(post as { repostId?: string }).repostId ?? post.id} post={post} />
                 ))}
                 {hasNextPage && (
                   <div className="p-4 text-center">
