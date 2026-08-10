@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 /* Tailwind v4: make `dark:` respond to .dark class instead of prefers-color-scheme */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -114,6 +115,62 @@
   --spacing-margin-desktop: 24px;
 }
 
+/* shadcn/ui tokens — mapped to the FOZ monochrome palette */
+:root {
+  --radius: 0.625rem;
+  --background: #f9f9f9;
+  --foreground: #1a1c1c;
+  --card: #ffffff;
+  --card-foreground: #1a1c1c;
+  --popover: #ffffff;
+  --popover-foreground: #1a1c1c;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #5e5e5e;
+  --secondary-foreground: #ffffff;
+  --muted: #eeeeee;
+  --muted-foreground: #4c4546;
+  --accent: #e8e8e8;
+  --accent-foreground: #1a1c1c;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #cfc4c5;
+  --input: #cfc4c5;
+  --ring: #000000;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
 html,
 body,
 #root {
@@ -121,6 +178,26 @@ body,
 }
 
 .dark {
+  --background: #000000;
+  --foreground: #e5e5e5;
+  --card: #000000;
+  --card-foreground: #e5e5e5;
+  --popover: #000000;
+  --popover-foreground: #e5e5e5;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #888888;
+  --secondary-foreground: #000000;
+  --muted: #111111;
+  --muted-foreground: #a0a0a0;
+  --accent: #1a1a1a;
+  --accent-foreground: #e5e5e5;
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #ffffff;
+
   --color-surface: #000000;
   --color-surface-dim: #0a0a0a;
   --color-surface-bright: #1a1a1a;

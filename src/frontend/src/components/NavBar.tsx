@@ -112,7 +112,7 @@ export function NavBar() {
         {/* Brand Logo */}
         <div className="mb-12 cursor-pointer">
           <Link to="/" aria-label="FOZ Home">
-            <img src="/foz-logo.svg" alt="FOZ" className="h-9 w-9 md:h-10 md:w-10 object-contain dark:invert" />
+            <img src="/foz-logo.svg" alt="FOZ" className="h-9 w-9 md:h-10 md:w-10 " />
           </Link>
         </div>
 
