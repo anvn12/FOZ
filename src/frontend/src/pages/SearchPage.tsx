@@ -26,18 +26,16 @@ export function SearchPage() {
   };
 
   return (
+    <NavBar>
     <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
       {/* Container for layouts */}
       <div className="w-full max-w-7xl flex relative justify-center">
         
-        <NavBar />
-        
-
         {/* ======================================= */}
         {/* MAIN CONTENT AREA: Search Page          */}
         {/* ======================================= */}
-        <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20 relative">
+        <div className="flex-1 w-full flex justify-center">
+          <main className="max-w-2xl w-full min-h-screen pb-20 relative">
             
             {/* Search Canvas Area */}
             <div className="px-6 py-10 flex flex-col gap-10">
@@ -233,5 +231,6 @@ export function SearchPage() {
 
       </div>
     </div>
+    </NavBar>
   );
 }

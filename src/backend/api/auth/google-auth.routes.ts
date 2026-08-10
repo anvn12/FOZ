@@ -1,7 +1,6 @@
-import { Router, type RequestHandler } from "express";
+import { Router } from "express";
 import { env, getFrontendUrl } from "#backend/env.js";
 import { processSocialAuth } from "#backend/services/social-auth.service.js";
-import { clearRefreshCookieOptions } from "#backend/api/auth/auth.service.js";
 
 export const googleAuthRouter: Router = Router();
 
@@ -44,6 +43,7 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
 
     res.cookie(session.cookie.name, session.cookie.value, session.cookie.options);
     const frontendUrl = getFrontendUrl();
+    const newUserParam = session.isNewUser ? "&new=1" : "";
 
     if (mode === "popup") {
       res.setHeader("Content-Type", "text/html");
@@ -54,10 +54,10 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
           <body>
             <script>
               if (window.opener) {
-                window.opener.postMessage({ type: 'SOCIAL_AUTH_SUCCESS', payload: ${JSON.stringify(session.auth)} }, '*');
+                window.opener.postMessage({ type: 'SOCIAL_AUTH_SUCCESS', payload: ${JSON.stringify({ ...session.auth, isNewUser: session.isNewUser })} }, '*');
                 window.close();
               } else {
-                window.location.href = '${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}';
+                window.location.href = '${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}${newUserParam}';
               }
             </script>
           </body>
@@ -65,11 +65,12 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
       `);
     }
 
-    return res.redirect(`${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}`);
-  } catch (err: any) {
+    return res.redirect(`${frontendUrl}/?token=${encodeURIComponent(session.auth.accessToken)}${newUserParam}`);
+  } catch (err) {
     console.error("Google Auth Callback Error:", err);
     const mode = (req.query.state as string) || "popup";
-    const errorMessage = err?.message || "Google authentication failed";
+    const errorMessage =
+      err instanceof Error ? err.message : "Google authentication failed";
     const frontendUrl = getFrontendUrl();
 
     if (mode === "popup") {

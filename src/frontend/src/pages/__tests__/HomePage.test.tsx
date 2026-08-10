@@ -2,16 +2,18 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
+import type * as ReactRouter from "react-router-dom";
 import { renderWithProviders } from "../../test/utils.js";
 import { HomePage } from "../HomePage.js";
+import { GUEST_LOGIN_PROMPT_KEY } from "#frontend/components/GuestLoginModal";
 import { useAuthStore } from "#frontend/stores/auth";
 import * as profileApi from "../../api/profile.js";
-import { toast } from "react-hot-toast";
+import type * as InteractionsApi from "../../api/interactions.js";
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
-  const actual = (await vi.importActual("react-router-dom")) as any;
+  const actual = (await vi.importActual("react-router-dom")) as typeof ReactRouter;
   return {
     ...actual,
     useNavigate: () => mockNavigate,
@@ -25,7 +27,7 @@ vi.mock("../../api/profile.js", () => ({
 
 // Mock interactions api
 vi.mock("../../api/interactions.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../../api/interactions.js")>();
+  const actual = await importOriginal<typeof InteractionsApi>();
   return {
     ...actual,
     listFeed: vi.fn().mockResolvedValue({
@@ -50,23 +52,39 @@ vi.mock("react-hot-toast", () => {
 describe("HomePage Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     // Default mock return for useProfile
     vi.mocked(profileApi.useProfile).mockReturnValue({
       data: { displayName: "Alice", avatarUrl: null },
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof profileApi.useProfile>);
   });
 
   it("should render homepage logo and mock posts for unauthenticated guest", async () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage feedType="latest" />);
 
-    expect(screen.getAllByText("FOZ")).toBeDefined();
+    expect(screen.getAllByAltText("FOZ").length).toBeGreaterThan(0);
+    // First-time guests get a login prompt modal
+    expect(screen.getByText("Join FOZ")).toBeDefined();
     await waitFor(() => {
       expect(screen.getAllByText("Alice").length).toBeGreaterThan(0);
     });
-    expect(screen.getAllByText("Log in")).toBeDefined();
     expect(screen.getAllByText("Log in").length).toBeGreaterThan(0);
+  });
+
+  it("should remember dismissal of the guest login modal", () => {
+    useAuthStore.setState({ user: null, accessToken: null });
+    const { unmount } = renderWithProviders(<HomePage feedType="latest" />);
+
+    expect(screen.getByText("Join FOZ")).toBeDefined();
+    fireEvent.click(screen.getByText("Not now"));
+    expect(localStorage.getItem(GUEST_LOGIN_PROMPT_KEY)).toBe("1");
+    expect(screen.queryByText("Join FOZ")).toBeNull();
+
+    unmount();
+    renderWithProviders(<HomePage feedType="latest" />);
+    expect(screen.queryByText("Join FOZ")).toBeNull();
   });
 
   it("should redirect guest to login when clicking a protected link", () => {
@@ -93,6 +111,8 @@ describe("HomePage Component", () => {
 
     // Log in button should be gone
     expect(screen.queryByText("Log in")).toBeNull();
+    // Guest login prompt should not appear for authenticated users
+    expect(screen.queryByText("Join FOZ")).toBeNull();
 
     // Click create button
     const createBtns = screen.getAllByLabelText("Create");
@@ -129,9 +149,8 @@ describe("HomePage Component", () => {
 
     renderWithProviders(<HomePage feedType="latest" />);
 
-    // Open desktop More menu
-    const moreBtn = screen.getByLabelText("More");
-    fireEvent.click(moreBtn);
+    // Open the More menu
+    fireEvent.pointerDown(screen.getByText("More"));
 
     // Click Log out
     const logoutBtn = screen.getByText("Log out");

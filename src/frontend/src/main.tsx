@@ -35,9 +35,11 @@ async function handleOAuthTokenParam(): Promise<void> {
   const url = new URL(window.location.href);
   const token = url.searchParams.get("token");
   if (!token) return;
+  const isNewUser = url.searchParams.get("new") === "1";
 
   // Clean the token from the URL immediately so it's not visible or bookmarkable
   url.searchParams.delete("token");
+  url.searchParams.delete("new");
   window.history.replaceState({}, "", url.pathname + url.search + url.hash);
 
   try {
@@ -48,6 +50,9 @@ async function handleOAuthTokenParam(): Promise<void> {
     if (res.ok) {
       const data = (await res.json()) as { user: AuthUser };
       useAuthStore.getState().setSession({ user: data.user, accessToken: token });
+      if (isNewUser) {
+        window.location.replace("/onboarding/avatar");
+      }
     }
   } catch {
     // If /me fails (network error, expired token, etc.) we just remain as guest.

@@ -29,7 +29,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
     renderWithProviders(<LoginPage />);
 
     expect(screen.getByText(/Log in to FOZ/i)).toBeTruthy();
-    expect(screen.getByPlaceholderText(/Email address or mobile number/i)).toBeTruthy();
+    expect(screen.getByPlaceholderText(/Email address/i)).toBeTruthy();
     expect(screen.getByPlaceholderText(/Password/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Log in/i })).toBeTruthy();
     expect(screen.getByText(/Forgotten password\?/i)).toBeTruthy();
@@ -74,7 +74,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
 
     renderWithProviders(<LoginPage />);
 
-    const emailInput = screen.getByPlaceholderText(/Email address or mobile number/i);
+    const emailInput = screen.getByPlaceholderText(/Email address/i);
     const passwordInput = screen.getByPlaceholderText(/Password/i);
 
     fireEvent.change(emailInput, { target: { value: "user@example.com" } });
@@ -111,7 +111,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
     expect(passwordInput.type).toBe("password");
   });
 
-  it("renders Google social login button with 'or' divider", () => {
+  it("renders Google social login button", () => {
     vi.spyOn(authApi, "useLogin").mockReturnValue({
       mutate: vi.fn(),
       isPending: false,
@@ -119,7 +119,6 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
 
     renderWithProviders(<LoginPage />);
 
-    expect(screen.getByText(/^or$/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Continue with Google account/i })).toBeTruthy();
   });
 });

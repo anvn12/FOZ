@@ -19,16 +19,13 @@ export function HashtagFeedPage() {
   const posts = data?.items || [];
 
   return (
+    <NavBar>
     <div className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
       {/* Container for layouts */}
       <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
-        
-        {/* Shared Navigation Bar */}
-        <NavBar />
-
         {/* MAIN CONTENT AREA */}
-        <div className="flex-1 w-full flex justify-center md:pl-24 h-full">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
+        <div className="flex-1 w-full flex justify-center lg:ml-24 h-full">
+          <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
             
             {/* Top Sticky Header */}
             <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex items-center gap-4 px-4 h-14 flex-shrink-0 border-b border-outline-variant/50">
@@ -81,5 +78,6 @@ export function HashtagFeedPage() {
 
       </div>
     </div>
+    </NavBar>
   );
 }
