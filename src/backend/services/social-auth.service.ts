@@ -77,6 +77,7 @@ export async function createSocialLink(args: {
 
 export async function processSocialAuth(input: SocialProfileInput) {
   const { provider, providerUserId, email, displayName, avatarUrl } = input;
+  let isNewUser = false;
 
   // 1. Check if social link exists
   const existingLink = await findSocialLink(provider, providerUserId);
@@ -99,6 +100,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
       });
     } else {
       // 3. Create new user account and profile
+      isNewUser = true;
       const userEmail: string = email;
       const finalDisplayName: string = displayName || userEmail.split("@")[0] || "User";
       const generatedUsername = await generateUniqueUsername(userEmail.split("@")[0] || "user");
@@ -137,6 +139,7 @@ export async function processSocialAuth(input: SocialProfileInput) {
     }
   } else {
     // Generate a fallback synthetic user if no email provided by provider
+    isNewUser = true;
     const syntheticEmail = `${provider}_${providerUserId}@social.foz.internal`;
     const generatedUsername = await generateUniqueUsername(`${provider}_${providerUserId}`);
     const result = await db.transaction(async (tx) => {
@@ -209,5 +212,6 @@ export async function processSocialAuth(input: SocialProfileInput) {
       value: refreshCookiePayload(issuedRefresh),
       options: refreshCookieOptions(),
     },
+    isNewUser,
   };
 }

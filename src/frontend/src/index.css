@@ -168,6 +168,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hide the browser-native password reveal so only the app's visibility toggle
+   shows. Edge/IE expose this via ::-ms-reveal; Chrome/Safari/Firefox do not
+   expose their native reveal button to CSS. */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 /* Material Symbols base */
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
@@ -412,4 +420,3 @@ body {
   50% { transform: translate(30px, 50px) scale(1.1); }
   100% { transform: translate(-20px, 20px) scale(0.9); }
 }
-

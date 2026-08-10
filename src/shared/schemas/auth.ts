@@ -82,6 +82,7 @@ export const AuthResponse = z.object({
     status: z.enum(["active", "suspended", "banned", "pending"]),
   }),
   accessToken: z.string(),
+  isNewUser: z.boolean().optional(),
 });
 export type AuthResponse = z.infer<typeof AuthResponse>;
 

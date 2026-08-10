@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { RegisterRequest, type RegisterRequest as RegisterRequestType } from "#shared/schemas/auth";
 import { useRegister, initiateSocialAuth, ApiError } from "#frontend/api/auth";
@@ -58,8 +58,8 @@ export function RegisterPage() {
       const isMobile = isMobileDevice();
       const res = await initiateSocialAuth(provider, isMobile);
       if (res) {
-        toast.success("Successfully logged in!");
-        navigate("/");
+        toast.success(res.isNewUser ? "Account created! Set up your profile." : "Successfully logged in!");
+        navigate(res.isNewUser ? "/onboarding/avatar" : "/");
       }
     } catch (err) {
       if (err instanceof ApiError) {

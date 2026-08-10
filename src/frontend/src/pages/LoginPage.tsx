@@ -45,8 +45,8 @@ export function LoginPage() {
       const isMobile = isMobileDevice();
       const res = await initiateSocialAuth(provider, isMobile);
       if (res) {
-        toast.success("Successfully logged in!");
-        navigate("/");
+        toast.success(res.isNewUser ? "Account created! Set up your profile." : "Successfully logged in!");
+        navigate(res.isNewUser ? "/onboarding/avatar" : "/");
       }
     } catch (err) {
       if (err instanceof ApiError) {
@@ -59,7 +59,7 @@ export function LoginPage() {
     }
   };
 
-  const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleForgotPassword = (_e: React.MouseEvent<HTMLAnchorElement>) => {
     toast.error("Password recovery feature coming soon.");
   };
 
