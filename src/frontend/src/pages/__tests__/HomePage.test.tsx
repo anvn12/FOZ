@@ -64,7 +64,7 @@ describe("HomePage Component", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage feedType="latest" />);
 
-    expect(screen.getAllByText("FOZ")).toBeDefined();
+    expect(screen.getAllByAltText("FOZ").length).toBeGreaterThan(0);
     // First-time guests get a login prompt modal
     expect(screen.getByText("Join FOZ")).toBeDefined();
     await waitFor(() => {

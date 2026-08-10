@@ -111,8 +111,8 @@ export function NavBar() {
       <nav className="hidden md:flex fixed left-0 top-0 bottom-0 w-20 md:w-24 flex-col items-center py-6 border-r-2 border-outline-variant bg-surface z-50">
         {/* Brand Logo */}
         <div className="mb-12 cursor-pointer">
-          <Link to="/" className="text-3xl font-black tracking-tighter text-primary">
-            FOZ
+          <Link to="/" aria-label="FOZ Home">
+            <img src="/foz-logo.svg" alt="FOZ" className="h-9 w-9 md:h-10 md:w-10 object-contain dark:invert" />
           </Link>
         </div>
 
@@ -247,7 +247,7 @@ export function NavBar() {
               {user && (
                 <button
                   onClick={() => { setIsMoreMenuOpen(false); setIsLogoutOpen(true); }}
-                  className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-error hover:bg-surface-container-low transition-colors w-full text-left"
+                  className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-error hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors w-full text-left"
                 >
                   <svg className="w-5 h-5 text-error" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -341,7 +341,7 @@ export function NavBar() {
               {user && (
                 <button
                   onClick={() => { setIsMobileDrawerOpen(false); setIsLogoutOpen(true); }}
-                  className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-error hover:bg-surface-container-low transition-colors w-full text-left"
+                  className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-error hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors w-full text-left"
                 >
                   <svg className="w-5 h-5 text-error" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -353,8 +353,8 @@ export function NavBar() {
           )}
         </div>
 
-        <Link to="/" className="absolute left-1/2 -translate-x-1/2 text-2xl font-black tracking-tighter text-primary">
-          FOZ
+        <Link to="/" aria-label="FOZ Home" className="absolute left-1/2 -translate-x-1/2">
+          <img src="/foz-logo.svg" alt="FOZ" className="h-8 w-8 object-contain dark:invert" />
         </Link>
         <div className="flex items-center gap-1.5">
           <Link
