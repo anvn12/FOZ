@@ -1,5 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar.js";
+import { GuestLoginModal, GUEST_LOGIN_PROMPT_KEY } from "#frontend/components/GuestLoginModal";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { listFeed } from "#frontend/api/interactions";
@@ -11,6 +13,20 @@ import { TrendingHashtagsWidget } from "#frontend/components/TrendingHashtagsWid
 
 
 export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
+  const user = useAuthStore((state) => state.user);
+  const [showGuestLoginModal, setShowGuestLoginModal] = useState(false);
+
+  useEffect(() => {
+    if (user) return;
+    let promptSeen = false;
+    try {
+      promptSeen = localStorage.getItem(GUEST_LOGIN_PROMPT_KEY) === "1";
+    } catch {
+      // Ignore storage failures — fall through to showing the prompt.
+    }
+    if (!promptSeen) setShowGuestLoginModal(true);
+  }, [user]);
+
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["posts", feedType],
     queryFn: ({ pageParam }) => listFeed(feedType, pageParam as string | undefined),
@@ -101,10 +117,16 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
           </main>
         </div>
 
-        {/* Right Sidebar: Trending Hashtags */}
-        <aside className="hidden lg:block w-80 pt-4 pr-4 shrink-0">
-          <TrendingHashtagsWidget />
-        </aside>
+      {/* Right Sidebar: Trending Hashtags */}
+      <aside className="hidden lg:block w-80 pt-4 pr-4 shrink-0">
+        <TrendingHashtagsWidget />
+      </aside>
+
+      {/* First-visit prompt for guests */}
+      <GuestLoginModal
+        open={showGuestLoginModal}
+        onClose={() => setShowGuestLoginModal(false)}
+      />
 
       </div>
     </div>
