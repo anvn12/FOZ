@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
-import { useProfile } from "#frontend/api/profile";
 import { LogoutDialog } from "#frontend/components/LogoutDialog";
 import { toast } from "react-hot-toast";
 import { CreatePostModal } from "#frontend/components/CreatePostModal";
@@ -20,7 +19,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -29,7 +27,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +49,6 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: profile } = useProfile(user?.id ?? "");
 
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -81,8 +77,6 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
     setIsCreateOpen(true);
   };
 
-  const displayName = profile?.displayName || user?.email?.split("@")[0] || "User";
-
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
@@ -98,9 +92,9 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
                   <img
                     src="/foz-logo.svg"
                     alt="FOZ"
-                    className="size-8"
+                    className="size-10 md:size-11"
                   />
-                  <span className="text-lg font-black tracking-tighter">FOZ</span>
+                  <span className="text-2xl md:text-3xl font-black tracking-tighter">FOZ</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -109,7 +103,6 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
 
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild size="xl" isActive={isHomeActive} tooltip="Home" className="px-4 [&>svg]:size-5">
@@ -141,27 +134,6 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
-
-          {user && (
-            <SidebarGroup>
-              <SidebarGroupLabel>Account</SidebarGroupLabel>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton onClick={goToProfile} tooltip="Profile" size="lg" className="px-4">
-                    <Avatar className="h-9 w-9 rounded-full">
-                      {profile?.avatarUrl ? (
-                        <AvatarImage src={profile.avatarUrl} alt={displayName} />
-                      ) : null}
-                      <AvatarFallback className="rounded-full">
-                        {displayName.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="truncate text-sm font-medium">Profile</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
-          )}
         </SidebarContent>
 
         <SidebarFooter>
