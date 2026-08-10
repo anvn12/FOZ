@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { LoginRequest } from "#shared/schemas/auth";
 import { useLogin, initiateSocialAuth, ApiError } from "#frontend/api/auth";
 import { SocialLoginButtons } from "#frontend/components/SocialLoginButtons";
 import { isMobileDevice } from "#frontend/utils/device";
 import { AuthLayout } from "#frontend/components/AuthLayout";
+import { LuArrowRight } from "react-icons/lu";
 
 const INPUT_CLASS =
   "w-full min-h-[44px] px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-colors";
@@ -70,9 +71,16 @@ export function LoginPage() {
         </>
       }
     >
-      <h2 className="font-headline-md text-headline-md text-primary mb-6 text-center">
+      <h2 className="font-headline-md text-4xl text-primary mb-4 text-left tracking-tighter">
         Log in to FOZ
       </h2>
+
+      <h1 className="text-sm tracking-tighter mb-8">
+        Don't have an account?{" "}
+        <span className="font-bold hover:underline">
+          <a href="/register">Sign up instead</a>
+        </span>
+      </h1>
 
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <div>
@@ -129,11 +137,11 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={isSubmitting || login.isPending}
-          className="w-full min-h-[44px] py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md mt-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:opacity-80 transition-opacity"
+          className="w-full min-h-11 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md mt-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:opacity-80 transition-opacity"
         >
           <span>{isSubmitting || login.isPending ? "Logging in…" : "Log in"}</span>
           {!isSubmitting && !login.isPending && (
-            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            <LuArrowRight size={16} />
           )}
         </button>
       </form>
@@ -148,20 +156,13 @@ export function LoginPage() {
         </a>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-outline-variant text-center">
-        <Link
-          to="/register"
-          className="block w-full min-h-[44px] py-3 rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center justify-center"
-        >
-          Create new account
-        </Link>
+      <div className="pt-2">
+        <SocialLoginButtons
+          onSelectProvider={handleSocialSelect}
+          loadingProvider={socialLoading}
+          disabled={isSubmitting || login.isPending}
+        />
       </div>
-
-      <SocialLoginButtons
-        onSelectProvider={handleSocialSelect}
-        loadingProvider={socialLoading}
-        disabled={isSubmitting || login.isPending}
-      />
     </AuthLayout>
   );
 }

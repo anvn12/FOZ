@@ -117,7 +117,7 @@ export function AuthLayout({ headline, children }: { headline: ReactNode; childr
               <FozLogo showText={false} whiteOverlay/>
             </Link>
           </nav>
-          <div className="w-full absolute top-1/2 text-center mt-2 md:hidden mb-2">
+          <div className="w-full absolute top-20 text-center mt-2 md:hidden mb-2">
             <h1 className="text-4xl font-black tracking-tighter text-white">{headline}</h1>
           </div>
 
