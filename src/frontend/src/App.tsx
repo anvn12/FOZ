@@ -39,7 +39,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-surface-container-lowest text-on-background">
       <Routes>
-        <Route path="/" element={<Navigate to="/latest" replace />} />
+        <Route path="/" element={<Navigate to="/foryou" replace />} />
         <Route path="/latest" element={<HomePage feedType="latest" />} />
         <Route path="/foryou" element={<HomePage feedType="for-you" />} />
         <Route path="/search" element={<SearchPage />} />
@@ -83,5 +83,4 @@ export function App() {
     </div>
   );
 }
-
 
