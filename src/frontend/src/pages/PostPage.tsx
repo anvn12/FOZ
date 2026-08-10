@@ -97,11 +97,11 @@ export function PostPage() {
   }, [commentsQuery.data, sortMode]);
 
   return (
+    <NavBar>
     <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
       <div className="w-full max-w-7xl flex relative justify-center h-full">
-        <NavBar />
-        <div className="flex-1 w-full flex justify-center md:pl-24 h-full">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
+        <div className="flex-1 w-full flex justify-center h-full">
+          <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
             <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 gap-4 flex-shrink-0">
               <button onClick={() => navigate(-1)} className="hover:bg-surface-container rounded-full p-2 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -258,6 +258,7 @@ export function PostPage() {
         </div>
       </div>
     </div>
+    </NavBar>
   );
 }
 
@@ -724,4 +725,3 @@ function CommentBranch({ comment, comments, user, postId, depth = 0 }: { comment
     </div>
   );
 }
-

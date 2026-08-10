@@ -149,9 +149,8 @@ describe("HomePage Component", () => {
 
     renderWithProviders(<HomePage feedType="latest" />);
 
-    // Open desktop More menu
-    const moreBtn = screen.getByLabelText("More");
-    fireEvent.click(moreBtn);
+    // Open the More menu
+    fireEvent.pointerDown(screen.getByText("More"));
 
     // Click Log out
     const logoutBtn = screen.getByText("Log out");

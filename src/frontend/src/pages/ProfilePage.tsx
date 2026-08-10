@@ -64,27 +64,28 @@ export function ProfilePage() {
 
   if (isLoading) {
     return (
+      <NavBar>
       <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
         <div className="w-full max-w-7xl flex relative justify-center">
-          <NavBar />
-          <div className="flex-1 w-full flex justify-center md:pl-24">
-            <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen flex items-center justify-center">
+          <div className="flex-1 w-full flex justify-center">
+            <main className="max-w-2xl w-full min-h-screen flex items-center justify-center">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-700 border-t-zinc-900 dark:border-t-white" />
               <span className="ml-3 text-zinc-600 dark:text-zinc-400 font-medium">Loading profile...</span>
             </main>
           </div>
         </div>
       </div>
+      </NavBar>
     );
   }
 
   if (error || !profile) {
     return (
+      <NavBar>
       <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
         <div className="w-full max-w-7xl flex relative justify-center">
-          <NavBar />
-          <div className="flex-1 w-full flex justify-center md:pl-24">
-            <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen px-4 py-8">
+          <div className="flex-1 w-full flex justify-center">
+            <main className="max-w-2xl w-full min-h-screen px-4 py-8">
               <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700">
                 <h2 className="text-lg font-semibold">Profile Not Found</h2>
                 <p className="mt-1 text-sm">The profile you are looking for does not exist or could not be loaded.</p>
@@ -93,6 +94,7 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
+      </NavBar>
     );
   }
 
@@ -123,12 +125,11 @@ export function ProfilePage() {
   };
 
   return (
+    <NavBar>
     <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
       <div className="w-full max-w-7xl flex relative justify-center">
-        <NavBar />
-
-        <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20">
+        <div className="flex-1 w-full flex justify-center">
+          <main className="max-w-2xl w-full min-h-screen pb-20">
             <div className="px-4 py-6">
               {/* Header Profile Section with Modern Banner */}
               <div className="relative mb-6 rounded-2xl overflow-hidden border border-zinc-200/80 shadow-sm">
@@ -391,6 +392,7 @@ export function ProfilePage() {
         />
       )}
     </div>
+    </NavBar>
   );
 }
 

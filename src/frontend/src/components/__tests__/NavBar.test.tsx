@@ -5,66 +5,57 @@ import { screen, fireEvent } from "@testing-library/react";
 import { Routes, Route } from "react-router-dom";
 import { renderWithProviders } from "../../test/utils.js";
 import { NavBar } from "../NavBar.js";
+import { useAuthStore } from "#frontend/stores/auth";
 import * as profileApi from "../../api/profile.js";
 
 vi.mock("../../api/profile.js", () => ({
   useProfile: vi.fn(),
 }));
 
-describe("NavBar Hamburger Menu Click Outside", () => {
+describe("NavBar (shadcn sidebar)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useAuthStore.setState({ user: null, accessToken: null, status: "guest" });
     vi.mocked(profileApi.useProfile).mockReturnValue({ data: null } as unknown as ReturnType<typeof profileApi.useProfile>);
   });
 
-  it("should close desktop hamburger (More) menu when clicking outside", () => {
-    renderWithProviders(
-      <div>
-        <NavBar />
-        <div data-testid="outside-element">Outside Content</div>
-      </div>
-    );
+  it("renders the sidebar navigation items and more actions for guests", () => {
+    renderWithProviders(<NavBar />);
 
-    const moreButton = screen.getByLabelText("More");
-    expect(screen.queryByText("Report a Problem")).toBeNull();
+    expect(screen.getByText("Home")).toBeDefined();
+    expect(screen.getByText("Search")).toBeDefined();
+    expect(screen.getByText("Create")).toBeDefined();
+    expect(screen.getByText("Profile")).toBeDefined();
 
-    // Click to open More menu
-    fireEvent.click(moreButton);
+    // Guests do not get a Log in button or a Log out action
+    expect(screen.queryByText("Log in")).toBeNull();
+    expect(screen.queryByText("Log out")).toBeNull();
+
+    // The More menu still provides Settings / Report
+    fireEvent.pointerDown(screen.getByText("More"));
+    expect(screen.getByText("Settings")).toBeDefined();
     expect(screen.getByText("Report a Problem")).toBeDefined();
-
-    // Click outside
-    fireEvent.mouseDown(screen.getByTestId("outside-element"));
-    expect(screen.queryByText("Report a Problem")).toBeNull();
   });
 
-  it("should close mobile hamburger (Menu) menu when clicking outside", () => {
-    renderWithProviders(
-      <div>
-        <NavBar />
-        <div data-testid="outside-element">Outside Content</div>
-      </div>
-    );
+  it("shows Log out only for authenticated users", () => {
+    useAuthStore.setState({
+      user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
+      accessToken: "mock-token",
+    });
+    renderWithProviders(<NavBar />);
 
-    const menuButton = screen.getByLabelText("More");
-    expect(screen.queryByText("Report a Problem")).toBeNull();
-
-    // Click to open mobile Menu
-    fireEvent.click(menuButton);
-    expect(screen.getByText("Report a Problem")).toBeDefined();
-
-    // Click outside
-    fireEvent.mouseDown(screen.getByTestId("outside-element"));
-    expect(screen.queryByText("Report a Problem")).toBeNull();
+    fireEvent.pointerDown(screen.getByText("More"));
+    expect(screen.getByText("Log out")).toBeDefined();
   });
 
-  it("should mark Home icon active (text-primary) on /latest and /foryou routes", () => {
+  it("marks the Home item active on /latest and /foryou routes", () => {
     renderWithProviders(<NavBar />, { route: "/latest" });
 
-    const homeLink = screen.getAllByLabelText("Home")[0];
-    expect(homeLink!.className).toContain("text-primary");
+    const homeLinks = screen.getAllByRole("link", { name: "Home" });
+    expect(homeLinks.some((link) => link.getAttribute("data-active") === "true")).toBe(true);
   });
 
-  it("should hide Log in for guests and only redirect to login via the profile/avatar icon", () => {
+  it("redirects guests to login via the profile item", () => {
     renderWithProviders(
       <Routes>
         <Route path="/" element={<NavBar />} />
@@ -72,19 +63,7 @@ describe("NavBar Hamburger Menu Click Outside", () => {
       </Routes>
     );
 
-    // No explicit "Log in" button anywhere for guests
-    expect(screen.queryByText("Log in")).toBeNull();
-
-    // Open More dropdown menu in guest mode
-    fireEvent.click(screen.getByLabelText("More"));
-
-    // Verify Settings / Report items are present but Log in is not
-    expect(screen.getByText("Settings")).toBeDefined();
-    expect(screen.getByText("Report a Problem")).toBeDefined();
-    expect(screen.queryByText("Log in")).toBeNull();
-
-    // Clicking the profile/avatar icon redirects a guest to the login page
-    const profileBtn = screen.getAllByLabelText("Profile")[0];
+    const profileBtn = screen.getAllByRole("button", { name: "Profile" })[0];
     if (profileBtn) {
       fireEvent.click(profileBtn);
     }
