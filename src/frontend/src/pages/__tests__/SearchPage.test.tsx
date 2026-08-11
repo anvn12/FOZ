@@ -87,4 +87,21 @@ describe("SearchPage Component", () => {
     // Should trigger search results display for People
     expect(screen.getByText("People")).toBeDefined();
   });
+
+  it("does not trigger search when whitespace characters are entered and submitted", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    // Type whitespace only
+    fireEvent.change(input, { target: { value: "   " } });
+
+    // Submit search button should NOT be rendered for whitespace only
+    expect(screen.queryByLabelText("Submit search")).toBeNull();
+
+    // Submit form via Enter key on the input
+    fireEvent.submit(input.closest("form")!);
+
+    // Search results UI ("People") should NOT be visible
+    expect(screen.queryByText("People")).toBeNull();
+  });
 });

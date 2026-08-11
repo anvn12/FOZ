@@ -47,7 +47,7 @@ export function searchProfiles(query: string) {
 }
 
 export function useSearchProfiles(query: string, enabledOverride?: boolean) {
-  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0 || query === " ";
+  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0;
   return useQuery({
     queryKey: ["search", query],
     queryFn: () => searchProfiles(query),
