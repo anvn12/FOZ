@@ -26,10 +26,21 @@ export async function clearDb(): Promise<void> {
       provider_email VARCHAR(255) NULL,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS hashtags (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name TEXT NOT NULL UNIQUE,
+      display_name TEXT NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS post_hashtags (
+      post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+      hashtag_id UUID NOT NULL REFERENCES hashtags(id) ON DELETE CASCADE,
+      PRIMARY KEY (post_id, hashtag_id)
+    );
   `);
   await db.execute(sql`TRUNCATE TABLE user_social_links, refresh_sessions, profiles, user_accounts RESTART IDENTITY CASCADE`);
   try {
-    await db.execute(sql`TRUNCATE TABLE posts, comments, reactions, forum_categories, admin_audit_logs, system_settings RESTART IDENTITY CASCADE`);
+    await db.execute(sql`TRUNCATE TABLE posts, post_hashtags, hashtags, comments, reactions, forum_categories, admin_audit_logs, system_settings RESTART IDENTITY CASCADE`);
   } catch (_e) {
     // Ignore if optional feature tables are not populated in test DB
   }

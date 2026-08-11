@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
-import { ilike, eq, and, desc, sql } from "drizzle-orm";
+import { ilike, eq, and, or, isNull, desc, sql } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
-import { posts, profiles, userAccounts, reactions, comments } from "#backend/db/schema/index.js";
+import { posts, profiles, userAccounts, reactions, comments, hashtags, postHashtags } from "#backend/db/schema/index.js";
 import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
 
 const SearchQuerySchema = z.object({
@@ -11,7 +11,7 @@ const SearchQuerySchema = z.object({
     .trim()
     .min(1, "Query is required")
     .max(100, "Query must be at most 100 characters"),
-  type: z.enum(["posts", "users", "all"]).optional().default("all"),
+  type: z.enum(["posts", "users", "hashtags", "all"]).optional().default("all"),
 });
 
 const router = Router();
@@ -142,6 +142,7 @@ router.get("/", async (req, res, next) => {
       id: string;
       userAccountId: string;
       profileId: string;
+      username: string;
       displayName: string;
       bio: string | null;
       avatarUrl: string | null;
@@ -151,11 +152,22 @@ router.get("/", async (req, res, next) => {
       type: "user";
     }> = [];
 
+    let hashtagItems: Array<{
+      id: string;
+      name: string;
+      displayName: string;
+      postCount: number;
+      type: "hashtag";
+    }> = [];
+
     if (type === "posts" || type === "all") {
       const matchedPosts = await db
         .select({
           id: posts.id,
           authorId: posts.authorId,
+          authorName: profiles.displayName,
+          authorUsername: userAccounts.username,
+          authorAvatarUrl: profiles.avatarUrl,
           body: posts.content,
           content: posts.content,
           visibilityState: posts.visibilityState,
@@ -163,11 +175,15 @@ router.get("/", async (req, res, next) => {
           createdAt: posts.createdAt,
         })
         .from(posts)
+        .innerJoin(profiles, eq(posts.authorId, profiles.userAccountId))
+        .innerJoin(userAccounts, eq(posts.authorId, userAccounts.id))
         .where(
           and(
             ilike(posts.content, pattern),
             eq(posts.lifecycleState, "active"),
-            eq(posts.visibilityState, "public")
+            eq(posts.visibilityState, "public"),
+            isNull(posts.deletedAt),
+            eq(userAccounts.status, "active")
           )
         )
         .orderBy(desc(posts.createdAt))
@@ -185,6 +201,7 @@ router.get("/", async (req, res, next) => {
           id: profiles.userAccountId,
           userAccountId: profiles.userAccountId,
           profileId: profiles.id,
+          username: userAccounts.username,
           displayName: profiles.displayName,
           bio: profiles.bio,
           avatarUrl: profiles.avatarUrl,
@@ -208,13 +225,46 @@ router.get("/", async (req, res, next) => {
       }));
     }
 
-    let items: Array<typeof postItems[number] | typeof userItems[number]> = [];
+    if (type === "hashtags" || type === "all") {
+      const matchedHashtags = await db
+        .select({
+          id: hashtags.id,
+          name: hashtags.name,
+          displayName: hashtags.displayName,
+          postCount: sql<number>`count(${postHashtags.postId})::int`,
+        })
+        .from(hashtags)
+        .innerJoin(postHashtags, eq(hashtags.id, postHashtags.hashtagId))
+        .innerJoin(posts, eq(postHashtags.postId, posts.id))
+        .where(
+          and(
+            or(ilike(hashtags.name, pattern), ilike(hashtags.displayName, pattern)),
+            eq(posts.visibilityState, "public"),
+            eq(posts.lifecycleState, "active"),
+            isNull(posts.deletedAt)
+          )
+        )
+        .groupBy(hashtags.id, hashtags.name, hashtags.displayName)
+        .orderBy(desc(sql`count(${postHashtags.postId})::int`), desc(hashtags.createdAt))
+        .limit(20);
+
+      hashtagItems = matchedHashtags.map((h) => ({
+        ...h,
+        type: "hashtag" as const,
+      }));
+    }
+
+    let items: Array<
+      typeof postItems[number] | typeof userItems[number] | typeof hashtagItems[number]
+    > = [];
     if (type === "posts") {
       items = postItems;
     } else if (type === "users") {
       items = userItems;
+    } else if (type === "hashtags") {
+      items = hashtagItems;
     } else {
-      items = [...postItems, ...userItems];
+      items = [...postItems, ...userItems, ...hashtagItems];
     }
 
     res.json({

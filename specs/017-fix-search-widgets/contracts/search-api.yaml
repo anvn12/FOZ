@@ -25,7 +25,7 @@ paths:
 
   /api/v1/search:
     get:
-      summary: Search posts and user profiles
+      summary: Search posts, user profiles, and hashtags
       parameters:
         - in: query
           name: q
@@ -36,7 +36,7 @@ paths:
           name: type
           schema:
             type: string
-            enum: [posts, users, all]
+            enum: [posts, users, hashtags, all]
             default: all
       responses:
         '200':

@@ -1,29 +1,38 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSearchProfiles, useSearchDiscovery } from "#frontend/api/search";
+import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
+import { formatRelativeTime } from "#frontend/components/FeedPostItem";
 
 export function SearchPage() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedTerm, setSubmittedTerm] = useState("");
+  const [searchType, setSearchType] = useState<SearchType>("all");
 
-  const { data: searchResults, isLoading } = useSearchProfiles(submittedTerm);
+  const { data: searchResults, isLoading } = useSearch(submittedTerm, searchType);
   const { data: discoveryData } = useSearchDiscovery();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSearchType("all");
     setSubmittedTerm(searchTerm);
   };
 
   const handleViewAllCreators = () => {
+    setSearchType("users");
     setSubmittedTerm("%");
   };
 
   const handleTopicClick = (topicTag: string) => {
+    setSearchType("all");
     setSearchTerm(topicTag);
     setSubmittedTerm(topicTag);
   };
+
+  const people = (searchResults ?? []).filter((item) => item.type === "user");
+  const postResults = (searchResults ?? []).filter((item) => item.type === "post");
+  const hashtagResults = (searchResults ?? []).filter((item) => item.type === "hashtag");
 
   return (
     <NavBar>
@@ -58,6 +67,7 @@ export function SearchPage() {
                         onClick={() => {
                           setSearchTerm("");
                           setSubmittedTerm("");
+                          setSearchType("all");
                         }}
                         className="text-outline hover:text-primary p-2 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Clear search"
@@ -81,47 +91,125 @@ export function SearchPage() {
               {submittedTerm !== "" ? (
                 /* Search Results UI */
                 <section className="flex flex-col gap-4">
-                  <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
-                    {isLoading ? "Searching..." : "People"}
-                  </h2>
-                  <div className="flex flex-col gap-3">
-                    {searchResults?.length === 0 && !isLoading && (
-                      <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
-                    )}
-                    {searchResults?.map(profile => {
-                      const handle = profile.username ? `@${profile.username}` : `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
-                      const linkPath = profile.username ? `/profiles/@${profile.username}` : `/profiles/${profile.userAccountId}`;
-                      return (
-                        <Link 
-                          key={profile.id} 
-                          to={linkPath}
-                          className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
-                        >
-                          {profile.avatarUrl ? (
-                            <img 
-                              alt={profile.displayName} 
-                              className="w-12 h-12 rounded-full object-cover border border-outline-variant/30 shrink-0" 
-                              src={profile.avatarUrl}
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-lg shrink-0">
-                              {(profile.displayName || "U").charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="flex flex-col flex-1 min-w-0">
-                            <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
-                            <span className="text-[13px] font-medium text-secondary truncate">{handle}</span>
-                            {profile.bio && (
-                              <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
-                            )}
-                          </div>
-                          <button className="bg-transparent border border-outline-variant text-on-surface text-[12px] font-medium py-1.5 px-4 rounded-full hover:bg-surface-container hover:border-outline transition-colors">
-                            View
-                          </button>
-                        </Link>
-                      );
-                    })}
-                  </div>
+                  {isLoading ? (
+                    <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
+                      Searching...
+                    </h2>
+                  ) : (
+                    <>
+                      {searchResults?.length === 0 && (
+                        <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
+                      )}
+
+                      {people.length > 0 && (
+                        <section className="flex flex-col gap-3">
+                          <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
+                            People
+                          </h2>
+                          {people.map(profile => {
+                            const handle = profile.username ? `@${profile.username}` : `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
+                            const linkPath = profile.username ? `/profiles/@${profile.username}` : `/profiles/${profile.userAccountId}`;
+                            return (
+                              <Link 
+                                key={profile.id} 
+                                to={linkPath}
+                                className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                              >
+                                {profile.avatarUrl ? (
+                                  <img 
+                                    alt={profile.displayName} 
+                                    className="w-12 h-12 rounded-full object-cover border border-outline-variant/30 shrink-0" 
+                                    src={profile.avatarUrl}
+                                  />
+                                ) : (
+                                  <div className="w-12 h-12 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-lg shrink-0">
+                                    {(profile.displayName || "U").charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex flex-col flex-1 min-w-0">
+                                  <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
+                                  <span className="text-[13px] font-medium text-secondary truncate">{handle}</span>
+                                  {profile.bio && (
+                                    <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
+                                  )}
+                                </div>
+                                <button className="bg-transparent border border-outline-variant text-on-surface text-[12px] font-medium py-1.5 px-4 rounded-full hover:bg-surface-container hover:border-outline transition-colors">
+                                  View
+                                </button>
+                              </Link>
+                            );
+                          })}
+                        </section>
+                      )}
+
+                      {postResults.length > 0 && (
+                        <section className="flex flex-col gap-3">
+                          <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
+                            Posts
+                          </h2>
+                          {postResults.map(post => {
+                            const handle = post.authorUsername
+                              ? `@${post.authorUsername}`
+                              : `@${post.authorName.toLowerCase().replace(/\s+/g, "")}`;
+                            return (
+                              <Link
+                                key={post.id}
+                                to={`/posts/${post.id}`}
+                                className="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                              >
+                                {post.authorAvatarUrl ? (
+                                  <img
+                                    alt={post.authorName}
+                                    className="w-11 h-11 rounded-full object-cover border border-outline-variant/30 shrink-0"
+                                    src={post.authorAvatarUrl}
+                                  />
+                                ) : (
+                                  <div className="w-11 h-11 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-base shrink-0">
+                                    {(post.authorName || "U").charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex flex-col flex-1 min-w-0 gap-0.5">
+                                  <div className="flex items-baseline gap-2 min-w-0">
+                                    <span className="text-[14px] font-bold text-primary group-hover:underline truncate">{post.authorName}</span>
+                                    <span className="text-[12px] font-medium text-secondary truncate">{handle}</span>
+                                    <span className="text-[12px] text-outline shrink-0">· {formatRelativeTime(post.createdAt)}</span>
+                                  </div>
+                                  <p className="text-[14px] text-on-surface line-clamp-2">{post.content}</p>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </section>
+                      )}
+
+                      {hashtagResults.length > 0 && (
+                        <section className="flex flex-col gap-3">
+                          <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
+                            Hashtags
+                          </h2>
+                          {hashtagResults.map(tag => (
+                            <Link
+                              key={tag.id}
+                              to={`/hashtags/${tag.name}`}
+                              className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                            >
+                              <div className="w-11 h-11 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-xl shrink-0">
+                                #
+                              </div>
+                              <div className="flex flex-col flex-1 min-w-0">
+                                <span className="text-[16px] font-bold text-primary group-hover:underline truncate">
+                                  #{tag.displayName || tag.name}
+                                </span>
+                                <span className="text-[13px] font-medium text-secondary">
+                                  {tag.postCount} {tag.postCount === 1 ? "post" : "posts"}
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </section>
+                      )}
+                    </>
+                  )}
                 </section>
               ) : (
                 <>
