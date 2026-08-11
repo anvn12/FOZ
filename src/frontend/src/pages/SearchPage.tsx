@@ -13,7 +13,9 @@ export function SearchPage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmittedTerm(searchTerm);
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return;
+    setSubmittedTerm(trimmed);
   };
 
   const handleViewAllCreators = () => {
