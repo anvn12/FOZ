@@ -10,6 +10,7 @@ import {
   deleteComment,
   updateComment,
   toggleReaction,
+  InteractionApiError,
 } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar";
@@ -21,7 +22,16 @@ import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
 import { isMobileDevice } from "#frontend/utils/device";
 import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
 
-function showError(error: Error) { toast.error(error.message || "Something went wrong. Please try again."); }
+function showError(error: Error) {
+  if (error instanceof InteractionApiError && error.fields) {
+    const messages = Object.values(error.fields);
+    if (messages.length > 0) {
+      toast.error(messages[0]);
+      return;
+    }
+  }
+  toast.error(error.message || "Something went wrong. Please try again.");
+}
 
 export function PostPage() {
   const { postId = "" } = useParams();
