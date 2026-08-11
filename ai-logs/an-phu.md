@@ -253,3 +253,15 @@
 **Model:** deepseek-v4-flash
 **Prompt:** "the search function can only search for people, it cant search posts content or hashstags, go fix"
 **Files touched:** `src/shared/schemas/search.ts`, `src/backend/api/search/routes.ts`, `src/backend/__tests__/integration/auth.setup.ts`, `src/backend/__tests__/integration/search.test.ts`, `src/frontend/src/api/search.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`, `specs/017-fix-search-widgets/contracts/search-api.yaml`
+
+### 2026-08-11 21:40
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "ok now redesign it so that below the search bar there is a tabs navigation with 2 tabs: 'Posts' and 'Profile' with each one showing posts and profile with the searched content"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-11 21:54
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "remove the hover of the 2 tabs navigate only the white bar below them is enough"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`

@@ -1,6 +1,6 @@
 ## IRON RULES
 - Always use the AI usage logging skill in .agents/skills/ai-usage-log.
-- Always read `~/.specify/memory/constitution.md` before doing anything related to the codebase, architecure
+- Always read `.specify/memory/constitution.md` before doing anything related to the codebase, architecture
 - After any turn that modifies source or code-adjacent files, append the AI usage log entry before ending the turn.
 - Do not treat documentation-only edits as exempt if they are part of a turn that also changes source or code-adjacent files.
 - **Do not `git add` or `git commit` the AI usage log file as part of a routine auto-commit or cleanup.** The skill writes the entry to `ai-logs/<username>.md`; that file lives in the working tree but is not part of a routine commit. If the user explicitly asks for the log to be committed (e.g., to share with the team, or to clean up the working tree), do so on request — but **never commit it without explicit user permission.** If a tool call, hook, or follow-up step is about to commit the log without being asked, stop and confirm with the user first.
@@ -15,11 +15,11 @@ For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan.
 
 **SpecKit directory location:** the `.specify/` directory (memory,
-templates, extensions, workflows) lives **in this directory** —
-`/home/shiki/FOZ/src/.specify/` — NOT at the repo parent
-`/home/shiki/FOZ/.specify/`. Always read `.specify/memory/constitution.md`
-first for binding project principles and the technology stack, and use
-`.specify/templates/` for plan/spec/tasks/checklist scaffolding.
+templates, extensions, workflows) lives **at the repository root**
+(`.specify/` in the same folder as `AGENTS.md`), NOT under `src/.specify/`.
+Always read `.specify/memory/constitution.md` first for binding project
+principles and the technology stack, and use `.specify/templates/` for
+plan/spec/tasks/checklist scaffolding.
 
 **Current plan:** `specs/022-settings-page/plan.md` — Settings Page feature
 <!-- SPECKIT END -->

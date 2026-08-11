@@ -32,6 +32,7 @@ describe("SearchPage Component", () => {
       id: "u-1",
       userAccountId: "acc-1",
       profileId: "p-1",
+      username: "erostova",
       displayName: "Elena Rostova",
       bio: "Designer",
       avatarUrl: null,
@@ -115,8 +116,9 @@ describe("SearchPage Component", () => {
     // Click header View all
     fireEvent.click(viewAllButtons[0]!);
 
-    // Should trigger search results display for People
-    expect(screen.getByText("People")).toBeDefined();
+    // Should switch to the Profile tab and list matching profiles
+    expect(screen.getByRole("tab", { name: "Profile" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
   });
 
   it("renders post and hashtag results after submitting a search", () => {
@@ -126,9 +128,14 @@ describe("SearchPage Component", () => {
     fireEvent.change(input, { target: { value: "react" } });
     fireEvent.click(screen.getByLabelText("Submit search"));
 
-    expect(screen.getByText("Posts")).toBeDefined();
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
     expect(screen.getByText("React post content")).toBeDefined();
     expect(screen.getByText("Hashtags")).toBeDefined();
     expect(screen.getByText("#DesignSystems")).toBeDefined();
+
+    // Switching to Profile shows people instead of posts
+    fireEvent.click(screen.getByRole("tab", { name: "Profile" }));
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
+    expect(screen.queryByText("React post content")).toBeNull();
   });
 });
