@@ -31,10 +31,14 @@ describe("NavBar (shadcn sidebar)", () => {
     expect(screen.queryByText("Log in")).toBeNull();
     expect(screen.queryByText("Log out")).toBeNull();
 
-    // The More menu still provides Settings / Report
+    // The More menu provides Settings / Feedback
     fireEvent.pointerDown(screen.getByText("More"));
     expect(screen.getByText("Settings")).toBeDefined();
-    expect(screen.getByText("Report a Problem")).toBeDefined();
+    expect(screen.getByText("Feedback")).toBeDefined();
+
+    // Clicking Feedback opens the FeedbackDialog
+    fireEvent.click(screen.getByText("Feedback"));
+    expect(screen.getByText("Send Us Feedback")).toBeDefined();
   });
 
   it("shows Log out only for authenticated users", () => {
