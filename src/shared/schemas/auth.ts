@@ -61,13 +61,13 @@ export const ChangePasswordRequest = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: passwordSchema,
-    confirmNewPassword: z.string(),
+    confirmNewPassword: z.string().optional(),
   })
   .refine((v) => v.currentPassword !== v.newPassword, {
     message: "New password must differ from the current one",
     path: ["newPassword"],
   })
-  .refine((v) => v.newPassword === v.confirmNewPassword, {
+  .refine((v) => !v.confirmNewPassword || v.newPassword === v.confirmNewPassword, {
     message: "Passwords do not match",
     path: ["confirmNewPassword"],
   });
