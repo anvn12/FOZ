@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { postAttachmentResponseSchema } from "./interactions.js";
 
 export const SearchDiscoveryQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(50).optional().default(10),
@@ -30,6 +31,8 @@ export const DiscoveryDiscussionSchema = z.object({
   createdAt: z.string(),
   likeCount: z.number(),
   commentCount: z.number(),
+  repostCount: z.number(),
+  attachments: z.array(postAttachmentResponseSchema),
 });
 
 export const SearchDiscoveryResponseSchema = z.object({

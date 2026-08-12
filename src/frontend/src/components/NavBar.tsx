@@ -9,6 +9,7 @@ import {
   Home,
   LogOut,
   Menu,
+  Plus,
   Search,
   Settings2,
   SquarePen,
@@ -185,6 +186,16 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
         </header>
 
         {children}
+
+        {/* Floating create button (Threads-style) */}
+        <button
+          type="button"
+          onClick={handleCreateClick}
+          aria-label="Create post"
+          className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-on-primary shadow-xl shadow-black/25 transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:bottom-6 md:right-6 md:h-16 md:w-16"
+        >
+          <Plus className="h-7 w-7 md:h-8 md:w-8" strokeWidth={2.5} />
+        </button>
 
         {/* Mobile bottom navigation */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-outline-variant bg-surface backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom,0px)]">
