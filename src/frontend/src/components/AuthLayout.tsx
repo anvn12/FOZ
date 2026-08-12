@@ -128,12 +128,14 @@ export function AuthLayout({ headline, children }: { headline: ReactNode; childr
             <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_16px_rgba(40,145,221,0.5)]">{headline}</h1>
           </div>
 
-          <div className="hidden md:flex w-full h-full flex-col justify-center items-start px-8 lg:px-12 relative pt-20 pb-8">
+          <div className="hidden md:flex w-full h-full flex-col justify-end items-start px-8 relative pb-8">
             <div className="z-10 w-full flex flex-col gap-6">
               <div>
-                <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4 drop-shadow-[0_4px_20px_rgba(40,145,221,0.5)]">
-                  {headline}
-                </h1>
+                <div className="min-h-[110px] lg:min-h-[120px] flex flex-col justify-end mb-4">
+                  <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] drop-shadow-[0_4px_20px_rgba(40,145,221,0.5)]">
+                    {headline}
+                  </h1>
+                </div>
                 <p className="text-body-lg font-body-lg text-white max-w-sm">
                   Explore the things you love, connect with the community, and discover new insights
                   in real-time.
