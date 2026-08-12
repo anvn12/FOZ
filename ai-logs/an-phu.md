@@ -283,3 +283,9 @@
 **Model:** gpt-5
 **Prompt:** "The posts with images attached does not show attached image in trending discussion, only the caption was shown. go fix; while you are there also add the reposts icon to the posts in trending discussions, only the heart and comment icons are there right now"
 **Files touched:** `src/shared/schemas/search.ts`, `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-12 09:49
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "go with recommend"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`

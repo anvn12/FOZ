@@ -69,4 +69,27 @@ describe("NavBar (shadcn sidebar)", () => {
     }
     expect(screen.getByText("Login Page")).toBeDefined();
   });
+
+  it("redirects guests to login via the floating create button", () => {
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<NavBar />} />
+        <Route path="/login" element={<div>Login Page</div>} />
+      </Routes>
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Create post" }));
+    expect(screen.getByText("Login Page")).toBeDefined();
+  });
+
+  it("opens the create post modal for authenticated users via the floating create button", () => {
+    useAuthStore.setState({
+      user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
+      accessToken: "mock-token",
+    });
+    renderWithProviders(<NavBar />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Create post" }));
+    expect(screen.getByText("Create Post")).toBeDefined();
+  });
 });
