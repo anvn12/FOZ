@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { createPost } from "#frontend/api/interactions";
+import { createPost, InteractionApiError } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { useProfile } from "#frontend/api/profile";
 import { validateImageFile, compressImageClient, compressImageToBase64 } from "#frontend/utils/imageCompressor";
@@ -30,9 +30,6 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       await queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Your post is live.");
       onClose();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Something went wrong.");
     },
   });
 
@@ -90,6 +87,13 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
         attachments: finalAttachments.length > 0 ? (finalAttachments as any) : undefined,
       });
     } catch (err: any) {
+      if (err instanceof InteractionApiError && err.fields) {
+        const messages = Object.values(err.fields);
+        if (messages.length > 0) {
+          toast.error(messages[0]);
+          return;
+        }
+      }
       toast.error(err?.message || "Failed to create post");
     } finally {
       setIsUploading(false);

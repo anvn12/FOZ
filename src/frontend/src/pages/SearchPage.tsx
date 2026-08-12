@@ -19,9 +19,11 @@ export function SearchPage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return;
     setSearchType("all");
     setActiveTab("posts");
-    setSubmittedTerm(searchTerm);
+    setSubmittedTerm(trimmed);
   };
 
   const handleViewAllCreators = () => {

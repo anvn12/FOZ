@@ -47,12 +47,13 @@ export function search(query: string, type: SearchType = "all") {
   ).then((res) => res.items);
 }
 
+
 export function useSearch(
   query: string,
   type: SearchType = "all",
   enabledOverride?: boolean,
 ) {
-  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0 || query === " ";
+  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0;
   return useQuery({
     queryKey: ["search", type, query],
     queryFn: () => search(query, type),
