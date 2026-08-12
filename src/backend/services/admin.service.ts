@@ -98,6 +98,27 @@ export async function fetchEscalatedReports() {
   return adminRepo.getEscalatedReports();
 }
 
+export async function dismissReport(params: {
+  adminUser: { id: string; role: string };
+  reportId: string;
+  rationale?: string;
+}) {
+  const adminProfile = await getUserById(params.adminUser.id);
+  const updated = await adminRepo.dismissReport(params.reportId);
+
+  await adminRepo.createAuditLog({
+    actorId: params.adminUser.id,
+    actorName: adminProfile?.email ?? "Administrator",
+    actorRole: params.adminUser.role,
+    actionType: "REPORT_DISMISS",
+    targetType: "REPORT",
+    targetId: params.reportId,
+    rationale: params.rationale || "Report marked safe / dismissed",
+  });
+
+  return updated;
+}
+
 export async function instantDeleteContent(params: {
   adminUser: { id: string; role: string };
   contentType: "post" | "comment";
