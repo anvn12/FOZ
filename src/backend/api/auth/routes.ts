@@ -78,18 +78,19 @@ function clearRefreshCookie(res: Parameters<RequestHandler>[1]) {
 }
 
 function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
-  if (err instanceof AuthError) {
-    return res.status(err.status).json({
+  if (err instanceof AuthError || (err && typeof err === "object" && "code" in err && "status" in err)) {
+    const authErr = err as { code: string; status: number };
+    return res.status(authErr.status).json({
       error: {
-        code: err.code,
+        code: authErr.code,
         message:
-          err.code === "USERNAME_TAKEN"
+          authErr.code === "USERNAME_TAKEN"
             ? "This username is already taken"
-            : err.code === "EMAIL_TAKEN"
+            : authErr.code === "EMAIL_TAKEN"
               ? "An account with this email already exists"
-              : err.code === "INVALID_CREDENTIALS"
+              : authErr.code === "INVALID_CREDENTIALS"
                 ? "Invalid email or password"
-                : err.code === "ACCOUNT_NOT_ACTIVE"
+                : authErr.code === "ACCOUNT_NOT_ACTIVE"
                   ? "Your account is not currently available"
                   : "Authentication failed",
       },

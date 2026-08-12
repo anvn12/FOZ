@@ -89,8 +89,9 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
     } catch (err: any) {
       if (err instanceof InteractionApiError && err.fields) {
         const messages = Object.values(err.fields);
-        if (messages.length > 0) {
-          toast.error(messages[0]);
+        const firstMsg = messages[0];
+        if (firstMsg) {
+          toast.error(firstMsg);
           return;
         }
       }

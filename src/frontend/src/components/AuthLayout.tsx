@@ -113,23 +113,24 @@ export function AuthLayout({ headline, children }: { headline: ReactNode; childr
           </div>
           
           <nav className="w-full absolute top-10 lg:left-10 z-50 flex justify-center md:justify-between items-center">
-            <Link to="/" className="text-3xl font-black tracking-tighter text-primary select-none cursor-pointer">
-              <FozLogo showText={false} whiteOverlay/>
-            </Link>
+            <FozLogo showText={false} whiteOverlay/>
           </nav>
           <div className="w-full absolute top-20 text-center mt-2 md:hidden mb-2">
             <h1 className="text-4xl font-black tracking-tighter text-white">{headline}</h1>
           </div>
 
           <div className="hidden md:flex w-full h-full flex-col justify-end items-start px-8 relative pb-8 ">
-            <div className=" z-10 ">
-              <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4">
-                {headline}
-              </h1>
-              <p className="text-body-lg font-body-lg text-white max-w-sm">
-                Explore the things you love, connect with the community, and discover new insights
-                in real-time.
-              </p>
+            <div className=" z-10 w-full flex flex-col gap-6">
+              <div>
+                <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4">
+                  {headline}
+                </h1>
+                <p className="text-body-lg font-body-lg text-white max-w-sm">
+                  Explore the things you love, connect with the community, and discover new insights
+                  in real-time.
+                </p>
+              </div>
+              <TrendingCarousel />
             </div>
           </div>
         </div>
