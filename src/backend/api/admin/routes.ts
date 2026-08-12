@@ -118,6 +118,22 @@ adminRouter.get("/reports", async (req, res, next) => {
   }
 });
 
+adminRouter.post("/reports/:id/dismiss", async (req, res, next) => {
+  try {
+    const authed = req as AuthedRequest;
+    const reportId = String(req.params.id);
+    const { rationale } = req.body || {};
+    const updated = await adminService.dismissReport({
+      adminUser: authed.user!,
+      reportId,
+      rationale,
+    });
+    return res.json({ message: "Report dismissed", report: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
 adminRouter.delete(
   "/content/:type/:id",
   validateBody(InstantDeleteContentRequest),

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useAdminUsers, useAssignUserRole, useDeleteUserAccount, type AdminUserItem } from "#frontend/api/admin";
 import { UserActionModal } from "#frontend/components/admin/UserActionModal";
 
@@ -22,14 +23,29 @@ export const AdminUsersPage: React.FC = () => {
   const deleteAccountMutation = useDeleteUserAccount();
 
   const handleConfirmRole = async (userId: string, newRole: "standard" | "moderator", rationale?: string) => {
-    await assignRoleMutation.mutateAsync({ userId, input: { role: newRole, rationale } });
+    try {
+      await assignRoleMutation.mutateAsync({ userId, input: { role: newRole, rationale } });
+      toast.success(`User role updated to ${newRole}`);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update role");
+      throw err;
+    }
   };
 
   const handleConfirmDelete = async (userId: string, rationale: string) => {
-    await deleteAccountMutation.mutateAsync({ userId, input: { rationale } });
+    try {
+      await deleteAccountMutation.mutateAsync({ userId, input: { rationale } });
+      toast.success("User account permanently deleted");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete user account");
+      throw err;
+    }
   };
 
   const userItems = data?.items ?? [];
+  const filteredUsers = statusFilter
+    ? userItems.filter((u) => u.status === statusFilter)
+    : userItems;
 
   return (
     <div className="space-y-6">
@@ -52,8 +68,8 @@ export const AdminUsersPage: React.FC = () => {
         </div>
 
         <button
-          onClick={() => alert("Announcement modal features initialized")}
-          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition-all flex items-center space-x-2 self-start sm:self-auto"
+          onClick={() => toast.success("System announcement dispatch initialized.")}
+          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition-all flex items-center space-x-2 self-start sm:self-auto cursor-pointer"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
@@ -117,7 +133,7 @@ export const AdminUsersPage: React.FC = () => {
         <div className="p-12 text-center text-slate-400 font-medium bg-white rounded-2xl border border-slate-200/80">
           Loading user accounts...
         </div>
-      ) : userItems.length === 0 ? (
+      ) : filteredUsers.length === 0 ? (
         <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200/80">
           No user accounts found matching your filter criteria.
         </div>
@@ -135,7 +151,7 @@ export const AdminUsersPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {userItems.map((u) => {
+                {filteredUsers.map((u) => {
                   const initials = (u.displayName || u.email || "US")
                     .slice(0, 2)
                     .toUpperCase();

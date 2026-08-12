@@ -277,6 +277,13 @@ input[type="password"]::-ms-clear {
   display: none;
 }
 
+/* Ensure placeholder text is high contrast, sharp, and clear across all browser themes */
+input::placeholder,
+textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
 /* Material Symbols base */
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";

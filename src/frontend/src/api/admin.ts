@@ -228,6 +228,26 @@ export function useEscalatedReports() {
   });
 }
 
+export function dismissReport(reportId: string, rationale?: string) {
+  return call<{ message: string; report: EscalatedReport }>(`/api/v1/admin/reports/${reportId}/dismiss`, {
+    method: "POST",
+    body: JSON.stringify({ rationale }),
+  });
+}
+
+export function useDismissReport() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ reportId, rationale }: { reportId: string; rationale?: string }) =>
+      dismissReport(reportId, rationale),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "reports"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "metrics"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "audit-logs"] });
+    },
+  });
+}
+
 export function instantDeleteContent(type: "post" | "comment", id: string, input: InstantDeleteContentRequest) {
   return call<{ message: string }>(`/api/v1/admin/content/${type}/${id}`, {
     method: "DELETE",

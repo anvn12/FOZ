@@ -225,6 +225,15 @@ export async function getEscalatedReports() {
     .orderBy(desc(reports.createdAt));
 }
 
+export async function dismissReport(reportId: string) {
+  const [updated] = await db
+    .update(reports)
+    .set({ status: "dismissed", updatedAt: new Date() })
+    .where(eq(reports.id, reportId))
+    .returning();
+  return updated;
+}
+
 export async function deletePostById(postId: string) {
   const [deleted] = await db.delete(posts).where(eq(posts.id, postId)).returning();
   return deleted;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   useForumCategories,
   useCreateForumCategory,
@@ -25,7 +26,13 @@ export const AdminCategoriesPage: React.FC = () => {
     displayOrder: number;
     allowNewPosts: boolean;
   }) => {
-    await createMutation.mutateAsync(input);
+    try {
+      await createMutation.mutateAsync(input);
+      toast.success(`Category "${input.name}" created successfully`);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create category");
+      throw err;
+    }
   };
 
   const handleConfirmUpdate = async (
@@ -38,11 +45,23 @@ export const AdminCategoriesPage: React.FC = () => {
       allowNewPosts?: boolean;
     }
   ) => {
-    await updateMutation.mutateAsync({ id, input });
+    try {
+      await updateMutation.mutateAsync({ id, input });
+      toast.success("Category updated successfully");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update category");
+      throw err;
+    }
   };
 
   const handleConfirmDelete = async (id: string, targetCategoryId: string) => {
-    await deleteMutation.mutateAsync({ id, input: { targetCategoryId } });
+    try {
+      await deleteMutation.mutateAsync({ id, input: { targetCategoryId } });
+      toast.success("Category deleted and threads reassigned");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete category");
+      throw err;
+    }
   };
 
   const categories = data?.categories ?? [];
