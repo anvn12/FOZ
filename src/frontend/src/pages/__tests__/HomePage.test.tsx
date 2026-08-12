@@ -52,7 +52,9 @@ vi.mock("react-hot-toast", () => {
 describe("HomePage Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    localStorage.clear();
+    if (typeof localStorage !== "undefined" && typeof localStorage.clear === "function") {
+      localStorage.clear();
+    }
     // Default mock return for useProfile
     vi.mocked(profileApi.useProfile).mockReturnValue({
       data: { displayName: "Alice", avatarUrl: null },

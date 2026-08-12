@@ -2031,3 +2031,11 @@
 **Model:** Gemini 3.6 Flash (High)
 **Prompt:** "on mobile view, there should be a Log in button on the top bar (right side of search button"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-12 12:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "in login and sign up page, change the logo to match the one on home page"
+**Files touched:** `src/frontend/src/components/FozLogo.tsx`, `src/frontend/src/components/AuthLayout.tsx`, `src/frontend/src/components/AuthShell.tsx`, `src/frontend/src/test/setup.ts`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+
