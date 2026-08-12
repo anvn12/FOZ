@@ -24,6 +24,15 @@ async function insertPost(authorId: string, content: string) {
   return rows[0]!.id;
 }
 
+async function insertRepost(authorId: string, repostOfId: string) {
+  const rows = (await db.execute(sql`
+    INSERT INTO posts (author_id, content, repost_of_id, visibility_state, lifecycle_state)
+    VALUES (${authorId}, '', ${repostOfId}, 'public', 'active')
+    RETURNING id
+  `)) as Array<{ id: string }>;
+  return rows[0]!.id;
+}
+
 describe("GET /api/v1/search/discovery", () => {
   beforeEach(async () => {
     await clearDb();
@@ -51,6 +60,19 @@ describe("GET /api/v1/search/discovery", () => {
     // Verify discussions includes the post content
     const discussionContents = res.body.discussions.map((d: { content: string }) => d.content);
     expect(discussionContents).toContain("Hello world post content");
+  });
+
+  it("excludes reposts from trending discussions", async () => {
+    const { userId } = await registerUserWithDisplayName("RepostAuthor");
+    const postId = await insertPost(userId, "Original discussion content");
+    await insertRepost(userId, postId);
+
+    const res = await getAgent().get("/api/v1/search/discovery");
+
+    expect(res.status).toBe(200);
+    const discussions = res.body.discussions as Array<{ content: string }>;
+    expect(discussions).toHaveLength(1);
+    expect(discussions[0]!.content).toBe("Original discussion content");
   });
 
   it("allows searching users with wildcard query to list creators", async () => {

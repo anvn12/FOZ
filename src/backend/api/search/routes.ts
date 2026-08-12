@@ -59,7 +59,8 @@ router.get("/discovery", async (req, res, next) => {
         and(
           eq(posts.lifecycleState, "active"),
           eq(posts.visibilityState, "public"),
-          eq(userAccounts.status, "active")
+          eq(userAccounts.status, "active"),
+          isNull(posts.repostOfId)
         )
       )
       .orderBy(

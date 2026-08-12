@@ -271,3 +271,9 @@
 **Model:** gpt-5
 **Prompt:** "posts with one line caption that are long will be overflowed in trending discussion, go fix"
 **Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-12 09:39
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "In the trending discussion, reposts does not count as a posts => remove it from there"
+**Files touched:** `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`
