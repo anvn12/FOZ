@@ -77,7 +77,7 @@
 
 ##### 1.1.2.1 In-Scope
 
-* **Target Use Cases:** Manual functional testing of the 5 chosen use cases: UC-02, UC-10, UC-12, UC-14, UC-21.
+* **Target Use Cases:** Manual functional testing of the 5 chosen use cases: UC-07, UC-08, UC-10, UC-12, UC-14, UC-21.
 
 * **Full-Stack Integration:** Web frontend interaction (Vite/Client) interacting with backend API routes (`/api/v1/...`) and PostgreSQL persistence via Drizzle ORM.
 
@@ -95,9 +95,11 @@
 
 ### 1.2 Features to be tested
 
-* UC-02 - Log In (Authentication & Authorization)
+* UC-07 - Browse Feed (Feed Generation)
 
-* UC-10 - Create Post (Post Management)
+* UC-08 - Search Content (Search & Discovery)
+
+* UC-10 - Create Post (Post Creation)
 
 * UC-12 - Leave Comments (User Interaction)
 
@@ -137,7 +139,7 @@
 | --- | --- | --- |
 | **Test Planning** | Nguyen Hai Nam | Write specific Test Plan for team. |
 | **Test Environment and Data Preparation** | Nguyen Hai Nam & Nguyen Tuan An | Set up the local testing environment (DB container, backend, frontend). Prepare test data including mock user accounts, pre-existing posts, and valid/invalid Gemini API keys for AI testing. |
-| **Test Case Design (UC-02)** | Nguyen Tuan An | Refine and write 10 test cases for **UC-02 (Log In)**. |
+| **Test Case Design (UC-07 & UC-08)** | Nguyen Tuan An | Refine and write 10 test cases for **UC-07 (Browse Feed)** and **UC-08 (Search Content)**. |
 | **Test Case Design (UC-10)** | Nguyen Hai Nam | Refine and write 10 test cases for **UC-10 (Create Post)**. |
 | **Test Case Design (UC-12)** | Vo An Phu | Refine and write 10 test cases for **UC-12 (Leave Comment)**. |
 | **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write 10 test cases for **UC-14 (Request AI Summary)**. |
