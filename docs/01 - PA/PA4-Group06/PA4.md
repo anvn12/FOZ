@@ -2395,8 +2395,8 @@ Database access is handled by Drizzle ORM repository modules. These are an imple
 
 *Work performed by: Nguyễn Tuấn An | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
 
-> **Version**: 1.1.0
-> **Last Updated**: 2026-08-07
+> **Version**: 1.2.0
+> **Last Updated**: 2026-08-12
 >
 > This document maps the containers defined in the Architecture Document to the physical and cloud infrastructure that runs them, for both **development** and **production** environments. Diagrams use Mermaid syntax following C4 deployment conventions.
 
@@ -2416,11 +2416,11 @@ flowchart LR
         SPA["Web Application SPA\nReact 19 · Vite 8"]
     end
 
-    subgraph render ["Render Web Service — Free Tier"]
+    subgraph railway ["Railway Web Service"]
         API["Backend API Server\nNode.js v24 · Express 5"]
     end
 
-    subgraph neon ["Neon — Serverless PostgreSQL"]
+    subgraph aiven ["Aiven — Managed PostgreSQL"]
         DB[("PostgreSQL 16")]
     end
 
@@ -2432,7 +2432,7 @@ flowchart LR
     Cloudinary["Cloudinary CDN"]
 
     Browser -- "HTTPS :443\nStatic assets" --> SPA
-    SPA -. "Vercel rewrite\n/api/v1/* → Render\nHTTPS :443" .-> API
+    SPA -. "Vercel rewrite\n/api/v1/* → Railway\nHTTPS :443" .-> API
     API -- "SQL over TLS\npostgres.js :5432" --> DB
     API -- "HTTPS :443\nOAuth exchange" --> GoogleOAuth
     API -- "HTTPS :443\nAI summarization" --> GeminiAPI
@@ -2454,31 +2454,31 @@ flowchart LR
 
 1. The **User Browser** loads static assets (HTML, JS, CSS) from **Vercel CDN** over HTTPS.
 2. Once the React SPA is running in the browser, all API calls go to the same Vercel domain under `/api/v1/*`.
-3. **Vercel rewrite rules** (defined in `vercel.json`) transparently proxy those requests to `https://foz-backend.onrender.com/api/v1/*` — the browser never contacts Render directly.
-4. The **Backend API Server** on Render connects to **Neon PostgreSQL** via the `postgres.js` driver (TLS-encrypted, port 5432), and makes outbound HTTPS calls to **Google OAuth 2.0**, **Gemini API**, and **Cloudinary** as needed.
+3. **Vercel rewrite rules** (defined in `vercel.json`) transparently proxy those requests to `https://foz-backend.up.railway.app/api/v1/*` — the browser never contacts Railway directly.
+4. The **Backend API Server** on Railway connects to **Aiven PostgreSQL** via the `postgres.js` driver (TLS-encrypted, port 5432), and makes outbound HTTPS calls to **Google OAuth 2.0**, **Gemini API**, and **Cloudinary** as needed.
 5. The browser loads images directly from **Cloudinary CDN** URLs stored in the database.
 
 ### 1.2 Node Descriptions
 
-| Node                             | Infrastructure / Cloud Service                                                        | Containers Deployed                                                                                                      | Notes                                                                                                                                                                                                                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User Device**                  | Desktop or mobile device running a modern web browser (Chrome, Firefox, Safari, Edge) | **Web Application (SPA)** — downloaded and executed client-side as static JS/CSS/HTML                                    | The React 19 SPA runs entirely in the browser after the initial page load. All server communication is via REST API calls.                                                                                                                                                                    |
-| **Vercel — Edge Network / CDN**  | **Vercel** (free tier). Global edge CDN with serverless rewrite rules.                | **Web Application (SPA)** — static build output (`src/frontend/dist`) served from Vercel's CDN.                          | Vercel serves the static SPA bundle and uses rewrite rules (`vercel.json`) to proxy all `/api/v1/*` requests to the Render-hosted backend (`foz-backend.onrender.com`). This eliminates CORS issues in production and provides a unified domain for the user. Build command: `npm run build`. |
-| **Render — Web Service**         | **Render** (free tier). Managed web-service hosting.                                  | **Backend API Server** — Node.js v24 Express 5 application running as a Render Web Service.                              | The backend runs as a single long-lived process. Render provides the env var used for Google OAuth callback URL construction. The free tier has cold-start latency on idle instances.                                                                                                         |
-| **Neon — Serverless PostgreSQL** | **Neon** (free tier). Serverless PostgreSQL with auto-scaling.                        | **PostgreSQL Database** — `postgres:16`-compatible managed database.                                                     | Neon provides a serverless PostgreSQL-compatible endpoint. The backend connects via `DATABASE_URL` using the `postgres.js` driver over TLS-encrypted TCP on port 5432. Schema migrations are managed via `drizzle-kit`.                                                                       |
-| **Google Cloud Platform**        | **Google Cloud** (API-based services).                                                | **Google OAuth 2.0** — social login identity provider. **Google Generative AI (Gemini API)** — AI summarization service. | Two independent Google services: OAuth 2.0 for authentication and Gemini API for post/comment TL;DR summarization with a fallback model chain (`gemini-2.5-flash` → `gemini-1.5-flash` → `gemini-2.0-flash`).                                                                                 |
-| **Cloudinary**                   | **Cloudinary** (free tier). Cloud-based media management and CDN.                     | **Cloudinary Media Service** — image storage, transformation, and CDN delivery.                                          | Post attachments and profile avatars are uploaded from the backend via Cloudinary's streaming API. CDN URLs are stored in the database and served directly to browsers for read access.                                                                                                       |
+| Node | Infrastructure / Cloud Service | Containers Deployed | Notes |
+| --- | --- | --- | --- |
+| **User Device** | Desktop or mobile device running a modern web browser (Chrome, Firefox, Safari, Edge) | **Web Application (SPA)** — downloaded and executed client-side as static JS/CSS/HTML | The React 19 SPA runs entirely in the browser after the initial page load. All server communication is via REST API calls. |
+| **Vercel — Edge Network / CDN** | **Vercel** (free tier). Global edge CDN with serverless rewrite rules. | **Web Application (SPA)** — static build output (`src/frontend/dist`) served from Vercel's CDN. | Vercel serves the static SPA bundle and uses rewrite rules (`vercel.json`) to proxy all `/api/v1/*` requests to the Railway-hosted backend (`foz-backend.up.railway.app`). This eliminates CORS issues in production and provides a unified domain for the user. Build command: `npm run build`. |
+| **Railway — Web Service** | **Railway**. Cloud platform & container hosting. | **Backend API Server** — Node.js v24 Express 5 application running as a Railway Web Service. | The backend runs as a single long-lived containerized service. Railway handles environment variables, continuous deployment from GitHub, and domain routing for Google OAuth callback URL construction (`https://foz-backend.up.railway.app`). |
+| **Aiven — Managed PostgreSQL** | **Aiven**. Fully managed cloud database service. | **PostgreSQL Database** — `postgres:16`-compatible managed database. | Aiven provides a highly available, cloud-managed PostgreSQL 16 instance. The backend connects via `DATABASE_URL` using the `postgres.js` driver over TLS-encrypted TCP on port 5432. Schema migrations are managed via `drizzle-kit`. |
+| **Google Cloud Platform** | **Google Cloud** (API-based services). | **Google OAuth 2.0** — social login identity provider. **Google Generative AI (Gemini API)** — AI summarization service. | Two independent Google services: OAuth 2.0 for authentication and Gemini API for post/comment TL;DR summarization with a fallback model chain (`gemini-2.5-flash` → `gemini-1.5-flash` → `gemini-2.0-flash`). |
+| **Cloudinary** | **Cloudinary** (free tier). Cloud-based media management and CDN. | **Cloudinary Media Service** — image storage, transformation, and CDN delivery. | Post attachments and profile avatars are uploaded from the backend via Cloudinary's streaming API. CDN URLs are stored in the database and served directly to browsers for read access. |
 
 ### 1.3 Communication Protocols Summary
 
 | From | To | Protocol | Port | Description |
 |---|---|---|---|---|
 | User Browser | Vercel CDN | HTTPS | 443 | Initial SPA download (HTML, JS, CSS, static assets) |
-| Vercel CDN (rewrite) | Render Backend | HTTPS | 443 | Vercel transparently rewrites `/api/v1/*` to `foz-backend.onrender.com`. The browser never contacts Render directly. Authenticated requests include `Authorization: Bearer <token>` header; refresh uses HTTP-only cookies. |
-| Render Backend | Neon PostgreSQL | PostgreSQL wire protocol over TLS | 5432 | SQL queries via `postgres.js` driver through Drizzle ORM |
-| Render Backend | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
-| Render Backend | Google Gemini API | HTTPS REST | 443 | Structured prompt submission and JSON response parsing |
-| Render Backend | Cloudinary | HTTPS | 443 | Image stream upload and asset deletion |
+| Vercel CDN (rewrite) | Railway Backend | HTTPS | 443 | Vercel transparently rewrites `/api/v1/*` to `foz-backend.up.railway.app`. The browser never contacts Railway directly. Authenticated requests include `Authorization: Bearer <token>` header; refresh uses HTTP-only cookies. |
+| Railway Backend | Aiven PostgreSQL | PostgreSQL wire protocol over TLS | 5432 | SQL queries via `postgres.js` driver through Drizzle ORM |
+| Railway Backend | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
+| Railway Backend | Google Gemini API | HTTPS REST | 443 | Structured prompt submission and JSON response parsing |
+| Railway Backend | Cloudinary | HTTPS | 443 | Image stream upload and asset deletion |
 | User Browser | Cloudinary CDN | HTTPS | 443 | Direct image retrieval via CDN-delivered URLs |
 
 ---
@@ -2561,18 +2561,18 @@ flowchart LR
 
 ## 3. Environment Comparison
 
-| Aspect                   | Development                                             | Production                                                     |
-| ------------------------ | ------------------------------------------------------- | -------------------------------------------------------------- |
-| **Frontend Hosting**     | Vite dev server on `localhost:5173`                     | Vercel Edge CDN (global, static build)                         |
-| **Backend Hosting**      | Express on `localhost:4000` via `tsx watch`             | Render Web Service (`foz-backend.onrender.com`)                |
-| **Database**             | Docker container `foz_db` (`postgres:16`, local)        | Neon Serverless PostgreSQL (cloud, TLS-encrypted)              |
-| **API Proxying**         | Vite proxy (`/api/v1` and `/health` → `localhost:4000`) | Vercel rewrite rules (`/api/v1/*` → Render)                    |
-| **TLS/HTTPS**            | HTTP (no TLS locally)                                   | HTTPS everywhere (Vercel, Render, Neon all enforce TLS)        |
-| **Image Storage**        | Cloudinary (same cloud service)                         | Cloudinary (same cloud service)                                |
-| **OAuth Callback**       | `http://localhost:4000/api/v1/auth/google/callback`     | `https://foz-backend.onrender.com/api/v1/auth/google/callback` |
-| **Shared Module**        | Live source imports with HMR rebuild                    | Compiled into static bundles at build time                     |
-| **Database Credentials** | Hardcoded in `docker-compose.yml` (`foz/foz`)           | Managed via Neon dashboard + `DATABASE_URL` env var            |
-| **Cold Start**           | None (always running)                                   | Render free tier has cold-start on idle                        |
+| Aspect | Development | Production |
+| --- | --- | --- |
+| **Frontend Hosting** | Vite dev server on `localhost:5173` | Vercel Edge CDN (global, static build) |
+| **Backend Hosting** | Express on `localhost:4000` via `tsx watch` | Railway Web Service (`foz-backend.up.railway.app`) |
+| **Database** | Docker container `foz_db` (`postgres:16`, local) | Aiven Managed PostgreSQL (cloud, TLS-encrypted) |
+| **API Proxying** | Vite proxy (`/api/v1` and `/health` → `localhost:4000`) | Vercel rewrite rules (`/api/v1/*` → Railway) |
+| **TLS/HTTPS** | HTTP (no TLS locally) | HTTPS everywhere (Vercel, Railway, Aiven all enforce TLS) |
+| **Image Storage** | Cloudinary (same cloud service) | Cloudinary (same cloud service) |
+| **OAuth Callback** | `http://localhost:4000/api/v1/auth/google/callback` | `https://foz-backend.up.railway.app/api/v1/auth/google/callback` |
+| **Shared Module** | Live source imports with HMR rebuild | Compiled into static bundles at build time |
+| **Database Credentials** | Hardcoded in `docker-compose.yml` (`foz/foz`) | Managed via Aiven console + `DATABASE_URL` env var |
+| **Cold Start / Uptime** | None (always running) | Continuous service running on Railway |
 
 # E - Implement 2 Functional Groups using Spec Kit
 
