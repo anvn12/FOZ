@@ -76,7 +76,10 @@ export function RegisterPage() {
     <AuthLayout
       headline={
         <>
-          Join FOZ.
+          Join{" "}
+          <span className="bg-gradient-to-r from-[#2891DD] via-[#00A4EF] to-[#6366D9] bg-clip-text text-transparent inline-block">
+            FOZ.
+          </span>
         </>
       }
     >

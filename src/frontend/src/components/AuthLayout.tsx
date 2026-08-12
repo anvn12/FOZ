@@ -54,11 +54,10 @@ function TrendingCarousel() {
             <div
               key={slide.id}
               aria-hidden={!isActive}
-              className={`border border-outline-variant bg-surface-container-lowest rounded-2xl p-6 transition-all duration-500 ${
-                isActive
+              className={`border border-outline-variant bg-surface-container-lowest rounded-2xl p-6 transition-all duration-500 ${isActive
                   ? "relative opacity-100 translate-y-0"
                   : "absolute top-0 left-0 w-full opacity-0 translate-y-4"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="px-3 py-1 text-label-md font-label-md rounded-full bg-surface-container-high text-on-surface-variant">
@@ -111,18 +110,18 @@ export function AuthLayout({ headline, children }: { headline: ReactNode; childr
           <div className="absolute inset-0">
             <ColorBends colors={["#7C9CFF", "#B497CF", "#8A5CFF"]} speed={0.15} intensity={1.2} noise={0.1} />
           </div>
-          
+
           <nav className="w-full absolute top-10 lg:left-10 z-50 flex justify-center md:justify-between items-center">
             <FozLogo showText={true} textClassName="text-2xl md:text-3xl font-black tracking-tighter text-white" />
           </nav>
           <div className="w-full absolute top-20 text-center mt-2 md:hidden mb-2">
-            <h1 className="text-4xl font-black tracking-tighter text-white">{headline}</h1>
+            <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_16px_rgba(40,145,221,0.5)]">{headline}</h1>
           </div>
 
           <div className="hidden md:flex w-full h-full flex-col justify-end items-start px-8 relative pb-8 ">
             <div className=" z-10 w-full flex flex-col gap-6">
               <div>
-                <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4">
+                <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4 drop-shadow-[0_4px_20px_rgba(40,145,221,0.5)]">
                   {headline}
                 </h1>
                 <p className="text-body-lg font-body-lg text-white max-w-sm">

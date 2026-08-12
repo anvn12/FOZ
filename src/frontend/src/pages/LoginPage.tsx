@@ -67,7 +67,10 @@ export function LoginPage() {
     <AuthLayout
       headline={
         <>
-          Focus on <br /> Zillions.
+          Focus on <br />
+          <span className="bg-gradient-to-r from-[#2891DD] via-[#00A4EF] to-[#6366D9] bg-clip-text text-transparent inline-block">
+            Zillions.
+          </span>
         </>
       }
     >
