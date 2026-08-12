@@ -25,8 +25,9 @@ import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
 function showError(error: Error) {
   if (error instanceof InteractionApiError && error.fields) {
     const messages = Object.values(error.fields);
-    if (messages.length > 0) {
-      toast.error(messages[0]);
+    const firstMsg = messages[0];
+    if (firstMsg) {
+      toast.error(firstMsg);
       return;
     }
   }
