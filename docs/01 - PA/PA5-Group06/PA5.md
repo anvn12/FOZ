@@ -77,7 +77,7 @@
 
 ##### 1.1.2.1 In-Scope
 
-* **Target Use Cases:** Manual functional testing of the 5 chosen use cases: UC-07, UC-08, UC-10, UC-12, UC-14, UC-21.
+* **Target Use Cases:** Manual functional testing of the 6 chosen use cases: UC-07, UC-08, UC-10, UC-12, UC-14, UC-21.
 
 * **Full-Stack Integration:** Web frontend interaction (Vite/Client) interacting with backend API routes (`/api/v1/...`) and PostgreSQL persistence via Drizzle ORM.
 
@@ -87,7 +87,7 @@
 
 * **Non-functional Requirements:** Load testing, stress testing, high-concurrency scaling, and deep security penetration auditing.
 
-* **Unselected Use Cases:** Features outside the 5 selected use cases (such as full text search discovery or avatar customization).
+* **Unselected Use Cases:** Features outside the 6 selected use cases (such as authorization or avatar customization).
 
 * **Native Mobile Applications:** Testing is strictly limited to desktop/responsive web environments.
 
@@ -144,7 +144,7 @@
 | **Test Case Design (UC-12)** | Vo An Phu | Refine and write 10 test cases for **UC-12 (Leave Comment)**. |
 | **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write 10 test cases for **UC-14 (Request AI Summary)**. |
 | **Test Case Design (UC-21)** | Pham Dinh Gia Khanh | Refine and write 10 test cases for **UC-21 (Assign Moderator Role)**. |
-| **Test Case Review & Quality Assurance** | Nguyen Hai Nam & Pham Dinh Gia Khanh  | Review and refine all test cases (50 test cases). |
+| **Test Case Review & Quality Assurance** | Nguyen Hai Nam & Pham Dinh Gia Khanh  | Review and refine all test cases (60 test cases). |
 | **Test Execution and Bug Logging** | All Team Members | - Execute assigned manual test cases using Cross-testing approach, accurately recording the **Test case ID**, **execution date**, **status** (Pass/Fail), and **actual results**.<br>- Log all discovered defects into the Bug Report, ensuring every failed test case is strictly linked to at least one **bug ID**.<br>- Record bug details, including **bug description**, **steps to reproduce**, **expected vs. actual results**, **severity**, and **status**. |
 | **Retesting and Final Run Verification** | Nguyen Hai Nam & Vo An Phu | Perform Retesting on fixed bugs and execute the Final Run to ensure all previously failed test cases are successfully passed and bug statuses are updated to 'Closed/Fixed'. |
 | **Test Report and Document Finalization** | Nguyen Hai Nam & Nguyen Hai Trong | - Document Bug Report and Test Summary.<br>- Compile, format, and finalize the complete Software Testing Document. |
@@ -154,7 +154,7 @@
 | Phase | Milestone / Task Category | Timeframe | Primary Assignees |
 | --- | --- | --- | --- |
 | Phase 1 | **Test Planning & Preparation:** Finalize the test plan, set up the local testing environment, and prepare all required test data (mock accounts, pre-existing posts, API keys). | Aug 11 - Aug 12, 2026 | Nguyen Hai Nam & Nguyen Tuan An |
-| Phase 2 | **Test Case Design & Review:** Refine and design 50 test cases across 5 selected use cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 13 - Aug 15,  2026 | - All Members (Design).<br>- Nguyen Hai Nam & Pham Dinh Gia Khanh (Review) |
+| Phase 2 | **Test Case Design & Review:** Refine and design 60 test cases across 6 selected use cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 13 - Aug 15,  2026 | - All Members (Design).<br>- Nguyen Hai Nam & Pham Dinh Gia Khanh (Review) |
 | Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 16 - Aug 17, 2026 | All Team Members |
 | Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 18 - Aug 19, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
 | Phase 5 | **Reporting & Finalization:** Compile Test Summary metrics, verify bug ID traceability, format and finalize the document. | Aug 20 - Aug 21, 2026 |	Nguyen Hai Nam & Nguyen Hai Trong |
@@ -163,7 +163,7 @@
 
 #### 1.5.1 Entry Criteria
 
-* **Feature Implementation & Code Stability:** Code for all 5 selected use cases (UC-02, UC-10, UC-12, UC-14, UC-21) is fully integrated and ready for testing.
+* **Feature Implementation & Code Stability:** Code for all 6 selected use cases (UC-07, UC-08, UC-10, UC-12, UC-14, UC-21) is fully integrated and ready for testing.
 
 * **Environment & Server Readiness:**
   * The PostgreSQL database Docker container is running on port `5432` with all database migrations applied.
@@ -172,13 +172,13 @@
 
 * **Test Data Seeded:** Mock user accounts (for all roles) and sample data (posts, comments, etc.) are loaded into the database.
 
-* **Test Cases Approved:** All 50 functional test cases have been reviewed, refined, and approved by the team.
+* **Test Cases Approved:** All 60 functional test cases have been reviewed, refined, and approved by the team.
 
 * **API Keys Configured:** `.env` variables are set, including both valid and invalid Gemini API keys to verify the AI fallback mechanism. 
 
 #### 1.5.2 Exit Criteria
 
-* **100% Execution:** All 50 designed test cases have been executed.
+* **100% Execution:** All 60 designed test cases have been executed.
 
 * **Results Logged:** Execution dates, status (Pass/Fail), and actual results are fully documented for every test case.
 
