@@ -355,12 +355,12 @@ export function SearchPage() {
                               </div>
                             )}
                           </div>
-                          <div className="flex flex-col gap-2 flex-1">
+                          <div className="flex flex-col gap-2 flex-1 min-w-0">
                             <div className="flex items-baseline gap-2">
                               <span className="text-[14px] font-bold text-primary">{discussion.authorName}</span>
                               <span className="text-[12px] font-medium text-on-surface-variant">{discussion.authorHandle}</span>
                             </div>
-                            <h3 className="text-[16px] text-on-surface leading-tight line-clamp-2 text-wrap">{discussion.content}</h3>
+                            <h3 className="text-[16px] text-on-surface leading-tight line-clamp-2 break-words">{discussion.content}</h3>
                             <div className="flex gap-6 mt-2 text-outline text-[13px] font-medium">
                               <div className="flex items-center gap-1.5 hover:text-primary transition-colors">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
