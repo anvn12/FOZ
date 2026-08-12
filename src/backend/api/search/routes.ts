@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
-import { ilike, eq, and, or, isNull, desc, sql } from "drizzle-orm";
+import { ilike, eq, and, or, isNull, desc, sql, inArray } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
-import { posts, profiles, userAccounts, reactions, comments, hashtags, postHashtags } from "#backend/db/schema/index.js";
+import { posts, profiles, userAccounts, reactions, comments, hashtags, postHashtags, postAttachments } from "#backend/db/schema/index.js";
 import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
 
 const SearchQuerySchema = z.object({
@@ -74,6 +74,19 @@ router.get("/discovery", async (req, res, next) => {
       )
       .limit(maxLimit);
 
+    const attachmentRows = activePosts.length
+      ? await db
+          .select()
+          .from(postAttachments)
+          .where(inArray(postAttachments.postId, activePosts.map((p) => p.id)))
+      : [];
+    const attachmentMap = new Map<string, typeof attachmentRows>();
+    for (const att of attachmentRows) {
+      const list = attachmentMap.get(att.postId) ?? [];
+      list.push(att);
+      attachmentMap.set(att.postId, list);
+    }
+
     const discussions = await Promise.all(
       activePosts.map(async (p) => {
         // Fetch like count
@@ -88,6 +101,18 @@ router.get("/discovery", async (req, res, next) => {
           .from(comments)
           .where(and(eq(comments.postId, p.id), eq(comments.lifecycleState, "active")));
 
+        // Fetch repost count
+        const [repostRes] = await db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(posts)
+          .where(
+            and(
+              eq(posts.repostOfId, p.id),
+              eq(posts.visibilityState, "public"),
+              isNull(posts.deletedAt)
+            )
+          );
+
         const authorHandle = `@${(p.displayName || "user").toLowerCase().replace(/\s+/g, "")}`;
 
         return {
@@ -100,6 +125,8 @@ router.get("/discovery", async (req, res, next) => {
           createdAt: p.createdAt ? p.createdAt.toISOString() : new Date().toISOString(),
           likeCount: likeRes?.count ?? 0,
           commentCount: commentRes?.count ?? 0,
+          repostCount: repostRes?.count ?? 0,
+          attachments: attachmentMap.get(p.id) ?? [],
         };
       })
     );

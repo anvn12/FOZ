@@ -77,7 +77,7 @@ describe("SearchPage Component", () => {
           { id: "c1", userAccountId: "acc-1", displayName: "Elena Rostova", bio: "Designer", avatarUrl: null },
         ],
         discussions: [
-          { id: "d1", authorId: "acc-1", authorName: "Elena Rostova", authorHandle: "@erostova", authorAvatarUrl: null, content: "Discussion topic 1", createdAt: new Date().toISOString(), likeCount: 5, commentCount: 2 },
+          { id: "d1", authorId: "acc-1", authorName: "Elena Rostova", authorHandle: "@erostova", authorAvatarUrl: null, content: "Discussion topic 1", createdAt: new Date().toISOString(), likeCount: 5, commentCount: 2, repostCount: 0, attachments: [] },
         ],
       },
       isLoading: false,
