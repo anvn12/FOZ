@@ -33,7 +33,7 @@ describe("LoginPage (Lumina Glassmorphic UI)", () => {
     expect(screen.getByPlaceholderText(/Password/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Log in/i })).toBeTruthy();
     expect(screen.getByText(/Forgotten password\?/i)).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Create new account/i })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Sign up instead/i })).toBeTruthy();
   });
 
   it("renders hero brand text and carousel on desktop view", () => {
