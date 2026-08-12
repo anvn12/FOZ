@@ -104,6 +104,20 @@ describe("GET /api/v1/search/discovery", () => {
     ]);
   });
 
+  it("returns real trending topics extracted from posts with hashtags", async () => {
+    const { userId } = await registerUserWithDisplayName("HashtagAuthor");
+    const postId = await insertPost(userId, "Testing #FOZ and #RealData in search page");
+    const { extractHashtagsAndSync } = await import("#backend/db/repositories/hashtags.js");
+    await extractHashtagsAndSync(postId, "Testing #FOZ and #RealData in search page");
+
+    const res = await getAgent().get("/api/v1/search/discovery");
+
+    expect(res.status).toBe(200);
+    const topicTags = res.body.topics.map((t: { tag: string }) => t.tag);
+    expect(topicTags).toContain("#FOZ");
+    expect(topicTags).toContain("#RealData");
+  });
+
   it("allows searching users with wildcard query to list creators", async () => {
     await registerUserWithDisplayName("AliceTest");
     await registerUserWithDisplayName("BobTest");

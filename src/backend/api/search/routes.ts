@@ -4,6 +4,7 @@ import { ilike, eq, and, or, isNull, desc, sql, inArray } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
 import { posts, profiles, userAccounts, reactions, comments, hashtags, postHashtags, postAttachments } from "#backend/db/schema/index.js";
 import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
+import { getTrendingHashtags } from "#backend/db/repositories/hashtags.js";
 
 const SearchQuerySchema = z.object({
   q: z
@@ -131,17 +132,73 @@ router.get("/discovery", async (req, res, next) => {
       })
     );
 
-    // 3. Trending Topics: Extracted tags or defaults
-    const defaultTopics = [
-      { id: "t1", name: "Design Systems", tag: "#DesignSystems" },
-      { id: "t2", name: "AI Architecture", tag: "AI Architecture" },
-      { id: "t3", name: "Minimalism", tag: "#Minimalism" },
-      { id: "t4", name: "UI Engineering", tag: "UI Engineering" },
-      { id: "t5", name: "Future of Work", tag: "Future of Work" },
-    ];
+    // 3. Trending Topics: Fetch real trending hashtags from database
+    let trendingHashtags = await getTrendingHashtags(maxLimit);
+
+    if (trendingHashtags.length < maxLimit) {
+      // Fallback 1: Query overall top hashtags linked to active public posts
+      const overallRows = await db
+        .select({
+          id: hashtags.id,
+          name: hashtags.name,
+          displayName: hashtags.displayName,
+          postCount: sql<number>`count(${postHashtags.postId})::int`,
+        })
+        .from(hashtags)
+        .innerJoin(postHashtags, eq(hashtags.id, postHashtags.hashtagId))
+        .innerJoin(posts, eq(postHashtags.postId, posts.id))
+        .where(and(eq(posts.visibilityState, "public"), isNull(posts.deletedAt)))
+        .groupBy(hashtags.id, hashtags.name, hashtags.displayName)
+        .orderBy(desc(sql`count(${postHashtags.postId})`), desc(hashtags.createdAt))
+        .limit(maxLimit);
+
+      const existingIds = new Set(trendingHashtags.map((h) => h.id));
+      for (const row of overallRows) {
+        if (!existingIds.has(row.id) && trendingHashtags.length < maxLimit) {
+          trendingHashtags.push(row);
+          existingIds.add(row.id);
+        }
+      }
+
+      // Fallback 2: If still under maxLimit, include any registered hashtags
+      if (trendingHashtags.length < maxLimit) {
+        const allHashtags = await db
+          .select({
+            id: hashtags.id,
+            name: hashtags.name,
+            displayName: hashtags.displayName,
+          })
+          .from(hashtags)
+          .orderBy(desc(hashtags.createdAt))
+          .limit(maxLimit);
+
+        for (const h of allHashtags) {
+          if (!existingIds.has(h.id) && trendingHashtags.length < maxLimit) {
+            trendingHashtags.push({
+              id: h.id,
+              name: h.name,
+              displayName: h.displayName,
+              postCount: 0,
+            });
+            existingIds.add(h.id);
+          }
+        }
+      }
+    }
+
+    const topics = trendingHashtags.map((h) => {
+      const display = h.displayName || h.name;
+      const tag = display.startsWith("#") ? display : `#${display}`;
+      return {
+        id: h.id,
+        name: display,
+        tag,
+        postCount: h.postCount,
+      };
+    });
 
     res.json({
-      topics: defaultTopics,
+      topics,
       creators: rawCreators,
       discussions,
     });

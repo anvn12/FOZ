@@ -278,22 +278,26 @@ export function SearchPage() {
                   )}
                 </section>
               ) : (
-                <div className="w-full flex flex-col items-start  gap-4 mt-4">
+                <div className="w-full flex flex-col items-stretch gap-4 mt-4">
                   {/* Trending Topics (Chips) */}
-                  <section className="flex flex-col gap-4  bg-zinc-500/10 backdrop-blur-2xl rounded-lg p-2">
+                  <section className="flex flex-col gap-4 w-full bg-zinc-500/10 backdrop-blur-2xl rounded-lg p-2">
                     <div className="border border-white/10 p-4 rounded-md h-full">
                       <h2 className="text-[14px] font-semibold text-on-surface-variant uppercase tracking-widest">Trending Topics</h2>
                     <div className="flex flex-wrap gap-2 pt-4">
-                      {discoveryData?.topics?.map(topic => (
-                        <Badge 
-                          key={topic.id} 
-                          onClick={() => handleTopicClick(topic.tag)}
-                          variant={"default"}
-                          className="rounded-full"
-                        >
-                          {topic.tag}
-                        </Badge>
-                      ))}
+                      {discoveryData?.topics && discoveryData.topics.length > 0 ? (
+                        discoveryData.topics.map(topic => (
+                          <Badge 
+                            key={topic.id} 
+                            onClick={() => handleTopicClick(topic.tag)}
+                            variant={"default"}
+                            className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                          >
+                            {topic.tag}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-[13px] text-outline italic">No trending topics yet</span>
+                      )}
                     </div>
                     </div>
                   </section>
@@ -337,7 +341,7 @@ export function SearchPage() {
                   </section>
 
                   {/* Trending Discussions */}
-                  <section className="flex flex-col gap-0 mt-6 max-w-full border border-zinc-500/50 rounded-2xl py-4">
+                  <section className="flex flex-col gap-0 mt-6 w-full border border-zinc-500/50 rounded-2xl pt-4 pb-0 overflow-hidden">
                     <h2 className="text-[20px] font-semibold text-primary tracking-tight px-8 mb-4">Trending Discussions</h2>
                     <Separator/>
                     {discoveryData?.discussions?.map(discussion => {
@@ -345,7 +349,7 @@ export function SearchPage() {
                         <article 
                           key={discussion.id}
                           onClick={() => navigate(`/posts/${discussion.id}`)}
-                          className="flex gap-4 py-4 px-8 border-b border-outline-variant hover:bg-surface-container-lowest transition-colors cursor-pointer"
+                          className="flex gap-4 py-4 px-8 border-b last:border-b-0 border-outline-variant hover:bg-surface-container-lowest transition-colors cursor-pointer"
                         >
                           <div className="flex-shrink-0 relative">
                             {discussion.authorAvatarUrl ? (
