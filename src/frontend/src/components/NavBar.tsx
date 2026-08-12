@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
 import { LogoutDialog } from "#frontend/components/LogoutDialog";
+import { FeedbackDialog } from "#frontend/components/FeedbackDialog";
 import { toast } from "react-hot-toast";
 import { CreatePostModal } from "#frontend/components/CreatePostModal";
 import {
@@ -9,6 +10,7 @@ import {
   Home,
   LogOut,
   Menu,
+  MessageSquare,
   Plus,
   Search,
   Settings2,
@@ -54,6 +56,7 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const isHomeActive =
     location.pathname === "/" ||
@@ -152,9 +155,9 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
                     <Settings2 />
                     Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => toast("Report feature coming soon")}>
-                    <CircleAlert />
-                    Report a Problem
+                  <DropdownMenuItem onClick={() => setIsFeedbackOpen(true)}>
+                    <MessageSquare />
+                    Feedback
                   </DropdownMenuItem>
                   {user && (
                     <>
@@ -235,6 +238,10 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
       <CreatePostModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
+      />
+      <FeedbackDialog
+        open={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
       />
     </SidebarProvider>
   );
