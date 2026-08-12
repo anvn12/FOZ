@@ -33,20 +33,30 @@ const CAROUSEL_SLIDES: CarouselSlide[] = [
 
 function TrendingCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setDirection("next");
       setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
-  const prevSlide = () =>
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.blur();
+    setDirection("next");
+    setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
+  };
+
+  const handlePrev = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.blur();
+    setDirection("prev");
     setCurrentSlide((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
+  };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="relative w-full max-w-md group overflow-hidden rounded-2xl">
       <div className="relative h-32 w-full" id="trending-carousel">
         {CAROUSEL_SLIDES.map((slide, index) => {
           const isActive = index === currentSlide;
@@ -54,10 +64,13 @@ function TrendingCarousel() {
             <div
               key={slide.id}
               aria-hidden={!isActive}
-              className={`border border-outline-variant bg-surface-container-lowest rounded-2xl p-6 transition-all duration-500 ${isActive
-                  ? "relative opacity-100 translate-y-0"
-                  : "absolute top-0 left-0 w-full opacity-0 translate-y-4"
-                }`}
+              className={`border border-outline-variant bg-surface-container-lowest rounded-2xl p-6 pl-11 pr-11 transition-all duration-900 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                isActive
+                  ? "relative opacity-100 translate-x-0 scale-100 z-10"
+                  : `absolute top-0 left-0 w-full opacity-0 pointer-events-none scale-95 z-0 ${
+                      direction === "next" ? "translate-x-12" : "-translate-x-12"
+                    }`
+              }`}
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="px-3 py-1 text-label-md font-label-md rounded-full bg-surface-container-high text-on-surface-variant">
@@ -71,26 +84,23 @@ function TrendingCarousel() {
             </div>
           );
         })}
-      </div>
 
-      <div className="flex gap-2 mt-6">
+        {/* Left & Right backgroundless arrows hidden until box hover */}
         <button
           type="button"
           aria-label="Previous slide"
-          onClick={prevSlide}
-          className="w-10 h-10 rounded-full border border-outline-variant bg-surface-container-lowest flex items-center justify-center hover:bg-surface-container-high transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+          onClick={handlePrev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 text-on-surface-variant/70 hover:text-on-surface opacity-0 group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-85 focus:outline-none cursor-pointer p-1 hover:-translate-x-1"
         >
-          <span className="material-symbols-outlined text-[20px] text-on-surface">arrow_back</span>
+          <span className="material-symbols-outlined text-[24px]">chevron_left</span>
         </button>
         <button
           type="button"
           aria-label="Next slide"
-          onClick={nextSlide}
-          className="w-10 h-10 rounded-full border border-outline-variant bg-surface-container-lowest flex items-center justify-center hover:bg-surface-container-high transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+          onClick={handleNext}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 text-on-surface-variant/70 hover:text-on-surface opacity-0 group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-85 focus:outline-none cursor-pointer p-1 hover:translate-x-1"
         >
-          <span className="material-symbols-outlined text-[20px] text-on-surface">
-            arrow_forward
-          </span>
+          <span className="material-symbols-outlined text-[24px]">chevron_right</span>
         </button>
       </div>
     </div>
@@ -118,8 +128,8 @@ export function AuthLayout({ headline, children }: { headline: ReactNode; childr
             <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_16px_rgba(40,145,221,0.5)]">{headline}</h1>
           </div>
 
-          <div className="hidden md:flex w-full h-full flex-col justify-end items-start px-8 relative pb-8 ">
-            <div className=" z-10 w-full flex flex-col gap-6">
+          <div className="hidden md:flex w-full h-full flex-col justify-center items-start px-8 lg:px-12 relative pt-20 pb-8">
+            <div className="z-10 w-full flex flex-col gap-6">
               <div>
                 <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.05] mb-4 drop-shadow-[0_4px_20px_rgba(40,145,221,0.5)]">
                   {headline}
