@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/v1/:match*",
-      "destination": "https://foz-backend.onrender.com/api/v1/:match*"
+      "destination": "https://foz-backend.up.railway.app/api/v1/:match*"
     },
     {
       "source": "/(.*)",

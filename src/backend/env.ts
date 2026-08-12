@@ -31,12 +31,18 @@ const schema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
   GOOGLE_CLIENT_ID: cleanString,
   GOOGLE_CLIENT_SECRET: cleanString,
-  // Render provides the external hostname via environment variable
+  // Cloud deployment hostnames (Render, Railway)
   RENDER_EXTERNAL_HOSTNAME: cleanString.optional(),
+  RAILWAY_PUBLIC_DOMAIN: cleanString.optional(),
+  RAILWAY_STATIC_URL: cleanString.optional(),
   GOOGLE_CALLBACK_URL: cleanString.transform(
     (v) =>
       v ||
-      (process.env.RENDER_EXTERNAL_HOSTNAME
+      (process.env.RAILWAY_PUBLIC_DOMAIN
+        ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/api/v1/auth/google/callback`
+        : process.env.RAILWAY_STATIC_URL
+        ? `https://${process.env.RAILWAY_STATIC_URL}/api/v1/auth/google/callback`
+        : process.env.RENDER_EXTERNAL_HOSTNAME
         ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}/api/v1/auth/google/callback`
         : "http://localhost:4000/api/v1/auth/google/callback"),
   ),
