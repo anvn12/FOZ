@@ -247,3 +247,21 @@
   - Gemini-only AI integration confirmed; LLM edges to an external dashed-stroked "Google Gemini" box correct in L2 and the split BE diagram.
 - Fixed 1 diagram drift: L1 System Context labeled AI provider "OpenAI · Gemini" but only Gemini is implemented (L2 already correct). Replaced with "Google Gemini".
 - Flagged (NOT touched, these are prose, not diagrams) section B "Tech Stack" list version drift for user decision: says "React 18" (actual 19), "Vite 5" (actual 8), "Tailwind CSS 3" (actual v4), "react-router-dom v6" (actual v7); zod is now v4.
+
+### 2026-08-11 09:49
+**Tool:** Codex
+**Model:** deepseek-v4-flash
+**Prompt:** "the search function can only search for people, it cant search posts content or hashstags, go fix"
+**Files touched:** `src/shared/schemas/search.ts`, `src/backend/api/search/routes.ts`, `src/backend/__tests__/integration/auth.setup.ts`, `src/backend/__tests__/integration/search.test.ts`, `src/frontend/src/api/search.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`, `specs/017-fix-search-widgets/contracts/search-api.yaml`
+
+### 2026-08-11 21:40
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "ok now redesign it so that below the search bar there is a tabs navigation with 2 tabs: 'Posts' and 'Profile' with each one showing posts and profile with the searched content"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
+
+### 2026-08-11 21:54
+**Tool:** Codex
+**Model:** gpt-5
+**Prompt:** "remove the hover of the 2 tabs navigate only the white bar below them is enough"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`

@@ -19,7 +19,7 @@ vi.mock("../../api/search.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api/search.js")>();
   return {
     ...actual,
-    useSearchProfiles: vi.fn(),
+    useSearch: vi.fn(),
     useSearchDiscovery: vi.fn(),
   };
 });
@@ -28,12 +28,44 @@ describe("SearchPage Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    vi.mocked(searchApi.useSearchProfiles).mockReturnValue({
-      data: [
-        { id: "u-1", userAccountId: "acc-1", displayName: "Elena Rostova", bio: "Designer", avatarUrl: null },
-      ],
+    const userItem = {
+      id: "u-1",
+      userAccountId: "acc-1",
+      profileId: "p-1",
+      username: "erostova",
+      displayName: "Elena Rostova",
+      bio: "Designer",
+      avatarUrl: null,
+      location: null,
+      website: null,
+      createdAt: new Date().toISOString(),
+      type: "user",
+    };
+    const postItem = {
+      id: "po-1",
+      authorId: "acc-1",
+      authorName: "Elena Rostova",
+      authorUsername: "erostova",
+      authorAvatarUrl: null,
+      content: "React post content",
+      body: "React post content",
+      visibilityState: "public",
+      lifecycleState: "active",
+      createdAt: new Date().toISOString(),
+      type: "post",
+    };
+    const hashtagItem = {
+      id: "h-1",
+      name: "designsystems",
+      displayName: "DesignSystems",
+      postCount: 3,
+      type: "hashtag",
+    };
+
+    vi.mocked(searchApi.useSearch).mockImplementation((_query, type) => ({
+      data: type === "users" ? [userItem] : [userItem, postItem, hashtagItem],
       isLoading: false,
-    } as any);
+    }) as any);
 
     vi.mocked(searchApi.useSearchDiscovery).mockReturnValue({
       data: {
@@ -84,8 +116,27 @@ describe("SearchPage Component", () => {
     // Click header View all
     fireEvent.click(viewAllButtons[0]!);
 
-    // Should trigger search results display for People
-    expect(screen.getByText("People")).toBeDefined();
+    // Should switch to the Profile tab and list matching profiles
+    expect(screen.getByRole("tab", { name: "Profile" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
+  });
+
+  it("renders post and hashtag results after submitting a search", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+    expect(screen.getByText("Hashtags")).toBeDefined();
+    expect(screen.getByText("#DesignSystems")).toBeDefined();
+
+    // Switching to Profile shows people instead of posts
+    fireEvent.click(screen.getByRole("tab", { name: "Profile" }));
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
+    expect(screen.queryByText("React post content")).toBeNull();
   });
 
   it("does not trigger search when whitespace characters are entered and submitted", () => {
