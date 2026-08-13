@@ -155,6 +155,12 @@ export function NavBar({ children }: { children?: React.ReactNode }) {
                     <Settings2 />
                     Settings
                   </DropdownMenuItem>
+                  {user && (user.role === "moderator" || user.role === "administrator") && (
+                    <DropdownMenuItem onClick={() => navigate("/moderator")}>
+                      <CircleAlert />
+                      Mod Dashboard
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => setIsFeedbackOpen(true)}>
                     <MessageSquare />
                     Feedback

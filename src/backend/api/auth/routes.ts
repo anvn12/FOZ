@@ -84,15 +84,17 @@ function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
       error: {
         code: authErr.code,
         message:
-          authErr.code === "USERNAME_TAKEN"
-            ? "This username is already taken"
-            : authErr.code === "EMAIL_TAKEN"
-              ? "An account with this email already exists"
-              : authErr.code === "INVALID_CREDENTIALS"
-                ? "Invalid email or password"
-                : authErr.code === "ACCOUNT_NOT_ACTIVE"
-                  ? "Your account is not currently available"
-                  : "Authentication failed",
+          authErr.code === "INCORRECT_CURRENT_PASSWORD"
+            ? "Incorrect current password"
+            : authErr.code === "USERNAME_TAKEN"
+              ? "This username is already taken"
+              : authErr.code === "EMAIL_TAKEN"
+                ? "An account with this email already exists"
+                : authErr.code === "INVALID_CREDENTIALS"
+                  ? "Invalid email or password"
+                  : authErr.code === "ACCOUNT_NOT_ACTIVE"
+                    ? "Your account is not currently available"
+                    : "Authentication failed",
       },
     });
   }
