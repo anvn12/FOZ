@@ -42,7 +42,8 @@ describe("PATCH /api/v1/auth/password (US5)", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ currentPassword: "wrongoldpwd1", newPassword: "newpass1234" });
     expect(res.status).toBe(401);
-    expect(res.body.error.code).toBe("INVALID_CREDENTIALS");
+    expect(res.body.error.code).toBe("INCORRECT_CURRENT_PASSWORD");
+    expect(res.body.error.message).toBe("Incorrect current password");
   });
 
   it("new password equal to current returns 422", async () => {

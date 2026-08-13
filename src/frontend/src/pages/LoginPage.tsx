@@ -30,6 +30,8 @@ export function LoginPage() {
       onSuccess: (data) => {
         if (data.user.role === "administrator") {
           navigate("/admin");
+        } else if (data.user.role === "moderator") {
+          navigate("/moderator");
         } else {
           navigate("/");
         }
