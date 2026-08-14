@@ -26,6 +26,8 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profile.avatarUrl || null);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [showUsernameConfirm, setShowUsernameConfirm] = useState(false);
+  const [pendingValues, setPendingValues] = useState<UpdateProfileInput | null>(null);
 
   const {
     register: field,
@@ -34,6 +36,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   } = useForm<UpdateProfileInput>({
     resolver: zodResolver(UpdateProfileRequest),
     defaultValues: {
+      username: profile.username || "",
       displayName: profile.displayName || "",
       bio: profile.bio || "",
       location: profile.location || "",
@@ -61,7 +64,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const onSubmit = async (values: UpdateProfileInput) => {
+  const onSubmit = async (values: UpdateProfileInput, bypassCollision = false) => {
     try {
       if (selectedFile) {
         const toastId = toast.loading("Compressing & uploading avatar...");
@@ -100,16 +103,42 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
         }
       }
 
-      await updateProfileMutation.mutateAsync(values as any);
+      const submitData = { ...values } as any;
+      if (bypassCollision) {
+        submitData.allowUsernameAutoGeneration = true;
+      }
+
+      await updateProfileMutation.mutateAsync(submitData);
       toast.success("Profile updated successfully");
+      setShowUsernameConfirm(false);
+      setPendingValues(null);
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof ApiError) {
-        toast.error(err.message);
+        if (err.status === 409 || err.message.includes("generate a unique name by adding a number")) {
+          setPendingValues(values);
+          setShowUsernameConfirm(true);
+        } else {
+          toast.error(err.message);
+        }
+      } else if (err.response?.status === 409 || err.response?.data?.message?.includes("generate a unique name by adding a number")) {
+         setPendingValues(values);
+         setShowUsernameConfirm(true);
       } else {
         toast.error("Failed to update profile");
       }
     }
+  };
+
+  const handleConfirmCollision = () => {
+    if (pendingValues) {
+      onSubmit(pendingValues, true);
+    }
+  };
+
+  const handleCancelCollision = () => {
+    setShowUsernameConfirm(false);
+    setPendingValues(null);
   };
 
   const initials = profile.displayName.charAt(0).toUpperCase() || "?";
@@ -117,6 +146,39 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
       <div className="relative w-full max-w-md rounded-xl bg-white dark:bg-zinc-950 p-6 shadow-2xl border border-zinc-100 dark:border-zinc-800 flex flex-col gap-4 animate-in fade-in zoom-in duration-200">
+        
+        {showUsernameConfirm && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90 dark:bg-zinc-950/90 rounded-xl backdrop-blur-sm">
+            <div className="p-6 text-center animate-in fade-in zoom-in duration-200">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Username Taken</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+                The username has already existed. The system will generate a unique name by adding a number. Do you want to proceed?
+              </p>
+              <div className="flex justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleCancelCollision}
+                  disabled={isSubmitting || updateProfileMutation.isPending}
+                  className="rounded-full border border-zinc-300 dark:border-zinc-700 px-5 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                >
+                  No
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCollision}
+                  disabled={isSubmitting || updateProfileMutation.isPending}
+                  className="rounded-full bg-zinc-900 dark:bg-white px-5 py-2 text-sm font-semibold text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 transition disabled:opacity-50 flex items-center justify-center min-w-[70px]"
+                >
+                  {isSubmitting || updateProfileMutation.isPending ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white dark:border-black/30 dark:border-t-black" />
+                  ) : (
+                    "Yes"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
           <h2 className="text-xl font-bold text-zinc-950 dark:text-white">Edit profile</h2>
           <button
@@ -128,7 +190,7 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit((values) => onSubmit(values, false))} className="space-y-4">
           {/* Avatar Upload Area */}
           <div className="flex flex-col items-center gap-2">
             <label htmlFor="avatar-file" className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
@@ -165,15 +227,24 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
             <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               Username Handle
             </label>
-            <input
-              id="username-handle"
-              type="text"
-              disabled
-              readOnly
-              value={`@${profile.username || profile.displayName.toLowerCase().replace(/\s+/g, "")}`}
-              className="mt-1 w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 cursor-not-allowed font-medium"
-            />
-            <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">Usernames are permanent and cannot be changed.</p>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 dark:text-zinc-400">@</span>
+              <input
+                id="username-handle"
+                type="text"
+                {...field("username")}
+                className={`mt-1 w-full rounded-lg border pl-8 pr-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 dark:bg-zinc-900 dark:text-white ${
+                  errors.username
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-100"
+                    : "border-zinc-300 dark:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-500 focus:ring-zinc-100 dark:focus:ring-zinc-800"
+                }`}
+              />
+            </div>
+            {errors.username ? (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{errors.username.message}</p>
+            ) : (
+              <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">You can now change your username. If it is already taken, a number will be appended automatically.</p>
+            )}
           </div>
 
           <div>
