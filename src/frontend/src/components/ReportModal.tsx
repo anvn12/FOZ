@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { reportPost } from "#frontend/api/interactions";
+import { reportPost, reportComment } from "#frontend/api/interactions";
 import { useMutation } from "@tanstack/react-query";
 
 interface ReportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  postId: string;
+  targetId: string | null;
+  targetType: "post" | "comment";
 }
 
-export function ReportModal({ isOpen, onClose, postId }: ReportModalProps) {
+export function ReportModal({ isOpen, onClose, targetId, targetType }: ReportModalProps) {
   const [reasonType, setReasonType] = useState<string>("");
   const [details, setDetails] = useState("");
 
   const mutation = useMutation({
-    mutationFn: async ({ rType, d }: { rType: string, d: string }) => await reportPost(postId, { reasonType: rType as any, details: d }),
+    mutationFn: async ({ rType, d }: { rType: string, d: string }) => {
+      if (!targetId) throw new Error("No target specified");
+      if (targetType === "post") {
+        return await reportPost(targetId, { reasonType: rType as any, details: d });
+      } else {
+        return await reportComment(targetId, { reasonType: rType as any, details: d });
+      }
+    },
     onSuccess: () => {
       toast.success("The report has been sent to a moderator to handle");
       setReasonType("");
@@ -29,10 +37,16 @@ export function ReportModal({ isOpen, onClose, postId }: ReportModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-surface-container rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-outline-variant animate-in fade-in zoom-in-95 duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={(e) => { e.stopPropagation(); onClose(); }}
+    >
+      <div 
+        className="bg-surface-container rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-outline-variant animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-          <h2 className="text-xl font-bold text-primary">Report Post</h2>
+          <h2 className="text-xl font-bold text-primary">Report {targetType === "post" ? "Post" : "Comment"}</h2>
           <button 
             onClick={onClose}
             className="text-secondary hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container-highest"
@@ -64,7 +78,7 @@ export function ReportModal({ isOpen, onClose, postId }: ReportModalProps) {
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             className="w-full bg-surface-container-highest border border-outline-variant rounded-xl p-3 text-primary placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[120px] resize-y"
-            placeholder="Please provide details about how this post violates community guidelines..."
+            placeholder={`Please provide details about how this ${targetType} violates community guidelines...`}
           />
         </div>
         

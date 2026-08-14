@@ -45,11 +45,15 @@ export async function updateCommentBody(commentId: string, authorId: string, inp
   return row;
 }
 
-export async function deleteComment(commentId: string, authorId: string) {
+export async function deleteComment(commentId: string, authorId: string, isAdminBypass?: boolean) {
+  const whereClause = isAdminBypass 
+    ? and(eq(comments.id, commentId), isNull(comments.deletedAt))
+    : and(eq(comments.id, commentId), eq(comments.authorId, authorId), isNull(comments.deletedAt));
+
   const [row] = await db
     .update(comments)
     .set({ lifecycleState: "hidden", visibilityState: "hidden", deletedAt: new Date(), updatedAt: new Date() })
-    .where(and(eq(comments.id, commentId), eq(comments.authorId, authorId), isNull(comments.deletedAt)))
+    .where(whereClause)
     .returning();
   if (!row) {
     const existing = await getCommentById(commentId);

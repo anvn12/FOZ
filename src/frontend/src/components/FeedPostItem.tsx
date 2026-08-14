@@ -218,6 +218,10 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
   const handleReportClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowOptions(false);
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     setIsReportModalOpen(true);
   };
   
@@ -228,7 +232,7 @@ export function FeedPostItem({ post, isDetailsPage = false }: { post: any; isDet
         isDetailsPage ? "" : "cursor-pointer"
       }`}
     >
-      <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} postId={post.id} />
+      <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} targetId={post.id} targetType="post" />
       
       {/* Delete Post Confirmation Dialog */}
       {showDeleteDialog && (

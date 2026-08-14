@@ -95,13 +95,13 @@
 **Prompt:** "The username handle is still can't be changed in the edit profile"
 **Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
 
- # # #   2 0 2 6 - 0 8 - 1 3   2 0 : 5 8 
- * * T o o l : * *   A n t i g r a v i t y 
- * * M o d e l : * *   G e m i n i   ( P r o ) 
- * * P r o m p t : * *   " E d i t   t h e   u s e r n a m e   f e a t u r e   t h a t   i f   t h e   u s e r   e n t e r   t h e   e x i s i t i n g   n a m e   w h e n   c h a n g i n g   u s e r n a m e ,   a d d   a   n o t i f i c a t i o n   U I   t h a t   n o t i f i e s   t h a t   t h e   u s e r n a m e   h a s   a l r e a d y   e x i s t e d . . . " 
- * * F i l e s   t o u c h e d : * *   i m p l e m e n t a t i o n _ p l a n . m d 
-  
- 
+### 2026-08-13 20:58
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Edit the username feature that if the user enter the exisiting name when changing username, add a notification UI that notifies that the username has already existed..."
+**Files touched:** `implementation_plan.md`
+
+
 ### 2026-08-14 07:55
 **Tool:** Antigravity
 **Model:** Gemini (Pro)
@@ -119,3 +119,39 @@
 **Model:** Gemini (Pro)
 **Prompt:** "It doesn't show anything when I try entering the taken username, it just says "The profile has updated successfully" even though there is an username already existed, but it will already append number to the username. Find the problem and fix the issue. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
 **Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-14 21:13
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add the 3-dot button to the comment where the owner's post can report the comment from another user, just like the report feature for the post creation..."
+**Files touched:** implementation_plan.md
+
+### 2026-08-14 21:26
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Why now I clicked the post in the home page, it doesnt the post anymore. Fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 21:29
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesnt have the 3-dot button to report another user's comment, fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 22:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Check the authentication required had implemented in the report feature for the post and comment or not? If not, add UI for the authentication required for the report feature for the post and comment. Log before ending your turn."
+**Files touched:** src/frontend/src/components/FeedPostItem.tsx, src/frontend/src/pages/PostPage.tsx
+
+### 2026-08-14 22:49
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When view context for the comment report in the moderation queue it doesnt work, and the delete content doesnt work for the comment report. Log before ending your turn."
+**Files touched:** src/backend/api/moderation/routes.ts, src/backend/services/interactions/comments.ts, src/frontend/src/pages/moderator/ReportsQueue.tsx
+
+### 2026-08-14 23:00
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn."
+**Files touched:** src/frontend/src/components/ReportModal.tsx

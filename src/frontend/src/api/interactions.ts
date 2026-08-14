@@ -122,6 +122,13 @@ export function reportPost(postId: string, input: CreateReportRequest) {
   });
 }
 
+export function reportComment(commentId: string, input: CreateReportRequest) {
+  return call<{ id: string; status: string }>(`/api/v1/comments/${commentId}/report`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
 export function listFeed(type: FeedQuery["type"] = "latest", cursor?: string) {
   const params = new URLSearchParams({ type });
   if (cursor) params.set("cursor", cursor);

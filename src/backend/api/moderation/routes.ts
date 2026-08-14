@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { requireAuth, requireRole, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { db } from "#backend/db/client.js";
-import { reports, userAccounts, profiles } from "#backend/db/schema/index.js";
+import { reports, userAccounts, profiles, comments } from "#backend/db/schema/index.js";
 import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } from "#shared/schemas/interactions.js";
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 import { deletePost } from "#backend/services/interactions/posts.js";
+import { deleteComment } from "#backend/services/interactions/comments.js";
 
 export const moderationRouter = Router();
 
@@ -56,6 +57,7 @@ moderationRouter.get("/reports", async (req, res, next) => {
       status: reports.status,
       createdAt: reports.createdAt,
       updatedAt: reports.updatedAt,
+      contextPostId: comments.postId,
       reporter: {
         id: userAccounts.id,
         displayName: profiles.displayName,
@@ -64,6 +66,7 @@ moderationRouter.get("/reports", async (req, res, next) => {
     .from(reports)
     .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
     .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .leftJoin(comments, and(eq(reports.targetType, 'comment'), eq(reports.targetId, comments.id)))
     .where(status ? eq(reports.status, status) : undefined)
     .orderBy(desc(reports.updatedAt))
     .limit(limit || 50)
@@ -123,6 +126,8 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
     if (action === "delete_content") {
       if (targetReport.targetType === "post") {
         await deletePost(targetReport.targetId, req.user.id, true);
+      } else if (targetReport.targetType === "comment") {
+        await deleteComment(targetReport.targetId, req.user.id, true);
       }
       newStatus = "closed";
     } else if (action === "dismiss") {
