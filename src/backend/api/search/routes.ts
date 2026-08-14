@@ -5,6 +5,7 @@ import { db } from "#backend/db/client.js";
 import { posts, profiles, userAccounts, reactions, comments, hashtags, postHashtags, postAttachments } from "#backend/db/schema/index.js";
 import { SearchDiscoveryQuerySchema } from "#shared/schemas/search.js";
 import { getTrendingHashtags } from "#backend/db/repositories/hashtags.js";
+import { optionalAuth, type AuthedRequest } from "#backend/api/auth/middleware.js";
 
 const SearchQuerySchema = z.object({
   q: z
@@ -17,7 +18,7 @@ const SearchQuerySchema = z.object({
 
 const router = Router();
 
-router.get("/discovery", async (req, res, next) => {
+router.get("/discovery", optionalAuth, async (req: AuthedRequest, res, next) => {
   try {
     const { limit } = SearchDiscoveryQuerySchema.parse(req.query);
     const maxLimit = Math.min(limit, 10);
@@ -88,6 +89,22 @@ router.get("/discovery", async (req, res, next) => {
       attachmentMap.set(att.postId, list);
     }
 
+    const viewerId = req.user?.id;
+    let likedPostIds = new Set<string>();
+    if (viewerId && activePosts.length > 0) {
+      const viewerReactions = await db
+        .select({ targetId: reactions.targetId })
+        .from(reactions)
+        .where(
+          and(
+            eq(reactions.userAccountId, viewerId),
+            eq(reactions.targetType, "post"),
+            inArray(reactions.targetId, activePosts.map((p) => p.id))
+          )
+        );
+      likedPostIds = new Set(viewerReactions.map((r) => r.targetId));
+    }
+
     const discussions = await Promise.all(
       activePosts.map(async (p) => {
         // Fetch like count
@@ -128,6 +145,7 @@ router.get("/discovery", async (req, res, next) => {
           commentCount: commentRes?.count ?? 0,
           repostCount: repostRes?.count ?? 0,
           attachments: attachmentMap.get(p.id) ?? [],
+          liked: likedPostIds.has(p.id),
         };
       })
     );

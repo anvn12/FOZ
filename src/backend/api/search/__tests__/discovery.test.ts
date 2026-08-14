@@ -130,4 +130,28 @@ describe("GET /api/v1/search/discovery", () => {
     expect(names).toContain("AliceTest");
     expect(names).toContain("BobTest");
   });
+
+  it("indicates liked status for discussions when authenticated viewer has liked the post", async () => {
+    const regRes = await getAgent()
+      .post("/api/v1/auth/register")
+      .send({ email: uniqueEmail(), username: uniqueUsername(), password: uniquePassword() });
+    expect(regRes.status).toBe(201);
+    const userId = regRes.body.user.id;
+    const accessToken = regRes.body.accessToken;
+
+    const postId = await insertPost(userId, "Post to be liked by viewer");
+    await db.execute(sql`
+      INSERT INTO reactions (user_account_id, target_type, target_id, reaction_kind)
+      VALUES (${userId}, 'post', ${postId}, 'like')
+    `);
+
+    const res = await getAgent()
+      .get("/api/v1/search/discovery")
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    const discussions = res.body.discussions as Array<{ id: string; liked: boolean }>;
+    const target = discussions.find((d) => d.id === postId);
+    expect(target?.liked).toBe(true);
+  });
 });
