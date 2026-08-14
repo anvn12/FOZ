@@ -142,16 +142,16 @@
 **Tool:** Antigravity
 **Model:** Gemini (Pro)
 **Prompt:** "Check the authentication required had implemented in the report feature for the post and comment or not? If not, add UI for the authentication required for the report feature for the post and comment. Log before ending your turn."
-**Files touched:** src/frontend/src/components/FeedPostItem.tsx, src/frontend/src/pages/PostPage.tsx
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`
 
 ### 2026-08-14 22:49
 **Tool:** Antigravity
 **Model:** Gemini (Pro)
 **Prompt:** "When view context for the comment report in the moderation queue it doesnt work, and the delete content doesnt work for the comment report. Log before ending your turn."
-**Files touched:** src/backend/api/moderation/routes.ts, src/backend/services/interactions/comments.ts, src/frontend/src/pages/moderator/ReportsQueue.tsx
+**Files touched:** `src/backend/api/moderation/routes.ts`, `src/backend/services/interactions/comments.ts`, `src/frontend/src/pages/moderator/ReportsQueue.tsx`
 
 ### 2026-08-14 23:00
 **Tool:** Antigravity
 **Model:** Gemini (Pro)
 **Prompt:** "When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn."
-**Files touched:** src/frontend/src/components/ReportModal.tsx
+**Files touched:** `src/frontend/src/components/ReportModal.tsx`
