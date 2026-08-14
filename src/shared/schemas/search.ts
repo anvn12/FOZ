@@ -33,6 +33,7 @@ export const DiscoveryDiscussionSchema = z.object({
   commentCount: z.number(),
   repostCount: z.number(),
   attachments: z.array(postAttachmentResponseSchema),
+  liked: z.boolean().optional().default(false),
 });
 
 export const SearchDiscoveryResponseSchema = z.object({
