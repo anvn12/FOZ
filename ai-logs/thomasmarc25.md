@@ -82,3 +82,40 @@
 **Model:** Gemini (Pro)
 **Prompt:** "Add the feature confirm new password to the change password in the settings of the user. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
 **Files touched:** `src/shared/schemas/auth.ts`, `src/frontend/src/components/ChangePasswordForm.tsx`
+
+### 2026-08-13 17:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Fix the issue where username is permanent so that username can be changed, but need to have some ways to handle the problem where the username is already had in the database, maybe something like the solution to the Google Sign Up Username Collision. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/db/repositories/users.ts`, `src/backend/api/profile/profile.service.ts`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-13 18:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "The username handle is still can't be changed in the edit profile"
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+ # # #   2 0 2 6 - 0 8 - 1 3   2 0 : 5 8 
+ * * T o o l : * *   A n t i g r a v i t y 
+ * * M o d e l : * *   G e m i n i   ( P r o ) 
+ * * P r o m p t : * *   " E d i t   t h e   u s e r n a m e   f e a t u r e   t h a t   i f   t h e   u s e r   e n t e r   t h e   e x i s i t i n g   n a m e   w h e n   c h a n g i n g   u s e r n a m e ,   a d d   a   n o t i f i c a t i o n   U I   t h a t   n o t i f i e s   t h a t   t h e   u s e r n a m e   h a s   a l r e a d y   e x i s t e d . . . " 
+ * * F i l e s   t o u c h e d : * *   i m p l e m e n t a t i o n _ p l a n . m d 
+  
+ 
+### 2026-08-14 07:55
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When i test the changing username in the profile editor, it says the username has updated successfull but it doesn't update the username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`
+
+### 2026-08-14 07:59
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add a notification UI box that notifies that the username has already existed, the system will generate unique name by adding number to the username, if the user choose no, then they have to re-enter another username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** None
+
+### 2026-08-14 08:12
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesn't show anything when I try entering the taken username, it just says "The profile has updated successfully" even though there is an username already existed, but it will already append number to the username. Find the problem and fix the issue. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`

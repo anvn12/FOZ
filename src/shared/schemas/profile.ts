@@ -27,7 +27,11 @@ const websiteSchema = z
     return val.match(/^https?:\/\//i) ? val : `https://${val}`;
   });
 
+import { usernameSchema } from "./auth.js";
+
 export const UpdateProfileRequest = z.object({
+  username: usernameSchema.optional(),
+  allowUsernameAutoGeneration: z.boolean().optional(),
   displayName: z
     .string()
     .trim()
