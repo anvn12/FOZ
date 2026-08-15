@@ -1,6 +1,7 @@
 import { type ReactNode, useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth";
+import { logout } from "../../api/auth";
 
 export function ModeratorLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -34,7 +35,7 @@ export function ModeratorLayout({ children }: { children: ReactNode }) {
 
   async function handleLogout() {
     try {
-      await fetch("/api/v1/auth/logout", { method: "POST" });
+      await logout();
     } catch {}
     clearSession();
     navigate("/login");
