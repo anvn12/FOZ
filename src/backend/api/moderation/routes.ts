@@ -5,6 +5,7 @@ import { reports, userAccounts, profiles } from "#backend/db/schema/index.js";
 import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } from "#shared/schemas/interactions.js";
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 import { deletePost } from "#backend/services/interactions/posts.js";
+import { deleteComment } from "#backend/services/interactions/comments.js";
 
 export const moderationRouter = Router();
 
@@ -123,6 +124,8 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
     if (action === "delete_content") {
       if (targetReport.targetType === "post") {
         await deletePost(targetReport.targetId, req.user.id, true);
+      } else if (targetReport.targetType === "comment") {
+        await deleteComment(targetReport.targetId, req.user.id, true);
       }
       newStatus = "closed";
     } else if (action === "dismiss") {

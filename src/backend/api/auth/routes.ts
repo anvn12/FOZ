@@ -162,7 +162,7 @@ authRouter.post("/refresh", authRateLimiter, async (req, res, next) => {
   }
 });
 
-authRouter.post("/logout", requireAuth, async (req: AuthedRequest, res, next) => {
+authRouter.post("/logout", async (req, res, next) => {
   try {
     const cookie = parseRefreshCookie(req.cookies?.[REFRESH_COOKIE_NAME]);
     await logout(cookie);
