@@ -15,8 +15,12 @@ export function RequireRole({ roles, children }: RequireRoleProps) {
     return <div className="p-8 text-center text-on-surface-variant">Loading session...</div>;
   }
 
-  if (!user || !roles.includes(user.role)) {
-    return <Navigate to="/latest" state={{ from: location }} replace />;
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (!roles.includes(user.role)) {
+    return <Navigate to="/latest" replace />;
   }
 
   return <>{children}</>;
