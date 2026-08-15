@@ -10,6 +10,7 @@ type Report = {
   id: string;
   targetType: string;
   targetId: string;
+  contextPostId?: string | null;
   reasonType: string;
   details: string;
   status: string;
@@ -199,8 +200,10 @@ export function ReportsQueuePage() {
                         <span className="font-body-md text-body-md text-on-surface font-semibold capitalize">{report.targetType}</span>
                         {report.targetType === "post" ? (
                           <Link to={`/posts/${report.targetId}`} target="_blank" className="text-label-sm text-primary hover:underline">View Content</Link>
+                        ) : report.contextPostId ? (
+                          <Link to={`/posts/${report.contextPostId}`} target="_blank" className="text-label-sm text-primary hover:underline cursor-pointer">View Context</Link>
                         ) : (
-                          <span className="text-label-sm text-primary hover:underline cursor-pointer">View Context</span>
+                          <span className="text-label-sm text-outline cursor-not-allowed">Context Unavailable</span>
                         )}
                       </div>
                     </td>

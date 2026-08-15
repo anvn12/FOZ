@@ -45,8 +45,8 @@ export async function updateCommentBody(commentId: string, authorId: string, inp
   return row;
 }
 
-export async function deleteComment(commentId: string, authorId: string, isAdmin: boolean = false) {
-  const whereClause = isAdmin 
+export async function deleteComment(commentId: string, authorId: string, isAdminBypass?: boolean) {
+  const whereClause = isAdminBypass
     ? and(eq(comments.id, commentId), isNull(comments.deletedAt))
     : and(eq(comments.id, commentId), eq(comments.authorId, authorId), isNull(comments.deletedAt));
 

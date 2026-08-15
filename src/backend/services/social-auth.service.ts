@@ -13,7 +13,7 @@ import { env } from "#backend/env.js";
 import { REFRESH_COOKIE_NAME, refreshCookieOptions, refreshCookiePayload, AuthError } from "#backend/api/auth/auth.service.js";
 import { RESERVED_USERNAMES } from "#shared/schemas/auth.js";
 
-async function generateUniqueUsername(base: string): Promise<string> {
+export async function generateUniqueUsername(base: string): Promise<string> {
   let baseName = base.toLowerCase().replace(/[^a-z0-9._]/g, "_");
   if (baseName.length < 3) baseName = baseName.padEnd(3, "_");
   if (baseName.length > 25) baseName = baseName.slice(0, 25);
@@ -215,3 +215,4 @@ export async function processSocialAuth(input: SocialProfileInput) {
     isNewUser,
   };
 }
+

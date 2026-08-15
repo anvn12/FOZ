@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { optionalAuth, requireAuth, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
-import { createCommentRequestSchema, updateCommentRequestSchema } from "#shared/schemas/interactions.js";
+import { createCommentRequestSchema, updateCommentRequestSchema, createReportRequestSchema } from "#shared/schemas/interactions.js";
 import { createComment, updateCommentBody, deleteComment, listComments, listAuthorComments } from "#backend/services/interactions/comments.js";
+import { createReport } from "#backend/services/interactions/reports.js";
 
 export const commentRouter = Router();
 
@@ -92,3 +93,25 @@ commentRouter.patch(
     next(err);
   }
 });
+
+
+commentRouter.post(
+  "/comments/:commentId/report",
+  requireAuth,
+  validateBody(createReportRequestSchema),
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      }
+      const commentId = req.params.commentId as string;
+      const report = await createReport(req.user.id, "comment", commentId, req.body.reasonType, req.body.details);
+      return res.status(201).json(report);
+    } catch (err) {
+      if (err instanceof Error && err.message === "COMMENT_NOT_FOUND") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: "Comment not found" } });
+      }
+      next(err);
+    }
+  }
+);

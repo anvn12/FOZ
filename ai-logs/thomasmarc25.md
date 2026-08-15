@@ -82,3 +82,76 @@
 **Model:** Gemini (Pro)
 **Prompt:** "Add the feature confirm new password to the change password in the settings of the user. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
 **Files touched:** `src/shared/schemas/auth.ts`, `src/frontend/src/components/ChangePasswordForm.tsx`
+
+### 2026-08-13 17:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Fix the issue where username is permanent so that username can be changed, but need to have some ways to handle the problem where the username is already had in the database, maybe something like the solution to the Google Sign Up Username Collision. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/db/repositories/users.ts`, `src/backend/api/profile/profile.service.ts`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-13 18:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "The username handle is still can't be changed in the edit profile"
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-13 20:58
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Edit the username feature that if the user enter the exisiting name when changing username, add a notification UI that notifies that the username has already existed..."
+**Files touched:** `implementation_plan.md`
+
+
+### 2026-08-14 07:55
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When i test the changing username in the profile editor, it says the username has updated successfull but it doesn't update the username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`
+
+### 2026-08-14 07:59
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add a notification UI box that notifies that the username has already existed, the system will generate unique name by adding number to the username, if the user choose no, then they have to re-enter another username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** None
+
+### 2026-08-14 08:12
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesn't show anything when I try entering the taken username, it just says "The profile has updated successfully" even though there is an username already existed, but it will already append number to the username. Find the problem and fix the issue. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-14 21:13
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add the 3-dot button to the comment where the owner's post can report the comment from another user, just like the report feature for the post creation..."
+**Files touched:** implementation_plan.md
+
+### 2026-08-14 21:26
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Why now I clicked the post in the home page, it doesnt the post anymore. Fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 21:29
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesnt have the 3-dot button to report another user's comment, fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 22:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Check the authentication required had implemented in the report feature for the post and comment or not? If not, add UI for the authentication required for the report feature for the post and comment. Log before ending your turn."
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 22:49
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When view context for the comment report in the moderation queue it doesnt work, and the delete content doesnt work for the comment report. Log before ending your turn."
+**Files touched:** `src/backend/api/moderation/routes.ts`, `src/backend/services/interactions/comments.ts`, `src/frontend/src/pages/moderator/ReportsQueue.tsx`
+
+### 2026-08-14 23:00
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn."
+**Files touched:** `src/frontend/src/components/ReportModal.tsx`

@@ -1,0 +1,2 @@
+with open('ai-logs/thomasmarc25.md', 'a', encoding='utf-8') as f:
+    f.write("\n### 2026-08-14 23:00\n**Tool:** Antigravity\n**Model:** Gemini (Pro)\n**Prompt:** \"When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn.\"\n**Files touched:** src/frontend/src/components/ReportModal.tsx\n")
