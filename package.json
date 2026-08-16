@@ -10,6 +10,10 @@
   "scripts": {
     "dev:db": "docker compose up -d db",
     "db:migrate": "tsx src/backend/db/migrate.ts",
+    "db:test:setup": "tsx src/backend/db/scripts/test-db-setup.ts",
+    "db:test:migrate": "tsx src/backend/db/scripts/test-db-migrate.ts",
+    "db:test:empty:reset": "tsx src/backend/db/scripts/test-db-empty-reset.ts",
+    "db:test:populated:reset": "tsx src/backend/db/scripts/test-db-populated-reset.ts",
     "dev:be": "npm run db:migrate && tsx watch src/backend/index.ts",
     "dev:fe": "vite --config src/frontend/vite.config.ts",
     "start": "npm run db:migrate && tsx src/backend/index.ts",

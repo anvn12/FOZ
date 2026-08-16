@@ -245,6 +245,57 @@ docker exec -i foz_db psql -U foz -d foz_dev -c "DROP SCHEMA public CASCADE; CRE
 npx drizzle-kit migrate
 ```
 
+### 🧪 Isolated Testing Databases & Fixtures
+
+FOZ provides two dedicated, isolated testing databases that run inside the same PostgreSQL instance without interfering with `foz_dev`:
+
+1. **`foz_test_empty`**: Clean slate database with up-to-date migrations, 0 posts, and pre-configured administrative accounts:
+   - **Administrator**: `admin@admin.foz` / `admin@admin.foz`
+   - **Moderator**: `mod@mod.foz` / `mod@mod.foz`
+2. **`foz_test_populated`**: High-density dataset with 50 users (`user1@foz.test`..`user50@foz.test` / `password123`), 100 posts spanning a 30-day timeline, threaded comments/replies, reposts, likes, hashtags, and moderation reports.
+
+#### Test Database Commands
+
+```sh
+# Setup & migrate both test databases simultaneously
+npm run db:test:setup
+
+# Reset empty state database (foz_test_empty)
+npm run db:test:empty:reset
+
+# Reset populated interaction database (foz_test_populated)
+npm run db:test:populated:reset
+
+# Apply pending Drizzle migrations to both test databases
+npm run db:test:migrate
+```
+
+#### Running the Full App with Test Databases
+
+You can launch the full local environment (Docker DB + Backend + Frontend) targeting any specific database:
+
+- **Option 1: 1-Click Batch Launchers (Windows)**
+  - Double-click `start-empty.bat` to run against `foz_test_empty`.
+  - Double-click `start-populated.bat` to run against `foz_test_populated`.
+  - Double-click `start.bat` to run against standard development (`foz_dev`).
+
+- **Option 2: Command Line (Windows)**
+  ```cmd
+  .\start.bat empty       # Boots servers targeting foz_test_empty
+  .\start.bat populated   # Boots servers targeting foz_test_populated
+  .\start.bat             # Boots servers targeting foz_dev
+  ```
+
+- **Option 3: Command Line (macOS / Linux)**
+  ```sh
+  ./start.sh empty        # Boots servers targeting foz_test_empty
+  ./start.sh populated    # Boots servers targeting foz_test_populated
+  ./start.sh              # Boots servers targeting foz_dev
+  ```
+
+
+
+
 ### Option A — Drizzle Studio (Web GUI)
 
 The codebase includes a [drizzle.config.ts](file:///d:/FOZ/drizzle.config.ts) file wired up to read the `DATABASE_URL` from [.env](file:///d:/FOZ/.env). To view and manage data in a browser UI:

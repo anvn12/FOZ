@@ -1,3 +1,21 @@
+### 2026-08-17 00:48
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Pro
+**Prompt:** "Fix cmd.exe batch syntax error in start.bat and timeout redirection error"
+**Files touched:** `start.bat`
+
+### 2026-08-17 00:46
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Pro
+**Prompt:** "i usually run with start.bat, how to run with these specific db"
+**Files touched:** `start.bat`, `start-empty.bat`, `start-populated.bat`, `start.sh`, `README.md`
+
+### 2026-08-17 00:43
+**Tool:** Antigravity
+**Model:** Gemini 3.5 Pro
+**Prompt:** "/07-speckit.implement Execute all implementation tasks for 025-test-databases"
+**Files touched:** `src/backend/env.ts`, `src/backend/db/seeds/seed-helpers.ts`, `src/backend/db/scripts/test-db-guard.ts`, `src/backend/db/scripts/test-db-provision.ts`, `src/backend/db/scripts/test-db-migrate.ts`, `src/backend/db/seeds/empty-state.seed.ts`, `src/backend/db/scripts/test-db-empty-reset.ts`, `src/backend/db/seeds/populated-users.seed.ts`, `src/backend/db/seeds/populated-interactions.seed.ts`, `src/backend/db/seeds/populated-state.seed.ts`, `src/backend/db/scripts/test-db-populated-reset.ts`, `src/backend/db/scripts/test-db-setup.ts`, `src/backend/db/scripts/__tests__/test-db-empty.test.ts`, `src/backend/db/scripts/__tests__/test-db-populated.test.ts`, `src/backend/db/scripts/__tests__/test-db-auth.test.ts`, `src/backend/db/scripts/__tests__/test-db-guard.test.ts`, `src/backend/__tests__/setup.ts`, `package.json`, `README.md`, `specs/025-test-databases/tasks.md`
+
 ### 2026-08-06 21:32
 **Tool:** Antigravity
 **Model:** Gemini 3.5 Flash
@@ -2139,3 +2157,230 @@
 **Model:** Gemini 3.6 Flash (High)
 **Prompt:** "move the copy button to the right side (can change the tẽt for shorten content)"
 **Files touched:** `src/frontend/src/components/FeedbackDialog.tsx`
+
+### 2026-08-12 13:40
+**Tool:** Antigravity
+**Files touched:** `src/backend/api/auth/routes.ts`, `src/frontend/src/main.tsx`, `src/backend/index.ts`
+
+### 2026-08-06 20:13
+**Tool:** Antigravity
+**Model:** Claude Sonnet 4.6 (Thinking)
+**Prompt:** "/02-speckit.specify Display name can be different from username. Help me add that"
+**Files touched:** `specs/021-display-name/spec.md`, `specs/021-display-name/checklists/requirements.md`
+
+### 2026-08-06 20:34
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/021-display-name/spec.md`, `.specify/feature.json`
+
+### 2026-08-06 20:41
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/021-display-name/plan.md`, `specs/021-display-name/research.md`, `specs/021-display-name/data-model.md`, `specs/021-display-name/quickstart.md`, `specs/021-display-name/contracts/api-contracts.yaml`, `.specify/feature.json`
+
+### 2026-08-06 20:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/021-display-name/tasks.md`
+
+### 2026-08-07 16:24
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "when i merge from sign up to main, there is some conflicts. i think i resolved in wrong way. SO fix it for me"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`, `src/shared/schemas/auth.ts`, `src/backend/api/auth/auth.service.ts`, `src/backend/db/schema/users.ts`, `src/backend/db/repositories/users.ts`, `src/backend/api/profile/profile.test.ts`, `src/backend/__tests__/integration/profile.test.ts`, `src/backend/__tests__/integration/moderation.test.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/api/admin/__tests__/admin.integration.test.ts`, `src/backend/api/auth/auth.service.test.ts`, `src/backend/db/repositories/__tests__/admin.repository.test.ts`, `src/frontend/src/pages/__tests__/AuthRedirection.test.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+### 2026-08-07 16:30
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "on register page, the logo is bigger than on login page. fix it so that they are the same size"
+**Files touched:** `src/frontend/src/pages/RegisterPage.tsx`
+
+### 2026-08-08 22:50
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/02-speckit.specify Fix: Menu should have Log in button for guest, also a settings..."
+**Files touched:** `specs/023-guest-login-settings/spec.md`, `specs/023-guest-login-settings/checklists/requirements.md`
+
+### 2026-08-08 22:51
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/023-guest-login-settings/spec.md`, `.specify/feature.json`
+
+### 2026-08-08 22:52
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/023-guest-login-settings/plan.md`, `specs/023-guest-login-settings/research.md`, `specs/023-guest-login-settings/data-model.md`, `specs/023-guest-login-settings/quickstart.md`, `specs/023-guest-login-settings/contracts/menu-navigation.yaml`
+
+### 2026-08-08 22:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/023-guest-login-settings/tasks.md`
+
+### 2026-08-08 22:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (Medium)
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`, `specs/023-guest-login-settings/tasks.md`
+
+### 2026-08-08 22:58
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "settings is not clickable, also the order should be similar to settings of standard user (just swap log out to log in)"
+**Files touched:** `src/frontend/src/App.tsx`, `src/frontend/src/pages/SettingsPage.tsx`, `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-08 22:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "in guest settings, remove Account Settings"
+**Files touched:** `src/frontend/src/pages/SettingsPage.tsx`
+
+### 2026-08-08 23:01
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "on mobile view, there should be a Log in button on the top bar (right side of search button"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`
+
+### 2026-08-12 12:47
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "in login and sign up page, change the logo to match the one on home page"
+**Files touched:** `src/frontend/src/components/FozLogo.tsx`, `src/frontend/src/components/AuthLayout.tsx`, `src/frontend/src/components/AuthShell.tsx`, `src/frontend/src/test/setup.ts`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+### 2026-08-12 12:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "change color of Zillions. and FOZ in login and signup to the color of the logo (maybe with gradient)"
+**Files touched:** `src/frontend/src/pages/LoginPage.tsx`, `src/frontend/src/pages/RegisterPage.tsx`, `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 12:55
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "move the content a little bit to center"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 12:56
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "remove the background of these 2 arrows (the arrow is hidden until hover then it shows)"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 12:58
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "the arrow is still shown after i click and hover somewhere else, fix it. Also change the animation to match the arrow"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 12:59
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "polish the animation"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 13:00
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "make the animation a little bit slower"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 13:01
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "when from login to sign up page, only the "Focus on Zillions." change (anything else is in the old places)"
+**Files touched:** `src/frontend/src/components/AuthLayout.tsx`
+
+### 2026-08-12 13:05
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "trending discussion box must take the whole box (not just a tiny box)"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-12 13:06
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "the last bottom border is redundant (the outside box border is enough), remove it"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-12 13:07
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "the gap between the last content and the outer border must be line the content to its own border"
+**Files touched:** `src/frontend/src/pages/SearchPage.tsx`
+
+### 2026-08-12 13:10
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "in search, Trending Topics must align with real data instead of mock data"
+**Files touched:** `src/backend/api/search/routes.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/backend/api/search/__tests__/discovery.test.ts`
+
+### 2026-08-12 13:24
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/02-speckit.specify  in menu, change the report a problem to a feecback button, when user click on that button, it show a dialog box that instructs user to contact an email"
+**Files touched:** `specs/024-feedback-dialog/spec.md`, `specs/024-feedback-dialog/checklists/requirements.md`
+
+### 2026-08-12 13:27
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `.specify/feature.json`, `specs/024-feedback-dialog/spec.md`
+
+### 2026-08-12 13:28
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/024-feedback-dialog/plan.md`, `specs/024-feedback-dialog/research.md`, `specs/024-feedback-dialog/data-model.md`, `specs/024-feedback-dialog/contracts/feedback-dialog-ui.md`, `specs/024-feedback-dialog/quickstart.md`
+
+### 2026-08-12 13:29
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/024-feedback-dialog/tasks.md`
+
+### 2026-08-12 13:32
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `src/frontend/src/components/FeedbackDialog.tsx`, `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/FeedbackDialog.test.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`, `specs/024-feedback-dialog/tasks.md`
+
+### 2026-08-12 13:33
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "move the copy button to the right side (can change the tẽt for shorten content)"
+**Files touched:** `src/frontend/src/components/FeedbackDialog.tsx`
+
+### 2026-08-12 13:40
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash (High)
+**Prompt:** "move the copy button to the right side (can change the tẽt for shorten content)"
+**Files touched:** `src/frontend/src/components/FeedbackDialog.tsx`
+
+### 2026-08-17 00:28
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/02-speckit.specify  Setup 2 different databases for testing:\n1 with no posts\n1 with 100 posts, 50 users and have interactions in the posts (comments, reposts, like, reply...).\nAll these databases are different from the current databases, can only be run on testing (maybe run through some special scripts). The moderator account is with email and password is \"mod@mod.foz\", admin is \"admin@admin.foz\"."
+**Files touched:** `.specify/feature.json`, `specs/025-test-databases/spec.md`, `specs/025-test-databases/checklists/requirements.md`
+
+### 2026-08-17 00:30
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/025-test-databases/spec.md`
+
+### 2026-08-17 00:32
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/025-test-databases/plan.md`, `specs/025-test-databases/research.md`, `specs/025-test-databases/data-model.md`, `specs/025-test-databases/contracts/test-database-cli.md`, `specs/025-test-databases/quickstart.md`, `.github/copilot-instructions.md`
+
+### 2026-08-17 00:33
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/05-speckit.tasks"
+**Files touched:** `specs/025-test-databases/tasks.md`
+
+

@@ -12,6 +12,7 @@ export default defineConfig({
     include: [
       "src/backend/lib/**/*.test.ts",
       "src/backend/api/**/*.test.ts",
+      "src/backend/db/**/*.test.ts",
       "src/backend/__tests__/unit/**/*.test.ts",
       "src/backend/__tests__/integration/**/*.test.ts",
       "src/shared/**/*.test.ts",
