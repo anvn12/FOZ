@@ -1,7 +1,9 @@
 // Test setup — env vars must be set BEFORE any module loads (so env.ts sees them).
 process.env.NODE_ENV = "test";
-process.env.TEST_DATABASE_URL = "postgres://foz:foz@localhost:5432/foz_test";
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+process.env.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL || "postgres://foz:foz@localhost:5432/foz_test";
+process.env.TEST_EMPTY_DATABASE_URL = process.env.TEST_EMPTY_DATABASE_URL || "postgres://foz:foz@localhost:5432/foz_test_empty";
+process.env.TEST_POPULATED_DATABASE_URL = process.env.TEST_POPULATED_DATABASE_URL || "postgres://foz:foz@localhost:5432/foz_test_populated";
+process.env.DATABASE_URL = process.env.DATABASE_URL || process.env.TEST_DATABASE_URL;
 process.env.JWT_ACCESS_SECRET = "test-secret-must-be-at-least-16-chars";
 process.env.JWT_ACCESS_TTL_MIN = "15";
 process.env.REFRESH_TTL_DAYS = "7";
