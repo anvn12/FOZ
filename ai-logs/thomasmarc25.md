@@ -155,3 +155,41 @@
 **Model:** Gemini (Pro)
 **Prompt:** "When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn."
 **Files touched:** `src/frontend/src/components/ReportModal.tsx`
+
+### 2026-08-15 11:29
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** 
+"Please design a comprehensive functional test case specification for UC-14: Request AI Summary following the standards required in PA5-2026 (Section A: Test Plan and Test Cases).
+
+Ensure you generate at least 10–14 distinct, high-coverage test cases (do not write generic placeholders; provide concrete steps, inputs, and expected outcomes).
+
+Requirements for the Test Cases:
+1. Format & Fields: Use Markdown tables containing:
+   - Test Case ID (e.g., TC-UC14-001, TC-UC14-002, ...)
+   - Test Description / Scenario
+   - Test Category (Positive / Negative / Edge Case / Security / Performance)
+   - Preconditions (e.g., Auth status, post status, mock state)
+   - Test Steps (Numbered step-by-step actions)
+   - Test Data / Input (Specific post contents, comment lengths, network states)
+   - Expected Result (UI feedback, modal display, loading spinners, error messages, HTTP response)
+   - Status (Set default to Pass or leave blank for execution logs)
+
+2. Coverage Scope:
+   - Happy Paths: Standard thread summarization, long thread with nested comments, UI Markdown/bullet rendering.
+   - Edge Cases: Single post with 0 comments, threads with special characters/code snippets, extremely long discussion exceeding LLM context window.
+   - Concurrency & UI State: Rapid multiple clicks on the "Summarize" button (debouncing/loading skeleton test), closing/reopening the modal.
+   - Error Handling & Resiliency: External AI API timeout (>10s), AI API rate limit (429), AI API service unavailable (503), offline network reconnection, and retry button behavior.
+   - Access Control: Guest vs. authenticated user permissions.
+
+3. Alignment & File Placement:
+   - Ensure the test cases directly map to the flow described in 4A. Revised Use-Case Specification.md (UC-14) and the actual frontend/backend implementation.
+   - Append or update the test cases in the test suite document under PA5 folder (e.g., Test_Cases_Specification.md or TestPlan.md).
+   - Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** `docs/01 - PA/PA5-Group06/Test_Cases_Specification.md`
+
+### 2026-08-15 13:17
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Please check the test cases for UC-14 (Request AI Summary) to ensure the 14 detailed test cases is correct for the project, scan the project codebase related to UC-14 to identify any missing edge cases or implementation-specific scenarios, add more test cases as needed to ensure full coverage, and update the test case document in the PA5 folder accordingly."
+**Files touched:** docs/01 - PA/PA5-Group06/Test_Cases_Specification.md
