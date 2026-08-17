@@ -215,6 +215,7 @@ export interface EscalatedReport {
   details: string | null;
   status: string;
   createdAt: string;
+  reporterName?: string | null;
 }
 
 export function fetchEscalatedReports() {

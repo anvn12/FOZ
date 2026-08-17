@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { resolveReport } from "../../api/interactions";
 import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
 
@@ -22,11 +23,14 @@ type Report = {
 };
 
 export function ReportsQueuePage() {
+  const queryClient = useQueryClient();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); 
   const [escalateDialog, setEscalateDialog] = useState(false);
   const [escalateId, setEscalateId] = useState<string | null>(null);
+  const [escalatePriority, setEscalatePriority] = useState("Standard");
+  const [escalateNotes, setEscalateNotes] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -64,6 +68,7 @@ export function ReportsQueuePage() {
     try {
       await resolveReport(reportId, { action, notes });
       toast.success(`Action applied successfully`);
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
       fetchReports();
     } catch (err) {
       toast.error("Failed to process report action");
@@ -280,20 +285,29 @@ export function ReportsQueuePage() {
             <div className="space-y-4">
               <div>
                 <label className="block font-label-md text-label-md text-on-surface mb-2">Escalation Reason</label>
-                <textarea className="w-full bg-surface border-outline-variant rounded-xl text-body-md focus:ring-primary/20 focus:border-primary p-3" placeholder="Explain why this content requires specialist intervention..." rows={4}></textarea>
+                <textarea 
+                  value={escalateNotes}
+                  onChange={(e) => setEscalateNotes(e.target.value)}
+                  className="w-full bg-surface border-outline-variant rounded-xl text-body-md focus:ring-primary/20 focus:border-primary p-3" 
+                  placeholder="Explain why this content requires specialist intervention..." 
+                  rows={4}></textarea>
               </div>
               <div>
                 <label className="block font-label-md text-label-md text-on-surface mb-2">Priority Level</label>
                 <div className="flex gap-3">
-                  <button className="flex-1 py-2 rounded-lg border border-outline-variant font-label-md hover:bg-surface-container-high">Standard</button>
-                  <button className="flex-1 py-2 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-label-md">High Priority</button>
-                  <button className="flex-1 py-2 rounded-lg border border-outline-variant font-label-md hover:bg-error-container/20 text-error">Critical</button>
+                  <button onClick={() => setEscalatePriority("Standard")} className={`flex-1 py-2 rounded-lg border ${escalatePriority === "Standard" ? "border-2 border-primary bg-primary/5 text-primary font-bold" : "border-outline-variant"} font-label-md hover:bg-surface-container-high`}>Standard</button>
+                  <button onClick={() => setEscalatePriority("High Priority")} className={`flex-1 py-2 rounded-lg border ${escalatePriority === "High Priority" ? "border-2 border-primary bg-primary/5 text-primary font-bold" : "border-outline-variant"} font-label-md hover:bg-surface-container-high`}>High Priority</button>
+                  <button onClick={() => setEscalatePriority("Critical")} className={`flex-1 py-2 rounded-lg border ${escalatePriority === "Critical" ? "border-2 border-primary bg-primary/5 text-primary font-bold" : "border-outline-variant text-error"} font-label-md hover:bg-error-container/20`}>Critical</button>
                 </div>
               </div>
             </div>
             <div className="flex gap-3 mt-8">
               <button className="flex-1 py-2.5 rounded-xl border border-outline-variant text-secondary font-label-md hover:bg-surface-container-high transition-all" onClick={() => setEscalateDialog(false)}>Cancel</button>
-              <button onClick={() => { resolveReportAction(escalateId!, "escalate"); setEscalateDialog(false); }} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">Confirm Escalation</button>
+              <button onClick={() => { 
+                const notes = `[Priority: ${escalatePriority}] ${escalateNotes}`.trim();
+                resolveReportAction(escalateId!, "escalate", notes); 
+                setEscalateDialog(false); 
+              }} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">Confirm Escalation</button>
             </div>
           </div>
         </div>

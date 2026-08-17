@@ -220,8 +220,22 @@ export async function deleteUserAccountAndReattribute(userId: string) {
 
 export async function getEscalatedReports() {
   return db
-    .select()
+    .select({
+      id: reports.id,
+      reporterId: reports.reporterId,
+      targetType: reports.targetType,
+      targetId: reports.targetId,
+      reasonType: reports.reasonType,
+      details: reports.details,
+      status: reports.status,
+      createdAt: reports.createdAt,
+      updatedAt: reports.updatedAt,
+      reporterName: profiles.displayName,
+    })
     .from(reports)
+    .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
+    .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .where(eq(reports.status, "escalated"))
     .orderBy(desc(reports.createdAt));
 }
 
