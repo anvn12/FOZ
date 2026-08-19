@@ -19,6 +19,8 @@ const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.string().min(1),
   TEST_DATABASE_URL: z.string().min(1).optional(),
+  TEST_EMPTY_DATABASE_URL: z.string().default("postgres://foz:foz@localhost:5432/foz_test_empty"),
+  TEST_POPULATED_DATABASE_URL: z.string().default("postgres://foz:foz@localhost:5432/foz_test_populated"),
   JWT_ACCESS_SECRET: z.string().min(16, "JWT_ACCESS_SECRET must be at least 16 chars"),
   JWT_ACCESS_TTL_MIN: z.coerce.number().int().positive().default(15),
   REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(7),

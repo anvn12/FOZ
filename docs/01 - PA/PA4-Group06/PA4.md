@@ -863,7 +863,7 @@ Allows an authenticated user to upload a new profile picture.
 
 ### 1. Browse Feed
 * **Use-Case ID:** UC-07
-* **Actor(s):** Guest, Standard User
+* **Actor(s):** Guest, Standard User, Moderator, Admin
 
 #### 1.1 Brief Description
 Allows users to view a dynamic timeline of forum posts sorted by recent engagement metrics or chronological order.
@@ -920,7 +920,7 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 
 ### 1. Search Content
 * **Use-Case ID:** UC-08
-* **Actor(s):** Guest, Standard User
+* **Actor(s):** Guest, Standard User, Moderator, Admin
 
 #### 1.1 Brief Description
 Allows users to search for specific discussion topics, posts, or user profiles using keywords.
@@ -930,7 +930,7 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user enters a keyword into the search bar and presses Enter.
+1. The use case begins when the user navigates to the application's search page, then enters a keyword into the search bar and presses Enter.
 2. The system sends the query to the backend.
 3. The backend searches the `posts` (body/title) and `profiles` (display_name) tables for matches.
 4. The system filters out content that is deleted, hidden, or authored by banned users.
@@ -938,20 +938,38 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1. **Search feature unavailable**
+##### 3.2.1. Search feature unavailable
 
 1. If at step 2, the search query is empty or just whitespace.
 2. The system does not display the search button until valid index is entered
 
-##### 3.2.2. **No matching results**
+##### 3.2.2. No matching results
 
 1. The user enters a search query.
 2. The system finds no matching content.
 3. The system displays **"No results for search query."**
 
+##### 3.2.3. Click a hashtag in "TRENDING TOPICS"
+
+1. The user clicks a hashtag under the **"TRENDING TOPICS"** section on the search page.
+2. The system automatically populates the search bar with the selected hashtag and executes the search query.
+3. The system displays posts matching the selected topic/hashtag.
+
+##### 3.2.4. Click a profile in "Suggested Creators"
+
+1. The user clicks a creator profile under the **"Suggested Creators"** section on the search page.
+2. The system navigates the user to the selected creator's profile page.
+3. The use case ends.
+
+##### 3.2.5. Click a post in "Trending Discussions"
+
+1. The user clicks a discussion post under the **"Trending Discussions"** section on the search page.
+2. The system navigates the user to the selected post's detail page.
+3. The use case ends.
+
 
 ### 4. Special Requirements
-* **Performance:** Search results should be displayed within 2–3 seconds under good network conditions. `.
+* **Performance:** Search results should be displayed within 2–3 seconds under good network conditions.
 
 ### 5. Postconditions
 * None.
