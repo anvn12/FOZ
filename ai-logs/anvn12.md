@@ -2383,4 +2383,17 @@
 **Prompt:** "/05-speckit.tasks"
 **Files touched:** `specs/025-test-databases/tasks.md`
 
+### 2026-08-20 23:00
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash
+**Prompt:** "fix in the db for correctness"
+**Files touched:** `src/backend/db/seeds/populated-interactions.seed.ts`, `src/backend/db/scripts/__tests__/test-db-populated.test.ts`, `specs/025-test-databases/data-model.md`
+
+### 2026-08-20 23:02
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash
+**Prompt:** "the AI log must be at the end of the docs, update the skill for me and redo the log"
+**Files touched:** `.agents/skills/ai-usage-log/SKILL.md`
+
+
 

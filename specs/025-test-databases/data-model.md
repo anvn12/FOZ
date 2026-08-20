@@ -83,7 +83,7 @@
 ### Hashtags & Post-Hashtags (`hashtags`, `post_hashtags`)
 - `hashtags.id`: UUID (Primary Key)
 - `hashtags.name`: Text (e.g. `tech`, `announcement`, `general`, `foz`, `design`)
-- `hashtags.displayName`: Text (`#tech`, `#announcement`, etc.)
+- `hashtags.displayName`: Text (`tech`, `announcement`, etc.)
 - `post_hashtags.postId`: UUID (Foreign Key -> `posts.id`, Cascade)
 - `post_hashtags.hashtagId`: UUID (Foreign Key -> `hashtags.id`, Cascade)
 

@@ -45,8 +45,9 @@ log.
 
 1. Read `<repo-root>/ai-logs/<username>.md` if it exists. If not, start
    with an empty string.
-2. Append the following entry (use the current local time, 24-hour format
-   `YYYY-MM-DD HH:MM`):
+2. Append the following entry to the very **end (bottom)** of the document
+   (chronological order, NEVER prepend to the top) using the current local time,
+   24-hour format `YYYY-MM-DD HH:MM`:
 
 ```markdown
 
@@ -62,6 +63,7 @@ log.
 
 ## Rules
 
+- **Placement:** Always append new entries to the **end (bottom)** of the document. NEVER prepend at the top.
 - **Prompt field is mandatory.** Always record the user's exact input that
   triggered the file changes, even if it was a single word or a follow-up.
 - Only log the **current turn's prompt** — not the full conversation

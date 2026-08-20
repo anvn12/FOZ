@@ -56,16 +56,16 @@ export async function seedPopulatedInteractions(
 
   console.log("🌱 [seed:populated] Seeding hashtags...");
   const hashtagTags = [
-    { name: "foz", displayName: "#foz" },
-    { name: "tech", displayName: "#tech" },
-    { name: "announcement", displayName: "#announcement" },
-    { name: "webdev", displayName: "#webdev" },
-    { name: "react", displayName: "#react" },
-    { name: "typescript", displayName: "#typescript" },
-    { name: "database", displayName: "#database" },
-    { name: "design", displayName: "#design" },
-    { name: "ai", displayName: "#ai" },
-    { name: "opensource", displayName: "#opensource" },
+    { name: "foz", displayName: "foz" },
+    { name: "tech", displayName: "tech" },
+    { name: "announcement", displayName: "announcement" },
+    { name: "webdev", displayName: "webdev" },
+    { name: "react", displayName: "react" },
+    { name: "typescript", displayName: "typescript" },
+    { name: "database", displayName: "database" },
+    { name: "design", displayName: "design" },
+    { name: "ai", displayName: "ai" },
+    { name: "opensource", displayName: "opensource" },
   ];
 
   const createdHashtags = await db
