@@ -223,7 +223,7 @@ export const AdminReportsPage: React.FC = () => {
                       >
                         <td className="py-4 px-6">
                           <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors font-mono text-xs">
-                            {rpt.reporterId.slice(0, 8)}...
+                            {rpt.reporterName || `${rpt.reporterId.slice(0, 8)}...`}
                           </div>
                           <span className="inline-block px-2 py-0.5 mt-1 text-[10px] font-mono font-semibold bg-slate-100 text-slate-600 rounded">
                             #{rpt.id.slice(0, 8)}
