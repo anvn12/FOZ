@@ -4,16 +4,27 @@ import { useNavigate } from "react-router-dom";
 export const GUEST_LOGIN_PROMPT_KEY = "foz_guest_login_prompt_seen";
 
 /**
- * First-visit prompt for guests: invites them to log in or create an account.
- * Dismissing (Not now / backdrop / Escape) records the prompt as seen so it
- * only appears once per browser.
+ * Login prompt for guests. Used on the home page as a first-visit invite and
+ * on the post page when a guest tries to comment.
+ *
+ * - `title` / `description` customize the message (e.g. commenting requires
+ *   authentication).
+ * - `persistDismissal` controls whether dismissing records the prompt as seen
+ *   in localStorage (home-page first-visit behavior). On the post page we do
+ *   not persist, so the prompt can reappear whenever a guest tries to comment.
  */
 export function GuestLoginModal({
   open,
   onClose,
+  title = "Join FOZ",
+  description = "Log in to follow people, personalize your feed, and join the conversation.",
+  persistDismissal = true,
 }: {
   open: boolean;
   onClose: () => void;
+  title?: string;
+  description?: string;
+  persistDismissal?: boolean;
 }) {
   const navigate = useNavigate();
 
@@ -29,10 +40,12 @@ export function GuestLoginModal({
   if (!open) return null;
 
   const dismiss = () => {
-    try {
-      localStorage.setItem(GUEST_LOGIN_PROMPT_KEY, "1");
-    } catch {
-      // Ignore storage failures (e.g. private mode) — modal still closes.
+    if (persistDismissal) {
+      try {
+        localStorage.setItem(GUEST_LOGIN_PROMPT_KEY, "1");
+      } catch {
+        // Ignore storage failures (e.g. private mode) — modal still closes.
+      }
     }
     onClose();
   };
@@ -59,11 +72,9 @@ export function GuestLoginModal({
         </div>
 
         <h2 id="guest-login-title" className="mb-1 font-headline-md text-headline-md text-primary">
-          Join FOZ
+          {title}
         </h2>
-        <p className="mb-8 font-body-lg text-body-lg text-secondary">
-          Log in to follow people, personalize your feed, and join the conversation.
-        </p>
+        <p className="mb-8 font-body-lg text-body-lg text-secondary">{description}</p>
 
         <div className="flex w-full flex-col gap-3">
           <button

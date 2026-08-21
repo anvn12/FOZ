@@ -2,7 +2,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent } from "@testing-library/react";
-import { Routes, Route } from "react-router-dom";
 import { renderWithProviders } from "../../test/utils.js";
 import { NavBar } from "../NavBar.js";
 import { useAuthStore } from "#frontend/stores/auth";
@@ -16,7 +15,9 @@ describe("NavBar (shadcn sidebar)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useAuthStore.setState({ user: null, accessToken: null, status: "guest" });
-    vi.mocked(profileApi.useProfile).mockReturnValue({ data: null } as unknown as ReturnType<typeof profileApi.useProfile>);
+    vi.mocked(profileApi.useProfile).mockReturnValue({ data: null } as unknown as ReturnType<
+      typeof profileApi.useProfile
+    >);
   });
 
   it("renders the sidebar navigation items and more actions for guests", () => {
@@ -59,41 +60,46 @@ describe("NavBar (shadcn sidebar)", () => {
     expect(homeLinks.some((link) => link.getAttribute("data-active") === "true")).toBe(true);
   });
 
-  it("redirects guests to login via the profile item", () => {
-    renderWithProviders(
-      <Routes>
-        <Route path="/" element={<NavBar />} />
-        <Route path="/login" element={<div>Login Page</div>} />
-      </Routes>
-    );
+  it("shows the login modal when a guest clicks Profile", () => {
+    renderWithProviders(<NavBar />);
 
     const profileBtn = screen.getAllByRole("button", { name: "Profile" })[0];
     if (profileBtn) {
       fireEvent.click(profileBtn);
     }
-    expect(screen.getByText("Login Page")).toBeDefined();
+    expect(screen.getByText("Log in to view your profile")).toBeDefined();
   });
 
-  it("redirects guests to login via the floating create button", () => {
-    renderWithProviders(
-      <Routes>
-        <Route path="/" element={<NavBar />} />
-        <Route path="/login" element={<div>Login Page</div>} />
-      </Routes>
-    );
+  it("shows the login modal when a guest clicks Create", () => {
+    renderWithProviders(<NavBar />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Create post" }));
-    expect(screen.getByText("Login Page")).toBeDefined();
+    const createBtn = screen.getAllByRole("button", { name: "Create" })[0];
+    if (createBtn) {
+      fireEvent.click(createBtn);
+    }
+    expect(screen.getByText("Log in to create a post")).toBeDefined();
   });
 
-  it("opens the create post modal for authenticated users via the floating create button", () => {
+  it("renders the floating create button for desktop only", () => {
+    renderWithProviders(<NavBar />);
+
+    const fab = screen.getByRole("button", { name: "Create post" });
+    // Hidden on mobile, visible from md breakpoint up
+    expect(fab.className).toContain("hidden");
+    expect(fab.className).toContain("md:flex");
+  });
+
+  it("opens the create post modal for authenticated users via the Create item", () => {
     useAuthStore.setState({
       user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
       accessToken: "mock-token",
     });
     renderWithProviders(<NavBar />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Create post" }));
+    const createBtn = screen.getAllByRole("button", { name: "Create" })[0];
+    if (createBtn) {
+      fireEvent.click(createBtn);
+    }
     expect(screen.getByText("Create Post")).toBeDefined();
   });
 });

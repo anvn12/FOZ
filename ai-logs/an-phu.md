@@ -289,3 +289,27 @@
 **Model:** gpt-5
 **Prompt:** "go with recommend"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+
+### 2026-08-21 19:00
+**Tool:** pi
+**Model:** kimi-2.6
+**Prompt:** "go fix issue 190, 191, 192 and 193"
+**Files touched:** `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/GuestLoginModal.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/ExpandableText.test.tsx`, `src/frontend/src/components/__tests__/GuestLoginModal.test.tsx`, `src/frontend/src/pages/__tests__/PostPage.test.tsx`
+
+### 2026-08-21 19:15
+**Tool:** pi
+**Model:** kimi-2.6
+**Prompt:** "1. remove the big icon button to create post for mobiles. 2 there shoudl also be a pop up login modal for clicking create post, profile button"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
+
+### 2026-08-21 19:16
+**Tool:** pi
+**Model:** kimi-2.6
+**Prompt:** "the create post plus icon should only be removed for mobile not for desktop"
+**Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+
+### 2026-08-21 19:17
+**Tool:** pi
+**Model:** kimi-2.6
+**Prompt:** "add a toast notification for removing comments"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
