@@ -32,8 +32,26 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
     ...actual,
     listFeed: vi.fn().mockResolvedValue({
       items: [
-        { id: "post-1", authorId: "u1", authorName: "ohiris", content: "test 1", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
-        { id: "post-2", authorId: "u2", authorName: "jillianbydesignn", content: "test 2", createdAt: new Date().toISOString(), likeCount: 0, commentCount: 0, isLiked: false },
+        {
+          id: "post-1",
+          authorId: "u1",
+          authorName: "ohiris",
+          content: "test 1",
+          createdAt: new Date().toISOString(),
+          likeCount: 0,
+          commentCount: 0,
+          isLiked: false,
+        },
+        {
+          id: "post-2",
+          authorId: "u2",
+          authorName: "jillianbydesignn",
+          content: "test 2",
+          createdAt: new Date().toISOString(),
+          likeCount: 0,
+          commentCount: 0,
+          isLiked: false,
+        },
       ],
       nextCursor: null,
     }),
@@ -89,7 +107,7 @@ describe("HomePage Component", () => {
     expect(screen.queryByText("Join FOZ")).toBeNull();
   });
 
-  it("should redirect guest to login when clicking a protected link", () => {
+  it("should show the login modal when a guest clicks the Profile button", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage feedType="latest" />);
 
@@ -100,7 +118,8 @@ describe("HomePage Component", () => {
       fireEvent.click(firstBtn);
     }
 
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    expect(screen.getByText("Log in to view your profile")).toBeDefined();
+    expect(mockNavigate).not.toHaveBeenCalledWith("/login");
   });
 
   it("should remove Log in button and open CreatePostModal for authenticated user on Create click", async () => {
@@ -128,7 +147,7 @@ describe("HomePage Component", () => {
     expect(screen.getByPlaceholderText("Start a discussion on FOZ...")).toBeDefined();
   });
 
-  it("should redirect guest to login when clicking Create button", () => {
+  it("should show the login modal when a guest clicks the Create button", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<HomePage feedType="latest" />);
 
@@ -139,8 +158,9 @@ describe("HomePage Component", () => {
       fireEvent.click(firstCreateBtn);
     }
 
-    // Verify it redirects
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    // Verify the login modal appears instead of a redirect
+    expect(screen.getByText("Log in to create a post")).toBeDefined();
+    expect(mockNavigate).not.toHaveBeenCalledWith("/login");
   });
 
   it("should open LogoutDialog when clicking Log out button", async () => {

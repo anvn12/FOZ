@@ -54,6 +54,9 @@ describe("Populated State Test Database (foz_test_populated)", () => {
       const [hashtagCount] = await db.select({ val: count() }).from(hashtags);
       expect(hashtagCount!.val).toBeGreaterThanOrEqual(5);
 
+      const allHashtags = await db.select().from(hashtags);
+      expect(allHashtags.every((h) => !h.displayName.startsWith("#"))).toBe(true);
+
       const [postHashtagCount] = await db.select({ val: count() }).from(postHashtags);
       expect(postHashtagCount!.val).toBeGreaterThan(0);
     } finally {
