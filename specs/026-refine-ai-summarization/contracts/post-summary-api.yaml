@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: FOZ Post Summarization API
+  version: 1.0.0
+  description: Endpoints for generating, caching, and refreshing AI-powered post and comment summaries.
+paths:
+  /api/v1/posts/{postId}/summary:
+    get:
+      summary: Get or generate post summary
+      description: Returns the cached summary for a post if available; otherwise generates a new summary using LLM/fallback logic. Requires authentication.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Summary retrieved or generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - cached
+                  - summary
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cached:
+                    type: boolean
+                    example: false
+                  summary:
+                    $ref: '#/components/schemas/PostSummary'
+        '401':
+          $ref: '#/components/responses/401Unauthenticated'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '429':
+          $ref: '#/components/responses/429RateLimited'
+
+  /api/v1/posts/{postId}/summary/refresh:
+    post:
+      summary: Force refresh post summary
+      description: Bypasses the cache and regenerates a fresh post summary. Requires authentication.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Summary refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - cached
+                  - summary
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cached:
+                    type: boolean
+                    example: false
+                  summary:
+                    $ref: '#/components/schemas/PostSummary'
+        '401':
+          $ref: '#/components/responses/401Unauthenticated'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '429':
+          $ref: '#/components/responses/429RateLimited'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PostSummary:
+      type: object
+      required:
+        - id
+        - postId
+        - postSnapshot
+        - keyHighlights
+        - sentiment
+        - commentCount
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        postId:
+          type: string
+          format: uuid
+        postSnapshot:
+          type: string
+          example: "The post discusses optimal backend queuing architectures."
+        keyHighlights:
+          type: array
+          items:
+            type: string
+          example:
+            - "BullMQ with Redis provides robust message queues"
+            - "Worker threads are ideal for CPU heavy tasks"
+        sentiment:
+          type: string
+          example: "Constructive Discussion"
+        commentCount:
+          type: integer
+          example: 10
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ErrorEnvelope:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+  responses:
+    401Unauthenticated:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+          example:
+            error:
+              code: "UNAUTHENTICATED"
+              message: "Authentication required"
+
+    404NotFound:
+      description: Post not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+          example:
+            error:
+              code: "NOT_FOUND"
+              message: "Post not found"
+
+    429RateLimited:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+          example:
+            error:
+              code: "RATE_LIMITED"
+              message: "Too many summary requests, please try again in a minute."
