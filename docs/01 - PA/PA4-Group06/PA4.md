@@ -882,41 +882,62 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 1. The use case begins when the user navigates to the application's homepage, which presents the feed tabs "For You" (default) and "Latest".
 2. The system queries the `posts` table for content with `visibility_state = 'public'` and `deleted_at IS NULL`, unwrapping reposts so the original post content is shown.
 3. The system orders the posts according to the selected feed mode:
-   * **For You:** personalized ranking based on viewer affinity, engagement, and recency; guests and viewers with no interaction history receive a popularity-ranked feed.
+   * **For You:** ranking based on engagement, and recency.
    * **Latest:** sorted by posting time, with the newest first.
 4. The system displays the feed with post content, author avatars, and interaction counts (likes, comments, reposts).
-5. The user scrolls to load more posts (cursor-based pagination).
+5. The user scrolls to browse feed.
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Switch feed mode
+
 1. The user switches between the "For You" and "Latest" feed tabs.
 2. The system reloads and displays the posts according to the newly selected mode.
 
-
 ##### 3.2.2 No Posts Available
+
 1. If at step 2, the database returns no posts.
 2. The system displays a "No discussions found. Be the first to post!" placeholder.
 3. The use case ends.
 
+##### 3.2.3 Scroll to Load More Posts
+
+1. If at step 5, the user scrolls to the bottom of the visible posts.
+2. The system triggers pagination displaying "Load more" button.
+3. The user clicks "Load more" button.
+4. The system fetches and displays the next set of posts.
+5. The use case ends.
+
+##### 3.2.4 View a long content post
+
+1. If at step 4, the post content is too long, the system displays a few first lines of post along with a button "Read more".
+2. The user clicks "Read more" button.
+3. The system displays the full content of the post along with a button "Show less".
+4. The user clicks "Show less" button.
+5. The system displays the first few lines of the post.
+6. The use case ends.
 ### 4. Special Requirements
 * **Performance:** The initial feed must load in `< 2 seconds` under good network conditions.
-
 ### 5. Postconditions
 * None.
-
 ### 6. Extension Points
 * None.
-
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC07-1.png>)
+  ![](<./Prototype requirement/UC-07/UC-07-1.png>)
 
-  **Screen 2 (Alternative Flow 1):**
-  ![](<./Prototype requirement/UC07-2.png>)
+  **Screen 2 (Alternative Flow 1):** Latest tab
+  ![](<./Prototype requirement/UC-07/UC-07-2.png>)
   
-  **Screen 3 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC07-3.png>)
+  **Screen 3 (Alternative Flow 2):** No post available
+  ![](<./Prototype requirement/UC-07/UC-07-3.png>)
+
+  **Screen 4 (Alternative Flow 3):** Scroll to load more posts
+  ![](<./Prototype requirement/UC-07/UC-07-4.png>)
+
+  **Screen 5 (Alternative Flow 4):** View a long content post
+  ![](<./Prototype requirement/UC-07/UC-07-5.png>)
+  ![](<./Prototype requirement/UC-07/UC-07-5-2.png>)
 
 ## Use-Case Specification: Search Content
 
