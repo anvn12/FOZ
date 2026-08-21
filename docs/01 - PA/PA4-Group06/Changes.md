@@ -49,8 +49,8 @@
      - Prototype requirements expanded from 1 to 2 screens.
 
    - **UC-10 (Create Post):**
-     - Added alternative flows: `Post creation canceled`, updated `Content Validation Error` (submit button disabled on empty body), and `Exceeds Limits` (5,000 chars / 5 media attachments / 10 chained thread posts).
-     - Prototype requirements expanded from 1 to 3 screens.
+     - Added alternative flows: `Post creation canceled`, `Media Attachment Error`, `Media Attachment Cancelled`, `Exceeds Limit of Characters`, `Exceeds Limit of Number of Media Attachments`, `Valid Image with Large Size` and `Network Timeout after Attaching Any Image`, updated `Content Validation Error` (submit button disabled on empty body).
+     - Prototype requirements expanded to 17 screens.
 
    - **UC-11 (Interact with Post):**
      - Added alternative flows making the extension points explicit: `Reply` → UC-12, `Like` → UC-13, `Report` → UC-16.

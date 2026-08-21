@@ -1065,9 +1065,9 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user clicks "Create Post".
+1. The use case begins when the user clicks "Create Post". 1, 4, 6, 7, 11
 2. The system displays an editor.
-3. The user types the content and clicks "Submit".
+3. The user adds the content and clicks "Post".
 4. The system validates the input lengths.
 5. The system saves the record in the `posts` table (lifecycle_state: `active`).
 6. The system redirects to the new post's detail page.
@@ -1075,20 +1075,44 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 #### 3.2 Alternative Flows
 
 ##### 3.2.1. Post creation canceled
-
 1. The user cancels the post creation.
-2. The system discards the draft and returns to the previous screen.
-
+2. The system remains the draft and returns to the previous screen.
 
 ##### 3.2.2 Content Validation Error
 1. If at step 4, the post body is empty.
 2. The system disallows user to click submit button.
 3. The flow resumes at step 3.
 
-##### 3.2.3 Exceeds Limits
-1. If at step 4, the post body exceeds 5,000 characters, or there are more than 5 media attachments, or the chained thread exceeds 10 posts.
+##### 3.2.3 Media Attachment Error
+1. If at step 3, the users attachs wrong file type of the image to the post.
 2. The system aborts and displays a validation error message.
 3. The flow resumes at step 3.
+
+##### 3.2.4 Media Attachment Cancelled
+1. If at step 3, the user cancels the media attachment.
+2. The post body is left empty. 
+3. The system aborts and displays a validation error message.
+4. The flow resumes at step 3.
+
+##### 3.2.5 Exceeds Limit of Characters
+1. If at step 4, the post body exceeds 5,000 characters.
+2. The system aborts and displays a validation error message.
+3. The flow resumes at step 3.
+
+##### 3.2.6 Exceeds Limit of Number of Media Attachments
+1. If at step 4, there are more than 5 media attachments.
+2. The system aborts and displays a validation error message.
+3. The flow resumes at step 3.
+
+##### 3.2.7 Valid Image with Large Size
+1. If at step 3, a valid type image is attached to a post with the size more than 5MB.
+2. The system automatically compresses the image before uploading. 
+3. The flow resumes at step 5.
+
+##### 3.2.8 Network Timeout after Attaching Any Image
+1. If at step 3, the user attachs an image to a post.
+2. The network is timeout.
+3. The system displays pending "Posting" button.
 
 ### 4. Special Requirements
 * **Security:** Inputs must be sanitized against XSS.
@@ -1102,11 +1126,33 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC10-1.png>)
+  ![](<./Prototype requirement/UC10-4.png>)
+  ![](<./Prototype requirement/UC10-6.png>)
+  ![](<./Prototype requirement/UC10-7.png>)
+  ![](<./Prototype requirement/UC10-11.png>)
+  ![](<./Prototype requirement/UC10-8.png>)
+  ![](<./Prototype requirement/UC10-9.png>)
+  ![](<./Prototype requirement/UC10-12.png>)
+  ![](<./Prototype requirement/UC10-13.png>)
 * **Screen 2 (Alternative Flow 2):**
+  ![](<./Prototype requirement/UC10-5.png>)
+* **Screen 3 (Alternative Flow 3):**
+  ![](<./Prototype requirement/UC10-1.png>)
+* **Screen 4 (Alternative Flow 4):**
+  ![](<./Prototype requirement/UC10-16.png>)
+* **Screen 5 (Alternative Flow 5):**
+  ![](<./Prototype requirement/UC10-11.png>)
+  ![](<./Prototype requirement/UC10-1.png>)
+* **Screen 6 (Alternative Flow 6):**
+  ![](<./Prototype requirement/UC10-14.png>)
+* **Screen 7 (Alternative Flow 7):**
+  ![](<./Prototype requirement/UC10-10.png>)
+* **Screen 8 (Alternative Flow 8):**
   ![](<./Prototype requirement/UC10-2.png>)
-* **Screen 2 (Alternative Flow 3):**
+  ![](<./Prototype requirement/UC10-15.png>)
+  ![](<./Prototype requirement/UC10-17.png>)
+* **Screen 9 (Alternative Flow 9):**
   ![](<./Prototype requirement/UC10-3.png>)
-
 
 ## Use-Case Specification: Interact with Post
 
