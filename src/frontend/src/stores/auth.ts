@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { isOffline } from "#frontend/api/network";
 
 export type AuthUser = {
   id: string;
@@ -22,8 +23,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   user: null,
   status: "guest",
-  setSession: ({ user, accessToken }) =>
-    set({ user, accessToken, status: "authed" }),
+  setSession: ({ user, accessToken }) => set({ user, accessToken, status: "authed" }),
   setAccessToken: (accessToken) => set({ accessToken }),
   clearSession: () => set({ user: null, accessToken: null, status: "guest" }),
   setRefreshing: () => set({ status: "refreshing" }),
@@ -31,6 +31,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 export async function silentRefresh(fetchImpl: typeof fetch = fetch): Promise<boolean> {
   useAuthStore.getState().setRefreshing();
+  // If the browser reports being offline, keep the current session instead of
+  // treating the failed refresh as a logout.
+  if (isOffline()) {
+    useAuthStore.getState().setRefreshing();
+    return false;
+  }
   try {
     const res = await fetchImpl("/api/v1/auth/refresh", { method: "POST", credentials: "include" });
     if (!res.ok) {

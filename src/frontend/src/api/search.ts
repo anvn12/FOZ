@@ -1,7 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
-import type { SearchDiscoveryResponse, SearchItem, SearchResponse } from "#shared/schemas/search.js";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
+import type {
+  SearchDiscoveryResponse,
+  SearchItem,
+  SearchResponse,
+} from "#shared/schemas/search.js";
 
 interface ErrorEnvelope {
   error?: {
@@ -19,7 +24,7 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(path, {
+  const res = await fetchWithNetworkGuard(path, {
     ...init,
     credentials: "include",
     headers,
@@ -39,20 +44,12 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
 export type SearchType = "posts" | "users" | "hashtags" | "all";
 
 export function search(query: string, type: SearchType = "all") {
-  return call<SearchResponse>(
-    `/api/v1/search?q=${encodeURIComponent(query)}&type=${type}`,
-    {
-      method: "GET",
-    },
-  ).then((res) => res.items);
+  return call<SearchResponse>(`/api/v1/search?q=${encodeURIComponent(query)}&type=${type}`, {
+    method: "GET",
+  }).then((res) => res.items);
 }
 
-
-export function useSearch(
-  query: string,
-  type: SearchType = "all",
-  enabledOverride?: boolean,
-) {
+export function useSearch(query: string, type: SearchType = "all", enabledOverride?: boolean) {
   const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0;
   return useQuery({
     queryKey: ["search", type, query],

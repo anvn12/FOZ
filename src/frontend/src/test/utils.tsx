@@ -9,7 +9,7 @@ export function renderWithProviders(
     route?: string;
     queryClient?: QueryClient;
     renderOptions?: Omit<RenderOptions, "wrapper">;
-  }
+  },
 ) {
   const queryClient =
     options?.queryClient ??
@@ -17,6 +17,10 @@ export function renderWithProviders(
       defaultOptions: {
         queries: {
           retry: false,
+          networkMode: "always",
+        },
+        mutations: {
+          networkMode: "always",
         },
       },
     });
@@ -24,9 +28,7 @@ export function renderWithProviders(
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
     return (
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={[options?.route ?? "/"]}>
-          {children}
-        </MemoryRouter>
+        <MemoryRouter initialEntries={[options?.route ?? "/"]}>{children}</MemoryRouter>
       </QueryClientProvider>
     );
   };
