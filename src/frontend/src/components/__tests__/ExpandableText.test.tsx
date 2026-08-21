@@ -54,12 +54,28 @@ describe("ExpandableText Component", () => {
     render(
       <div onClick={parentClick}>
         <ExpandableText text={longText} maxLength={100} />
-      </div>
+      </div>,
     );
 
     const readMoreBtn = screen.getByRole("button", { name: "Read more" });
     fireEvent.click(readMoreBtn);
 
     expect(parentClick).not.toHaveBeenCalled();
+  });
+
+  it("adds break-words so long unbroken strings wrap instead of overflowing", () => {
+    // Regression for issue #192: a single line with >240 chars (e.g. 300 'a's)
+    // must wrap (break-words) and reveal the full text after expanding.
+    const unbroken = "a".repeat(300);
+    render(<ExpandableText text={unbroken} maxLength={240} maxLines={4} />);
+
+    // The collapsed preview must contain the word-break utility so the
+    // unbroken string wraps within the container instead of overflowing.
+    const container = screen.getByText(/a+\.\.\./).closest("div");
+    expect(container?.className).toContain("break-words");
+
+    // Expanding must render the full 300-char string.
+    fireEvent.click(screen.getByRole("button", { name: "Read more" }));
+    expect(screen.getByText(unbroken)).toBeDefined();
   });
 });
