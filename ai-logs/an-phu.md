@@ -307,3 +307,9 @@
 **Model:** kimi-2.6
 **Prompt:** "the create post plus icon should only be removed for mobile not for desktop"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
+
+### 2026-08-21 19:17
+**Tool:** pi
+**Model:** kimi-2.6
+**Prompt:** "add a toast notification for removing comments"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`

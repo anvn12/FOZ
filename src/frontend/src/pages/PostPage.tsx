@@ -481,6 +481,7 @@ function CommentBranch({
     mutationFn: () => deleteComment(comment.id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast.success("Comment deleted.");
     },
     onError: showError,
   });
