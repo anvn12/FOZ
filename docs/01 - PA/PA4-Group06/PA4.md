@@ -1208,7 +1208,10 @@ Allows an authenticated user to reply to a post or to another comment.
 ### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
    ![](<./Prototype requirement/UC12-1.png>)
-
+   ![](<./Prototype requirement/UC12-2.png>)
+   ![](<./Prototype requirement/UC12-3.png>)
+   ![](<./Prototype requirement/UC12-4.png>)
+  
 * **Screen 2 (Alternative Flow 2):**
    ![](<./Prototype requirement/UC12-2.jpg>)
 
