@@ -23,8 +23,11 @@ import { ReportModal } from "#frontend/components/ReportModal";
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
 import { isMobileDevice } from "#frontend/utils/device";
 import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
+import { NetworkError } from "#frontend/api/network";
 
 function showError(error: Error) {
+  // The network guard already toasts for connectivity failures; don't duplicate.
+  if (error instanceof NetworkError) return;
   if (error instanceof InteractionApiError && error.fields) {
     const messages = Object.values(error.fields);
     const firstMsg = messages[0];
@@ -273,7 +276,6 @@ export function PostPage() {
                                 if (!user) return setShowLoginModal(true);
                                 if (draft.trim() && !create.isPending) {
                                   create.mutate();
-                                  setDraft("");
                                   e.currentTarget.style.height = "";
                                 }
                               }
@@ -288,7 +290,6 @@ export function PostPage() {
                                 if (!user) return setShowLoginModal(true);
                                 if (draft.trim()) {
                                   create.mutate();
-                                  setDraft("");
                                   const textarea =
                                     e.currentTarget.parentElement?.querySelector("textarea");
                                   if (textarea) textarea.style.height = "";
@@ -786,7 +787,6 @@ function CommentBranch({
                         e.preventDefault();
                         if (replyDraft.trim() && !reply.isPending) {
                           reply.mutate();
-                          setReplyDraft("");
                           e.currentTarget.style.height = "";
                         }
                       }
@@ -807,7 +807,6 @@ function CommentBranch({
                       onClick={(e) => {
                         if (replyDraft.trim()) {
                           reply.mutate();
-                          setReplyDraft("");
                           const textarea = e.currentTarget.parentElement?.querySelector("textarea");
                           if (textarea) textarea.style.height = "";
                         }

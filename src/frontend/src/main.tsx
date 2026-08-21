@@ -8,7 +8,15 @@ import { silentRefresh, useAuthStore, type AuthUser } from "./stores/auth";
 import { fetchWithNetworkGuard } from "./api/network";
 import "./index.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // Always invoke query/mutation functions regardless of browser online
+    // status so our fetchWithNetworkGuard can detect offline and toast,
+    // rather than react-query silently pausing the request.
+    queries: { networkMode: "always" },
+    mutations: { networkMode: "always" },
+  },
+});
 
 function Root() {
   return (
