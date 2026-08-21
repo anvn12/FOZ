@@ -214,6 +214,12 @@
 				- [3.2.1 Empty Comment](#321-empty-comment)
 				- [3.2.2 Comment Exceeds Maximum Length](#322-comment-exceeds-maximum-length)
 				- [3.2.3 Long Comment Display](#323-long-comment-display)
+				- [3.2.4 Newline Input with Shift+Enter](#324-newline-input-with-shiftenter)
+				- [3.2.5 Duplicate Submission Prevention](#325-duplicate-submission-prevention)
+				- [3.2.6 Keyboard-Only Comment Submission](#326-keyboard-only-comment-submission)
+				- [3.2.7 Malicious Script Injection (XSS) Attempt](#327-malicious-script-injection-xss-attempt)
+				- [3.2.8 Emoji and Unicode Input](#328-emoji-and-unicode-input)
+				- [3.2.12 Nested Reply](#3212-nested-reply)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -1174,7 +1180,7 @@ Allows an authenticated user to reply to a post or to another comment.
 ### 3. Flow of Events
 
 #### 3.1 Basic Flow
-1. Extends UC-11 when the user clicks "Reply".
+1. Extends UC-11 when the user clicks "Reply" or the post.
 2. The system opens a small text input field.
 3. The user types their comment and clicks "Post Reply".
 4. The system validates the text.
@@ -1196,6 +1202,34 @@ Allows an authenticated user to reply to a post or to another comment.
 2. The system automatically truncates the body text preview and appends a "Read more" toggle action.
 3. The user clicks "Read more" to expand and view the full comment content.
 
+##### 3.2.4 Newline Input with Shift+Enter
+1. If at step 3, the user presses **Shift+Enter** while typing their comment.
+2. The system inserts a newline into the comment text instead of submitting the comment.
+3. The flow resumes at step 3.
+
+##### 3.2.5 Duplicate Submission Prevention
+1. If at step 3, the user submits the comment multiple times in rapid succession (e.g., pressing Enter or the send button repeatedly).
+2. The system disables the send button or otherwise ignores duplicate submissions while the first request is still pending.
+3. Only one comment record is created; the flow resumes at step 5.
+
+##### 3.2.6 Malicious Script Injection (XSS) Attempt
+1. If at step 4, the submitted comment contains malicious markup such as `<script>alert('xss')</script>`.
+2. The system sanitizes the input and renders it as plain text; no script executes.
+3. The comment remains safely displayed after a page reload; the flow resumes at step 5.
+
+##### 3.2.7 Emoji and Unicode Input
+1. If at step 4, the submitted comment contains emojis or text typed from the keyboard.
+2. The system accepts and renders the emojis exactly as typed.
+3. The flow resumes at step 5.
+
+##### 3.2.8 Nested Reply
+1. If at step 1, the user clicks "Reply" on an existing comment instead of on the post.
+2. The system opens the reply input for that specific comment.
+3. The user types the reply (e.g., "Nested standard reply") and submits it.
+4. The system inserts the record into the `comments` table with `parent_comment_id` pointing to the selected comment.
+5. The system displays the reply under the selected parent with the correct indentation and reply count, not as a separate top-level comment.
+6. The flow resumes at step 6.
+
 ### 4. Special Requirements
 * None.
 
@@ -1211,7 +1245,7 @@ Allows an authenticated user to reply to a post or to another comment.
    ![](<./Prototype requirement/UC12-2.png>)
    ![](<./Prototype requirement/UC12-3.png>)
    ![](<./Prototype requirement/UC12-4.png>)
-  
+  ![alt text](image.png)
 * **Screen 2 (Alternative Flow 2):**
    ![](<./Prototype requirement/UC12-2.jpg>)
 
