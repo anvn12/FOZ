@@ -1,6 +1,7 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { db } from "#backend/db/client.js";
 import { comments, postSummaries, reactions, type NewPostSummary, type PostSummary } from "#backend/db/schema/interactions.js";
+import { sampleCommentsForSummary } from "#backend/services/post-summary.service.js";
 
 export async function getPostSummaryByPostId(postId: string): Promise<PostSummary | undefined> {
   const [row] = await db
@@ -94,44 +95,6 @@ export async function getSampledCommentsForSummary(postId: string): Promise<Arra
     }
   }
 
-  const selectedSet = new Set<string>();
-  const sampled: Array<{ id: string; body: string }> = [];
-
-  // 1. Top 4 Most Liked
-  const sortedByLikes = [...activeComments].sort(
-    (a, b) => (likeMap.get(b.id) || 0) - (likeMap.get(a.id) || 0),
-  );
-  for (const c of sortedByLikes) {
-    if (sampled.length >= 4) break;
-    if (!selectedSet.has(c.id)) {
-      selectedSet.add(c.id);
-      sampled.push({ id: c.id, body: c.body });
-    }
-  }
-
-  // 2. Top 3 Most Replied (direct 1st level)
-  const sortedByReplies = [...activeComments].sort(
-    (a, b) => (replyMap.get(b.id) || 0) - (replyMap.get(a.id) || 0),
-  );
-  for (const c of sortedByReplies) {
-    if (sampled.length >= 7) break;
-    if (!selectedSet.has(c.id)) {
-      selectedSet.add(c.id);
-      sampled.push({ id: c.id, body: c.body });
-    }
-  }
-
-  // 3. Top 3 Most Recent
-  const sortedByRecent = [...activeComments].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
-  for (const c of sortedByRecent) {
-    if (sampled.length >= 10) break;
-    if (!selectedSet.has(c.id)) {
-      selectedSet.add(c.id);
-      sampled.push({ id: c.id, body: c.body });
-    }
-  }
-
-  return sampled;
+  return sampleCommentsForSummary(activeComments, likeMap, replyMap);
 }
+

@@ -2394,6 +2394,44 @@
 **Model:** Gemini 3.7 Flash
 **Prompt:** "the AI log must be at the end of the docs, update the skill for me and redo the log"
 **Files touched:** `.agents/skills/ai-usage-log/SKILL.md`
+### 2026-08-22 01:20
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "@[d:\FOZ\docs\01 - PA\PA5-Group06\Review test case\AI summarization.md] add a case for the fallback mechanism"
+**Files touched:** `docs/01 - PA/PA5-Group06/Review test case/AI summarization.md`
 
+### 2026-08-22 01:22
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "@[d:\FOZ\docs\01 - PA\PA5-Group06\Review test case\AI summarization.md] group this into category"
+**Files touched:** `docs/01 - PA/PA5-Group06/Review test case/AI summarization.md`
 
+### 2026-08-22 01:30
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "combine the add to refine (new category or merge into the similar)"
+**Files touched:** `docs/01 - PA/PA5-Group06/Review test case/AI summarization.md`
 
+### 2026-08-22 01:36
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/02-speckit.specify @[d:\\FOZ\\docs\\01 - PA\\PA5-Group06\\Review test case\\AI summarization.md] @[d:\\FOZ\\src\\backend\\api\\posts\\__tests__]  refine the test cases for AI summarization based on my refine document"
+**Files touched:** `specs/026-refine-ai-summarization/spec.md`, `specs/026-refine-ai-summarization/checklists/requirements.md`
+
+### 2026-08-22 01:38
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/03-speckit.clarify"
+**Files touched:** `specs/026-refine-ai-summarization/spec.md`
+
+### 2026-08-22 01:40
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/04-speckit.plan"
+**Files touched:** `specs/026-refine-ai-summarization/plan.md`, `specs/026-refine-ai-summarization/research.md`, `specs/026-refine-ai-summarization/data-model.md`, `specs/026-refine-ai-summarization/contracts/post-summary-api.yaml`, `specs/026-refine-ai-summarization/quickstart.md`, `.specify/feature.json`, `AGENTS.md`
+
+### 2026-08-22 01:48
+**Tool:** Antigravity
+**Model:** Gemini 3.7 Flash (High)
+**Prompt:** "/07-speckit.implement"
+**Files touched:** `specs/026-refine-ai-summarization/tasks.md`, `src/backend/services/post-summary.service.ts`, `src/backend/db/repositories/post-summary.repository.ts`, `src/backend/api/posts/routes.ts`, `src/backend/api/posts/__tests__/ai-summarizer.test.ts`, `src/backend/api/posts/__tests__/comment-sampling-dedup.test.ts`, `src/backend/api/posts/__tests__/summary-routes.test.ts`, `src/backend/api/posts/__tests__/post-summary-repository.test.ts`, `src/backend/api/posts/__tests__/post-summary-fallbacks.test.ts`
