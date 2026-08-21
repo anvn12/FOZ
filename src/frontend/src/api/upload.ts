@@ -1,5 +1,6 @@
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 import type { UploadType } from "#shared/schemas/image";
 
 export interface UploadImageResult {
@@ -16,7 +17,7 @@ export async function uploadImageApi(
   file: Blob | File,
   fileName: string,
   uploadType: UploadType = "feed_post",
-  clientCompressed = true
+  clientCompressed = true,
 ): Promise<UploadImageResult> {
   const token = useAuthStore.getState().accessToken;
   const formData = new FormData();
@@ -30,7 +31,7 @@ export async function uploadImageApi(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch("/api/v1/upload/image", {
+  const res = await fetchWithNetworkGuard("/api/v1/upload/image", {
     method: "POST",
     headers,
     body: formData,
@@ -56,8 +57,15 @@ export async function uploadImageApi(
 export async function uploadMediaToCloudinary(
   file: Blob | File,
   fileName: string,
-  folder = "foz_uploads"
-): Promise<{ publicId: string; url: string; format: string; width: number; height: number; bytes: number }> {
+  folder = "foz_uploads",
+): Promise<{
+  publicId: string;
+  url: string;
+  format: string;
+  width: number;
+  height: number;
+  bytes: number;
+}> {
   const token = useAuthStore.getState().accessToken;
   const formData = new FormData();
   formData.append("file", file, fileName);
@@ -68,7 +76,7 @@ export async function uploadMediaToCloudinary(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch("/api/v1/upload/cloudinary", {
+  const res = await fetchWithNetworkGuard("/api/v1/upload/cloudinary", {
     method: "POST",
     headers,
     body: formData,
@@ -98,11 +106,13 @@ export async function deleteCloudinaryMedia(publicId: string): Promise<boolean> 
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`/api/v1/upload/cloudinary/${encodeURIComponent(publicId)}`, {
-    method: "DELETE",
-    headers,
-  });
+  const res = await fetchWithNetworkGuard(
+    `/api/v1/upload/cloudinary/${encodeURIComponent(publicId)}`,
+    {
+      method: "DELETE",
+      headers,
+    },
+  );
 
   return res.ok;
 }
-

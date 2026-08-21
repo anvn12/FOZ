@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { HashtagItem, TrendingHashtagsResponse } from "#shared/schemas/hashtags";
 import type { PostResponse } from "#shared/schemas/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const token = useAuthStore.getState().accessToken;
@@ -10,7 +11,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
     ...((init?.headers as Record<string, string>) || {}),
   };
   if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(path, { ...init, credentials: "include", headers });
+  const res = await fetchWithNetworkGuard(path, { ...init, credentials: "include", headers });
   if (!res.ok) {
     throw new Error(`Hashtag API request failed with status ${res.status}`);
   }
@@ -22,9 +23,10 @@ export function listPostsByHashtag(tag: string, cursor?: string) {
   if (cursor) params.set("cursor", cursor);
   const queryStr = params.toString() ? `?${params.toString()}` : "";
 
-  return call<{ items: Array<PostResponse & { likeCount: number; liked: boolean }>; nextCursor: string | null }>(
-    `/api/v1/hashtags/${encodeURIComponent(tag)}/posts${queryStr}`
-  );
+  return call<{
+    items: Array<PostResponse & { likeCount: number; liked: boolean }>;
+    nextCursor: string | null;
+  }>(`/api/v1/hashtags/${encodeURIComponent(tag)}/posts${queryStr}`);
 }
 
 export function fetchTrendingHashtags() {

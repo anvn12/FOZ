@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { App } from "./App";
 import { silentRefresh, useAuthStore, type AuthUser } from "./stores/auth";
+import { fetchWithNetworkGuard } from "./api/network";
 import "./index.css";
 
 const queryClient = new QueryClient();
@@ -43,7 +44,7 @@ async function handleOAuthTokenParam(): Promise<void> {
   window.history.replaceState({}, "", url.pathname + url.search + url.hash);
 
   try {
-    const res = await fetch("/api/v1/auth/me", {
+    const res = await fetchWithNetworkGuard("/api/v1/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
       credentials: "include",
     });

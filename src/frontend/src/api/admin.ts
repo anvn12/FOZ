@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 import type {
   AssignRoleRequest,
   DeleteUserRequest,
@@ -29,14 +30,16 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(path, {
+  const res = await fetchWithNetworkGuard(path, {
     ...init,
     credentials: "include",
     headers,
   });
 
   if (!res.ok) {
-    const env = (await res.json().catch(() => null)) as { error?: { code?: string; message?: string; fields?: Record<string, string> } } | null;
+    const env = (await res.json().catch(() => null)) as {
+      error?: { code?: string; message?: string; fields?: Record<string, string> };
+    } | null;
     throw new ApiError(
       res.status,
       env?.error?.code ?? "UNKNOWN",
@@ -149,7 +152,12 @@ export interface AdminUsersResponse {
   totalPages: number;
 }
 
-export function fetchAdminUsers(params: { query?: string; role?: string; page?: number; limit?: number }) {
+export function fetchAdminUsers(params: {
+  query?: string;
+  role?: string;
+  page?: number;
+  limit?: number;
+}) {
   const searchParams = new URLSearchParams();
   if (params.query) searchParams.set("query", params.query);
   if (params.role) searchParams.set("role", params.role);
@@ -159,7 +167,12 @@ export function fetchAdminUsers(params: { query?: string; role?: string; page?: 
   return call<AdminUsersResponse>(`/api/v1/admin/users?${searchParams.toString()}`);
 }
 
-export function useAdminUsers(params: { query?: string; role?: string; page?: number; limit?: number }) {
+export function useAdminUsers(params: {
+  query?: string;
+  role?: string;
+  page?: number;
+  limit?: number;
+}) {
   return useQuery({
     queryKey: ["admin", "users", params],
     queryFn: () => fetchAdminUsers(params),
@@ -229,10 +242,13 @@ export function useEscalatedReports() {
 }
 
 export function dismissReport(reportId: string, rationale?: string) {
-  return call<{ message: string; report: EscalatedReport }>(`/api/v1/admin/reports/${reportId}/dismiss`, {
-    method: "POST",
-    body: JSON.stringify({ rationale }),
-  });
+  return call<{ message: string; report: EscalatedReport }>(
+    `/api/v1/admin/reports/${reportId}/dismiss`,
+    {
+      method: "POST",
+      body: JSON.stringify({ rationale }),
+    },
+  );
 }
 
 export function useDismissReport() {
@@ -248,7 +264,11 @@ export function useDismissReport() {
   });
 }
 
-export function instantDeleteContent(type: "post" | "comment", id: string, input: InstantDeleteContentRequest) {
+export function instantDeleteContent(
+  type: "post" | "comment",
+  id: string,
+  input: InstantDeleteContentRequest,
+) {
   return call<{ message: string }>(`/api/v1/admin/content/${type}/${id}`, {
     method: "DELETE",
     body: JSON.stringify(input),
@@ -258,8 +278,15 @@ export function instantDeleteContent(type: "post" | "comment", id: string, input
 export function useInstantDeleteContent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ type, id, input }: { type: "post" | "comment"; id: string; input: InstantDeleteContentRequest }) =>
-      instantDeleteContent(type, id, input),
+    mutationFn: ({
+      type,
+      id,
+      input,
+    }: {
+      type: "post" | "comment";
+      id: string;
+      input: InstantDeleteContentRequest;
+    }) => instantDeleteContent(type, id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "reports"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "metrics"] });
