@@ -216,10 +216,16 @@
 				- [3.2.3 Long Comment Display](#323-long-comment-display)
 				- [3.2.4 Newline Input with Shift+Enter](#324-newline-input-with-shiftenter)
 				- [3.2.5 Duplicate Submission Prevention](#325-duplicate-submission-prevention)
-				- [3.2.6 Keyboard-Only Comment Submission](#326-keyboard-only-comment-submission)
-				- [3.2.7 Malicious Script Injection (XSS) Attempt](#327-malicious-script-injection-xss-attempt)
-				- [3.2.8 Emoji and Unicode Input](#328-emoji-and-unicode-input)
-				- [3.2.12 Nested Reply](#3212-nested-reply)
+				- [3.2.6 Malicious Script Injection (XSS) Attempt](#326-malicious-script-injection-xss-attempt)
+				- [3.2.7 Emoji and Unicode Input](#327-emoji-and-unicode-input)
+				- [3.2.8 Nested Reply](#328-nested-reply)
+				- [3.2.9 Offline Submission](#329-offline-submission)
+				- [3.2.10 Multi-Level Nested Replies (Depth 1–2)](#3210-multi-level-nested-replies-depth-12)
+				- [3.2.11 Deep Nested Replies (Depth > 2)](#3211-deep-nested-replies-depth--2)
+				- [3.2.12 URL in Comment](#3212-url-in-comment)
+				- [3.2.13 Comment Rate Limit Exceeded](#3213-comment-rate-limit-exceeded)
+				- [3.2.14 Authentication Expired During Commenting](#3214-authentication-expired-during-commenting)
+				- [3.2.15 Post Deleted While Commenting](#3215-post-deleted-while-commenting)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -1230,6 +1236,45 @@ Allows an authenticated user to reply to a post or to another comment.
 5. The system displays the reply under the selected parent with the correct indentation and reply count, not as a separate top-level comment.
 6. The flow resumes at step 6.
 
+##### 3.2.9 Offline Submission
+1. If at step 3, the user submits the comment while their device has no internet connection.
+2. The request fails to reach the server.
+3. The system displays a toast notification notifying the user they are offline.
+4. The typed comment is preserved in the input box; the user can retry once the connection is restored.
+5. The flow resumes at step 3.
+
+##### 3.2.10 Multi-Level Nested Replies (Depth 1–2)
+1. If at step 1, the user replies to a reply (i.e., a comment already nested one level deep).
+2. The system displays replies at depth 1 and 2 indented to the right.
+3. The replies are clearly indicated with line markers, and a "Hide replies" button connects to the parent comment of the replies.
+4. The flow resumes at step 6.
+
+##### 3.2.11 Deep Nested Replies (Depth > 2)
+1. If at step 1, the user replies to a comment at depth greater than 2.
+2. The system no longer indents the reply further to the right.
+3. The reply stays below its parent, and below it a "Hide replies" button is shown.
+4. The flow resumes at step 6.
+
+##### 3.2.12 URL in Comment
+1. If at step 4, the submitted comment contains a valid URL (e.g., `https://example.com`).
+2. The system accepts the comment and displays the URL as plain text (no auto-hyperlinking).
+3. The flow resumes at step 5.
+
+##### 3.2.13 Comment Rate Limit Exceeded
+1. If at step 3, the user submits 15–20 comments within a single minute.
+2. The system displays a pop-up modal telling the user to slow down and prevents them from commenting for the next 10 seconds.
+3. The use case ends.
+
+##### 3.2.14 Authentication Expired During Commenting
+1. If at step 3, the user's authentication session expires while they are typing the comment.
+2. The system displays a modal telling the user their session is expired and prompts them to log in again.
+3. The use case ends; the typed draft is preserved so the user can continue after logging back in.
+
+##### 3.2.15 Post Deleted While Commenting
+1. If at step 3, an administrator deletes the post while the user is typing a comment.
+2. The system displays a modal telling the user that the post is no longer available.
+3. The use case ends.
+
 ### 4. Special Requirements
 * None.
 
@@ -1272,6 +1317,30 @@ Allows an authenticated user to reply to a post or to another comment.
 * **Screen 9 (Alternative Flow 8 - Nested Reply):**
    ![](<./Prototype requirement/UC12-5.png>)
    ![](<./Prototype requirement/UC12-6.png>)
+
+* **Screen 10 (Alternative Flow 9 - Offline Submission):**
+   ![](<./Prototype requirement/UC12-9.jpg>)
+
+* **Screen 11 (Alternative Flow 10 - Multi-Level Nested Replies (Depth 1–2)):**
+   ![](<./Prototype requirement/UC12-14.png>)
+
+* **Screen 12 (Alternative Flow 11 - Deep Nested Replies (Depth > 2)):**
+   ![](<./Prototype requirement/UC12-15.png>)
+   ![](<./Prototype requirement/UC12-16.png>)
+
+* **Screen 13 (Alternative Flow 12 - URL in Comment):**
+   ![](<./Prototype requirement/UC12-17.png>)
+
+* **Screen 14 (Alternative Flow 13 - Comment Rate Limit Exceeded):**
+   ![](<./Prototype requirement/UC12-13.jpg>)
+
+* **Screen 15 (Alternative Flow 14 - Authentication Expired During Commenting):**
+   ![](<./Prototype requirement/UC12-20.png>)
+   ![](<./Prototype requirement/UC12-21.png>)
+
+* **Screen 16 (Alternative Flow 15 - Post Deleted While Commenting):**
+   ![](<./Prototype requirement/UC12-18.png>)
+   ![](<./Prototype requirement/UC12-19.png>)
 
 ## Use-Case Specification: Like/Unlike
 
