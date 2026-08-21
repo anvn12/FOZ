@@ -1245,12 +1245,33 @@ Allows an authenticated user to reply to a post or to another comment.
    ![](<./Prototype requirement/UC12-2.png>)
    ![](<./Prototype requirement/UC12-3.png>)
    ![](<./Prototype requirement/UC12-4.png>)
-  ![alt text](image.png)
-* **Screen 2 (Alternative Flow 2):**
-   ![](<./Prototype requirement/UC12-2.jpg>)
 
-* **Screen 3 (Alternative Flow 3):**
+* **Screen 2 (Alternative Flow 1 - Empty Comment):**
+   ![](<./Prototype requirement/UC12-2.png>)
+
+* **Screen 3 (Alternative Flow 2 - Comment Exceeds Maximum Length):**
+   ![](<./Prototype requirement/UC12-7.png>)
+
+* **Screen 4 (Alternative Flow 3 - Long Comment Display):**
+   ![](<./Prototype requirement/UC12-9.png>)
+
+* **Screen 5 (Alternative Flow 4 - Newline Input with Shift+Enter):**
+   ![](<./Prototype requirement/UC12-8.png>)
+
+* **Screen 6 (Alternative Flow 5 - Duplicate Submission Prevention):**
    ![](<./Prototype requirement/UC12-3.png>)
+   ![](<./Prototype requirement/UC12-4.png>)
+* **Screen 7 (Alternative Flow 6 - Malicious Script Injection (XSS) Attempt):**
+   ![](<./Prototype requirement/UC12-10.png>)
+   ![](<./Prototype requirement/UC12-11.png>)
+
+* **Screen 8 (Alternative Flow 7 - Emoji and Unicode Input):**
+   ![](<./Prototype requirement/UC12-12.png>)
+   ![](<./Prototype requirement/UC12-13.png>)
+
+* **Screen 9 (Alternative Flow 8 - Nested Reply):**
+   ![](<./Prototype requirement/UC12-5.png>)
+   ![](<./Prototype requirement/UC12-6.png>)
 
 ## Use-Case Specification: Like/Unlike
 
