@@ -57,7 +57,7 @@
 				- [3.2.3 Password Too Long](#323-password-too-long)
 				- [3.2.4 Rate Limit Exceeded](#324-rate-limit-exceeded)
 				- [3.2.5 Confirm Password Does Not Match](#325-confirm-password-does-not-match)
-				- [3.2.6 Username Already Taken](#326-username-already-taken)
+				- [3.2.6 Username Already Taken, Reserved, or Invalid](#326-username-already-taken-reserved-or-invalid)
 				- [3.2.7 Sign Up with Google Account](#327-sign-up-with-google-account)
 				- [3.2.8 Google Sign Up Username Collision](#328-google-sign-up-username-collision)
 		- [4. Special Requirements](#4-special-requirements)
@@ -72,7 +72,7 @@
 			- [3.1 Basic Flow](#31-basic-flow)
 			- [3.2 Alternative Flows](#32-alternative-flows)
 				- [3.2.1 Invalid Credentials](#321-invalid-credentials)
-				- [3.2.2 Account Suspended](#322-account-suspended)
+				- [3.2.2 Account Suspended or Banned](#322-account-suspended-or-banned)
 				- [3.2.3 Rate Limit Exceeded](#323-rate-limit-exceeded)
 				- [3.2.4 Sign In with Google Account](#324-sign-in-with-google-account)
 				- [3.2.5 Log In with Non-Existent Google Account](#325-log-in-with-non-existent-google-account)
@@ -87,8 +87,8 @@
 		- [3. Flow of Events](#3-flow-of-events)
 			- [3.1 Basic Flow](#31-basic-flow)
 			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Session Already Expired](#321-session-already-expired)
-				- [3.2.2 User Cancels Log Out](#322-user-cancels-log-out)
+				- [3.2.1 User Cancels Log Out](#321-user-cancels-log-out)
+				- [3.2.2 Session Already Expired or Invalid](#322-session-already-expired-or-invalid)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -101,8 +101,10 @@
 			- [3.1 Basic Flow](#31-basic-flow)
 			- [3.2 Alternative Flows](#32-alternative-flows)
 				- [3.2.1 Invalid Input Format](#321-invalid-input-format)
-				- [3.2.2 Validation Errors](#322-validation-errors)
-				- [3.2.3 User Cancels](#323-user-cancels)
+				- [3.2.2 Input Exceeds Maximum Limits](#322-input-exceeds-maximum-limits)
+				- [3.2.3 Username Handle Collision on Update](#323-username-handle-collision-on-update)
+				- [3.2.4 User Cancels Profile Edit](#324-user-cancels-profile-edit)
+				- [3.2.5 Update Avatar Image](#325-update-avatar-image)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -117,8 +119,9 @@
 				- [3.2.1 Incorrect Current Password](#321-incorrect-current-password)
 				- [3.2.2 New Password Matches Old Password](#322-new-password-matches-old-password)
 				- [3.2.3 Confirm Password Does Not Match](#323-confirm-password-does-not-match)
-				- [3.2.4 Weak New Password](#324-weak-new-password)
+				- [3.2.4 Weak or Too Long New Password](#324-weak-or-too-long-new-password)
 				- [3.2.5 User Cancels](#325-user-cancels)
+				- [3.2.6 Rate Limit Exceeded](#326-rate-limit-exceeded)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -435,11 +438,12 @@
 | :--- | :--- | :--- | :--- |
 | 19/Jul/2026 | 1.0 | Initial draft: Documented all 21 Use-Case Specifications covering Auth, Core Interactions, and Moderation. | Nguyễn Hải Trọng |
 | 06/Aug/2026 | 1.1 | Update the Alternative Flow and Reordered sections for clarity | Nguyễn Hải Trọng |
+| 22/Aug/2026 | 1.2 | Update UCS 01–05 to reflect current app implementation (onboarding redirection, role-based login routing, username collision handling, avatar management, and NIST password constraints) | Nguyễn Tuấn An |
 
 ## Use-Case Specification: Sign Up
-*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An* 
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-01
 
 ### 1. Sign Up
@@ -447,91 +451,91 @@
 * **Actor(s):** Guest
 
 #### 1.1 Brief Description
-This use case allows an unauthenticated guest to create a new user account and profile on the FOZ platform using their email and a secure password.
+This use case allows an unauthenticated guest to create a new user account and initial profile on the FOZ platform using an email, unique username, and secure password, or via Google OAuth authentication.
 
 ### 2. Preconditions
 * The user must be a Guest (unauthenticated).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the Guest navigates to the Registration page.
-2. The user enters a valid email address, a unique username, and a strong password.
-3. The user clicks "Create account".
-4. The system validates the inputs (email format, password length > 8 chars).
-5. The system checks if the email is already registered.
-6. The system securely hashes the password using bcrypt.
-7. The system creates a new record in the `user_accounts` table (role: `standard`, status: `active`) and a default record in the `profiles` table.
-8. The system issues an access token and a refresh token (saved in `refresh_sessions`).
-9. The system redirects the user to the Home Feed.
+1. The use case begins when the Guest navigates to the Registration page (`/register`).
+2. The user enters a unique username, a valid email address, a strong password, and confirms the password.
+3. The user clicks "Sign up" (or "Create account").
+4. The system validates the inputs (email format, username length 3–30 characters and allowed characters `[a-z0-9._]`, password length between 8 and 128 characters, and password confirmation match).
+5. The system checks if the email or username is already registered in the database.
+6. The system securely hashes the password using bcrypt (cost factor 12).
+7. The system creates a new record in the `user_accounts` table (role: `standard`, status: `active`) and a default profile record in the `profiles` table (with display name initialized to username).
+8. The system issues a JWT access token and creates an active session in `refresh_sessions`, setting the `refresh_token` http-only cookie.
+9. The system redirects the user to the Onboarding Profile Setup page (`/onboarding/avatar`) to configure their display name and avatar (or proceed to the Home Feed).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Email Already Exists
-1. If at step 5, the email exists in the database.
-2. The system aborts the registration.
-3. The system displays a generic error: "An account with this email already exists".
+1. If at step 5, the entered email address already exists in the database.
+2. The system aborts the registration and returns HTTP 409 (`EMAIL_TAKEN`).
+3. The system displays an error message: "An account with this email already exists".
 4. The flow resumes at step 2.
 
 ##### 3.2.2 Weak Password
 1. If at step 4, the password is less than 8 characters.
-2. The system highlights the field with "Password must be at least 8 characters".
+2. The system highlights the password field and displays: "Password must be at least 8 characters".
 3. The flow resumes at step 2.
 
 ##### 3.2.3 Password Too Long
 1. If at step 4, the password exceeds 128 characters.
-2. The system aborts and displays "Password is too long".
+2. The system highlights the password field and displays: "Password is too long".
 3. The flow resumes at step 2.
 
 ##### 3.2.4 Rate Limit Exceeded
 1. If the user makes more than 100 registration attempts within 15 minutes.
-2. The system rejects the request and displays "Too many requests, slow down."
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ##### 3.2.5 Confirm Password Does Not Match
 1. If at step 4, the confirmation password does not match the entered password.
-2. The system highlights the confirmation field and displays "Passwords do not match".
+2. The system highlights the confirmation field and displays: "Passwords do not match".
 3. The flow resumes at step 2.
 
-##### 3.2.6 Username Already Taken
-1. If at step 5, the chosen username exists in the database.
-2. The system aborts the registration and displays "This username is already taken".
+##### 3.2.6 Username Already Taken, Reserved, or Invalid
+1. If at step 4 or 5, the chosen username already exists in the database, is a reserved keyword (e.g., `admin`, `moderator`, `system`), or contains characters other than lowercase letters, numbers, underscores, and periods.
+2. The system aborts registration and displays the specific validation error (e.g., "This username is already taken", "This username is reserved", or "Username can only contain lowercase letters, numbers, underscores, and periods").
 3. The flow resumes at step 2.
 
 ##### 3.2.7 Sign Up with Google Account
-1. If at step 2, the user chooses to "Continue with Google".
-2. The system redirects the user to the Google OAuth consent screen.
+1. At step 2, the user chooses to "Continue with Google".
+2. The system initiates Google OAuth (popup or redirect to Google OAuth consent screen).
 3. The user successfully authenticates with Google.
-4. The system automatically provisions a `user_accounts` and `profiles` record using the Google profile data, deriving a unique username from their email prefix.
-5. The system issues access and refresh tokens, bypassing standard registration validation.
-6. The flow resumes at step 8.
+4. The system automatically provisions a `user_accounts` record (passwordless) and `profiles` record using Google profile data, deriving a unique base username from the email prefix.
+5. The system issues access and refresh tokens, displays a success notification ("Account created! Set up your profile."), and redirects the user to the onboarding page (`/onboarding/avatar`).
 
 ##### 3.2.8 Google Sign Up Username Collision
 1. If at step 4 of the Google Sign Up flow, the derived base username is already taken by another user or is a reserved keyword.
-2. The system automatically generates a unique username by appending a numeric counter to the base name.
-3. The system proceeds to provision the account with the newly generated username.
+2. The system automatically generates a unique username by appending an incremental numeric counter (e.g., base name + "1") to the base name.
+3. The system proceeds to provision the account with the newly generated unique username.
 
 ### 4. Special Requirements
-* **Security:** Passwords must be hashed via bcrypt with a minimum cost of 12. Plaintext passwords must never be logged.
+* **Security:** Passwords must be hashed via bcrypt with a minimum cost factor of 12. Plaintext passwords must never be logged. JWT access tokens are stored in client memory; refresh tokens are stored in http-only `SameSite=Lax` cookies.
+* **Rate Limiting:** Maximum 100 registration attempts per 15 minutes per IP address.
 
 ### 5. Postconditions
-* A new user account and profile are saved in the database. The user is signed in.
+* A new active user account and profile are saved in the database. An active session is stored in `refresh_sessions`. The user is authenticated.
 
 ### 6. Extension Points
 * None.
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):**
-    ![](<./Prototype requirement/UC01-1.png>)
+    ![](<./Prototype requirement/UC-01/0.png>)
 * **Screen 2 (Alt Flow - Email Already Exists):**
-    ![](<./Prototype requirement/UC01-2.png>)
+    ![](<./Prototype requirement/UC-01/2.png>)
 * **Screen 3 (Alt Flow - Weak Password):**
-    ![](<./Prototype requirement/UC01-3.png>)
+    ![](<./Prototype requirement/UC-01/3.png>)
 * **Screen 4 (Alt Flow - Password Too Long):**
-    ![](<./Prototype requirement/UC01-4.png>)
+    ![](<./Prototype requirement/UC-01/4.png>)
 * **Screen 5 (Alt Flow - Rate Limit Exceeded):**
     ![](<./Prototype requirement/UC01-5.png>)
 * **Screen 6 (Alt Flow - Confirm Password Does Not Match):**
-    ![](<./Prototype requirement/UC01-6.png>)
+    ![](<./Prototype requirement/UC-01/3.png>)
 * **Screen 7 (Alt Flow - Username Already Taken):**
     ![](<./Prototype requirement/UC01-7.png>)
 * **Screen 8 (Alt Flow - Sign Up with Google Account):**
@@ -540,14 +544,14 @@ This use case allows an unauthenticated guest to create a new user account and p
     ![](<./Prototype requirement/UC01-9-1.png>)
     This is the email to test the alternative flow.
     ![](<./Prototype requirement/UC01-9-2.png>)
-    The website already has an username that matches the Google account .
+    The website already has a username that matches the Google account email prefix.
     ![](<./Prototype requirement/UC01-9-3.png>)
     The system automatically generates a unique username by appending number "1" to the base name.
 
 ## Use-Case Specification: Log In
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-02
 
 ### 1. Log In
@@ -555,56 +559,57 @@ This use case allows an unauthenticated guest to create a new user account and p
 * **Actor(s):** Guest
 
 #### 1.1 Brief Description
-This use case describes how a registered Guest accesses their account by providing valid credentials.
+This use case describes how a registered user accesses their account by providing valid credentials (email and password) or authenticating via Google OAuth.
 
 ### 2. Preconditions
-* The user is unauthenticated.
+* The user is unauthenticated (Guest).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the Guest navigates to the Login page.
-2. The user enters their email and password, then clicks "Sign In".
-3. The system finds the user in `user_accounts` and verifies the password hash.
-4. The system checks if the account status is `active`.
-5. The system issues an Access Token and sets a Refresh Token cookie.
-6. The system redirects the user to the Home Feed.
+1. The use case begins when the Guest navigates to the Login page (`/login`).
+2. The user enters their registered email address and password, then clicks "Log in".
+3. The system finds the user in `user_accounts` and verifies the password hash using bcrypt.
+4. The system checks if the user account status is `active`.
+5. The system issues a short-lived JWT Access Token and sets an http-only Refresh Token cookie (recording the session in `refresh_sessions`).
+6. The system redirects the user based on their role: Administrators to `/admin`, Moderators to `/moderator`, and Standard Users to the Home Feed (`/`).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Invalid Credentials
-1. If at step 3, the email is not found or the password does not match.
-2. The system displays: "Invalid email or password".
+1. If at step 3, the email is not found in the database or the password does not match.
+2. The system rejects the request with HTTP 401 (`INVALID_CREDENTIALS`) and displays: "Invalid email or password".
 3. The flow resumes at step 2.
 
-##### 3.2.2 Account Suspended
-1. If at step 4, the account status is `suspended` or `banned`.
-2. The system displays: "Your account is not currently available."
+##### 3.2.2 Account Suspended or Banned
+1. If at step 4, the account status is `suspended` or `banned` (not `active`).
+2. The system rejects authentication with HTTP 403 (`ACCOUNT_NOT_ACTIVE`) and displays: "Your account is not currently available."
 3. The use case ends.
 
 ##### 3.2.3 Rate Limit Exceeded
 1. If the user makes more than 100 login attempts within 15 minutes.
-2. The system rejects the request and displays "Too many requests, slow down."
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ##### 3.2.4 Sign In with Google Account
 1. If at step 2, the user chooses to "Sign in with Google".
-2. The system redirects the user to the Google OAuth consent screen.
+2. The system initiates Google OAuth (popup or redirect to Google OAuth consent screen).
 3. The user successfully authenticates with Google.
-4. The system checks the database for an existing Google social link or matching email.
-5. The system verifies the account is active, issues an Access Token, and sets a Refresh Token cookie.
-6. The flow resumes at step 6.
+4. The system checks the database for an existing Google social link or matching email in `user_accounts`.
+5. The system verifies the account is active, issues an Access Token, sets the Refresh Token cookie, and redirects the user based on role (or to onboarding if new).
+6. The use case ends.
 
 ##### 3.2.5 Log In with Non-Existent Google Account
 1. If at step 4 of the Google Sign In flow, the system finds no existing user account associated with the Google profile or email.
-2. The system automatically provisions a new user account on the fly (including auto-generating a unique username) instead of rejecting the login.
-3. The login attempt is seamlessly converted into a successful registration.
-4. The flow resumes at step 5 of the Google Sign In flow.
+2. The system automatically provisions a new user account on the fly (including auto-generating a unique username and saving profile details) instead of rejecting the login.
+3. The login attempt is seamlessly converted into a successful registration, and the user is redirected to the onboarding profile setup page (`/onboarding/avatar`).
+4. The use case ends.
 
 ### 4. Special Requirements
-* **Rate Limiting:** Maximum 100 attempts per 15 minutes to prevent brute-force attacks.
+* **Rate Limiting:** Maximum 100 attempts per 15 minutes per IP to prevent brute-force attacks.
+* **Security:** Passwords verified via timing-safe comparison; access tokens kept in memory; refresh tokens in http-only cookies.
 
 ### 5. Postconditions
-* The user is authenticated and an active session is recorded in `refresh_sessions`.
+* The user is authenticated, an active session is recorded in `refresh_sessions`, and the user is navigated to the appropriate landing view.
 
 ### 6. Extension Points
 * None.
@@ -629,12 +634,12 @@ This use case describes how a registered Guest accesses their account by providi
 ## Use-Case Specification: Log Out
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1  
 **Document identifier:** FOZ-UCS-03
 
 ### 1. Log Out
 * **Use-Case ID:** UC-03
-* **Actor(s):** Standard User
+* **Actor(s):** Authenticated User (Standard User, Moderator, Administrator)
 
 #### 1.1 Brief Description
 Allows an authenticated user to securely end their active session on the current device.
@@ -644,28 +649,32 @@ Allows an authenticated user to securely end their active session on the current
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user clicks the "Sign out" button.
-2. The system reads the refresh cookie to identify the current session.
-3. The system updates the `revoked_at` timestamp in the `refresh_sessions` table for that session.
-4. The system clears the local access token and the refresh cookie from the browser.
-5. The system redirects the user to the Login page.
+1. The use case begins when the user clicks the "Log out" / "Sign out" button in the navigation or sidebar.
+2. The system opens the Logout confirmation modal (`LogoutDialog`), displaying the user's avatar, account handle/email, and confirmation prompt ("Log out of your account?").
+3. The user clicks "Log out" in the dialog.
+4. The client sends a `POST /api/v1/auth/logout` request.
+5. The backend validates the refresh cookie and updates the `revoked_at` timestamp in the `refresh_sessions` table to invalidate the session.
+6. The backend clears the `refresh_token` http-only cookie from the response.
+7. The client clears the JWT access token and user state from the local authentication store.
+8. The modal closes and the user state updates to unauthenticated (Guest).
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1 Session Already Expired
-1. If at step 2, the session token is already expired or invalid.
-2. The system proceeds to step 4 without database updates.
-
-##### 3.2.2 User Cancels Log Out
-1. If the system prompts for confirmation and the user selects "Cancel".
+##### 3.2.1 User Cancels Log Out
+1. At step 2, the user clicks "Cancel", presses the Escape key, or clicks outside the modal.
 2. The system closes the dialog and no action is taken.
-3. The use case ends.
+3. The user remains authenticated and the use case ends.
+
+##### 3.2.2 Session Already Expired or Invalid
+1. If at step 4, the refresh session token is already expired, revoked, or missing.
+2. The backend clears the refresh cookie and responds successfully.
+3. The client clears local authentication state and the use case ends.
 
 ### 4. Special Requirements
-* None.
+* **Security:** Immediate server-side session revocation in `refresh_sessions` and complete purging of client authentication credentials.
 
 ### 5. Postconditions
-* The user is signed out and redirected to a public page.
+* The user's session is marked revoked in `refresh_sessions`, authentication cookies/tokens are cleared, and the client returns to an unauthenticated state.
 
 ### 6. Extension Points
 * None.
@@ -679,7 +688,7 @@ Allows an authenticated user to securely end their active session on the current
 ## Use-Case Specification: Manage Profile
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-04
 
 ### 1. Manage Profile
@@ -687,42 +696,57 @@ Allows an authenticated user to securely end their active session on the current
 * **Actor(s):** Standard User
 
 #### 1.1 Brief Description
-Allows the user to update their public-facing information such as display name, bio, location, and website.
+Allows an authenticated user to view and update their public profile details, including display name, unique username handle, bio, location, website URL, and avatar image.
 
 ### 2. Preconditions
-* The user is authenticated.
+* The user must be authenticated and viewing their own profile page (`/profiles/@username` or `/profile`).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user navigates to "Edit Profile".
-2. The system retrieves current data from the `profiles` table.
-3. The user edits text fields (Display Name, Bio, Location, Website) and clicks "Save".
-4. The system validates the inputs (e.g., URL format for website).
-5. The system updates the `profiles` table and the `updated_at` timestamp.
-6. The system displays a success message.
+1. The use case begins when the user navigates to their profile page and clicks the "Edit profile" button.
+2. The system opens the `ProfileEditModal`, pre-populating fields (Avatar, Username handle, Display Name, Bio, Location, Website) with current data from the `profiles` and `user_accounts` tables.
+3. The user modifies text fields (Display Name, Bio, Location, Website, or Username) and clicks "Save".
+4. The system validates the inputs (Display Name 1–50 characters and valid characters, Bio at most 160 characters, Location at most 100 characters, Website at most 200 characters with valid URL format, Username 3–30 characters and valid format).
+5. The client submits a `PATCH /api/v1/profile/me` request.
+6. The backend updates the `profiles` table (and `user_accounts` if username was changed) and updates the `updated_at` timestamp.
+7. The system displays a success toast ("Profile updated successfully"), closes the modal, and refreshes the profile view with updated details.
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Invalid Input Format
-1. If at step 4, the website URL is invalid.
-2. The system displays an error below the website field.
+1. If at step 4, the website URL is invalid (e.g. missing domain dot or bad protocol) or Display Name contains disallowed special characters.
+2. The system displays field validation error messages below the respective input fields.
 3. The flow resumes at step 3.
 
-##### 3.2.2 Validation Errors
-1. If at step 4, inputs exceed max lengths (Display Name: 50, Bio: 160, Location: 100, Website: 200 characters) or Display Name contains invalid characters.
-2. The system displays specific field validation errors.
+##### 3.2.2 Input Exceeds Maximum Limits
+1. If at step 4, any text input exceeds its maximum character limit (Display Name: 50, Bio: 160, Location: 100, Website: 200).
+2. The system displays specific field validation errors indicating character limits.
 3. The flow resumes at step 3.
 
-##### 3.2.3 User Cancels
-1. If at step 3, the user clicks "Cancel" instead of "Save".
-2. The system discards any unsaved changes and returns to the profile view.
+##### 3.2.3 Username Handle Collision on Update
+1. If at step 3, the user modifies their username handle to one that already exists for another account.
+2. The system displays a collision confirmation dialog: "The username has already existed. The system will generate a unique name by adding a number. Do you want to proceed? [Yes] [No]".
+3. If the user clicks "Yes", the system re-submits the request with auto-generation enabled, appends an incremental numeric suffix (e.g., `username1`), updates the username, and saves the profile.
+4. If the user clicks "No", the confirmation dialog closes and the user can manually change the username handle.
+
+##### 3.2.4 User Cancels Profile Edit
+1. If at step 3, the user clicks "Cancel", clicks the close icon, or clicks outside the modal.
+2. The system discards all pending changes and closes the modal without modifying database records.
 3. The use case ends.
 
+##### 3.2.5 Update Avatar Image
+1. At step 2, the user clicks on the avatar preview to select an image file.
+2. The client validates that the file is a supported image format (PNG, JPEG, GIF, WebP) and does not exceed 2MB.
+3. The client compresses the image to WebP and uploads it to Cloudinary (or encodes as base64 fallback), updating the avatar via `POST /api/v1/profile/me/avatar`.
+4. The system updates the avatar preview and persists the new `avatar_url`.
+5. The flow resumes at step 3.
+
 ### 4. Special Requirements
-* None.
+* **Performance:** Avatar images are compressed on the client before upload to minimize bandwidth and storage.
+* **Cleanup:** When an avatar hosted on Cloudinary is replaced, the previous asset is asynchronously destroyed.
 
 ### 5. Postconditions
-* Profile data is updated in the database.
+* The user's profile information (and username if changed) is updated in the database and visible publicly.
 
 ### 6. Extension Points
 * **Change Password:** Extended via UC-05.
@@ -739,7 +763,7 @@ Allows the user to update their public-facing information such as display name, 
 ## Use-Case Specification: Change Password
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-05
 
 ### 1. Change Password
@@ -747,53 +771,59 @@ Allows the user to update their public-facing information such as display name, 
 * **Actor(s):** Standard User
 
 #### 1.1 Brief Description
-Allows an authenticated user to change their password securely by verifying their current password.
+Allows an authenticated user to change their password securely by verifying their current password and providing a new password meeting NIST security standards.
 
 ### 2. Preconditions
-* The user is authenticated.
+* The user must be authenticated.
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case extends UC-04 when the user selects "Change password".
+1. The use case begins when the user navigates to the Change Password interface (accessible via `/settings` under Account Settings or `/change-password`).
 2. The user enters their current password, a new password, and confirms the new password.
 3. The user clicks "Update password".
-4. The system verifies the current password against the stored `password_hash`.
-5. The system validates the new password strength.
-6. The system hashes the new password and updates `user_accounts`.
-7. The system displays a success toast message and redirects to home.
+4. The system verifies the current password against the stored `password_hash` in `user_accounts` using bcrypt.
+5. The system validates the new password (length 8–128 characters, differs from current password, and matches confirmation password).
+6. The system hashes the new password with bcrypt (cost factor 12) and updates `user_accounts.password_hash` and `updated_at`.
+7. The system displays a success toast message ("Password updated"), resets the input fields, and redirects to the Home page (if on the standalone page).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Incorrect Current Password
-1. If at step 4, the current password does not match.
-2. The system displays "Invalid credentials".
-3. The flow resumes at step 2.
+1. If at step 4, the current password entered does not match the stored hash.
+2. The system rejects the request with HTTP 401 (`INCORRECT_CURRENT_PASSWORD`).
+3. The system highlights the current password field with "Incorrect current password" and displays an error toast.
+4. The flow resumes at step 2.
 
 ##### 3.2.2 New Password Matches Old Password
-1. If at step 4, the new password is exactly the same as the current password.
-2. The system rejects the request and displays "New password must differ from the current one".
+1. If at step 5, the new password is identical to the current password.
+2. The system rejects the request and displays: "New password must differ from the current one".
 3. The flow resumes at step 2.
 
 ##### 3.2.3 Confirm Password Does Not Match
 1. If at step 5, the confirmation password does not match the new password.
-2. The system highlights the confirmation field and displays "Passwords do not match".
+2. The system highlights the confirmation field and displays: "Passwords do not match".
 3. The flow resumes at step 2.
 
-##### 3.2.4 Weak New Password
-1. If at step 5, the new password is less than 8 characters.
-2. The system rejects the request and displays "Password must be at least 8 characters".
+##### 3.2.4 Weak or Too Long New Password
+1. If at step 5, the new password is less than 8 characters or exceeds 128 characters.
+2. The system rejects the request and displays the appropriate error (e.g., "Password must be at least 8 characters" or "Password is too long").
 3. The flow resumes at step 2.
 
 ##### 3.2.5 User Cancels
-1. If at step 2, the user clicks "Back" instead of "Update password".
-2. The system discards the input and returns to the Homepage screen.
+1. If at step 2, the user clicks "Back" or "Back to home" instead of "Update password".
+2. The system discards all inputs and returns to the previous screen.
+3. The use case ends.
+
+##### 3.2.6 Rate Limit Exceeded
+1. If the user makes more than 100 password change requests within 15 minutes.
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ### 4. Special Requirements
-* **Security:** The new password must not be identical to the old password.
+* **Security:** Passwords must be hashed using bcrypt (cost 12); current password must be verified before changes are applied; new password must not be identical to the old password.
 
 ### 5. Postconditions
-* The user's password hash is updated.
+* The user's `password_hash` in `user_accounts` is updated with the new hash.
 
 ### 6. Extension Points
 * None.
