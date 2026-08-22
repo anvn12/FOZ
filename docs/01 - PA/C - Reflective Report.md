@@ -101,7 +101,7 @@ During this project, I worked on core features like the admin dashboard and user
 
 ### Nguyễn Hải Trọng (24127311) — Backend & Database Lead / Full-Stack Developer
 
-
+During the project, I designed the core database schema, authored the Vision Document, developed comprehensive Use-Case Specifications, and implemented key backend features like post creation. For PA5, I designed detailed manual test cases for the AI Summary feature and reviewed and refined AI-generated test cases for the Profile Management and Search & Discovery functional groups. I faced significant challenges, including occasionally missing deadlines and a laptop failure during PA2 that impacted our progress. I am deeply grateful to my teammates for stepping up to cover my tasks during that time. Ultimately, this experience built my foundational industry knowledge by teaching me the mechanics of TDD, the practical application of Spec Kit, and how to collaborate effectively with AI Agents and my team.
 
 ### Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer
 
