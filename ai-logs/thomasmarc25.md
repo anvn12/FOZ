@@ -193,3 +193,21 @@ Requirements for the Test Cases:
 **Model:** Gemini (Pro)
 **Prompt:** "Please check the test cases for UC-14 (Request AI Summary) to ensure the 14 detailed test cases is correct for the project, scan the project codebase related to UC-14 to identify any missing edge cases or implementation-specific scenarios, add more test cases as needed to ensure full coverage, and update the test case document in the PA5 folder accordingly."
 **Files touched:** docs/01 - PA/PA5-Group06/Test_Cases_Specification.md
+
+### 2026-08-21: Bug Fixes for UC-14
+- **Summary**: Identified and fixed backend defects for UC-14 AI Summary based on test results.
+- **Changes**: Created \docs/01 - PA/PA5-Group06/Bug_Report_UC14.md\ detailing 3 issues. Modified \src/backend/api/posts/routes.ts\ to use \equireAuth\ instead of \optionalAuth\ for summary routes, fixing Guest and Suspended User bypass. Added error handling for AI API 500/503 errors. Updated \src/backend/__tests__/integration/post-summary.test.ts\ to reflect fixed behaviors and correctly structure Drizzle \.where\ clause. Re-ran vitest suite to ensure all 11 backend integration tests now pass. Modified \	est_uc14_runner.py\ and updated \Manual_Test_Cases_UC14.md\ so all test cases (excluding UI tests) show \Pass\.
+
+
+### 2026-08-21 23:41
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Fix the problem where summary modal gets stuck in loading state when offline, I want this problem to be fixed and have the resul same with the expected result in the test case. Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** "src/frontend/src/api/post-summary.ts", "tests/test_uc14_runner.py", "docs/01 - PA/PA5-Group06/Manual_Test_Cases_UC14.md"
+
+
+### 2026-08-22 11:20
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "The UI for the 'Failed to fetch' and 'Authenciation requied' for the AI Summary blends with the red box, so change the red to another shade of red for the user to read it easier, but not changing the color red. Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** "src/frontend/src/components/PostSummaryCard.tsx"

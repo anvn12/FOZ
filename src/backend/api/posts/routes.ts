@@ -158,7 +158,7 @@ postRouter.post("/:postId/report", requireAuth, validateBody(createReportRequest
   }
 });
 
-postRouter.get("/:postId/summary", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
+postRouter.get("/:postId/summary", requireAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
   try {
     const postId = req.params.postId as string;
     const result = await getOrGeneratePostSummary(postId, false);
@@ -171,11 +171,12 @@ postRouter.get("/:postId/summary", optionalAuth, summaryRateLimiter, async (req:
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
-    next(err);
+    // Handle AI API errors or unhandled exceptions
+    return res.status(503).json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
   }
 });
 
-postRouter.post("/:postId/summary/refresh", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
+postRouter.post("/:postId/summary/refresh", requireAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
   try {
     const postId = req.params.postId as string;
     const result = await getOrGeneratePostSummary(postId, true);
@@ -188,7 +189,8 @@ postRouter.post("/:postId/summary/refresh", optionalAuth, summaryRateLimiter, as
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
-    next(err);
+    // Handle AI API errors or unhandled exceptions
+    return res.status(503).json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
   }
 });
 
