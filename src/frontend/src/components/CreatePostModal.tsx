@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { createPost, InteractionApiError } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
-import { NetworkError } from "#frontend/api/network";
+import { NetworkError, showOfflineToast, isOffline } from "#frontend/api/network";
 import { useProfile } from "#frontend/api/profile";
 import {
   validateImageFile,
@@ -74,10 +74,13 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               fileSize: asset.bytes,
             });
           } catch (cErr) {
+            toast.dismiss(toastId);
+            if (cErr instanceof NetworkError || isOffline()) {
+              throw cErr instanceof NetworkError ? cErr : new NetworkError();
+            }
             console.warn("Cloudinary upload failed, falling back to base64:", cErr);
             try {
               const compressed = await compressImageToBase64(item.file, "feed_post");
-              toast.dismiss(toastId);
               finalAttachments.push({
                 fileUrl: compressed.base64,
                 fileType: "image/webp",
@@ -85,7 +88,7 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               });
             } catch (err) {
               console.warn("Compression fallback error:", err);
-              toast.error(`Failed to process ${item.file.name}`, { id: toastId });
+              toast.error(`Failed to process ${item.file.name}`);
             }
           }
         } else {
@@ -108,8 +111,11 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
         attachments: finalAttachments.length > 0 ? (finalAttachments as any) : undefined,
       });
     } catch (err: any) {
-      // The network guard already toasts for connectivity failures; don't duplicate.
-      if (err instanceof NetworkError) return;
+      toast.dismiss();
+      if (err instanceof NetworkError) {
+        showOfflineToast();
+        return;
+      }
       if (err instanceof InteractionApiError && err.fields) {
         const messages = Object.values(err.fields);
         const firstMsg = messages[0];
