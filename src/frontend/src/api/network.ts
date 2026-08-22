@@ -40,15 +40,30 @@ export function showOfflineToast(): void {
 export async function fetchWithNetworkGuard(
   input: RequestInfo | URL,
   init?: RequestInit,
+  timeoutMs = 15000,
 ): Promise<Response> {
   if (isOffline()) {
     showOfflineToast();
     throw new NetworkError();
   }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  if (init?.signal) {
+    init.signal.addEventListener("abort", () => controller.abort());
+  }
+
   try {
-    return await fetch(input, init);
+    const res = await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+    return res;
   } catch {
     showOfflineToast();
     throw new NetworkError();
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
