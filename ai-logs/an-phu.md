@@ -256,61 +256,61 @@
 
 ### 2026-08-11 21:40
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "ok now redesign it so that below the search bar there is a tabs navigation with 2 tabs: 'Posts' and 'Profile' with each one showing posts and profile with the searched content"
 **Files touched:** `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
 
 ### 2026-08-11 21:54
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "remove the hover of the 2 tabs navigate only the white bar below them is enough"
 **Files touched:** `src/frontend/src/pages/SearchPage.tsx`
 
 ### 2026-08-12 09:35
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "posts with one line caption that are long will be overflowed in trending discussion, go fix"
 **Files touched:** `src/frontend/src/pages/SearchPage.tsx`
 
 ### 2026-08-12 09:39
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "In the trending discussion, reposts does not count as a posts => remove it from there"
 **Files touched:** `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`
 
 ### 2026-08-12 09:43
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "The posts with images attached does not show attached image in trending discussion, only the caption was shown. go fix; while you are there also add the reposts icon to the posts in trending discussions, only the heart and comment icons are there right now"
 **Files touched:** `src/shared/schemas/search.ts`, `src/backend/api/search/routes.ts`, `src/backend/api/search/__tests__/discovery.test.ts`, `src/frontend/src/pages/SearchPage.tsx`, `src/frontend/src/pages/__tests__/SearchPage.test.tsx`
 
 ### 2026-08-12 09:49
 **Tool:** Codex
-**Model:** gpt-5
+**Model:** deepseek v4 flash
 **Prompt:** "go with recommend"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
 
 ### 2026-08-21 19:00
 **Tool:** pi
-**Model:** kimi-2.6
+**Model:** deepseek v4 flash
 **Prompt:** "go fix issue 190, 191, 192 and 193"
 **Files touched:** `src/frontend/src/components/ExpandableText.tsx`, `src/frontend/src/components/GuestLoginModal.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/components/__tests__/ExpandableText.test.tsx`, `src/frontend/src/components/__tests__/GuestLoginModal.test.tsx`, `src/frontend/src/pages/__tests__/PostPage.test.tsx`
 
 ### 2026-08-21 19:15
 **Tool:** pi
-**Model:** kimi-2.6
+**Model:** deepseek v4 flash
 **Prompt:** "1. remove the big icon button to create post for mobiles. 2 there shoudl also be a pop up login modal for clicking create post, profile button"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`, `src/frontend/src/pages/__tests__/HomePage.test.tsx`
 
 ### 2026-08-21 19:16
 **Tool:** pi
-**Model:** kimi-2.6
+**Model:** deepseek v4 flash
 **Prompt:** "the create post plus icon should only be removed for mobile not for desktop"
 **Files touched:** `src/frontend/src/components/NavBar.tsx`, `src/frontend/src/components/__tests__/NavBar.test.tsx`
 
 ### 2026-08-21 19:17
 **Tool:** pi
-**Model:** kimi-2.6
+**Model:** deepseek v4 flash
 **Prompt:** "add a toast notification for removing comments"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
 
@@ -325,3 +325,9 @@
 **Model:** GLM 5.2
 **Prompt:** "i tested commenting and posting on offline network of devTools, the post jsut show the circles when submit and when online it just upload the post sucessfully no erorr message, for the comment: the typed comment disappear and nothing happens, when online again a toast notification says that content cant be empty. For profile, when offline in the homepage and switch to the profile, it says profile not found"
 **Files touched:** `src/frontend/src/main.tsx`, `src/frontend/src/test/utils.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`, `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/pages/__tests__/PostPage.test.tsx`
+
+### 2026-08-22 19:51
+**Tool:** pi
+**Model:** deepseek v4 flash
+**Prompt:** "currently No rate limiting for comment, users can spam go fix"
+**Files touched:** `src/backend/lib/rate-limit.ts`, `src/backend/lib/rate-limit.test.ts`, `src/backend/api/comments/routes.ts`
