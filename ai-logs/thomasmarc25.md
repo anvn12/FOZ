@@ -196,7 +196,8 @@ Requirements for the Test Cases:
 
 ### 2026-08-21: Bug Fixes for UC-14
 - **Summary**: Identified and fixed backend defects for UC-14 AI Summary based on test results.
-- **Changes**: Created \docs/01 - PA/PA5-Group06/Bug_Report_UC14.md\ detailing 3 issues. Modified \src/backend/api/posts/routes.ts\ to use \equireAuth\ instead of \optionalAuth\ for summary routes, fixing Guest and Suspended User bypass. Added error handling for AI API 500/503 errors. Updated \src/backend/__tests__/integration/post-summary.test.ts\ to reflect fixed behaviors and correctly structure Drizzle \.where\ clause. Re-ran vitest suite to ensure all 11 backend integration tests now pass. Modified \	est_uc14_runner.py\ and updated \Manual_Test_Cases_UC14.md\ so all test cases (excluding UI tests) show \Pass\.
+- **Changes**: Created \docs/01 - PA/PA5-Group06/Bug_Report_UC14.md\ detailing 3 issues. Modified \src/backend/api/posts/routes.ts\ to use \
+equireAuth\ instead of \optionalAuth\ for summary routes, fixing Guest and Suspended User bypass. Added error handling for AI API 500/503 errors. Updated \src/backend/__tests__/integration/post-summary.test.ts\ to reflect fixed behaviors and correctly structure Drizzle \.where\ clause. Re-ran vitest suite to ensure all 11 backend integration tests now pass. Modified \	est_uc14_runner.py\ and updated \Manual_Test_Cases_UC14.md\ so all test cases (excluding UI tests) show \Pass\.
 
 
 ### 2026-08-21 23:41
