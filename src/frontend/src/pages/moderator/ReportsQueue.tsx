@@ -94,9 +94,10 @@ export function ReportsQueuePage() {
       await resolveReport(reportId, { action, notes });
       toast.success(`Action applied successfully`);
       queryClient.invalidateQueries({ queryKey: ["admin"] });
-      fetchReports();
     } catch (err: any) {
       toast.error(err.message || "Failed to process report action");
+    } finally {
+      fetchReports();
     }
   }
 
