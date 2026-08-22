@@ -331,3 +331,9 @@
 **Model:** deepseek v4 flash
 **Prompt:** "currently No rate limiting for comment, users can spam go fix"
 **Files touched:** `src/backend/lib/rate-limit.ts`, `src/backend/lib/rate-limit.test.ts`, `src/backend/api/comments/routes.ts`
+
+### 2026-08-22 20:45
+**Tool:** pi
+**Model:** deepseek v4 flash
+**Prompt:** "2 things to change, 1. change to wait 60s from the last allowed comment rolling window. 2 wire this same rate limit for creating posts also"
+**Files touched:** `src/backend/lib/rate-limit.ts`, `src/backend/lib/rate-limit.test.ts`, `src/backend/api/comments/routes.ts`, `src/backend/api/posts/routes.ts`
