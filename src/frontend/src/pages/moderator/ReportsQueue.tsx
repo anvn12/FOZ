@@ -59,6 +59,17 @@ export function ReportsQueuePage() {
     fetchReports();
   }, [filter]);
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setEscalateDialog(false);
+        setDeleteDialog(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   async function fetchReports() {
     setLoading(true);
     try {
