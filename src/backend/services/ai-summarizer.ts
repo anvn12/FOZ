@@ -23,7 +23,7 @@ export class DefaultAISummarizerProvider implements AISummarizerProvider {
       try {
         return await this.callLLM(apiKey, input);
       } catch (err) {
-        console.warn("[AISummarizer] LLM call failed, returning fallback summary:", err);
+        console.error("[AISummarizer] ❌ DETAILED ERROR: LLM call failed. Reason:", err);
         return this.generateFallbackSummary(input);
       }
     }
@@ -33,7 +33,7 @@ export class DefaultAISummarizerProvider implements AISummarizerProvider {
 
   private async callLLM(apiKey: string, input: AISummarizerInput): Promise<AISummarizerOutput> {
     const prompt = this.buildPrompt(input);
-    const models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+    const models = ["gemini-3.6-flash", "gemini-flash-latest", "gemini-3.5-flash"];
     let lastError: Error | null = null;
 
     for (const model of models) {
@@ -51,15 +51,22 @@ export class DefaultAISummarizerProvider implements AISummarizerProvider {
           const data = await response.json();
           const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
           if (rawText) {
-            const parsed = JSON.parse(rawText);
-            return {
-              postSnapshot: parsed.postSnapshot || "Summary unavailable",
-              keyHighlights: Array.isArray(parsed.keyHighlights) ? parsed.keyHighlights : [],
-              sentiment: parsed.sentiment || "Neutral",
-            };
+            try {
+              const cleanText = rawText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+              const parsed = JSON.parse(cleanText);
+              return {
+                postSnapshot: parsed.postSnapshot || "Summary unavailable",
+                keyHighlights: Array.isArray(parsed.keyHighlights) ? parsed.keyHighlights : [],
+                sentiment: parsed.sentiment || "Neutral",
+              };
+            } catch (parseError) {
+              console.error("[AISummarizer] Failed to parse JSON from LLM. Raw text was:", rawText);
+              throw parseError;
+            }
           }
         } else {
-          lastError = new Error(`LLM API (${model}) returned status ${response.status}`);
+          const errorText = await response.text();
+          lastError = new Error(`LLM API (${model}) returned status ${response.status}. Body: ${errorText}`);
         }
       } catch (err: any) {
         lastError = err;

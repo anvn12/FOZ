@@ -42,6 +42,8 @@ export function usePostSummary(postId: string, enabled = false) {
     queryFn: () => fetchPostSummary(postId),
     enabled,
     staleTime: Infinity,
+    retry: 0,
+    networkMode: 'always',
   });
 }
 

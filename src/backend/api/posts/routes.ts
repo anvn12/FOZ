@@ -174,7 +174,8 @@ postRouter.get("/:postId/summary", requireAuth, summaryRateLimiter, async (req: 
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
-    next(err);
+    // Handle AI API errors or unhandled exceptions
+    return res.status(503).json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
   }
 });
 
@@ -194,7 +195,8 @@ postRouter.post("/:postId/summary/refresh", requireAuth, summaryRateLimiter, asy
     if (err instanceof Error && err.message === "POST_NOT_FOUND") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
-    next(err);
+    // Handle AI API errors or unhandled exceptions
+    return res.status(503).json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
   }
 });
 

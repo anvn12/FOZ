@@ -43,7 +43,7 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
     );
   }
 
-  if (isLoading || refreshMutation.isPending) {
+  if ((isLoading && !isError) || refreshMutation.isPending) {
     return (
       <div className="my-3 p-4 bg-slate-900/60 rounded-xl border border-indigo-500/30 animate-pulse flex flex-col space-y-2">
         <div className="h-4 bg-indigo-500/20 rounded w-1/3"></div>
@@ -55,11 +55,11 @@ export function PostSummaryCard({ postId }: PostSummaryCardProps) {
 
   if (isError || !data?.success) {
     return (
-      <div className="my-3 p-3 bg-red-950/30 rounded-xl border border-red-500/30 text-xs text-red-300 flex items-center justify-between">
+      <div className="my-3 p-4 bg-red-950/50 rounded-xl border border-red-500/50 text-sm text-red-200 font-medium flex items-center justify-between shadow-sm">
         <span>{error?.message || "Failed to load summary"}</span>
         <button
           onClick={() => refetch()}
-          className="px-2.5 py-1 bg-red-800 hover:bg-red-700 text-white rounded font-medium"
+          className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg font-semibold transition-colors shadow"
         >
           Retry
         </button>
