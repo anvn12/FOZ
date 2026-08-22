@@ -214,7 +214,7 @@ describe("Feed generation", () => {
       await createRepost(userB.id, original.id);
 
       // Original becomes non-public after the repost was created.
-      await db.update(posts).set({ visibilityState: "private" }).where(eq(posts.id, original.id));
+      await db.update(posts).set({ visibilityState: "hidden" }).where(eq(posts.id, original.id));
 
       const result = await listPopularFeed(10);
       expect(result.items).toEqual([]);
