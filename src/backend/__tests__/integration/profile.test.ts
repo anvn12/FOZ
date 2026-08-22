@@ -108,18 +108,38 @@ describe("Profile Management API Integration Tests", () => {
       expect(res.body.error.code).toBe("VALIDATION");
     });
 
-    it("should return 422 if bio exceeds max length", async () => {
+    it("should return 422 if bio exceeds max length (boundary test)", async () => {
       const { accessToken } = await registerAndGetToken();
-      const longBio = "a".repeat(161);
-      const res = await getAgent()
-        .patch("/api/v1/profiles/me")
-        .set("Authorization", `Bearer ${accessToken}`)
-        .send({
-          displayName: "Alice",
-          bio: longBio,
-        });
+      
+      // Test exactly 160 characters (Boundary Pass)
+      const exactBio = "a".repeat(160);
+      const resPass = await getAgent().patch("/api/v1/profiles/me").set("Authorization", `Bearer ${accessToken}`).send({ displayName: "Alice", bio: exactBio });
+      expect(resPass.status).toBe(200);
 
+      // Test exactly 161 characters (Boundary Fail)
+      const longBio = "a".repeat(161);
+      const resFail = await getAgent().patch("/api/v1/profiles/me").set("Authorization", `Bearer ${accessToken}`).send({ displayName: "Alice", bio: longBio });
+      expect(resFail.status).toBe(422);
+    });
+
+    it("should trim whitespace and return 422 if displayName is only spaces", async () => {
+      const { accessToken } = await registerAndGetToken();
+      const res = await getAgent().patch("/api/v1/profiles/me").set("Authorization", `Bearer ${accessToken}`).send({ displayName: "     " });
       expect(res.status).toBe(422);
+      expect(res.body.error.code).toBe("VALIDATION");
+    });
+
+    it("should prevent Stored XSS in bio and displayName", async () => {
+      const { accessToken } = await registerAndGetToken();
+      const xssPayload = "<script>alert('xss')</script>";
+      const res = await getAgent().patch("/api/v1/profiles/me").set("Authorization", `Bearer ${accessToken}`).send({ displayName: "Alice", bio: xssPayload });
+      
+      // API might reject it via validation (422) or sanitize it (200). We just ensure it doesn't store raw script tags.
+      if (res.status === 200) {
+        expect(res.body.profile.bio).not.toContain("<script>");
+      } else {
+        expect(res.status).toBe(422);
+      }
     });
 
     it("should format and validate website correctly", async () => {
@@ -170,6 +190,26 @@ describe("Profile Management API Integration Tests", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.avatarUrl).toBe(validAvatarBase64);
+    });
+    
+    it("should return 413 or 422 if avatar payload is too large (DoS prevention)", async () => {
+      const { accessToken } = await registerAndGetToken();
+      const massivePayload = "data:image/png;base64," + "a".repeat(5 * 1024 * 1024); // 5MB artificial payload
+      const res = await getAgent().post("/api/v1/profiles/me/avatar").set("Authorization", `Bearer ${accessToken}`).send({ avatar: massivePayload });
+      
+      expect([413, 422]).toContain(res.status);
+    });
+
+    it("should allow a user to delete their avatar by sending null", async () => {
+      const { accessToken } = await registerAndGetToken();
+      
+      // Upload first
+      await getAgent().post("/api/v1/profiles/me/avatar").set("Authorization", `Bearer ${accessToken}`).send({ avatar: validAvatarBase64 });
+      
+      // Delete avatar
+      const res = await getAgent().patch("/api/v1/profiles/me").set("Authorization", `Bearer ${accessToken}`).send({ displayName: "Alice", avatarUrl: null });
+      expect(res.status).toBe(200);
+      expect(res.body.profile.avatarUrl).toBeNull();
     });
 
     it("should return 422 for invalid image mime type", async () => {

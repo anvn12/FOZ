@@ -242,7 +242,44 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
     });
   });
 
-  describe("performance NFR (Vision §6: <500ms for standard queries)", () => {
+  describe("edge cases & security", () => {
+    it("safely handles SQL injection attempts and special characters without 500 errors", async () => {
+      const maliciousQueries = [
+        "' OR 1=1; --",
+        "%; DROP TABLE users;",
+        "<script>alert(1)</script>",
+        "\\\\",
+        "\"",
+      ];
+
+      for (const q of maliciousQueries) {
+        const res = await getAgent().get("/api/v1/search").query({ q, type: "posts" });
+        expect(res.status).toBe(200); // Should safely return no results or sanitized results
+        expect(Array.isArray(res.body.items)).toBe(true);
+      }
+    });
+
+    it("paginates results correctly when matching items exceed the limit", async () => {
+      const { userId } = await registerUserWithDisplayName("PaginationUser");
+      // Insert 25 posts matching "paginate"
+      for (let i = 0; i < 25; i++) {
+        await insertPost({ authorId: userId, body: `paginate post ${i}` });
+      }
+
+      const res = await getAgent().get("/api/v1/search").query({ q: "paginate", type: "posts" });
+      
+      expect(res.status).toBe(200);
+      expect(res.body.items.length).toBeLessThanOrEqual(20); // Default pagination limit should be 20 or similar
+      expect(res.body.nextCursor).not.toBeNull();
+      
+      // Test fetching the next page
+      const resPage2 = await getAgent().get("/api/v1/search").query({ q: "paginate", type: "posts", cursor: res.body.nextCursor });
+      expect(resPage2.status).toBe(200);
+      expect(resPage2.body.items.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("performance NFR (Vision A 6: <500ms for standard queries)", () => {
     it("responds within 500ms", async () => {
       const { userId } = await registerUserWithDisplayName("Perf");
       for (let i = 0; i < 20; i++) {

@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { screen, waitFor, fireEvent } from "@testing-library/react";
@@ -159,4 +159,42 @@ describe("ProfilePage Component", () => {
       expect(screen.queryByText("Mod")).toBeNull();
     });
   });
+
+  it('should render 404/not found state if profile data is null or API returns 404', () => {
+    vi.mocked(profileApi.useProfile).mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: { status: 404 },
+    } as any);
+
+    renderWithProviders(<ProfilePage />, { route: '/profiles/non-existent' });
+    expect(screen.getByText(/Profile Not Found/i)).toBeDefined();
+  });
+
+  it('safely renders HTML tags in bio as plain text to prevent XSS', async () => {
+    const maliciousBio = '<script>alert("xss")</script>';
+    vi.mocked(profileApi.useProfile).mockReturnValue({
+      data: {
+        id: 'profile-id',
+        userAccountId: 'user-id',
+        displayName: 'Alice Test',
+        bio: maliciousBio,
+        location: 'Oakland',
+        website: 'test.com',
+        avatarUrl: null,
+        createdAt: '2026-07-20',
+        updatedAt: '2026-07-20',
+      },
+      isLoading: false,
+      error: null,
+    } as any);
+
+    renderWithProviders(<ProfilePage />, { route: '/profiles/user-id' });
+    await waitFor(() => {
+      const bioElement = screen.getByText(maliciousBio);
+      expect(bioElement).toBeDefined();
+      expect(bioElement.innerHTML).not.toContain('<script>');
+    });
+  });
 });
+

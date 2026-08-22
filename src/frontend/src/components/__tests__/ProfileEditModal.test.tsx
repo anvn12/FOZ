@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
@@ -16,10 +16,11 @@ describe("ProfileEditModal Component", () => {
   const mockProfile = {
     id: "profile-id",
     userAccountId: "user-id",
+    username: "alice_initial",
     displayName: "Alice Initial",
     bio: "Initial bio",
     location: "Oakland",
-    website: "alice.com",
+    website: "https://alice.com",
     avatarUrl: null,
     createdAt: "2026-07-20",
     updatedAt: "2026-07-20",
@@ -66,7 +67,9 @@ describe("ProfileEditModal Component", () => {
 
     const nameInput = screen.getByLabelText(/display name/i);
     fireEvent.change(nameInput, { target: { value: "Alice Updated" } });
-
+    const usernameInput = screen.getByLabelText(/username/i);
+    fireEvent.change(usernameInput, { target: { value: 'alice_update' } });
+    
     const saveButton = screen.getByRole("button", { name: /save/i });
     fireEvent.click(saveButton);
 
@@ -81,4 +84,45 @@ describe("ProfileEditModal Component", () => {
       );
     });
   });
+
+  it('submits a null avatarUrl when the user removes their avatar', async () => {
+    const p = { ...mockProfile, avatarUrl: 'http://example.com/avatar.png' };
+    renderWithProviders(
+      <ProfileEditModal isOpen={true} onClose={mockOnClose} profile={p} />
+    );
+
+    const removeBtn = screen.getByRole('button', { name: /remove avatar/i });
+    fireEvent.click(removeBtn);
+
+    const usernameInput = screen.getByLabelText(/username/i);
+    fireEvent.change(usernameInput, { target: { value: 'alice_update' } });
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({ avatarUrl: null })
+      );
+    });
+  });
+
+  it('validates bio length before submitting', async () => {
+    renderWithProviders(
+      <ProfileEditModal isOpen={true} onClose={mockOnClose} profile={mockProfile} />
+    );
+
+    const bioInput = screen.getByLabelText(/bio/i);
+    fireEvent.change(bioInput, { target: { value: 'a'.repeat(200) } });
+
+    const usernameInput = screen.getByLabelText(/username/i);
+    fireEvent.change(usernameInput, { target: { value: 'alice_update' } });
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(mockMutate).not.toHaveBeenCalled();
+    });
+  });
 });
+
+

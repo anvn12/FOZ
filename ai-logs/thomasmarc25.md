@@ -212,3 +212,36 @@ equireAuth\ instead of \optionalAuth\ for summary routes, fixing Guest and Suspe
 **Model:** Gemini Pro
 **Prompt:** "The UI for the 'Failed to fetch' and 'Authenciation requied' for the AI Summary blends with the red box, so change the red to another shade of red for the user to read it easier, but not changing the color red. Remember to log AI activities in AGENTS.md before ending your turn."
 **Files touched:** "src/frontend/src/components/PostSummaryCard.tsx"
+
+
+### 2026-08-22 23:42
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Please review, refine, and document the AI-generated test cases specifically for the Search & Discovery and Profile Management functional groups..."
+**Files touched:** "
+- src/backend/__tests__/integration/profile.test.ts
+- src/backend/__tests__/integration/search.test.ts
+- docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md"
+
+### 2026-08-23 00:04
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Run the test again for the profile managment and search content works for the refinements just added. If any bug occurred, fix it and update the log md."
+**Files touched:**
+- src/shared/schemas/profile.ts
+- src/backend/api/search/routes.ts
+- src/backend/__tests__/integration/profile.test.ts
+- docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md
+
+- **Time:** 2026-08-23 00:19
+- **Tool:** write_to_file, run_command
+- **Model:** Antigravity (Gemini)
+- **Prompt:** "I forgot that you need to refine test for the frontend as well, please do the refinement for the frontend of the profile management and search. Ensure strict compliance with AGENTS.md before concluding."
+- **Files touched:**
+  - src/frontend/src/pages/__tests__/SearchPage.test.tsx
+  - src/frontend/src/pages/__tests__/ProfilePage.test.tsx
+  - src/frontend/src/components/__tests__/ProfileEditModal.test.tsx
+  - src/frontend/src/pages/SearchPage.tsx
+  - src/frontend/src/components/ProfileEditModal.tsx
+  - docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md
+
