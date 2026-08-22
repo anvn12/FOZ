@@ -62,8 +62,10 @@ describe("Social Auth Routes (/api/v1/auth/google)", () => {
     );
 
     expect(res.status).toBe(302);
-    expect(res.headers.location).toMatch(/\/\?token=/);
-    expect(res.headers.location).toMatch(/[?&]new=1/);
+    const location = new URL(res.headers.location as string, "http://localhost");
+    expect(location.pathname).toBe("/");
+    expect(location.searchParams.get("token")).toBeTruthy();
+    expect(location.searchParams.get("new")).toBe("1");
   });
 
   it("GET / handles root requests and token query params gracefully", async () => {
