@@ -105,7 +105,7 @@ During this project, I worked on core features like the admin dashboard and user
 
 ### Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer
 
-
+During this project, I built up some core features like searching, moderator,... as well as handled the documentation for PAs, fixed bugs. I have learnt a lot of things, especially about the architecture, the workflow and how to set up speckit. I think these experience would assist me a lot in my future projects. Besides, a big shoutout to my teammate, we’ve done such a great job working like a cohesive team.
 
 ### Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer
 
