@@ -38,25 +38,24 @@ Using Spec Kit transformed our development approach from informal prompting into
 ### Limitations compared to traditional development:
 
 - Upfront process overhead: Generating specs, research notes, contracts, and task checklists requires significant initial time investment, which can feel heavy for trivial UI adjustments or minor bug fixes.
-- Maintenance and artifact synchronization: When requirements evolve rapidly during prototyping, keeping all related SpecKit documents (`spec.md`, `plan.md`, `tasks.md`) synchronized with the actual codebase demands continuous manual discipline.
 - Tooling and prompt dependency: Effective use of Spec Kit requires familiarity with specific prompt commands and token management; poor prompts can lead to oversized task lists or generic boilerplate.
 - Token limitation: Spec Kit or any vibe engineering methods often depend on AI tokens. The limitation of tokens and decent models can sometimes make it difficult to generate a quality codes, specifications.
-- Setup Spec Kit and skill sets is time-consuming and not easy for beginners.
-- Harder to learn new coding terminologies.
-
+- Setup Spec Kit and skill sets is time-consuming and requires steep learning curve. Different models, OS, IDEs, code editors, etc. require different set up (e.g. setup Spec Kit on VS Code is different from Antigravity)
 
 ## 3. AI tools usage
 
 ### How AI coding tools contributed to the project:
 
-AI coding assistants such as Google Antigravity (Gemini 3.7 Flash, Gemini 3.1 Pro), GitHub Copilot (GPT-4o, GPT-5.4 mini) deeply integrated into every phase of the software development lifecycle. They assisted in:
+AI coding assistants such as Google Antigravity (Gemini 3.7 Flash, Gemini 3.1 Pro), GitHub Copilot (GPT-4o, GPT-5.4 mini), etc. deeply integrated into every phase of the software development lifecycle. They assisted in:
 
 - Rapidly scaffolding backend route handlers, Drizzle schemas, and Zod validation DTOs.
-- Designing responsive React UI components with Tailwind CSS based on wireframe specifications.
+- Designing responsive React UI components with Tailwind CSS based on design specifications.
 - Generating comprehensive Vitest integration tests covering edge cases, authentication gating, and interaction flows.
 - Executing SpecKit specification and planning workflows from natural-language requirements.
 - Rapidly write draft version for the document required for PA submissions.
 - Maintaining continuous development transparency via automated logging in `ai-logs/<username>.md`.
+- Designing UI for app (Google Stitch)
+- Giving information about exploring and choosing appropriate tech stack, cloud services for the project.
 
 ### Effective aspects:
 
@@ -70,21 +69,24 @@ AI coding assistants such as Google Antigravity (Gemini 3.7 Flash, Gemini 3.1 Pr
 - Superficial "Smoke Test" Generation: AI models sometimes generated shallow assertions (e.g., verifying `typeof fn === 'function'` or duplicating sorting logic in tests) rather than writing genuine end-to-end database queries, requiring manual test refinement during QA reviews.
 - Context Degradation in Long Conversations: Over prolonged sessions, AI agents occasionally lost track of existing utility functions or attempted to re-implement already available helpers.
 - Outdated Suggestions: AI occasionally suggested not suitable services. When our team first asked AI about services for deployment, the AI suggest those with low bandwidth leading to the service change later. 
+- Learning coding skills from AI: learning only basics from AI, not enough for advanced concepts and professional software development.
 
 ## 4. SDLC feedback
 
-Constructive suggestions for improving the Software Development Life Cycle (SDLC) process and course structure:
+So far, we have reached the final PA and have a good understanding of the SDLC process and course structure. Overall, the course and project are well-organized and the team has learned a lot, strengthening both technical and soft skills. The team sincerely thanks the instructors for their guidance.
+
+Below are some constructive suggestions for improving the Software Development Life Cycle (SDLC) process and course structure:
 
 1. Detailed and Actionable Grading Feedback:
-   - Feedback on previous PA submissions was occasionally brief or lacked specific breakdowns, making it difficult for the team to understand exact grading criteria or identify which specific sections lost marks. Also there should be more instruction or more meeting in class.
-   - Suggestion: Provide a transparent, itemized rules with specific feedback comments for each milestone. This will give student teams concrete guidance on areas needing improvement before the subsequent submission.
+   - Feedback on previous PA submissions was occasionally brief or lacked specific breakdowns, making it difficult for the team to understand exact grading criteria or identify which specific sections lost marks. Also there should be more instruction or more meeting in class for both discussions and clarifications.
+   - Suggestion: Provide a transparent, specific feedback comments for each milestone by pointing out exactly what students have done good or not good, . This will give student teams concrete guidance on areas needing improvement before the subsequent submission.
 
 2. Up-to-date and Centralized Course Documentation:
    - Some requirement documents and template files contained outdated instructions or ambiguous specifications that required clarification across different communication channels (e.g. Moodle discussion forum).
-   - Suggestion: Maintain a single, updated repository for all PA templates, grading rubrics, and technical requirements. Clarify modern stack expectations (e.g., TypeScript, modern ORMs, and cloud deployments) early in the semester.
+   - Suggestion: Maintain a single, updated repository for all PA templates, grading criteria, and technical requirements. Clarify modern stack expectations (e.g., TypeScript, modern ORMs, and cloud deployments) early in the semester. Also should provide a template for reports for each PA to help students save time when defining the format.
 
 3. The documentation tasks is overhead:
-   - Our team thinks that the main value of Scrum is about development and minimal documentation, especially for small team size under short period of time.
+   - Our team thinks that the main value of Agile/Scrum is about development and minimal documentation, especially for small team size under short period of time and the huge workload of this course.
    - Suggestion: Optimize the documentation so that it is both more condensed, and more realistic for small team size.
 
 ## 5. Individual contributions
@@ -95,16 +97,16 @@ As Project Manager, I organized sprint planning sessions, coordinated task assig
 
 ### Nguyễn Hải Nam (24127088) — QA Engineer / Full-Stack Developer
 
-As QA Engineer, I designed and documented the system architecture (Container and Component diagrams in C4 model) and established testing protocols for the team. I implemented the User Interactions functional group—including post creation, commenting, threaded replies, and like/reaction systems—as well as the Admin dashboard management features and hashtag discovery. This project deepened my expertise in architectural modeling, Drizzle ORM data persistence patterns, and building rigorous automated test suites for full-stack applications.
+During this project, I worked on core features like the admin dashboard and user interactions, plus a few smaller additions like hashtag feature. I also handled the documentation for all PAs and fixed bugs across the codebase. I have learned a lot—from understanding the overall architecture and system flow, to learning GitHub Speckit and various frameworks and putting them into practice. It was an unforgettable experience for me.
 
 ### Nguyễn Hải Trọng (24127311) — Backend & Database Lead / Full-Stack Developer
 
-As Backend and Database Lead, I created the System Context architectural model and designed the relational PostgreSQL database schema with Drizzle ORM. I implemented the Profile Management functional group, including backend REST APIs, secure password updating, Zod input validation schemas, and corresponding Vitest integration test suites. Through this experience, I mastered relational data modeling, secure trust-boundary validation, and professional test-driven backend development.
+
 
 ### Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer
 
-As UI/UX Designer, I led the user experience design and wireframing for the entire application and translated Figma prototypes into responsive React components using Tailwind CSS. I engineered the Moderator Portal (reports queue, violation reviews, and escalation workflows), the Administrator dashboard UI, and the user post reporting mechanism. This project significantly strengthened my abilities in React component architecture, role-based UI access control (RBAC), and user-centric frontend development.
+
 
 ### Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer
 
-As Frontend Lead, I initialized the frontend codebase using Vite, React 19, and Tailwind CSS, and established frontend architectural standards. I developed the complete User Authentication slice (JWT memory management, secure HTTP-only refresh cookies, bcrypt hashing, and session rotation), built the Feed Generation algorithm ("For You" feed), and created the project demonstration videos. Through this project, I gained comprehensive knowledge in secure web authentication lifecycles, global client state management with Zustand and TanStack Query, and automated SpecKit implementation workflows.
+In this project, I think my contribution was a lot, from setting up the project speckit foundation, team AI usage, the web scaffold, key feature like AuthN, frontend UI overhaul to documentations. I have learnt a lot about architecture and data flow of the whole system throughtout this project. Overall it was pleasant
