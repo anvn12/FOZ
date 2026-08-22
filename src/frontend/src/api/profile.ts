@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 import type { UpdateProfileRequest, UpdateAvatarRequest } from "#shared/schemas/profile";
 
 export interface Profile {
@@ -33,7 +34,7 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(path, {
+  const res = await fetchWithNetworkGuard(path, {
     ...init,
     credentials: "include",
     headers,
@@ -57,9 +58,12 @@ export function getProfile(userId: string) {
 }
 
 export function getProfileByUsername(username: string) {
-  return call<{ profile: Profile }>(`/api/v1/profiles/by-username/${encodeURIComponent(username)}`, {
-    method: "GET",
-  });
+  return call<{ profile: Profile }>(
+    `/api/v1/profiles/by-username/${encodeURIComponent(username)}`,
+    {
+      method: "GET",
+    },
+  );
 }
 
 export function updateProfile(input: UpdateProfileRequest) {
@@ -79,7 +83,7 @@ export function updateAvatar(input: UpdateAvatarRequest) {
 export function useProfile(userId: string) {
   return useQuery({
     queryKey: ["profile", userId],
-    queryFn: () => getProfile(userId).then(res => res.profile),
+    queryFn: () => getProfile(userId).then((res) => res.profile),
     enabled: !!userId,
   });
 }
@@ -87,14 +91,14 @@ export function useProfile(userId: string) {
 export function useProfileByUsername(username: string) {
   return useQuery({
     queryKey: ["profile", "by-username", username],
-    queryFn: () => getProfileByUsername(username).then(res => res.profile),
+    queryFn: () => getProfileByUsername(username).then((res) => res.profile),
     enabled: !!username,
   });
 }
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
-  const currentUserId = useAuthStore(s => s.user?.id);
+  const currentUserId = useAuthStore((s) => s.user?.id);
 
   return useMutation({
     mutationFn: updateProfile,
@@ -110,7 +114,7 @@ export function useUpdateProfile() {
 
 export function useUpdateAvatar() {
   const queryClient = useQueryClient();
-  const currentUserId = useAuthStore(s => s.user?.id);
+  const currentUserId = useAuthStore((s) => s.user?.id);
 
   return useMutation({
     mutationFn: updateAvatar,

@@ -5,7 +5,8 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "../../test/utils.js";
 import { PostPage } from "../PostPage.js";
 import { useAuthStore } from "#frontend/stores/auth";
-import type * as InteractionsApi from "../../api/interactions.js";
+import { NetworkError } from "#frontend/api/network";
+import * as InteractionsApi from "../../api/interactions.js";
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
@@ -24,6 +25,7 @@ vi.mock("react-hot-toast", () => {
 
 const listPosts = vi.fn();
 const listComments = vi.fn();
+const createComment = vi.fn();
 
 vi.mock("../../api/interactions.js", async (importOriginal) => {
   const actual = await importOriginal<typeof InteractionsApi>();
@@ -31,6 +33,7 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
     ...actual,
     listPosts: (...args: unknown[]) => listPosts(...args),
     listComments: (...args: unknown[]) => listComments(...args),
+    createComment: (...args: unknown[]) => createComment(...args),
   };
 });
 
@@ -73,6 +76,7 @@ describe("PostPage", () => {
     vi.clearAllMocks();
     listPosts.mockResolvedValue({ items: [basePost] });
     listComments.mockResolvedValue({ items: [] });
+    createComment.mockRejectedValue(new NetworkError());
     useAuthStore.setState({ user: null, accessToken: null });
   });
 
@@ -111,18 +115,38 @@ describe("PostPage", () => {
     listComments.mockResolvedValue({ items: [fresh, popular] });
     renderWithProviders(<PostPage />);
 
-    // Both top-level comments render.
     await waitFor(() => {
       expect(screen.getByText("Popular comment")).toBeDefined();
       expect(screen.getByText("Fresh comment")).toBeDefined();
     });
 
-    // Verify the DOM order: in Top mode the high-engagement comment ranks first.
-    // The comments list is the container that holds the comment bodies.
     const popularEl = screen.getByText("Popular comment");
     const freshEl = screen.getByText("Fresh comment");
     const compare = popularEl.compareDocumentPosition(freshEl);
     // Node.DOCUMENT_POSITION_FOLLOWING = 4 → popular comes before fresh.
     expect(compare & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("preserves the typed comment draft when the submit fails offline (#3.2.9)", async () => {
+    listComments.mockResolvedValue({ items: [makeComment({})] });
+    useAuthStore.setState({
+      user: { id: "u1", email: "a@b.com", role: "standard", status: "active" },
+      accessToken: "token",
+    });
+
+    renderWithProviders(<PostPage />);
+
+    const textarea = await screen.findByPlaceholderText("Add a comment...");
+    fireEvent.change(textarea, { target: { value: "Hello offline" } });
+
+    // Click the send button (Enter is suppressed on mobile, so use the button).
+    const sendBtn = await screen.findByRole("button", { name: "Comment" });
+    fireEvent.click(sendBtn);
+
+    // The draft must still be in the box after the failed (offline) submit.
+    await waitFor(() => {
+      expect((textarea as HTMLTextAreaElement).value).toBe("Hello offline");
+    });
+    expect(createComment).toHaveBeenCalled();
   });
 });

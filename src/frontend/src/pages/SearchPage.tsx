@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
 import { formatRelativeTime } from "#frontend/components/FeedPostItem";
@@ -10,16 +11,30 @@ import { Separator } from "@/components/ui/separator";
 
 export function SearchPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedTerm, setSubmittedTerm] = useState("");
   const [searchType, setSearchType] = useState<SearchType>("all");
   const [activeTab, setActiveTab] = useState<"posts" | "profile">("posts");
+
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSearchTerm("");
+    setSubmittedTerm("");
+    setSearchType("all");
+    setActiveTab("posts");
+  }, [location.key]);
 
   const { data: searchResults, isLoading } = useSearch(submittedTerm, searchType);
   const { data: discoveryData } = useSearchDiscovery();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (searchTerm.length > 500 || searchTerm.trim().length > 500) {
+      toast.error("Search query is too long. Please limit to 500 characters.");
+      return;
+    }
     const trimmed = searchTerm.trim();
     if (!trimmed) return;
     setSearchType("all");
@@ -34,6 +49,10 @@ export function SearchPage() {
   };
 
   const handleTopicClick = (topicTag: string) => {
+    if (topicTag.length > 500 || topicTag.trim().length > 500) {
+      toast.error("Search query is too long. Please limit to 500 characters.");
+      return;
+    }
     setSearchType("all");
     setActiveTab("posts");
     setSearchTerm(topicTag);
@@ -64,6 +83,7 @@ export function SearchPage() {
                 <form className="relative w-full group" onSubmit={handleSearchSubmit}>
                   <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
                   <input 
+                    ref={searchInputRef}
                     className="w-full bg-zinc-500/20 border border-outline-variant text-on-surface h-12  leading-[1.6] rounded-full py-4 pl-[60px] pr-[100px] focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline shadow-sm" 
                     placeholder="Search FOZ..." 
                     type="text"
@@ -76,9 +96,7 @@ export function SearchPage() {
                         type="button"
                         onClick={() => {
                           setSearchTerm("");
-                          setSubmittedTerm("");
-                          setSearchType("all");
-                          setActiveTab("posts");
+                          searchInputRef.current?.focus();
                         }}
                         className="text-outline hover:text-primary p-2 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Clear search"

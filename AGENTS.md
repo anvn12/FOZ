@@ -21,5 +21,5 @@ Always read `.specify/memory/constitution.md` first for binding project
 principles and the technology stack, and use `.specify/templates/` for
 plan/spec/tasks/checklist scaffolding.
 
-**Current plan:** `specs/022-settings-page/plan.md` — Settings Page feature
+**Current plan:** `specs/026-refine-ai-summarization/plan.md` — Refine AI Summarization Test Suite
 <!-- SPECKIT END -->

@@ -2,6 +2,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent } from "@testing-library/react";
+import toast from "react-hot-toast";
 import { renderWithProviders } from "../../test/utils.js";
 import { SearchPage } from "../SearchPage.js";
 import * as searchApi from "../../api/search.js";
@@ -12,6 +13,17 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("react-hot-toast", () => {
+  const toastMock = {
+    error: vi.fn(),
+    success: vi.fn(),
+  };
+  return {
+    toast: toastMock,
+    default: toastMock,
   };
 });
 
@@ -154,5 +166,95 @@ describe("SearchPage Component", () => {
 
     // Search results UI ("People") should NOT be visible
     expect(screen.queryByText("People")).toBeNull();
+  });
+
+  it("shows toast error notification when search query exceeds 500 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "a".repeat(501);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    const submitBtn = screen.getByLabelText("Submit search");
+    expect(submitBtn).toBeDefined();
+
+    fireEvent.click(submitBtn);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 500 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+  });
+
+  it("shows toast error notification when submitting form with search query longer than 500 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "b".repeat(505);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    fireEvent.submit(input.closest("form")!);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 500 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+  });
+
+  it("clears search input, focuses input, and keeps search results page active when clicking the clear 'x' button", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results page is rendered
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // Find and click the clear 'x' button
+    const clearBtn = screen.getByLabelText("Clear search");
+    expect(clearBtn).toBeDefined();
+    fireEvent.click(clearBtn);
+
+    // Verify search input is cleared and focused
+    expect(input.value).toBe("");
+    expect(document.activeElement).toBe(input);
+
+    // Verify search results page is STILL rendered (not reset to discovery view)
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+    expect(screen.queryByText("Trending Topics")).toBeNull();
+
+    // User can continue typing a new query in the search bar
+    fireEvent.change(input, { target: { value: "design" } });
+    expect(input.value).toBe("design");
+    expect(screen.getByLabelText("Submit search")).toBeDefined();
+  });
+
+  it("resets search results and returns to basic discovery page when clicking the search icon in the navigation bar", () => {
+    renderWithProviders(<SearchPage />);
+
+    // 1. Enter search and submit
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results are present
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // 2. Find Search link in navigation bar
+    const searchNavLinks = screen.getAllByRole("link").filter((link) => link.getAttribute("href") === "/search");
+    expect(searchNavLinks.length).toBeGreaterThan(0);
+
+    // Click Search icon in nav bar
+    fireEvent.click(searchNavLinks[0]!);
+
+    // 3. Verify search results are reset and basic search page (discovery) is shown
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+    expect(screen.queryByText("React post content")).toBeNull();
+    expect(screen.getByText("Trending Topics")).toBeDefined();
+    expect(input.value).toBe("");
   });
 });

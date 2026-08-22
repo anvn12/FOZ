@@ -8,6 +8,7 @@ import type {
   ErrorEnvelope,
 } from "#shared/schemas/auth";
 import { useAuthStore, type AuthUser } from "#frontend/stores/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 
 export class ApiError extends Error {
   constructor(
@@ -30,7 +31,7 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(path, {
+  const res = await fetchWithNetworkGuard(path, {
     ...init,
     credentials: "include",
     headers,
@@ -118,7 +119,10 @@ export function useChangePassword() {
   return useMutation({ mutationFn: changePassword });
 }
 
-export function initiateSocialAuth(provider: "google", isMobile: boolean): Promise<AuthResponse | null> {
+export function initiateSocialAuth(
+  provider: "google",
+  isMobile: boolean,
+): Promise<AuthResponse | null> {
   const mode = isMobile ? "redirect" : "popup";
   const url = `/api/v1/auth/${provider}?mode=${mode}`;
 
@@ -157,7 +161,13 @@ export function initiateSocialAuth(provider: "google", isMobile: boolean): Promi
       } else if (event.data?.type === "SOCIAL_AUTH_ERROR") {
         window.removeEventListener("message", messageHandler);
         clearInterval(timer);
-        reject(new ApiError(400, "SOCIAL_AUTH_FAILED", event.data?.error || "Social authentication failed."));
+        reject(
+          new ApiError(
+            400,
+            "SOCIAL_AUTH_FAILED",
+            event.data?.error || "Social authentication failed.",
+          ),
+        );
       }
     };
 
@@ -167,9 +177,10 @@ export function initiateSocialAuth(provider: "google", isMobile: boolean): Promi
       if (popup.closed) {
         clearInterval(timer);
         window.removeEventListener("message", messageHandler);
-        reject(new ApiError(400, "AUTH_CANCELLED", "Social authentication was cancelled or closed."));
+        reject(
+          new ApiError(400, "AUTH_CANCELLED", "Social authentication was cancelled or closed."),
+        );
       }
     }, 1000);
   });
 }
-

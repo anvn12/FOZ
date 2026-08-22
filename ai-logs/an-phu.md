@@ -313,3 +313,15 @@
 **Model:** kimi-2.6
 **Prompt:** "add a toast notification for removing comments"
 **Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-21 21:57
+**Tool:** pi
+**Model:** deepseek v4 flash
+**Prompt:** "ok create a new branch and create a toast notifcation for offline as it affects other functions like posting, scrolling loadmore, checking profile, liking,... Now there is no such thing liek that to notify users that they are offline"
+**Files touched:** `src/frontend/src/api/network.ts`, `src/frontend/src/api/__tests__/network.test.ts`, `src/frontend/src/api/admin.ts`, `src/frontend/src/api/auth.ts`, `src/frontend/src/api/hashtags.ts`, `src/frontend/src/api/interactions.ts`, `src/frontend/src/api/post-summary.ts`, `src/frontend/src/api/profile.ts`, `src/frontend/src/api/search.ts`, `src/frontend/src/api/upload.ts`, `src/frontend/src/components/layout/ModeratorLayout.tsx`, `src/frontend/src/main.tsx`, `src/frontend/src/pages/moderator/ModeratorDashboard.tsx`, `src/frontend/src/pages/moderator/ReportsQueue.tsx`, `src/frontend/src/stores/auth.ts`
+
+### 2026-08-21 22:25
+**Tool:** pi
+**Model:** GLM 5.2
+**Prompt:** "i tested commenting and posting on offline network of devTools, the post jsut show the circles when submit and when online it just upload the post sucessfully no erorr message, for the comment: the typed comment disappear and nothing happens, when online again a toast notification says that content cant be empty. For profile, when offline in the homepage and switch to the profile, it says profile not found"
+**Files touched:** `src/frontend/src/main.tsx`, `src/frontend/src/test/utils.tsx`, `src/frontend/src/pages/PostPage.tsx`, `src/frontend/src/pages/ProfilePage.tsx`, `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/pages/__tests__/PostPage.test.tsx`

@@ -160,6 +160,9 @@ postRouter.post("/:postId/report", requireAuth, validateBody(createReportRequest
 
 postRouter.get("/:postId/summary", requireAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
     const postId = req.params.postId as string;
     const result = await getOrGeneratePostSummary(postId, false);
     return res.status(200).json({
@@ -178,6 +181,9 @@ postRouter.get("/:postId/summary", requireAuth, summaryRateLimiter, async (req: 
 
 postRouter.post("/:postId/summary/refresh", requireAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+    }
     const postId = req.params.postId as string;
     const result = await getOrGeneratePostSummary(postId, true);
     return res.status(200).json({
@@ -193,4 +199,5 @@ postRouter.post("/:postId/summary/refresh", requireAuth, summaryRateLimiter, asy
     return res.status(503).json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
   }
 });
+
 

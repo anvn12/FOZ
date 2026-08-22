@@ -40,7 +40,7 @@
      - Prototype requirements expanded from 1 to 3 screens.
 
    - **UC-08 (Search Content):**
-     - Reworked alternative flows: `Search feature unavailable` (search button hidden until a valid query is entered) and `No matching results` ("No results for search query.").
+     - Reworked and expanded alternative flows: `Search feature unavailable` (search button hidden until a valid query is entered), `Search Query Exceeds Character Limit` (500-char max), `Switch Category (Posts and Profile)`, and `No matching results` ("No results for search query.").
      - Performance requirement updated to 2–3 seconds under good network conditions.
      - Prototype requirements expanded from 1 to 3 screens.
 
@@ -49,8 +49,8 @@
      - Prototype requirements expanded from 1 to 2 screens.
 
    - **UC-10 (Create Post):**
-     - Added alternative flows: `Post creation canceled`, updated `Content Validation Error` (submit button disabled on empty body), and `Exceeds Limits` (5,000 chars / 5 media attachments / 10 chained thread posts).
-     - Prototype requirements expanded from 1 to 3 screens.
+     - Added alternative flows: `Post creation canceled`, `Media Attachment Error`, `Media Attachment Cancelled`, `Exceeds Limit of Characters`, `Exceeds Limit of Number of Media Attachments`, `Valid Image with Large Size` and `Network Timeout after Attaching Any Image`, updated `Content Validation Error` (submit button disabled on empty body).
+     - Prototype requirements expanded to 17 screens.
 
    - **UC-11 (Interact with Post):**
      - Added alternative flows making the extension points explicit: `Reply` → UC-12, `Like` → UC-13, `Report` → UC-16.
