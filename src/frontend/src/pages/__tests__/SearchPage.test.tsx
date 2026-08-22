@@ -2,6 +2,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent } from "@testing-library/react";
+import toast from "react-hot-toast";
 import { renderWithProviders } from "../../test/utils.js";
 import { SearchPage } from "../SearchPage.js";
 import * as searchApi from "../../api/search.js";
@@ -12,6 +13,17 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("react-hot-toast", () => {
+  const toastMock = {
+    error: vi.fn(),
+    success: vi.fn(),
+  };
+  return {
+    toast: toastMock,
+    default: toastMock,
   };
 });
 
@@ -154,5 +166,38 @@ describe("SearchPage Component", () => {
 
     // Search results UI ("People") should NOT be visible
     expect(screen.queryByText("People")).toBeNull();
+  });
+
+  it("shows toast error notification when search query exceeds 500 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "a".repeat(501);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    const submitBtn = screen.getByLabelText("Submit search");
+    expect(submitBtn).toBeDefined();
+
+    fireEvent.click(submitBtn);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 500 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+  });
+
+  it("shows toast error notification when submitting form with search query longer than 500 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "b".repeat(505);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    fireEvent.submit(input.closest("form")!);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 500 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
   });
 });
