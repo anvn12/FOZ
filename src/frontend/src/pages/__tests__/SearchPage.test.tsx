@@ -231,4 +231,30 @@ describe("SearchPage Component", () => {
     expect(input.value).toBe("design");
     expect(screen.getByLabelText("Submit search")).toBeDefined();
   });
+
+  it("resets search results and returns to basic discovery page when clicking the search icon in the navigation bar", () => {
+    renderWithProviders(<SearchPage />);
+
+    // 1. Enter search and submit
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results are present
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // 2. Find Search link in navigation bar
+    const searchNavLinks = screen.getAllByRole("link").filter((link) => link.getAttribute("href") === "/search");
+    expect(searchNavLinks.length).toBeGreaterThan(0);
+
+    // Click Search icon in nav bar
+    fireEvent.click(searchNavLinks[0]!);
+
+    // 3. Verify search results are reset and basic search page (discovery) is shown
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+    expect(screen.queryByText("React post content")).toBeNull();
+    expect(screen.getByText("Trending Topics")).toBeDefined();
+    expect(input.value).toBe("");
+  });
 });

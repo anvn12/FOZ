@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
@@ -11,12 +11,20 @@ import { Separator } from "@/components/ui/separator";
 
 export function SearchPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedTerm, setSubmittedTerm] = useState("");
   const [searchType, setSearchType] = useState<SearchType>("all");
   const [activeTab, setActiveTab] = useState<"posts" | "profile">("posts");
 
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSearchTerm("");
+    setSubmittedTerm("");
+    setSearchType("all");
+    setActiveTab("posts");
+  }, [location.key]);
 
   const { data: searchResults, isLoading } = useSearch(submittedTerm, searchType);
   const { data: discoveryData } = useSearchDiscovery();
