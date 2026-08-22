@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
 import { formatRelativeTime } from "#frontend/components/FeedPostItem";
@@ -20,6 +21,10 @@ export function SearchPage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (searchTerm.length > 500 || searchTerm.trim().length > 500) {
+      toast.error("Search query is too long. Please limit to 500 characters.");
+      return;
+    }
     const trimmed = searchTerm.trim();
     if (!trimmed) return;
     setSearchType("all");
@@ -34,6 +39,10 @@ export function SearchPage() {
   };
 
   const handleTopicClick = (topicTag: string) => {
+    if (topicTag.length > 500 || topicTag.trim().length > 500) {
+      toast.error("Search query is too long. Please limit to 500 characters.");
+      return;
+    }
     setSearchType("all");
     setActiveTab("posts");
     setSearchTerm(topicTag);
