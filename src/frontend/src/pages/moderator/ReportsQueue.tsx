@@ -28,12 +28,32 @@ export function ReportsQueuePage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("All Types");
+  const [searchQuery, setSearchQuery] = useState("");
   const [escalateDialog, setEscalateDialog] = useState(false);
   const [escalateId, setEscalateId] = useState<string | null>(null);
   const [escalatePriority, setEscalatePriority] = useState("Standard");
   const [escalateNotes, setEscalateNotes] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const filteredReports = reports.filter((report) => {
+    if (
+      typeFilter !== "All Types" &&
+      report.targetType?.toLowerCase() !== typeFilter.toLowerCase()
+    ) {
+      return false;
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchId = (report.id || "").toLowerCase().includes(q);
+      const matchDetails = (report.details || "").toLowerCase().includes(q);
+      const matchReporter = (report.reporter?.displayName || "").toLowerCase().includes(q);
+      const matchReason = (report.reasonType || "").toLowerCase().includes(q);
+      return matchId || matchDetails || matchReporter || matchReason;
+    }
+    return true;
+  });
 
   useEffect(() => {
     fetchReports();
@@ -186,7 +206,11 @@ export function ReportsQueuePage() {
           <label className="block font-label-sm text-label-sm text-secondary mb-1 uppercase px-1">
             Type
           </label>
-          <select className="w-full bg-surface border-outline-variant rounded-lg text-body-md focus:ring-primary/20 focus:border-primary transition-all">
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="w-full bg-surface border-outline-variant rounded-lg text-body-md focus:ring-primary/20 focus:border-primary transition-all"
+          >
             <option>All Types</option>
             <option>Post</option>
             <option>Comment</option>
@@ -202,6 +226,8 @@ export function ReportsQueuePage() {
               search
             </span>
             <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border-outline-variant rounded-lg pl-10 pr-4 py-[7px] text-body-md focus:ring-primary/20 focus:border-primary transition-all"
               placeholder="ID, content, or username..."
               type="text"
@@ -210,7 +236,11 @@ export function ReportsQueuePage() {
         </div>
         <div className="flex items-end h-full self-end pb-1">
           <button
-            onClick={() => setFilter("all")}
+            onClick={() => {
+              setFilter("all");
+              setTypeFilter("All Types");
+              setSearchQuery("");
+            }}
             className="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-lg font-label-md hover:bg-outline-variant transition-colors"
           >
             Clear Filters
@@ -254,14 +284,14 @@ export function ReportsQueuePage() {
                     Loading queue...
                   </td>
                 </tr>
-              ) : reports.length === 0 ? (
+              ) : filteredReports.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-on-surface-variant">
                     No reports found for the selected filter.
                   </td>
                 </tr>
               ) : (
-                reports.map((report) => (
+                filteredReports.map((report) => (
                   <tr
                     key={report.id}
                     className={`hover:bg-surface-container-low transition-colors group ${report.status === "dismissed" ? "opacity-70" : ""}`}
@@ -371,7 +401,7 @@ export function ReportsQueuePage() {
         {/* Pagination */}
         <div className="px-6 py-4 bg-surface-container-low flex justify-between items-center border-t border-outline-variant">
           <p className="font-label-sm text-label-sm text-secondary">
-            Showing {reports.length} reports
+            Showing {filteredReports.length} reports
           </p>
           <div className="flex gap-2">
             <button className="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-secondary hover:bg-surface-container-high">
