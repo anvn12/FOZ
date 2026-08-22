@@ -8,7 +8,7 @@ import { HomePage } from "../HomePage.js";
 import { GUEST_LOGIN_PROMPT_KEY } from "#frontend/components/GuestLoginModal";
 import { useAuthStore } from "#frontend/stores/auth";
 import * as profileApi from "../../api/profile.js";
-import type * as InteractionsApi from "../../api/interactions.js";
+import * as interactionsApi from "../../api/interactions.js";
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -27,7 +27,7 @@ vi.mock("../../api/profile.js", () => ({
 
 // Mock interactions api
 vi.mock("../../api/interactions.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof InteractionsApi>();
+  const actual = await importOriginal<typeof interactionsApi>();
   return {
     ...actual,
     listFeed: vi.fn().mockResolvedValue({
@@ -35,22 +35,26 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
         {
           id: "post-1",
           authorId: "u1",
-          authorName: "ohiris",
           content: "test 1",
+          parentId: null,
+          visibilityState: "public",
+          lifecycleState: "active",
           createdAt: new Date().toISOString(),
           likeCount: 0,
           commentCount: 0,
-          isLiked: false,
+          liked: false,
         },
         {
           id: "post-2",
           authorId: "u2",
-          authorName: "jillianbydesignn",
           content: "test 2",
+          parentId: null,
+          visibilityState: "public",
+          lifecycleState: "active",
           createdAt: new Date().toISOString(),
           likeCount: 0,
           commentCount: 0,
-          isLiked: false,
+          liked: false,
         },
       ],
       nextCursor: null,
@@ -180,5 +184,116 @@ describe("HomePage Component", () => {
 
     // Logout dialog confirmation text should appear
     expect(screen.getByText("Log out of your account?")).toBeDefined();
+  });
+
+  it("should prompt login modal and not fetch next page when guest clicks Load more", async () => {
+    const listFeedMock = vi.mocked(interactionsApi.listFeed);
+    listFeedMock.mockResolvedValueOnce({
+      items: [
+        {
+          id: "post-1",
+          authorId: "u1",
+          content: "test 1",
+          parentId: null,
+          visibilityState: "public",
+          lifecycleState: "active",
+          createdAt: new Date().toISOString(),
+          likeCount: 0,
+          commentCount: 0,
+          liked: false,
+        },
+      ],
+      nextCursor: "cursor-page-2",
+    });
+
+    useAuthStore.setState({ user: null, accessToken: null });
+    // Dismiss initial first-visit prompt so we isolate the Load more prompt
+    localStorage.setItem(GUEST_LOGIN_PROMPT_KEY, "1");
+
+    renderWithProviders(<HomePage feedType="latest" />);
+
+    // Initial prompt should not be visible
+    expect(screen.queryByText("Join FOZ")).toBeNull();
+
+    // Wait for post and Load more button to render
+    await waitFor(() => {
+      expect(screen.getByText("Load more")).toBeDefined();
+    });
+
+    // Check initial feed call count
+    expect(listFeedMock).toHaveBeenCalledTimes(1);
+
+    // Click Load more as a guest
+    fireEvent.click(screen.getByText("Load more"));
+
+    // Login modal should be displayed
+    expect(screen.getByText("Log in to view more posts")).toBeDefined();
+    // listFeed should NOT have been called again
+    expect(listFeedMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should fetch next page when authenticated user clicks Load more", async () => {
+    const listFeedMock = vi.mocked(interactionsApi.listFeed);
+    listFeedMock
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: "post-1",
+            authorId: "u1",
+            content: "test 1",
+            parentId: null,
+            visibilityState: "public",
+            lifecycleState: "active",
+            createdAt: new Date().toISOString(),
+            likeCount: 0,
+            commentCount: 0,
+            liked: false,
+          },
+        ],
+        nextCursor: "cursor-page-2",
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: "post-page-2",
+            authorId: "u2",
+            content: "test 2",
+            parentId: null,
+            visibilityState: "public",
+            lifecycleState: "active",
+            createdAt: new Date().toISOString(),
+            likeCount: 0,
+            commentCount: 0,
+            liked: false,
+          },
+        ],
+        nextCursor: null,
+      });
+
+    useAuthStore.setState({
+      user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
+      accessToken: "mock-token",
+    });
+
+    renderWithProviders(<HomePage feedType="latest" />);
+
+    // Wait for post and Load more button to render
+    await waitFor(() => {
+      expect(screen.getByText("Load more")).toBeDefined();
+    });
+
+    expect(listFeedMock).toHaveBeenCalledTimes(1);
+
+    // Click Load more as an authenticated user
+    fireEvent.click(screen.getByText("Load more"));
+
+    // Next page should be fetched
+    await waitFor(() => {
+      expect(listFeedMock).toHaveBeenCalledTimes(2);
+    });
+
+    // Login modal should NOT appear
+    expect(screen.queryByText("Log in to view more posts")).toBeNull();
+    expect(screen.queryByText("Join FOZ")).toBeNull();
   });
 });
