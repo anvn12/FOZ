@@ -95,8 +95,8 @@ export function ReportsQueuePage() {
       toast.success(`Action applied successfully`);
       queryClient.invalidateQueries({ queryKey: ["admin"] });
       fetchReports();
-    } catch (err) {
-      toast.error("Failed to process report action");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to process report action");
     }
   }
 
@@ -497,17 +497,17 @@ export function ReportsQueuePage() {
               <button
                 onClick={() => {
                   const words = escalateNotes.trim().split(/\s+/).filter(Boolean);
-                  if (words.length <= 5) {
-                    toast.error("Please provide a more detailed reason for escalation (> 5 words)");
+                  if (words.length < 5) {
+                    toast.error("A rationale of at least 5 words is required for every moderation decision.");
                     return;
                   }
                   const notes = `[Priority: ${escalatePriority}] ${escalateNotes}`.trim();
                   resolveReportAction(escalateId!, "escalate", notes);
                   setEscalateDialog(false);
                 }}
-                disabled={escalateNotes.trim().split(/\s+/).filter(Boolean).length <= 5}
+                disabled={!escalateNotes.trim()}
                 className={`flex-1 py-2.5 rounded-xl font-bold font-label-md transition-all ${
-                  escalateNotes.trim().split(/\s+/).filter(Boolean).length <= 5
+                  !escalateNotes.trim()
                     ? "bg-surface-container-high text-on-surface-variant cursor-not-allowed"
                     : "bg-primary text-on-primary shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
                 }`}
