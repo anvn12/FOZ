@@ -40,7 +40,7 @@
      - Prototype requirements expanded from 1 to 3 screens.
 
    - **UC-08 (Search Content):**
-     - Reworked alternative flows: `Search feature unavailable` (search button hidden until a valid query is entered) and `No matching results` ("No results for search query.").
+     - Reworked and expanded alternative flows: `Search feature unavailable` (search button hidden until a valid query is entered), `Search Query Exceeds Character Limit` (500-char max), `Switch Category (Posts and Profile)`, and `No matching results` ("No results for search query.").
      - Performance requirement updated to 2–3 seconds under good network conditions.
      - Prototype requirements expanded from 1 to 3 screens.
 

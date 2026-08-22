@@ -157,8 +157,13 @@
 		- [3. Flow of Events](#3-flow-of-events)
 			- [3.1 Basic Flow](#31-basic-flow)
 			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1. **Search feature unavailable**](#321-search-feature-unavailable)
-				- [3.2.2. **No matching results**](#322-no-matching-results)
+				- [3.2.1 Search feature unavailable](#321-search-feature-unavailable)
+				- [3.2.2 Search Query Exceeds Character Limit](#322-search-query-exceeds-character-limit)
+				- [3.2.3 Switch Category (Posts and Profile)](#323-switch-category-posts-and-profile)
+				- [3.2.4 No matching results](#324-no-matching-results)
+				- [3.2.5 Click a hashtag in "TRENDING TOPICS"](#325-click-a-hashtag-in-trending-topics)
+				- [3.2.6 Click a profile in "Suggested Creators"](#326-click-a-profile-in-suggested-creators)
+				- [3.2.7 Click a post in "Trending Discussions"](#327-click-a-post-in-trending-discussions)
 		- [4. Special Requirements](#4-special-requirements)
 		- [5. Postconditions](#5-postconditions)
 		- [6. Extension Points](#6-extension-points)
@@ -963,38 +968,54 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user navigates to the application's search page, then enters a keyword into the search bar and presses Enter.
+1. The use case begins when the user navigates to the application's search page, then enters a keyword into the search bar and presses Enter (or clicks the search icon).
 2. The system sends the query to the backend.
-3. The backend searches the `posts` (body/title) and `profiles` (display_name) tables for matches.
+3. The backend searches the `posts` (body/title) and `profiles` (display_name/username) tables for matches.
 4. The system filters out content that is deleted, hidden, or authored by banned users.
-5. The system displays a categorized list of results (Posts, Users).
+5. The system displays a categorized list of results (Posts, Profile) with the **Posts** tab selected by default.
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1. Search feature unavailable
+##### 3.2.1 Search feature unavailable
 
-1. If at step 2, the search query is empty or just whitespace.
-2. The system does not display the search button until valid index is entered
+1. If at step 1, the search query is empty or contains only whitespace.
+2. The system does not display the search button until a valid search term is entered.
+3. The use case ends.
 
-##### 3.2.2. No matching results
+##### 3.2.2 Search Query Exceeds Character Limit
+
+1. If at step 1 of the basic flow, the user enters a search query exceeding the maximum length (500 characters) and attempts to submit.
+2. The system blocks query submission and displays an error message notifying the user (e.g., "Search query is too long. Please limit to 500 characters.").
+3. The user remains on the search interface to edit the query.
+4. The use case ends.
+
+##### 3.2.3 Switch Category (Posts and Profile)
+
+1. At step 5 of the basic flow, the user switches between the "Posts" and "Profile" category tabs on the search results page.
+2. The system updates the view to display the search results corresponding to the selected category (matching posts or matching user profiles).
+3. The use case ends.
+
+##### 3.2.4 No matching results
 
 1. The user enters a search query.
 2. The system finds no matching content.
 3. The system displays **"No results for search query."**
+4. The use case ends.
 
-##### 3.2.3. Click a hashtag in "TRENDING TOPICS"
+##### 3.2.5 Click a hashtag in "TRENDING TOPICS"
 
 1. The user clicks a hashtag under the **"TRENDING TOPICS"** section on the search page.
 2. The system automatically populates the search bar with the selected hashtag and executes the search query.
 3. The system displays posts matching the selected topic/hashtag.
+4. The use case ends.
 
-##### 3.2.4. Click a profile in "Suggested Creators"
+##### 3.2.6 Click a profile in "Suggested Creators"
 
 1. The user clicks a creator profile under the **"Suggested Creators"** section on the search page.
 2. The system navigates the user to the selected creator's profile page.
 3. The use case ends.
 
-##### 3.2.5. Click a post in "Trending Discussions"
+##### 3.2.7 Click a post in "Trending Discussions"
 
 1. The user clicks a discussion post under the **"Trending Discussions"** section on the search page.
 2. The system navigates the user to the selected post's detail page.
@@ -1012,13 +1033,29 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC08-1.png>)
+  ![](<./Prototype requirement/UC-08/1.png>)
 
- **Screen 2 (Alternative Flow 1):**
-  ![](<./Prototype requirement/UC08-3.png>)
+ **Screen 2 (Alternative Flow 1):** Empty
+  ![](<./Prototype requirement/UC-08/2.png>)
 
-  **Screen 3 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC08-2.png>)
+  **Screen 3 (Alternative Flow 2):** Query limit
+  ![](<./Prototype requirement/UC-08/7.png>)
+
+  **Screen 4 (Alternative Flow 3):** Switch Category
+  ![](<./Prototype requirement/UC-08/8.png>)
+
+  **Screen 5 (Alternative Flow 4):** No results
+  ![](<./Prototype requirement/UC-08/3.png>)
+
+  **Screen 6 (Alternative Flow 5):** "TRENDING TOPICS"
+  ![](<./Prototype requirement/UC-08/4.png>)
+
+  **Screen 7 (Alternative Flow 6):** "Suggested Creators"
+  ![](<./Prototype requirement/UC-08/5.png>)
+
+  **Screen 8 (Alternative Flow 7):** "Trending Discussions"
+  ![](<./Prototype requirement/UC-08/6.png>)
+
 
 ## Use-Case Specification: View Post Details
 
