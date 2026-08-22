@@ -5,8 +5,8 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { CommentEditor } from "../comment/CommentEditor.js";
 import * as deviceUtils from "#frontend/utils/device";
 
-describe("CommentEditor Component", () => {
-  it("calls onSave when pressing Enter without Shift on desktop", () => {
+describe("CommentEditor Component (TC22)", () => {
+  it("TC22: Calls onSave when pressing Enter without Shift on desktop", () => {
     vi.spyOn(deviceUtils, "isMobileDevice").mockReturnValue(false);
     const handleSave = vi.fn();
     const handleCancel = vi.fn();
@@ -27,7 +27,7 @@ describe("CommentEditor Component", () => {
     expect(handleSave).toHaveBeenCalledTimes(1);
   });
 
-  it("does not call onSave when pressing Enter on mobile screen/device", () => {
+  it("TC22: Does not call onSave when pressing Enter on mobile screen/device", () => {
     vi.spyOn(deviceUtils, "isMobileDevice").mockReturnValue(true);
     const handleSave = vi.fn();
     const handleCancel = vi.fn();
@@ -48,7 +48,7 @@ describe("CommentEditor Component", () => {
     expect(handleSave).not.toHaveBeenCalled();
   });
 
-  it("does not call onSave when pressing Shift + Enter", () => {
+  it("TC22: Does not call onSave when pressing Shift + Enter", () => {
     vi.spyOn(deviceUtils, "isMobileDevice").mockReturnValue(false);
     const handleSave = vi.fn();
     const handleCancel = vi.fn();

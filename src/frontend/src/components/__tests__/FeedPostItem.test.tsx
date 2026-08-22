@@ -63,7 +63,7 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
   };
 });
 
-describe("FeedPostItem Guest Interactions", () => {
+describe("FeedPostItem Guest Interactions (TC30)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -78,7 +78,7 @@ describe("FeedPostItem Guest Interactions", () => {
     reposted: false,
   };
 
-  it("should trigger authentication (navigate to /login) when guest presses like", () => {
+  it("TC30: Should trigger authentication (navigate to /login) when guest presses like", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<FeedPostItem post={dummyPost} />);
 
@@ -92,7 +92,7 @@ describe("FeedPostItem Guest Interactions", () => {
     expect(mockToggleReaction).not.toHaveBeenCalled();
   });
 
-  it("should trigger authentication (navigate to /login) when guest presses repost", () => {
+  it("TC30: Should trigger authentication (navigate to /login) when guest presses repost", () => {
     useAuthStore.setState({ user: null, accessToken: null });
     renderWithProviders(<FeedPostItem post={dummyPost} />);
 
@@ -106,7 +106,7 @@ describe("FeedPostItem Guest Interactions", () => {
   });
 });
 
-describe("FeedPostItem Authenticated Optimistic Reaction", () => {
+describe("FeedPostItem Authenticated Optimistic Reaction (TC25)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useAuthStore.setState({
@@ -125,7 +125,7 @@ describe("FeedPostItem Authenticated Optimistic Reaction", () => {
     reposted: false,
   };
 
-  it("should update like icon and count optimistically when authenticated user clicks like", () => {
+  it("TC25: Should update like icon and count optimistically when authenticated user clicks like", () => {
     renderWithProviders(<FeedPostItem post={dummyPost} />);
 
     const buttons = screen.getAllByRole("button");

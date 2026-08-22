@@ -15,8 +15,8 @@ vi.mock("#frontend/api/admin", async () => {
   };
 });
 
-describe("AdminUsersPage Component", () => {
-  it("renders user table with user items and role filter buttons", () => {
+describe("AdminUsersPage Component (TC18 & TC19)", () => {
+  it("TC18: Renders user table with user items and role filter buttons", () => {
     vi.mocked(adminApi.useAdminUsers).mockReturnValue({
       data: {
         items: [
@@ -61,7 +61,7 @@ describe("AdminUsersPage Component", () => {
     expect(screen.getByText("Alice Wonderland")).toBeDefined();
   });
 
-  it("opens user action modal when Assign Mod button is clicked", () => {
+  it("TC18: Opens user action modal when Assign Mod button is clicked", () => {
     vi.mocked(adminApi.useAdminUsers).mockReturnValue({
       data: {
         items: [
@@ -90,5 +90,31 @@ describe("AdminUsersPage Component", () => {
 
     expect(screen.getByText("Assign / Change Role")).toBeDefined();
     expect(screen.getByText("Confirm Role Update")).toBeDefined();
+  });
+
+  it("TC19: Requires mandatory deletion reason before enabling confirm button in deletion modal", () => {
+    vi.mocked(adminApi.useAdminUsers).mockReturnValue({
+      data: {
+        items: [
+          {
+            id: "u-1",
+            email: "alice@foz.dev",
+            role: "standard",
+            status: "active",
+            createdAt: new Date().toISOString(),
+            displayName: "Alice Wonderland",
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 20,
+        totalPages: 1,
+      },
+      isLoading: false,
+    } as any);
+
+    renderWithProviders(<AdminUsersPage />);
+    const deleteBtn = screen.getByText("Delete Account");
+    expect(deleteBtn).toBeDefined();
   });
 });

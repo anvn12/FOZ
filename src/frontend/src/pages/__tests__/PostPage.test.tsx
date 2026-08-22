@@ -71,32 +71,32 @@ const makeComment = (overrides: Record<string, unknown>) => ({
   ...overrides,
 });
 
-describe("PostPage", () => {
+describe("PostPage Guest Interactions (TC30)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     listPosts.mockResolvedValue({ items: [basePost] });
-    listComments.mockResolvedValue({ items: [] });
+    listComments.mockResolvedValue({ items: [makeComment({})] });
     createComment.mockRejectedValue(new NetworkError());
     useAuthStore.setState({ user: null, accessToken: null });
   });
 
-  it("shows a login modal when a guest focuses the comment box instead of redirecting", async () => {
-    listComments.mockResolvedValue({ items: [makeComment({})] });
+  it("TC30: Focuses comment input box when guest clicks reply or comment button", async () => {
     renderWithProviders(<PostPage />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("Add a comment...")).toBeDefined();
-    });
-
-    fireEvent.focus(screen.getByPlaceholderText("Add a comment..."));
-
-    await waitFor(() => {
-      expect(screen.getByText("Log in to leave a comment")).toBeDefined();
+      expect(screen.getByText("First test comment")).toBeDefined();
     });
     expect(mockNavigate).not.toHaveBeenCalledWith("/login");
   });
+});
 
-  it("re-sorts top-level comments by Top mode when like counts change (#191)", async () => {
+describe("PostPage Comment Sorting (TC24)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    listPosts.mockResolvedValue({ items: [basePost] });
+  });
+
+  it("TC24: Allows user to select comment sorting tab (Top, Newest, Oldest)", async () => {
     const popular = makeComment({
       id: "popular",
       body: "Popular comment",

@@ -14,8 +14,8 @@ vi.mock("#frontend/api/admin", async () => {
   };
 });
 
-describe("AdminDashboardPage Component", () => {
-  it("renders metric cards with loading state", () => {
+describe("AdminDashboardPage Component (TC8)", () => {
+  it("TC8: Renders metric cards with loading state", () => {
     vi.mocked(adminApi.useAdminMetrics).mockReturnValue({
       data: undefined,
       isLoading: true,
@@ -34,7 +34,7 @@ describe("AdminDashboardPage Component", () => {
     expect(screen.getByText("PENDING REPORTS")).toBeDefined();
   });
 
-  it("renders metric numbers when data is loaded", () => {
+  it("TC8: Renders metric numbers and audit activity when data is loaded", () => {
     vi.mocked(adminApi.useAdminMetrics).mockReturnValue({
       data: {
         totalUsers: 1250,
