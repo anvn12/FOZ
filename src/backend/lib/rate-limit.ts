@@ -22,6 +22,26 @@ export const summaryRateLimiter: RequestHandler =
         limit: 10,
         standardHeaders: "draft-7",
         legacyHeaders: false,
-        message: { error: { code: "RATE_LIMITED", message: "Too many summary requests, please try again in a minute." } },
+        message: {
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many summary requests, please try again in a minute.",
+          },
+        },
       });
 
+export const commentWriteRateLimiter: RequestHandler =
+  process.env.NODE_ENV === "test"
+    ? noop
+    : rateLimit({
+        windowMs: 1 * 60 * 1000,
+        limit: 15,
+        standardHeaders: "draft-7",
+        legacyHeaders: false,
+        message: {
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many comment actions, please try again in a minute.",
+          },
+        },
+      });
