@@ -15,6 +15,11 @@ import { TrendingHashtagsWidget } from "#frontend/components/TrendingHashtagsWid
 export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
   const user = useAuthStore((state) => state.user);
   const [showGuestLoginModal, setShowGuestLoginModal] = useState(false);
+  const [guestModalConfig, setGuestModalConfig] = useState<{
+    title?: string;
+    description?: string;
+    persistDismissal?: boolean;
+  }>({});
 
   useEffect(() => {
     if (user) return;
@@ -24,7 +29,14 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
     } catch {
       // Ignore storage failures — fall through to showing the prompt.
     }
-    if (!promptSeen) setShowGuestLoginModal(true);
+    if (!promptSeen) {
+      setGuestModalConfig({
+        title: "Join FOZ",
+        description: "Log in to follow people, personalize your feed, and join the conversation.",
+        persistDismissal: true,
+      });
+      setShowGuestLoginModal(true);
+    }
   }, [user]);
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -35,6 +47,19 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
   });
   const posts = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
   const feedRef = React.useRef<HTMLDivElement>(null);
+
+  const handleLoadMore = () => {
+    if (!user) {
+      setGuestModalConfig({
+        title: "Log in to view more posts",
+        description: "Log in to explore more discussions and personalize your feed.",
+        persistDismissal: false,
+      });
+      setShowGuestLoginModal(true);
+      return;
+    }
+    fetchNextPage();
+  };
 
   const handleWheel = (e: React.WheelEvent) => {
     if (feedRef.current && !feedRef.current.contains(e.target as Node)) {
@@ -102,7 +127,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
                   <div className="p-4 text-center">
                     <button
                       type="button"
-                      onClick={() => fetchNextPage()}
+                      onClick={handleLoadMore}
                       disabled={isFetchingNextPage}
                       className="rounded-full border border-outline-variant px-6 py-2 text-sm font-semibold text-secondary hover:bg-surface-container-highest transition-colors disabled:opacity-50"
                     >
@@ -120,10 +145,11 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
         <TrendingHashtagsWidget />
       </aside>
 
-      {/* First-visit prompt for guests */}
+      {/* First-visit or action prompt for guests */}
       <GuestLoginModal
         open={showGuestLoginModal}
         onClose={() => setShowGuestLoginModal(false)}
+        {...guestModalConfig}
       />
 
       </div>
