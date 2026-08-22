@@ -369,6 +369,8 @@ export function ReportsQueuePage() {
                           <button
                             onClick={() => {
                               setEscalateId(report.id);
+                              setEscalateNotes("");
+                              setEscalatePriority("Standard");
                               setEscalateDialog(true);
                             }}
                             className="p-2 text-secondary hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all"
@@ -494,11 +496,21 @@ export function ReportsQueuePage() {
               </button>
               <button
                 onClick={() => {
+                  const words = escalateNotes.trim().split(/\s+/).filter(Boolean);
+                  if (words.length <= 5) {
+                    toast.error("Please provide a more detailed reason for escalation (> 5 words)");
+                    return;
+                  }
                   const notes = `[Priority: ${escalatePriority}] ${escalateNotes}`.trim();
                   resolveReportAction(escalateId!, "escalate", notes);
                   setEscalateDialog(false);
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-bold font-label-md shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95"
+                disabled={escalateNotes.trim().split(/\s+/).filter(Boolean).length <= 5}
+                className={`flex-1 py-2.5 rounded-xl font-bold font-label-md transition-all ${
+                  escalateNotes.trim().split(/\s+/).filter(Boolean).length <= 5
+                    ? "bg-surface-container-high text-on-surface-variant cursor-not-allowed"
+                    : "bg-primary text-on-primary shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+                }`}
               >
                 Confirm Escalation
               </button>
