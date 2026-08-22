@@ -1,10 +1,10 @@
 # AuthN Automated Test Suite — Review & Refinement
 
-**Feature area:** Authentication (AuthN)
-**Scope of this document:** Complete inventory of every automated test covering the Authentication domain, with the **input** (request / setup / mock) and the **expected output** (HTTP status, response body, cookie, DB state) of each test.
-**Test suites reviewed:** `src/backend/__tests__/integration/auth.*.test.ts`, `src/backend/api/auth/auth.service.test.ts`, `src/backend/lib/{jwt,password,rate-limit}.test.ts`, `src/shared/schemas/auth.test.ts`
-**Constitution alignment:** Principle IV (Security at Every Layer), Principle VII (WCAG/UX not affected), Quality Standards (auth/feed integration tests < 500ms NFR).
-**Date:** 2026-08-22 | **Execution result:** 12 test files, **71 tests, 0 failures** (after refinement below)
+**Feature area:** Authentication (AuthN)   
+**Scope of this document:** Complete inventory of every automated test covering the Authentication domain, with the **input** (request / setup / mock) and the **expected output** (HTTP status, response body, cookie, DB state) of each test.   
+**Test suites reviewed:** `src/backend/__tests__/integration/auth.*.test.ts`, `src/backend/api/auth/auth.service.test.ts`, `src/backend/lib/{jwt,password,rate-limit}.test.ts`, `src/shared/schemas/auth.test.ts`   
+**Constitution alignment:** Principle IV (Security at Every Layer), Principle VII (WCAG/UX not affected), Quality Standards (auth/feed integration tests < 500ms NFR).  
+**Date:** 2026-08-22 | **Execution result:** 13 test files, **78 tests, 0 failures** (after refinement + additions below)
 
 ---
 
@@ -14,19 +14,19 @@
 
 | Layer | Files | Tests | Coverage |
 | :--- | :--- | :--- | :--- |
-| **Tier-2 integration — HTTP routes** | `auth.register.test.ts`, `auth.login.test.ts`, `auth.logout.test.ts`, `auth.refresh.test.ts`, `auth.password.test.ts`, `auth.social.test.ts`, `auth.gating.test.ts` | 27 | Every `/api/v1/auth/*` route: register, login, logout, refresh, me, check-username, password, google, gating |
-| **Tier-1 unit — service** | `auth.service.test.ts` | 18 | `register`, `login`, `logout`, `refresh`, `changePassword` with mocked repo |
-| **Tier-1 unit — lib** | `jwt.test.ts`, `password.test.ts`, `rate-limit.test.ts` | 15 | JWT sign/verify, bcrypt hash/verify, sliding-window rate limiter |
-| **Tier-1 unit — shared schema** | `src/shared/schemas/auth.test.ts` | 11 | `usernameSchema`, `RegisterRequest`, `LoginRequest`, `ChangePasswordRequest` |
+| **Tier-2 integration, HTTP routes** | `auth.register.test.ts`, `auth.login.test.ts`, `auth.logout.test.ts`, `auth.refresh.test.ts`, `auth.password.test.ts`, `auth.social.test.ts`, `auth.gating.test.ts`, `auth.me.test.ts` | 34 | Every `/api/v1/auth/*` route: register, login, logout, refresh, me, check-username, password, google, gating |
+| **Tier-1 unit, service** | `auth.service.test.ts` | 18 | `register`, `login`, `logout`, `refresh`, `changePassword` with mocked repo |
+| **Tier-1 unit, lib** | `jwt.test.ts`, `password.test.ts`, `rate-limit.test.ts` | 15 | JWT sign/verify, bcrypt hash/verify, sliding-window rate limiter |
+| **Tier-1 unit, shared schema** | `src/shared/schemas/auth.test.ts` | 11 | `usernameSchema`, `RegisterRequest`, `LoginRequest`, `ChangePasswordRequest` |
 | **Auth-gated non-auth routes (guard rails)** | `admin.test.ts`, `admin-metrics.test.ts`, `profile.test.ts`, `auth.gating.test.ts` | 6+ | `requireAuth`/`requireAdminRole` 401/403 gating outside the auth router |
 
 ### What is well covered
 
-- **Registration:** happy path (201, cookie flags, DB row), duplicate username (409 `USERNAME_TAKEN`), duplicate email (409 `EMAIL_TAKEN` — service tier), weak password (422 per-field), invalid email (422 per-field), username pre-check endpoint, reserved usernames, email normalization (lowercase/trim).
+- **Registration:** happy path (201, cookie flags, DB row), duplicate username (409 `USERNAME_TAKEN`), duplicate email (409 `EMAIL_TAKEN` service tier), weak password (422 per-field), invalid email (422 per-field), username pre-check endpoint, reserved usernames, email normalization (lowercase/trim).
 - **Login:** happy path, **no user enumeration** (identical 401 for wrong password vs. unknown email, no `fields` key), non-active account statuses (403 `ACCOUNT_NOT_ACTIVE`).
 - **Session lifecycle:** refresh rotation (old session revoked, new cookie issued), expired cookie (401 + clear), revoked cookie (401), tampered cookie (401), suspended user on refresh (403 + clear). Logout revokes the server-side refresh session; a second refresh with the same cookie is refused.
 - **Password change:** happy path (old password stops working, new works), wrong current password (401 `INCORRECT_CURRENT_PASSWORD`), same-as-current (422), too weak (422), unauthenticated (401).
-- **Security properties:** refresh cookie is `HttpOnly`, `SameSite=Lax`, `Path=/api/v1/auth`; refresh secrets stored hashed (SHA-256); access tokens have a 15-minute TTL; bcrypt salting produces distinct hashes.
+- **Security properties:** refresh cookie is `HttpOnly`, `SameSite=Lax`, `Path=/api/v1/auth`; refresh secrets stored hashed (SHA-256); access tokens have a 15-minute TTL; bcrypt salting produces distinct hashes.  
 
 ### Defects found and refined during this review
 
@@ -36,14 +36,30 @@
 | D2 | `auth.logout.test.ts` | Same incorrect 401 expectation in the logout happy-path file. | Same fix as D1. |
 | D3 | `auth.service.test.ts` (changePassword) | Asserted `InvalidCredentialsError` for a wrong current password, but the service throws `InvalidCurrentPasswordError` (code `INCORRECT_CURRENT_PASSWORD`), a distinct subclass of `AuthError`. Tests should pin the **observable error code**, not an internal class. | Changed to `rejects.toMatchObject({ code: "INCORRECT_CURRENT_PASSWORD", status: 401 })`. |
 
-**Refinement is test-only.** No production code was changed; the three fixes make the automated suite match the actual, security-correct behavior of the implementation.
+**Refinement is test only.** No production code was changed; the three fixes make the automated suite match the actual, security correct behavior of the implementation.
+
+### 1.1 New tests added (this review)
+
+Gaps identified in the prior review's recommendations (guest-gating on `/register`, duplicate email at the route tier, and no coverage at all for `GET /api/v1/auth/me`) are now closed. **7 new tests, 0 production code changes** implementations already matched the intended contract; the tests simply catch up to it.
+
+| # | File | Test added | Why it was missing |
+| :--- | :--- | :--- | :--- |
+| N1 | `auth.register.test.ts` | Duplicate email on `POST /register` returns **409 `EMAIL_TAKEN`** (route level) | `EMAIL_TAKEN` was previously only asserted at the service tier (SV-REG-02); nothing proved the HTTP layer surfaced it correctly through `handleAuthError`. |
+| N2 | `auth.register.test.ts` | `requireGuest` returns **409 `ALREADY_SIGNED_IN`** when `POST /register` is called with a Bearer token already set | `requireGuest` gating (register/login should reject already-authenticated callers) had no test anywhere in the suite. |
+| N3 | `auth.me.test.ts` *(new file)* | `GET /api/v1/auth/me` happy path: valid Bearer token → **200**, full user object, no `accessToken` leaked in the body | Called out in the prior review as untested; `/me` is the OAuth popup/redirect flow's only way to fetch the signed-in user. |
+| N4 | `auth.me.test.ts` | `GET /api/v1/auth/me` with no `Authorization` header → **401 `UNAUTHENTICATED`** | Baseline gating case for the new route. |
+| N5 | `auth.me.test.ts` | `GET /api/v1/auth/me` with a malformed/non-JWT Bearer token → **401 `UNAUTHENTICATED`** | Confirms `verifyAccessToken` failures are caught and normalized, not thrown as a 500. |
+| N6 | `auth.me.test.ts` | `GET /api/v1/auth/me` where the token's user was deleted after issuance → **401 `UNAUTHENTICATED`** | Regression guard: `requireAuth` must re-check the user exists on every request, not just trust the JWT payload. |
+| N7 | `auth.me.test.ts` | `GET /api/v1/auth/me` for a `suspended` account → **403 `ACCOUNT_NOT_ACTIVE`** | Mirrors the same mid-session status check already covered on `/refresh` (REF-005); previously unverified on `/me`. |
+
+Full input/output detail for N1–N7 is in [§2.1](#21-post-apiv1authregister-us1--authregistertestts) (N1, N2) and the new [§2.9](#29-get-apiv1authme-oauth-redirect-helper--authmetestts) (N3–N7). Verified with `npx vitest run` against the local Postgres test DB: all 13 files / 78 tests pass.
 
 ### Remaining recommendations (documented, not code-changed)
 
 1. `POST /api/v1/auth/google/callback` (redirect mode) asserts the redirect location matches `/\/\?token=/`; the actual redirect target is `${frontendUrl}/?token=...` — `frontendUrl` already contains a scheme, so the assert holds, but it is tightly coupled to `FRONTEND_URL` config. Consider asserting on a parsed query param instead.
 2. `auth.login.test.ts` seeds users via `POST /register`; that couples login tests to register behavior. Acceptable for an integration suite (shared DB), listed for awareness.
 3. The `<500ms` response-time NFR is asserted via a best-effort `x-response-time` header check (`expectFastResponse`); production should emit `server-timing` for exact measurement.
-4. There is **no automated test yet for `GET /api/v1/auth/me`** (OAuth redirect helper) happy path with a valid token, nor for `requireGuest` (409 `ALREADY_SIGNED_IN`). Both are exercised indirectly by other flows. Recommended add.
+4. ~~There is no automated test yet for `GET /api/v1/auth/me` (OAuth redirect helper) happy path with a valid token, nor for `requireGuest` (409 `ALREADY_SIGNED_IN`). Both are exercised indirectly by other flows. Recommended add.~~ **Addressed — see [Section 1.1 New Tests Added](#11-new-tests-added-this-review).**
 
 ---
 
@@ -60,6 +76,8 @@ Legend — **Setup** = preconditions/DB seeds; **Input** = request; **Output** =
 | REG-003 | — | `GET /api/v1/auth/check-username?username=<uname>` before and after registering `<uname>` | Before: **200** `{ available: true }`. After: **200** `{ available: false }`. |
 | REG-004 | — | Register with password `"short"` (5 chars) | **422**; `error.code = "VALIDATION"`; `error.fields.password` defined. |
 | REG-005 | — | Register with email `"not-an-email"` | **422**; `error.code = "VALIDATION"`; `error.fields.email` defined. |
+| REG-006 *(new, N1)* | — | Register `email` + `uname1` → 201; then register the **same** `email` with `uname2` | Second call **409**; `error.code = "EMAIL_TAKEN"`; `error.message` matches `/already exists/i`. |
+| REG-007 *(new, N2)* | — | `POST /api/v1/auth/register` with `Authorization: Bearer invalid-token-xyz` set (any Bearer value — `requireGuest` only checks header presence) | **409**; `error.code = "ALREADY_SIGNED_IN"`; `error.message` matches `/already signed in/i`. |
 
 ### 2.2 POST /api/v1/auth/login (US2) — `auth.login.test.ts`
 
@@ -128,6 +146,18 @@ Legend — **Setup** = preconditions/DB seeds; **Input** = request; **Output** =
 | `GET /api/v1/admin/settings` (no token) | **401** |
 | Profile endpoints without a valid token | **401** (admin `-metrics` suite, profile suite) |
 | Summary endpoints `/api/v1/posts/:id/summary` + `/refresh` without token | **401** (Constitution Principle VI — guests never trigger AI; covered in `summary-routes.test.ts`) |
+
+### 2.9 GET /api/v1/auth/me (OAuth redirect helper) — `auth.me.test.ts`
+
+*New file, added this review — see [§1.1](#11-new-tests-added-this-review) (N3–N7).*
+
+| TC | Setup | Input | Expected output |
+| :--- | :--- | :--- | :--- |
+| ME-001 | Register active user; capture `accessToken` | `GET /api/v1/auth/me` with `Authorization: Bearer <token>` | **200**; `body.user` = `{ role: "standard", status: "active" }` with `id`/`email`/`username` present; `body.accessToken` **undefined** (no secrets echoed back). |
+| ME-002 | — | `GET /api/v1/auth/me` with no `Authorization` header | **401**; `error.code = "UNAUTHENTICATED"`. |
+| ME-003 | — | `GET /api/v1/auth/me` with `Authorization: Bearer not-a-jwt` | **401**; `error.code = "UNAUTHENTICATED"`. |
+| ME-004 | Register active user; capture `accessToken`; then `DELETE FROM user_accounts WHERE email = <email>` | `GET /api/v1/auth/me` with the now-orphaned `accessToken` | **401**; `error.code = "UNAUTHENTICATED"` (proves the user row is re-checked per-request, not just the JWT signature). |
+| ME-005 | Register active user; capture `accessToken`; then `UPDATE user_accounts SET status='suspended'` | `GET /api/v1/auth/me` with the still-valid `accessToken` | **403**; `error.code = "ACCOUNT_NOT_ACTIVE"`; `error.message = "Your account is not currently available"`. |
 
 ---
 
@@ -199,13 +229,22 @@ Legend — **Setup** = preconditions/DB seeds; **Input** = request; **Output** =
 
 ## 4. Implementation Notes for the Automated Suite
 
-- **No production code was modified as part of this review/refinement.** The three findings (D1–D3) were fixes to the test suite only, aligning the expectations with documented, security-correct behavior (idempotent logout, wrong-password error code).
+- **No production code was modified as part of this review/refinement.** The three findings (D1–D3) were fixes to the test suite only, aligning the expectations with documented, security-correct behavior (idempotent logout, wrong-password error code). The seven additions (N1–N7, [§1.1](#11-new-tests-added-this-review)) are new coverage only — the routes/middleware they exercise (`EMAIL_TAKEN`, `requireGuest`, `GET /me`) already behaved correctly, they simply had no automated test.
 - **Session cookie contract asserted everywhere:** `HttpOnly` + `SameSite=Lax` + `Path=/api/v1/auth` + `Max-Age=0` on clear.
 - **No user enumeration:** unknown email and wrong password resolve to the identical `INVALID_CREDENTIALS` payload; asserted at both route (LOG-002/LOG-003) and service (SV-LOG-02/SV-LOG-03) level.
 - **Refresh token rotation is enforced server-side:** every successful refresh revokes the previous session and creates a new one; replay of the old cookie returns 401.
 - **Rate limiting for auth** is intentionally production-only (`noop` under test) to keep the integration suite under the 500ms per-test NFR; the limiter itself is exercised in isolation with the module reloaded under `NODE_ENV=production`.
 
 ---
+## 5. HTTPs status
+
+- `200 / 201` — success (201 specifically means "a new thing was created," used for register).
+- `401` — "I don't know who you are" (missing/invalid/expired credentials).
+- 403 — "I know who you are, but you're not allowed" (e.g. account suspended).
+- 409 — conflict (e.g. username already taken, or you're already logged in and tried to register again).
+- 422 — your request data itself is invalid (e.g. password too short) — this is what error.fields.password refers to: which field failed.
+---
+
 
 ## 5. How to Run
 
@@ -219,6 +258,7 @@ npx vitest run \
   src/backend/__tests__/integration/auth.password.test.ts \
   src/backend/__tests__/integration/auth.social.test.ts \
   src/backend/__tests__/integration/auth.gating.test.ts \
+  src/backend/__tests__/integration/auth.me.test.ts \
   src/backend/api/auth/auth.service.test.ts \
   src/backend/lib/jwt.test.ts \
   src/backend/lib/password.test.ts \
@@ -226,4 +266,4 @@ npx vitest run \
   src/shared/schemas/auth.test.ts
 ```
 
-Current result: **12 files, 71 tests, all passing** (`2026-08-22`).
+Current result: **13 files, 78 tests, all passing** (`2026-08-22`).
