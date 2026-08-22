@@ -69,7 +69,7 @@ Test Suite Folders: `src/backend/__tests__/unit/feed-ranking.test.ts`, `src/back
 
 ### 2. Refine
 
-#### Category 1: Ranking Algorithm
+#### Category 1: Ranking Algorithm 
 - **Add Missing Edge Case — unbounded affinity:** Add a test with a viewer who has 50+ interactions with a single author, asserting either that the score is capped/normalized (if that's the intended fix) or explicitly documenting the current unbounded behavior as expected, so a future change can't silently alter it either way. Flag to the team as a possible production bug (`W_AFFINITY` applied to a raw, uncapped count) — out of scope for a test-only refinement to fix directly.
 - **Fix Loose Assertions:** Alongside the existing range-based checks (`toBeGreaterThan`/`toBeLessThan`), add one fixed-input, exact-value regression test per function (e.g. `scorePost` with hardcoded `likeCount`/`commentCount`/`createdAt`, asserting the score to 3 decimal places) so a formula regression can't drift while still satisfying the loose bounds.
 

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { db } from "#backend/db/client.js";
-import { userAccounts } from "#backend/db/schema/users.js";
+import { userAccounts, profiles } from "#backend/db/schema/users.js";
 import { posts, reactions, comments } from "#backend/db/schema/interactions.js";
 import { eq } from "drizzle-orm";
-import { listForYouFeed, listPopularFeed } from "#backend/services/interactions/posts.js";
+import { listForYouFeed, listPopularFeed, listPostFeed, createRepost } from "#backend/services/interactions/posts.js";
 import { listPosts } from "#backend/db/repositories/interactions.js";
 
 // Helper to create a user
@@ -80,16 +80,18 @@ describe("Feed generation", () => {
   });
 
   beforeEach(async () => {
-    // Clean up posts, reactions, comments
+    // Clean up posts, reactions, comments, profiles
     await db.delete(reactions);
     await db.delete(comments);
     await db.delete(posts);
+    await db.delete(profiles);
   });
 
   afterAll(async () => {
     await db.delete(reactions);
     await db.delete(comments);
     await db.delete(posts);
+    await db.delete(profiles);
     await db.delete(userAccounts).where(eq(userAccounts.email, "feed-test-a@test.com"));
     await db.delete(userAccounts).where(eq(userAccounts.email, "feed-test-b@test.com"));
   });
@@ -102,6 +104,44 @@ describe("Feed generation", () => {
       const result = await listPosts();
       expect(result[0]!.id).toBe(newPost.id);
       expect(result[result.length - 1]!.id).toBe(oldPost.id);
+    });
+
+    it("returns only the given author's posts when authorId is passed", async () => {
+      await createPost(userA.id, "from A", 10);
+      await createPost(userB.id, "from B", 5);
+
+      const result = await listPosts(userA.id);
+      expect(result.length).toBe(1);
+      expect(result[0]!.authorId).toBe(userA.id);
+    });
+  });
+
+  describe("listPostFeed (production 'latest' path, with enrichment)", () => {
+    it("enriches posts with liked/reposted/commentCount/attachments for the real viewer-facing path", async () => {
+      // TC9 originally only exercised the low-level `listPosts` repo query, which
+      // never runs through the enrichment (`liked`, `reposted`, `attachments`) that
+      // the real HTTP "latest" tab depends on via `listPostFeed` -> `enrichPostList`.
+      const post = await createPost(userA.id, "enrich me", 10);
+      await createReaction(userB.id, post.id);
+      await createComment(post.id, userB.id);
+
+      const [item] = await listPostFeed(userB.id);
+      expect(item).toMatchObject({
+        id: post.id,
+        liked: true,
+        reposted: false,
+        commentCount: 1,
+      });
+      expect(item!.attachments).toEqual([]);
+    });
+
+    it("returns only the given author's posts when authorId is passed", async () => {
+      await createPost(userA.id, "from A", 10);
+      await createPost(userB.id, "from B", 5);
+
+      const result = await listPostFeed(undefined, userA.id);
+      expect(result.length).toBe(1);
+      expect(result[0]!.authorId).toBe(userA.id);
     });
   });
 
@@ -123,6 +163,59 @@ describe("Feed generation", () => {
     });
 
     it("returns empty for no posts", async () => {
+      const result = await listPopularFeed(10);
+      expect(result.items).toEqual([]);
+    });
+
+    it("supports cursor pagination", async () => {
+      // `listForYouFeed`'s cursor logic was already covered; `listPopularFeed` has
+      // the identical pagination branch and had zero coverage of its own.
+      await createPost(userA.id, "post 1", 30);
+      await createPost(userA.id, "post 2", 20);
+      await createPost(userA.id, "post 3", 10);
+
+      const firstPage = await listPopularFeed(2);
+      expect(firstPage.items.length).toBe(2);
+      expect(firstPage.nextCursor).toBeTruthy();
+
+      const secondPage = await listPopularFeed(2, firstPage.nextCursor!);
+      expect(secondPage.items.length).toBe(1);
+    });
+  });
+
+  describe("reposts in the ranked feed", () => {
+    it("surfaces the original post's content with the reposter attached", async () => {
+      const original = await createPost(userA.id, "original content", 60);
+      await db.insert(profiles).values({
+        userAccountId: userB.id,
+        displayName: "Bee Reposter",
+      });
+      const repost = await createRepost(userB.id, original.id);
+
+      const result = await listPopularFeed(10);
+      // The repost surfaces as its own feed entry (repostId set), alongside the
+      // original poster's own occurrence of the same content (no repostId).
+      const repostItem = result.items.find(
+        (i) => (i as { repostId?: string }).repostId === repost!.id,
+      ) as (typeof result.items)[number] & {
+        repostId?: string;
+        repostedBy?: { id: string; displayName: string };
+      };
+      expect(repostItem).toBeDefined();
+      expect(repostItem.content).toBe("original content");
+      expect(repostItem.repostedBy).toMatchObject({
+        id: userB.id,
+        displayName: "Bee Reposter",
+      });
+    });
+
+    it("silently drops a repost whose original post is no longer public", async () => {
+      const original = await createPost(userA.id, "will be hidden", 60);
+      await createRepost(userB.id, original.id);
+
+      // Original becomes non-public after the repost was created.
+      await db.update(posts).set({ visibilityState: "private" }).where(eq(posts.id, original.id));
+
       const result = await listPopularFeed(10);
       expect(result.items).toEqual([]);
     });
@@ -173,14 +266,18 @@ describe("Feed generation", () => {
     });
   });
 
-  describe("guest feed", () => {
-    it("listPopularFeed works without viewerId (guest)", async () => {
+  describe("listPopularFeed ranking with no interaction map", () => {
+    it("ranks purely by engagement + recency when the interaction map is empty", async () => {
+      // Renamed from "guest feed" / "works without viewerId (guest)": listPopularFeed
+      // never accepts a viewerId at all, so this doesn't test guest identity or
+      // routing — only that recency ordering holds with zero engagement difference.
+      // The actual guest-vs-authenticated routing decision lives in the HTTP route
+      // (see feed-routes.test.ts).
       await createPost(userA.id, "post 1", 10);
       await createPost(userA.id, "post 2", 5);
 
       const result = await listPopularFeed(10);
       expect(result.items.length).toBe(2);
-      // Should return posts ordered by recency (no affinity for guests)
       expect(result.items[0]!.content).toBe("post 2");
     });
   });
