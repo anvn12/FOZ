@@ -468,7 +468,6 @@ Build 1.0 (Alpha) - End of Sprint 3 (Status: **Upcoming**): A baseline build foc
 Build 2.0 (Beta) - End of Sprint 4: A feature-complete build including the integrated AI summarization tool. This build will be subjected to rigorous testing.
 
 Build 3.0 (Final) - End of Sprint 5: The final, polished build deployed to the production environment, thoroughly tested for all aspects, ready for the final PA5 demonstration.
-ete all Table of Contents (Including title) -> CTRL P -> TABLE OF CONTENTS==
 
 # B - Detailed Vision Document
 
