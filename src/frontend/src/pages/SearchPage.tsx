@@ -16,6 +16,8 @@ export function SearchPage() {
   const [searchType, setSearchType] = useState<SearchType>("all");
   const [activeTab, setActiveTab] = useState<"posts" | "profile">("posts");
 
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
   const { data: searchResults, isLoading } = useSearch(submittedTerm, searchType);
   const { data: discoveryData } = useSearchDiscovery();
 
@@ -73,6 +75,7 @@ export function SearchPage() {
                 <form className="relative w-full group" onSubmit={handleSearchSubmit}>
                   <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
                   <input 
+                    ref={searchInputRef}
                     className="w-full bg-zinc-500/20 border border-outline-variant text-on-surface h-12  leading-[1.6] rounded-full py-4 pl-[60px] pr-[100px] focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline shadow-sm" 
                     placeholder="Search FOZ..." 
                     type="text"
@@ -85,9 +88,7 @@ export function SearchPage() {
                         type="button"
                         onClick={() => {
                           setSearchTerm("");
-                          setSubmittedTerm("");
-                          setSearchType("all");
-                          setActiveTab("posts");
+                          searchInputRef.current?.focus();
                         }}
                         className="text-outline hover:text-primary p-2 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Clear search"

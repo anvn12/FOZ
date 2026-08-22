@@ -200,4 +200,35 @@ describe("SearchPage Component", () => {
     );
     expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
   });
+
+  it("clears search input, focuses input, and keeps search results page active when clicking the clear 'x' button", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results page is rendered
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // Find and click the clear 'x' button
+    const clearBtn = screen.getByLabelText("Clear search");
+    expect(clearBtn).toBeDefined();
+    fireEvent.click(clearBtn);
+
+    // Verify search input is cleared and focused
+    expect(input.value).toBe("");
+    expect(document.activeElement).toBe(input);
+
+    // Verify search results page is STILL rendered (not reset to discovery view)
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+    expect(screen.queryByText("Trending Topics")).toBeNull();
+
+    // User can continue typing a new query in the search bar
+    fireEvent.change(input, { target: { value: "design" } });
+    expect(input.value).toBe("design");
+    expect(screen.getByLabelText("Submit search")).toBeDefined();
+  });
 });
