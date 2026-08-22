@@ -18,14 +18,14 @@ import {
   listAuthorComments,
 } from "#backend/services/interactions/comments.js";
 import { createReport } from "#backend/services/interactions/reports.js";
-import { commentWriteRateLimiter } from "#backend/lib/rate-limit.js";
+import { interactionWriteRateLimiter } from "#backend/lib/rate-limit.js";
 
 export const commentRouter = Router();
 
 commentRouter.post(
   "/posts/:postId/comments",
   requireAuth,
-  commentWriteRateLimiter,
+  interactionWriteRateLimiter,
   validateBody(createCommentRequestSchema),
   async (req: AuthedRequest, res, next) => {
     try {
@@ -84,7 +84,7 @@ commentRouter.get("/comments", optionalAuth, async (req: AuthedRequest, res, nex
 commentRouter.patch(
   "/comments/:commentId",
   requireAuth,
-  commentWriteRateLimiter,
+  interactionWriteRateLimiter,
   validateBody(updateCommentRequestSchema),
   async (req: AuthedRequest, res, next) => {
     try {
@@ -113,7 +113,7 @@ commentRouter.patch(
 commentRouter.delete(
   "/comments/:commentId",
   requireAuth,
-  commentWriteRateLimiter,
+  interactionWriteRateLimiter,
   async (req: AuthedRequest, res, next) => {
     try {
       if (!req.user) {
@@ -141,7 +141,7 @@ commentRouter.delete(
 commentRouter.post(
   "/comments/:commentId/report",
   requireAuth,
-  commentWriteRateLimiter,
+  interactionWriteRateLimiter,
   validateBody(createReportRequestSchema),
   async (req: AuthedRequest, res, next) => {
     try {
