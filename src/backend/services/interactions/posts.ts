@@ -6,7 +6,7 @@ import {
   getPostById, listPosts, countReactionsForTarget, countCommentsForPost, getReaction,
   listPostsWithEngagement, getViewerReactions, getViewerComments, buildPostAuthorMap,
 } from "#backend/db/repositories/interactions.js";
-import { getProfileByUserId } from "#backend/api/profile/profile.service.js";
+import { findProfileByUserId } from "#backend/db/repositories/profiles.js";
 import { rankPosts, buildViewerInteractionMap, type RankedPost } from "#backend/services/interactions/feed-ranking.js";
 
 export async function createPost(authorId: string, input: CreatePostRequest) {
@@ -150,7 +150,7 @@ export async function enrichPostList(rows: any[], viewerId?: string) {
       const original = await getPostById(row.repostOfId);
       if (original) {
         postToEnrich = { ...(original as any), repostId: row.id, createdAt: row.createdAt };
-        const profile = await getProfileByUserId(row.authorId);
+        const profile = await findProfileByUserId(row.authorId);
         originalAuthor = profile ? {
           id: profile.userAccountId,
           displayName: profile.displayName || `Member ${profile.userAccountId.slice(0, 4)}`,
@@ -209,7 +209,7 @@ async function unwrapReposts(rows: any[]) {
     const origRow = byId.get(row.repostOfId);
     const original = origRow ?? origMap.get(row.repostOfId);
     if (!original || original.deletedAt || original.visibilityState !== "public") continue;
-    const profile = await getProfileByUserId(row.authorId);
+    const profile = await findProfileByUserId(row.authorId);
     out.push({
       ...original,
       likeCount: origRow?.likeCount ?? 0,

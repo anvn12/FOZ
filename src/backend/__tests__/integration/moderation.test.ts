@@ -11,8 +11,10 @@ describe("Moderation API", () => {
   const agent = getAgent();
   let stdToken: string;
   let modToken: string;
+  let mod2Token: string;
   let stdUser: typeof userAccounts.$inferSelect;
   let modUser: typeof userAccounts.$inferSelect;
+  let mod2User: typeof userAccounts.$inferSelect;
   let openReportId: string;
 
   beforeAll(async () => {
@@ -42,8 +44,19 @@ describe("Moderation API", () => {
     modUser = insertedModUser!;
     await db.insert(profiles).values({ userAccountId: modUser.id, displayName: "Moderator User" });
 
+    const [insertedMod2User] = await db.insert(userAccounts).values({
+      email: "mod2@example.com",
+      username: "mod2_user",
+      passwordHash: p2,
+      role: "moderator",
+      status: "active",
+    }).returning();
+    mod2User = insertedMod2User!;
+    await db.insert(profiles).values({ userAccountId: mod2User.id, displayName: "Moderator 2" });
+
     stdToken = jwt.sign({ sub: stdUser.id }, env.JWT_ACCESS_SECRET, { expiresIn: "1h" });
     modToken = jwt.sign({ sub: modUser.id }, env.JWT_ACCESS_SECRET, { expiresIn: "1h" });
+    mod2Token = jwt.sign({ sub: mod2User.id }, env.JWT_ACCESS_SECRET, { expiresIn: "1h" });
 
     // Insert some mock reports
     const [r1] = await db.insert(reports).values({

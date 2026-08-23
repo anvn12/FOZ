@@ -75,7 +75,7 @@ export const AdminAuditLogsPage: React.FC = () => {
         <div className="w-full md:w-72">
           <input
             type="text"
-            placeholder="Filter by Actor UUID..."
+            placeholder="Search by UUID or keyword..."
             value={actorIdInput}
             onChange={(e) => {
               setActorIdInput(e.target.value);

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { requireAuth, requireRole, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { db } from "#backend/db/client.js";
-import { reports, userAccounts, profiles, comments } from "#backend/db/schema/index.js";
+import { reports, userAccounts, profiles, comments, posts } from "#backend/db/schema/index.js";
 import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } from "#shared/schemas/interactions.js";
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 import { deletePost } from "#backend/services/interactions/posts.js";
@@ -121,6 +121,27 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Report not found" } });
     }
 
+    if (targetReport.status === "escalated" && action === "escalate") {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "This report has already been escalated." } });
+    }
+    if (targetReport.status === "closed" || targetReport.status === "dismissed") {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "This report has already been resolved." } });
+    }
+
+    // Verify target content still exists
+    let contentExists = false;
+    if (targetReport.targetType === "post") {
+      const post = await db.query.posts.findFirst({ where: eq(posts.id, targetReport.targetId) });
+      contentExists = !!post;
+    } else if (targetReport.targetType === "comment") {
+      const comment = await db.query.comments.findFirst({ where: eq(comments.id, targetReport.targetId) });
+      contentExists = !!comment;
+    }
+    
+    if (!contentExists) {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Reported content is no longer available" } });
+    }
+
     let newStatus = targetReport.status;
 
     if (action === "delete_content") {
@@ -141,8 +162,12 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
         status: newStatus as any, 
         updatedAt: new Date(),
       })
-      .where(eq(reports.id, reportId))
+      .where(and(eq(reports.id, reportId), eq(reports.status, targetReport.status)))
       .returning();
+
+    if (!updatedReport) {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "Report status was modified by another user." } });
+    }
 
     res.json(updatedReport);
   } catch (err) {
