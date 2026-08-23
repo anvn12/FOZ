@@ -1861,7 +1861,7 @@ Allows Moderators to review community reports and dismiss or escalate them, and 
   ![](<./Prototype requirement/UC17-1.png>)
 
 ## Use-Case Specification: Forward Report to Admin
-*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu* | Refined by: Pham Dinh Gia Khanh
 
 **Project Name:** FOZ  
 **Version:** 1.1<br>
@@ -1915,6 +1915,12 @@ Allows a Moderator to escalate a report that may require an administrative decis
 2. The system rolls back all changes and displays: "The report could not be escalated. Please try again."
 3. The use case ends.
 
+#### 3.2.6 A report is escalated by 2 moderators nearly on the same time
+1. If at step 3, there are 2 escalation request occurs nearly the same time.
+2.  system accepts the earlier one, and notifies for the second moderator that the report is escalated before.
+3.  The use case ends
+
+
 ### 4. Special Requirements
 * **Authorization:** The Moderator role must be enforced at the API boundary.
 * **Decision Rationale:** The escalation rationale must contain at least five words after trimming whitespace.
@@ -1938,6 +1944,16 @@ Allows a Moderator to escalate a report that may require an administrative decis
 
 * **Screen 3 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC18-3.png>)
+
+* **Screen 4 (Alternative Flow 4):** 
+  ![](<./Prototype requirement/UC-18/1.png>)
+
+* **Screen 5 (Alternative Flow 5):** 
+  ![](<./Prototype requirement/UC-18/2.png>)
+
+* **Screen 6 (Alternative Flow 6):** 
+  ![](<./Prototype requirement/UC-18/3.png>)
+  
 
 ## Use-Case Specification: Delete Any Content
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
