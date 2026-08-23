@@ -769,6 +769,12 @@ Allows an authenticated user to view and update their public profile details, in
   ![](<./Prototype requirement/UC04-2.png>)
 * **Screen 3 (Alt Flow - Validation Errors):**
   ![](<./Prototype requirement/UC04-3.png>)
+* **Screen 4 (Alt Flow - Input Exceeds Maximum Limits):**
+  ![](<./Prototype requirement/UC04-4.png>)
+* **Screen 5 (Alt Flow - Username Handle Collision on Update):**
+  ![](<./Prototype requirement/UC04-5.png>)
+* **Screen 6 (Alt Flow - User Cancels Profile Edit):**
+  ![](<./Prototype requirement/UC04-6.png>)
 
 ## Use-Case Specification: Change Password
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
