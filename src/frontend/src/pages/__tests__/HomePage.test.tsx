@@ -296,4 +296,31 @@ describe("HomePage Component", () => {
     expect(screen.queryByText("Log in to view more posts")).toBeNull();
     expect(screen.queryByText("Join FOZ")).toBeNull();
   });
+
+  it("requests the matching feed type and marks the active tab aria-selected", async () => {
+    const listFeedMock = vi.mocked(interactionsApi.listFeed);
+    useAuthStore.setState({
+      user: { id: "user-id", email: "alice@test.com", role: "standard", status: "active" },
+      accessToken: "mock-token",
+    });
+
+    renderWithProviders(<HomePage feedType="for-you" />);
+
+    await waitFor(() => {
+      expect(listFeedMock).toHaveBeenCalledWith("for-you", undefined);
+    });
+    expect(screen.getByRole("tab", { name: "For You" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("tab", { name: "Latest" }).getAttribute("aria-selected")).toBe("false");
+  });
+
+  it("shows the empty-feed placeholder when no posts are returned", async () => {
+    vi.mocked(interactionsApi.listFeed).mockResolvedValueOnce({ items: [], nextCursor: null });
+    useAuthStore.setState({ user: null, accessToken: null });
+
+    renderWithProviders(<HomePage feedType="latest" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("No posts yet. Be the first to share something!")).toBeDefined();
+    });
+  });
 });

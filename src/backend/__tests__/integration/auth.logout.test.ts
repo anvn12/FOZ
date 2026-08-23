@@ -54,8 +54,9 @@ describe("POST /api/v1/auth/logout (US3)", () => {
     expect(refreshRes.status).toBe(401);
   });
 
-  it("logout without requireAuth returns 401", async () => {
+  it("logout without a session cookie returns 200 ok (idempotent, no error)", async () => {
     const res = await getAgent().post("/api/v1/auth/logout").send({});
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ ok: true });
   });
 });

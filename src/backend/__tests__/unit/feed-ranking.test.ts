@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   recencyScore,
   engagementScore,
@@ -77,6 +77,47 @@ describe("scorePost", () => {
     const newPost = makePost({ createdAt: new Date(), likeCount: 5 });
     const oldPost = makePost({ createdAt: new Date(Date.now() - 7 * 24 * 3600_000), likeCount: 5 });
     expect(scorePost(newPost, new Map())).toBeGreaterThan(scorePost(oldPost, new Map()));
+  });
+
+  describe("exact-value regression (fixed inputs, frozen clock)", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("computes a precise score for fixed likes/comments/affinity/age", () => {
+      const post = makePost({
+        authorId: "author-fixed",
+        createdAt: new Date("2025-12-31T00:00:00Z"), // exactly 24h before frozen "now"
+        likeCount: 10,
+        commentCount: 5,
+        repostCount: 0,
+      });
+      const score = scorePost(post, new Map([["author-fixed", 2]]));
+      // affinity = 2 * 0.5 = 1.0
+      // engagement = min(15, 100)/100 = 0.15 -> * 0.3 = 0.045
+      // recency = 1 / (1 + 24/48) = 0.6666... -> * 0.2 = 0.13333...
+      // total = 1.0 + 0.045 + 0.133333... = 1.178333...
+      expect(score).toBeCloseTo(1.178333, 5);
+    });
+  });
+
+  it("affinity has no upper cap, unlike engagement (documents current behavior)", () => {
+    // engagementScore is explicitly capped at 1.0 (Math.min(raw, 100) / 100), but
+    // affinity is `rawInteractionCount * W_AFFINITY` with no equivalent cap. A viewer
+    // with a long interaction history with one author can score that author's posts
+    // far above anything engagement + recency alone could ever produce (max 0.3 + 0.2
+    // = 0.5). This test locks in that behavior so a future change to either formula
+    // is a deliberate choice, not a silent regression.
+    const post = makePost({ authorId: "prolific-author", likeCount: 0, commentCount: 0 });
+    const heavyInteractions = new Map([["prolific-author", 50]]);
+    const score = scorePost(post, heavyInteractions);
+    // affinity alone = 50 * 0.5 = 25, dwarfing the 0.5 max of engagement + recency.
+    expect(score).toBeGreaterThan(20);
   });
 });
 

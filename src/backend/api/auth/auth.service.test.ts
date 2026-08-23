@@ -313,12 +313,12 @@ describe("auth.service.changePassword (tier-1, mocked repo)", () => {
     expect(mockedUpdatePasswordHash).toHaveBeenCalledWith("u1", "new-hash");
   });
 
-  it("throws InvalidCredentialsError when current password is wrong", async () => {
+  it("throws InvalidCurrentPasswordError when current password is wrong", async () => {
     mockedGetUserById.mockResolvedValue(baseUser as never);
     mockedVerifyPassword.mockResolvedValue(false);
     await expect(
       changePassword({ userId: "u1", currentPassword: "wrongoldpwd1", newPassword: "newpass1234" }),
-    ).rejects.toBeInstanceOf(InvalidCredentialsError);
+    ).rejects.toMatchObject({ code: "INCORRECT_CURRENT_PASSWORD", status: 401 });
     expect(mockedUpdatePasswordHash).not.toHaveBeenCalled();
   });
 
