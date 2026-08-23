@@ -41,7 +41,7 @@ export async function assignUserRole(params: {
 
   const targetUser = await getUserById(params.targetUserId);
   if (!targetUser) {
-    throw new Error("Target user account not found");
+    throw new Error("This user account is no longer available.");
   }
 
   const adminProfile = await getUserById(params.adminUser.id);
@@ -75,7 +75,7 @@ export async function permanentlyRemoveUser(params: {
 
   const targetUser = await getUserById(params.targetUserId);
   if (!targetUser) {
-    throw new Error("Target user account not found");
+    throw new Error("This user account is no longer available.");
   }
 
   const adminProfile = await getUserById(params.adminUser.id);
@@ -163,6 +163,10 @@ export async function instantDeleteContent(params: {
     deleted = await adminRepo.deletePostById(params.contentId);
   } else {
     deleted = await adminRepo.deleteCommentById(params.contentId);
+  }
+
+  if (!deleted) {
+    throw new Error("This content is no longer available.");
   }
 
   await adminRepo.createAuditLog({

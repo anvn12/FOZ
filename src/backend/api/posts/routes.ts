@@ -205,6 +205,11 @@ postRouter.post(
       if (err instanceof Error && err.message === "POST_NOT_FOUND") {
         return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
       }
+      if (err instanceof Error && err.message === "ALREADY_REPORTED") {
+        return res
+          .status(409)
+          .json({ error: { code: "ALREADY_REPORTED", message: "You have already reported this post" } });
+      }
       next(err);
     }
   },
