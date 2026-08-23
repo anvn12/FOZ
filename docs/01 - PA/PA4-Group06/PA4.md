@@ -497,7 +497,7 @@ This use case allows an unauthenticated guest to create a new user account and i
 3. The flow resumes at step 2.
 
 ##### 3.2.4 Rate Limit Exceeded
-1. If the user makes more than 100 registration attempts within 15 minutes.
+1. If the user makes more than 15 registration attempts within 1 minutes.
 2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
@@ -596,7 +596,7 @@ This use case describes how a registered user accesses their account by providin
 3. The use case ends.
 
 ##### 3.2.3 Rate Limit Exceeded
-1. If the user makes more than 100 login attempts within 15 minutes.
+1. If the user makes more than 15 login attempts within 1 minutes.
 2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
@@ -630,7 +630,17 @@ This use case describes how a registered user accesses their account by providin
 * **Screen 2 (Alt Flow - Invalid Credentials):**
     ![](<./Prototype requirement/UC02-2.png>)
 * **Screen 3 (Alt Flow - Account Suspended):**
-    ![](<./Prototype requirement/UC02-3.png>)
+
+
+
+
+
+    ![](<./Prototype requirement/UC02-3.png>) FLAG
+
+
+
+
+
 * **Screen 4 (Alt Flow - Rate Limit Exceeded):**
     ![](<./Prototype requirement/UC02-4.png>)
 * **Screen 5 (Alt Flow - Sign In with Google Account):**
@@ -692,8 +702,10 @@ Allows an authenticated user to securely end their active session on the current
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC03-1.png>)
+  ![alt text](image.png)
 * **Screen 2 (Alt Flow - User Cancels Log Out):**
   ![](<./Prototype requirement/UC03-2.png>)
+  ![alt text](image-1.png)
 
 ## Use-Case Specification: Manage Profile
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
@@ -1320,7 +1332,7 @@ Acts as the generalized use case for users engaging with a post via various acti
 ## Use-Case Specification: Leave Comment
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-12
 
 ### 1. Leave Comment
