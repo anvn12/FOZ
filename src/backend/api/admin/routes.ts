@@ -80,6 +80,9 @@ adminRouter.put(
       if (err.message.includes("sole Administrator")) {
         return res.status(400).json({ error: { code: "INVALID_OPERATION", message: err.message } });
       }
+      if (err.message === "This user account is no longer available.") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: err.message } });
+      }
       next(err);
     }
   }
@@ -102,6 +105,9 @@ adminRouter.delete(
     } catch (err: any) {
       if (err.message.includes("sole Administrator")) {
         return res.status(400).json({ error: { code: "INVALID_OPERATION", message: err.message } });
+      }
+      if (err.message === "This user account is no longer available.") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: err.message } });
       }
       next(err);
     }
@@ -153,7 +159,10 @@ adminRouter.delete(
         rationale,
       });
       return res.json({ message: "Content deleted successfully", deleted });
-    } catch (err) {
+    } catch (err: any) {
+      if (err.message === "This content is no longer available.") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: err.message } });
+      }
       next(err);
     }
   }

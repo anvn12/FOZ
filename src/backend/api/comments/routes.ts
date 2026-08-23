@@ -163,6 +163,9 @@ commentRouter.post(
       if (err instanceof Error && err.message === "COMMENT_NOT_FOUND") {
         return res.status(404).json({ error: { code: "NOT_FOUND", message: "Comment not found" } });
       }
+      if (err instanceof Error && err.message === "ALREADY_REPORTED") {
+        return res.status(409).json({ error: { code: "ALREADY_REPORTED", message: "You have already reported this comment" } });
+      }
       next(err);
     }
   },

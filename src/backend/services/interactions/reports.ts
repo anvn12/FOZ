@@ -27,6 +27,18 @@ export async function createReport(
   }
   // User targets omitted for now based on spec focus.
 
+  const existingReport = await db.query.reports.findFirst({
+    where: and(
+      eq(reports.reporterId, reporterId),
+      eq(reports.targetType, targetType),
+      eq(reports.targetId, targetId)
+    )
+  });
+
+  if (existingReport) {
+    throw new Error("ALREADY_REPORTED");
+  }
+
   const [report] = await db.insert(reports).values({
     reporterId,
     targetType,
