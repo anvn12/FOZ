@@ -92,7 +92,21 @@ export async function getAuditLogs(params: {
   limit: number;
 }) {
   const conditions = [];
-  if (params.actorId) conditions.push(eq(adminAuditLogs.actorId, params.actorId));
+  if (params.actorId) {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.actorId);
+    if (isUUID) {
+      conditions.push(or(
+        eq(adminAuditLogs.actorId, params.actorId),
+        eq(adminAuditLogs.targetId, params.actorId)
+      ));
+    } else {
+      conditions.push(or(
+        ilike(adminAuditLogs.actorName, `%${params.actorId}%`),
+        ilike(adminAuditLogs.rationale, `%${params.actorId}%`),
+        ilike(adminAuditLogs.targetId, `%${params.actorId}%`)
+      ));
+    }
+  }
   if (params.actionType) conditions.push(eq(adminAuditLogs.actionType, params.actionType));
   if (params.startDate) conditions.push(gte(adminAuditLogs.createdAt, new Date(params.startDate)));
   if (params.endDate) conditions.push(lte(adminAuditLogs.createdAt, new Date(params.endDate)));
