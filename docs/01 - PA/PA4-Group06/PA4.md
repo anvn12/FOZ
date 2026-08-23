@@ -702,10 +702,8 @@ Allows an authenticated user to securely end their active session on the current
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC03-1.png>)
-  ![alt text](image.png)
 * **Screen 2 (Alt Flow - User Cancels Log Out):**
   ![](<./Prototype requirement/UC03-2.png>)
-  ![alt text](image-1.png)
 
 ## Use-Case Specification: Manage Profile
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
