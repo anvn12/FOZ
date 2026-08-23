@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent } from "@testing-library/react";
@@ -168,11 +168,11 @@ describe("SearchPage Component", () => {
     expect(screen.queryByText("People")).toBeNull();
   });
 
-  it("shows toast error notification when search query exceeds 500 characters", () => {
+  it("shows toast error notification when search query exceeds 100 characters", () => {
     renderWithProviders(<SearchPage />);
 
     const input = screen.getByPlaceholderText("Search FOZ...");
-    const longQuery = "a".repeat(501);
+    const longQuery = "a".repeat(101);
     fireEvent.change(input, { target: { value: longQuery } });
 
     const submitBtn = screen.getByLabelText("Submit search");
@@ -181,22 +181,22 @@ describe("SearchPage Component", () => {
     fireEvent.click(submitBtn);
 
     expect(toast.error).toHaveBeenCalledWith(
-      "Search query is too long. Please limit to 500 characters."
+      "Search query is too long. Please limit to 100 characters."
     );
     expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
   });
 
-  it("shows toast error notification when submitting form with search query longer than 500 characters", () => {
+  it("shows toast error notification when submitting form with search query longer than 100 characters", () => {
     renderWithProviders(<SearchPage />);
 
     const input = screen.getByPlaceholderText("Search FOZ...");
-    const longQuery = "b".repeat(505);
+    const longQuery = "b".repeat(105);
     fireEvent.change(input, { target: { value: longQuery } });
 
     fireEvent.submit(input.closest("form")!);
 
     expect(toast.error).toHaveBeenCalledWith(
-      "Search query is too long. Please limit to 500 characters."
+      "Search query is too long. Please limit to 100 characters."
     );
     expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
   });
@@ -258,3 +258,5 @@ describe("SearchPage Component", () => {
     expect(input.value).toBe("");
   });
 });
+
+

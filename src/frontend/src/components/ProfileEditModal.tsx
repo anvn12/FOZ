@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+﻿import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -208,20 +208,32 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
                   {initials}
                 </div>
               )}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition">
-                <span className="text-white text-xs font-semibold">Upload</span>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition">
+                  <span className="text-white text-xs font-semibold">Upload</span>
+                </div>
               </div>
+              <input
+                ref={fileInputRef}
+                id="avatar-file"
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              {previewUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 font-semibold"
+                >
+                  Remove Avatar
+                </button>
+              )}
+              {fileError && <p className="text-xs text-red-500">{fileError}</p>}
             </div>
-            <input
-              id="avatar-file"
-              ref={fileInputRef}
-              type="file"
-              accept="image/png, image/jpeg, image/gif"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            {fileError && <p className="text-xs text-red-600 dark:text-red-400 font-medium">{fileError}</p>}
-          </div>
 
           <div>
             <label htmlFor="username-handle" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
@@ -354,3 +366,4 @@ export function ProfileEditModal({ isOpen, onClose, profile }: ProfileEditModalP
     </div>
   );
 }
+
