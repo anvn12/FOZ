@@ -630,16 +630,7 @@ This use case describes how a registered user accesses their account by providin
 * **Screen 2 (Alt Flow - Invalid Credentials):**
     ![](<./Prototype requirement/UC02-2.png>)
 * **Screen 3 (Alt Flow - Account Suspended):**
-
-
-
-
-
     ![](<./Prototype requirement/UC02-3.png>) FLAG
-
-
-
-
 
 * **Screen 4 (Alt Flow - Rate Limit Exceeded):**
     ![](<./Prototype requirement/UC02-4.png>)
