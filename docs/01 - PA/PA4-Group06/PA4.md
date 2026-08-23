@@ -1175,7 +1175,7 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user clicks "Create Post". 1, 4, 6, 7, 11
+1. The use case begins when the user clicks "Create Post".
 2. The system displays an editor.
 3. The user adds the content and clicks "Post".
 4. The system validates the input lengths.
@@ -1469,7 +1469,7 @@ Allows an authenticated user to reply to a post or to another comment.
    ![](<./Prototype requirement/UC12-6.png>)
 
 * **Screen 10 (Alternative Flow 9 - Offline Submission):**
-   ![](<./Prototype requirement/UC12-9.jpg>)
+   ![](<./Prototype requirement/UC12-9.png>)
 
 * **Screen 11 (Alternative Flow 10 - Multi-Level Nested Replies (Depth 1–2)):**
    ![](<./Prototype requirement/UC12-14.png>)
