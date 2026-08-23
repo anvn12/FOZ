@@ -200,6 +200,23 @@ export async function updateUserRole(userId: string, role: string) {
   return updated;
 }
 
+export async function updateUserStatus(userId: string, status: string) {
+  const [updated] = await db
+    .update(userAccounts)
+    .set({ status: status as any, updatedAt: new Date() })
+    .where(eq(userAccounts.id, userId))
+    .returning({
+      id: userAccounts.id,
+      email: userAccounts.email,
+      username: userAccounts.username,
+      role: userAccounts.role,
+      status: userAccounts.status,
+      createdAt: userAccounts.createdAt,
+      updatedAt: userAccounts.updatedAt,
+    });
+  return updated;
+}
+
 export async function countAdministrators() {
   const [tRow] = await db
     .select({ total: sql<number>`count(*)::int` })
@@ -245,10 +262,13 @@ export async function getEscalatedReports() {
       createdAt: reports.createdAt,
       updatedAt: reports.updatedAt,
       reporterName: profiles.displayName,
+      authorId: sql<string | null>`coalesce(${posts.authorId}, ${comments.authorId}, case when ${reports.targetType} = 'user' then ${reports.targetId} end)`,
     })
     .from(reports)
     .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
     .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .leftJoin(posts, and(eq(reports.targetType, "post"), eq(posts.id, reports.targetId)))
+    .leftJoin(comments, and(eq(reports.targetType, "comment"), eq(comments.id, reports.targetId)))
     .where(eq(reports.status, "escalated"))
     .orderBy(desc(reports.createdAt));
 }

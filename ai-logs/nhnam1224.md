@@ -226,4 +226,8 @@
 
 
 
-
+### 2026-08-22 20:53
+**Tool:** Antigravity
+**Model:** Gemini 3.6 Flash
+**Prompt:** "run foz app and fix this issue for me: Missing error message \"You are offline\" when network timeout during posting an image\nLike the image above, only show the pending 'Posting' but not show the error message \"You are offline\" when clicking"
+**Files touched:** `src/frontend/src/api/network.ts`, `src/frontend/src/components/CreatePostModal.tsx`, `src/frontend/src/components/__tests__/CreatePostModal.test.tsx`

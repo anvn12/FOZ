@@ -14,6 +14,7 @@ const SearchQuerySchema = z.object({
     .min(1, "Query is required")
     .max(100, "Query must be at most 100 characters"),
   type: z.enum(["posts", "users", "hashtags", "all"]).optional().default("all"),
+  cursor: z.string().optional(),
 });
 
 const router = Router();
@@ -227,8 +228,9 @@ router.get("/discovery", optionalAuth, async (req: AuthedRequest, res, next) => 
 
 router.get("/", async (req, res, next) => {
   try {
-    const { q, type } = SearchQuerySchema.parse(req.query);
+    const { q, type, cursor } = SearchQuerySchema.parse(req.query);
     const pattern = `%${q}%`;
+    const offset = Number(cursor) || 0;
 
     let postItems: Array<{
       id: string;
@@ -290,7 +292,7 @@ router.get("/", async (req, res, next) => {
           )
         )
         .orderBy(desc(posts.createdAt))
-        .limit(20);
+        .limit(20).offset(offset);
 
       postItems = matchedPosts.map((p) => ({
         ...p,
@@ -320,7 +322,7 @@ router.get("/", async (req, res, next) => {
             eq(userAccounts.status, "active")
           )
         )
-        .limit(20);
+        .limit(20).offset(offset);
 
       userItems = matchedUsers.map((u) => ({
         ...u,
@@ -349,7 +351,7 @@ router.get("/", async (req, res, next) => {
         )
         .groupBy(hashtags.id, hashtags.name, hashtags.displayName)
         .orderBy(desc(sql`count(${postHashtags.postId})::int`), desc(hashtags.createdAt))
-        .limit(20);
+        .limit(20).offset(offset);
 
       hashtagItems = matchedHashtags.map((h) => ({
         ...h,
@@ -372,7 +374,7 @@ router.get("/", async (req, res, next) => {
 
     res.json({
       items,
-      nextCursor: null,
+      nextCursor: items.length === 20 ? (offset + 20).toString() : null,
     });
   } catch (err) {
     next(err);

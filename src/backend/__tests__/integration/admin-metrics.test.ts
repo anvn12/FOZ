@@ -24,7 +24,7 @@ async function registerAndGetToken(email = "user@example.com", role = "standard"
   };
 }
 
-describe("Admin Metrics", () => {
+describe("Admin Metrics (TC6)", () => {
   let adminToken: string;
 
   beforeAll(async () => {
@@ -32,12 +32,11 @@ describe("Admin Metrics", () => {
     adminToken = admin.accessToken;
   });
 
-  it("should get metrics without 500 error", async () => {
+  it("TC6: Calculates platform metrics (users, mods, reports, AI status) without 500 error", async () => {
     const res = await getAgent()
       .get("/api/v1/admin/metrics")
       .set("Authorization", `Bearer ${adminToken}`);
     
-    console.log(res.status, res.body);
     expect(res.status).toBe(200);
   });
 });

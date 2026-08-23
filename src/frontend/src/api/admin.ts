@@ -4,6 +4,7 @@ import { fetchWithNetworkGuard } from "#frontend/api/network";
 import type {
   AssignRoleRequest,
   DeleteUserRequest,
+  SetUserStatusRequest,
   InstantDeleteContentRequest,
   CreateCategoryRequest,
   UpdateCategoryRequest,
@@ -218,6 +219,26 @@ export function useDeleteUserAccount() {
   });
 }
 
+export function setUserStatus(userId: string, input: SetUserStatusRequest) {
+  return call<{ user: AdminUserItem }>(`/api/v1/admin/users/${userId}/status`, {
+    method: "PUT",
+    body: JSON.stringify(input),
+  });
+}
+
+export function useSetUserStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, input }: { userId: string; input: SetUserStatusRequest }) =>
+      setUserStatus(userId, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "metrics"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "audit-logs"] });
+    },
+  });
+}
+
 // 4. Escalated Reports & Instant Delete
 export interface EscalatedReport {
   id: string;
@@ -229,6 +250,7 @@ export interface EscalatedReport {
   status: string;
   createdAt: string;
   reporterName?: string | null;
+  authorId: string | null;
 }
 
 export function fetchEscalatedReports() {

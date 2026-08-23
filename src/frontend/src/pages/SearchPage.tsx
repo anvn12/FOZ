@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
@@ -31,8 +31,8 @@ export function SearchPage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.length > 500 || searchTerm.trim().length > 500) {
-      toast.error("Search query is too long. Please limit to 500 characters.");
+    if (searchTerm.length > 100 || searchTerm.trim().length > 100) {
+      toast.error("Search query is too long. Please limit to 100 characters.");
       return;
     }
     const trimmed = searchTerm.trim();
@@ -49,8 +49,8 @@ export function SearchPage() {
   };
 
   const handleTopicClick = (topicTag: string) => {
-    if (topicTag.length > 500 || topicTag.trim().length > 500) {
-      toast.error("Search query is too long. Please limit to 500 characters.");
+    if (topicTag.length > 100 || topicTag.trim().length > 100) {
+      toast.error("Search query is too long. Please limit to 100 characters.");
       return;
     }
     setSearchType("all");
@@ -232,7 +232,7 @@ export function SearchPage() {
                                       <div className="flex items-baseline gap-2 min-w-0">
                                         <span className="text-[14px] font-bold text-primary group-hover:underline truncate">{post.authorName}</span>
                                         <span className="text-[12px] font-medium text-secondary truncate">{handle}</span>
-                                        <span className="text-[12px] text-outline shrink-0">· {formatRelativeTime(post.createdAt)}</span>
+                                        <span className="text-[12px] text-outline shrink-0">Â· {formatRelativeTime(post.createdAt)}</span>
                                       </div>
                                       <p className="text-[14px] text-on-surface line-clamp-2">{post.content}</p>
                                     </div>
@@ -421,3 +421,4 @@ export function SearchPage() {
     </NavBar>
   );
 }
+

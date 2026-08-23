@@ -94,6 +94,38 @@ export async function permanentlyRemoveUser(params: {
   return result;
 }
 
+export async function setUserStatus(params: {
+  adminUser: { id: string; role: string };
+  targetUserId: string;
+  status: "active" | "suspended" | "banned";
+  rationale: string;
+}) {
+  const targetUser = await getUserById(params.targetUserId);
+  if (!targetUser) {
+    throw new Error("Target user account not found");
+  }
+  if (targetUser.role === "administrator") {
+    throw new Error("Cannot change the status of an Administrator account");
+  }
+
+  const adminProfile = await getUserById(params.adminUser.id);
+  const updatedUser = await adminRepo.updateUserStatus(params.targetUserId, params.status);
+
+  const actionType =
+    params.status === "suspended" ? "USER_SUSPEND" : params.status === "banned" ? "USER_BAN" : "USER_REINSTATE";
+  await adminRepo.createAuditLog({
+    actorId: params.adminUser.id,
+    actorName: adminProfile?.email ?? "Administrator",
+    actorRole: params.adminUser.role,
+    actionType,
+    targetType: "USER",
+    targetId: params.targetUserId,
+    rationale: params.rationale,
+  });
+
+  return updatedUser;
+}
+
 export async function fetchEscalatedReports() {
   return adminRepo.getEscalatedReports();
 }

@@ -1,4 +1,118 @@
-# PA1
+<div style="text-align: center; margin: 0 auto; padding: 40px 20px; min-height: 85vh; display: flex; flex-direction: column;">
+  <div style="text-transform: uppercase; line-height: 1.8;">
+    <div>VNUHCM - University of Science</div>
+    <div>Faculty of Information Technology</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="margin: 20px 0;">
+    <h1 style="margin: 0; padding: 0 0 10px 0; font-size: 2.2em; border: none;">PA1 Report</h1>
+    <div style="font-size: 1.2em; font-weight: bold;">Group 6: PDF</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 40px;">
+    CSC13002 - Introduction to Software Engineering
+  </div>
+
+  <div style="display: flex; justify-content: space-between; margin: 0 5%; text-align: left; line-height: 1.8;">
+    <div style="width: 50%;">
+      <div style="font-style: italic;">Author:</div>
+      <div>Nguyễn Tuấn An - 24127011</div>
+      <div>Nguyễn Hải Nam - 24127088</div>
+      <div>Nguyễn Hải Trọng - 24127311</div>
+      <div>Phạm Đinh Gia Khánh - 24127420</div>
+      <div>Võ An Phú - 24127494</div>
+    </div>
+    <div style="width: 45%;">
+      <div style="font-style: italic;">Lecturer:</div>
+      <div>Ms. Nguyễn Thị Minh Tuyền</div>
+      <div>Mr. Hồ Tuấn Thanh</div>
+      <div>Mr. Mai Anh Tuấn</div>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding-top: 60px;">
+    
+  </div>
+</div>
+
+<div style="page-break-after: always;"></div>
+
+# Table of Contents
+
+- [B - Project Proposal](#b---project-proposal)
+	- [Introduction](#introduction)
+	- [Target users and environments](#target-users-and-environments)
+	- [Key features](#key-features)
+		- [AI feature](#ai-feature)
+		- [User Roles](#user-roles)
+		- [Functional Groups](#functional-groups)
+- [C - Existing App Survey](#c---existing-app-survey)
+	- [First app survey: Threads (main for reference)](#first-app-survey-threads-main-for-reference)
+		- [Authentication & First-Time Access](#authentication--first-time-access)
+			- [1. Homepage & Navigation](#1-homepage--navigation)
+			- [2. Guest Access (Unauthenticated Users)](#2-guest-access-unauthenticated-users)
+			- [3. Sign-In Process](#3-sign-in-process)
+			- [4. Account Registration](#4-account-registration)
+		- [Content Creation & Posting](#content-creation--posting)
+			- [1. Create Thread](#1-create-thread)
+			- [2. Images and Videos](#2-images-and-videos)
+			- [3. Drafts](#3-drafts)
+			- [4. Post Visibility & Content Controls](#4-post-visibility--content-controls)
+		- [Profile Management](#profile-management)
+			- [1. View Profile](#1-view-profile)
+			- [2. Edit Profile](#2-edit-profile)
+		- [Feed Generation & Content Discovery](#feed-generation--content-discovery)
+			- [1. For You Feed](#1-for-you-feed)
+			- [2. Following Feed](#2-following-feed)
+		- [User Interactions](#user-interactions)
+			- [1. Like](#1-like)
+			- [2. Comment and Replies](#2-comment-and-replies)
+			- [3. Share](#3-share)
+			- [4. User Preview Card](#4-user-preview-card)
+			- [5. Post Options Menu](#5-post-options-menu)
+		- [Search & Discovery](#search--discovery)
+			- [1. Search Functionality](#1-search-functionality)
+			- [2. Trending Topics Discovery](#2-trending-topics-discovery)
+			- [3. Recommended Accounts](#3-recommended-accounts)
+		- [Activity Center](#activity-center)
+			- [Activity Page](#activity-page)
+		- [More Menu & Settings](#more-menu--settings)
+			- [1. More Menu](#1-more-menu)
+			- [2. Appearance Settings](#2-appearance-settings)
+			- [3. Account Settings](#3-account-settings)
+				- [Account Management](#account-management)
+				- [Privacy Controls](#privacy-controls)
+				- [Notifications Settings](#notifications-settings)
+				- [Content Preferences](#content-preferences)
+			- [4. Liked and Saved Posts](#4-liked-and-saved-posts)
+			- [5. Report a Problem](#5-report-a-problem)
+			- [6. Log Out](#6-log-out)
+	- [Second app survey: Reddit](#second-app-survey-reddit)
+		- [Authentication](#authentication)
+		- [Profile management](#profile-management)
+		- [Post Creation](#post-creation)
+		- [Feed Generation](#feed-generation)
+		- [User Interactions](#user-interactions)
+		- [Search & Discovery](#search--discovery)
+		- [Administration & Moderation](#administration--moderation)
+		- [Subreddit Interface and Identity](#subreddit-interface-and-identity)
+- [D - Team Contract](#d---team-contract)
+	- [1. Team Roles and Responsibilities](#1-team-roles-and-responsibilities)
+	- [2. Communication Plan](#2-communication-plan)
+	- [3. Work Schedule and Deadlines](#3-work-schedule-and-deadlines)
+	- [4. Code and Documentation Standards](#4-code-and-documentation-standards)
+	- [5. Accountability and Performance](#5-accountability-and-performance)
+	- [6. Decision-Making Process](#6-decision-making-process)
+	- [7. Conflict Resolution](#7-conflict-resolution)
+	- [8. Review and Update Process](#8-review-and-update-process)
+- [E - Development Tools and Process Setup](#e---development-tools-and-process-setup)
+	- [Tools and Process Setup](#tools-and-process-setup)
+
+<div style="page-break-after: always;"></div>
 
 # B - Project Proposal
 
@@ -769,25 +883,42 @@ Reviewer: Nguyễn Tuấn An (24127011)
 3. **GitHub Repository** — Repository name: **FOZ** (the project name). Below is a screenshot of a branch in our repository.
     ![GitHub FOZ branch screenshot](./images/e/GitHubFOZ.png)
 
-Because we have not implement any code yet, we do not have a folder structure to show. But we intend to adapt a folder structure as follows:
+Below is the project folder structure representing the current codebase and documentation organization:
 
 ```Plaintext
 FOZ/
-├── src/                            # Source code
-│   ├── frontend/ 
-│   └── backend/
+├── .specify/                       # SpecKit configuration, constitution, and templates
+├── ai-logs/                        # AI usage logs by team member
 ├── docs/                           # Documentation
-│   ├── meeting-minutes/
-│   ├── .md                         # General documentation (e.g., project proposal, team contract)
-│   ├── PA/                         # Project Assignments
-│   │   └── PA1/
-│   │       └── .md
-|   └── references/                 # Reference materials (e.g., UI design inspirations)
-├── tests/                          # Test plan, test cases, test reports
+│   ├── 00 - Old-PA-docs/           # Historical PA drafts and initial documents
+│   ├── 01 - PA/                    # Project Assignment deliverables (PA1 - PA5)
+│   ├── 02 - Meeting-minutes/       # Scrum meeting minutes and sprint plans
+│   ├── 03 - UI-designs/            # UI design mockups (Dark & Light modes)
+│   ├── QA report/                  # Test plans, test cases, and QA reports
+│   ├── Techstack/                  # Backend and frontend technology documents
+│   └── ideas/                      # Design notes, draft ideas, and research
+├── specs/                          # SpecKit specifications (001-026 feature specs)
+├── src/                            # Source code
+│   ├── backend/                    # Express 5 REST API + Drizzle ORM
+│   │   ├── __tests__/              # Backend unit and integration tests
+│   │   ├── api/                    # Route handlers and resource controllers
+│   │   ├── db/                     # Database connection, schemas, and migrations
+│   │   ├── lib/                    # Authentication, middleware, and logging utilities
+│   │   └── services/               # Business logic and AI summarization service
+│   ├── frontend/                   # React 19 + TypeScript + Vite SPA
+│   │   └── src/
+│   │       ├── api/                # API client and TanStack Query hooks
+│   │       ├── components/         # Reusable UI components
+│   │       ├── hooks/              # Custom React hooks
+│   │       ├── pages/              # Application pages and route views
+│   │       ├── stores/             # Zustand client state stores
+│   │       └── utils/              # Frontend helper functions and formatters
+│   └── shared/                     # Zod validation schemas and shared types
 ├── .env.example                    # Template for environment variables
-└── README.md                       # Project documentation
+├── ARCHITECTURE.md                 # C4 system architecture diagrams and documentation
+├── docker-compose.yml              # Local PostgreSQL 16 container setup
+├── package.json                    # Project dependencies and workspace scripts
+└── README.md                       # Project overview, setup, and run instructions
 ```
-
-The folder structure can be changed later if we find a better way to organize our code and documentation.
 
 4. **AI Coding Accounts** — All team members have GitHub Copilot for Students and Antigravity accounts.

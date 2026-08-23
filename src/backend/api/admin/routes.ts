@@ -4,6 +4,7 @@ import { validateBody, type AuthedRequest } from "#backend/api/auth/middleware.j
 import {
   AssignRoleRequest,
   DeleteUserRequest,
+  SetUserStatusRequest,
   InstantDeleteContentRequest,
   CreateCategoryRequest,
   UpdateCategoryRequest,
@@ -108,6 +109,30 @@ adminRouter.delete(
       }
       if (err.message === "This user account is no longer available.") {
         return res.status(404).json({ error: { code: "NOT_FOUND", message: err.message } });
+      }
+      next(err);
+    }
+  }
+);
+
+adminRouter.put(
+  "/users/:userId/status",
+  validateBody(SetUserStatusRequest),
+  async (req, res, next) => {
+    try {
+      const authed = req as AuthedRequest;
+      const userId = String(req.params.userId);
+      const { status, rationale } = req.body;
+      const updated = await adminService.setUserStatus({
+        adminUser: authed.user!,
+        targetUserId: userId,
+        status,
+        rationale,
+      });
+      return res.json({ user: updated });
+    } catch (err: any) {
+      if (err.message.includes("Administrator account")) {
+        return res.status(400).json({ error: { code: "INVALID_OPERATION", message: err.message } });
       }
       next(err);
     }
