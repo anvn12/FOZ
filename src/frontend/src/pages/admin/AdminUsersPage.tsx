@@ -1,8 +1,31 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useAdminUsers, useAssignUserRole, useDeleteUserAccount, type AdminUserItem } from "#frontend/api/admin";
-import { UserActionModal } from "#frontend/components/admin/UserActionModal";
+import { useAdminUsers, useAssignUserRole, useDeleteUserAccount, useSetUserStatus, type AdminUserItem } from "#frontend/api/admin";
+import { UserActionModal, type StatusAction } from "#frontend/components/admin/UserActionModal";
+
+const SUSPEND_ACTION: StatusAction = {
+  targetStatus: "suspended",
+  label: "Suspend Account",
+  description:
+    "Suspending this account immediately blocks the user from logging in or making authenticated requests. Their existing content stays intact and visible. An administrator can reinstate the account at any time.",
+  tone: "amber",
+};
+
+const BAN_ACTION: StatusAction = {
+  targetStatus: "banned",
+  label: "Ban Account",
+  description:
+    "Banning this account immediately and indefinitely blocks the user from logging in or making authenticated requests. Their existing content stays intact and visible. An administrator can reinstate the account at any time.",
+  tone: "rose",
+};
+
+const REINSTATE_ACTION: StatusAction = {
+  targetStatus: "active",
+  label: "Reinstate Account",
+  description: "Reinstating this account immediately restores full login access and platform permissions.",
+  tone: "emerald",
+};
 
 export const AdminUsersPage: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -10,7 +33,8 @@ export const AdminUsersPage: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState<AdminUserItem | null>(null);
-  const [actionMode, setActionMode] = useState<"role" | "delete" | null>(null);
+  const [actionMode, setActionMode] = useState<"role" | "delete" | "status" | null>(null);
+  const [statusAction, setStatusAction] = useState<StatusAction | null>(null);
 
   const { data, isLoading } = useAdminUsers({
     query: searchQuery.trim() || undefined,
@@ -21,6 +45,7 @@ export const AdminUsersPage: React.FC = () => {
 
   const assignRoleMutation = useAssignUserRole();
   const deleteAccountMutation = useDeleteUserAccount();
+  const setStatusMutation = useSetUserStatus();
 
   const handleConfirmRole = async (userId: string, newRole: "standard" | "moderator", rationale?: string) => {
     try {
@@ -38,6 +63,18 @@ export const AdminUsersPage: React.FC = () => {
       toast.success("User account permanently deleted");
     } catch (err: any) {
       toast.error(err?.message || "Failed to delete user account");
+      throw err;
+    }
+  };
+
+  const handleConfirmStatus = async (userId: string, status: "active" | "suspended" | "banned", rationale: string) => {
+    try {
+      await setStatusMutation.mutateAsync({ userId, input: { status, rationale } });
+      toast.success(
+        status === "active" ? "User account reinstated" : status === "suspended" ? "User account suspended" : "User account banned",
+      );
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update account status");
       throw err;
     }
   };
@@ -201,10 +238,15 @@ export const AdminUsersPage: React.FC = () => {
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                             <span>Banned</span>
                           </span>
+                        ) : u.status === "suspended" ? (
+                          <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            <span>Suspended</span>
+                          </span>
                         ) : (
                           <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                            <span>Suspended</span>
+                            <span>Pending</span>
                           </span>
                         )}
                       </td>
@@ -229,6 +271,41 @@ export const AdminUsersPage: React.FC = () => {
                             >
                               {u.role === "moderator" ? "Revoke Mod" : "Assign Mod"}
                             </button>
+                            {u.status === "suspended" || u.status === "banned" ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedUser(u);
+                                  setStatusAction(REINSTATE_ACTION);
+                                  setActionMode("status");
+                                }}
+                                className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-xs rounded-xl transition-colors border border-emerald-200"
+                              >
+                                Reinstate
+                              </button>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    setSelectedUser(u);
+                                    setStatusAction(SUSPEND_ACTION);
+                                    setActionMode("status");
+                                  }}
+                                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium text-xs rounded-xl transition-colors border border-amber-200"
+                                >
+                                  Suspend
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSelectedUser(u);
+                                    setStatusAction(BAN_ACTION);
+                                    setActionMode("status");
+                                  }}
+                                  className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium text-xs rounded-xl transition-colors border border-rose-200"
+                                >
+                                  Ban
+                                </button>
+                              </>
+                            )}
                             <button
                               onClick={() => {
                                 setSelectedUser(u);
@@ -279,12 +356,15 @@ export const AdminUsersPage: React.FC = () => {
       <UserActionModal
         user={selectedUser}
         mode={actionMode}
+        statusAction={statusAction}
         onClose={() => {
           setSelectedUser(null);
           setActionMode(null);
+          setStatusAction(null);
         }}
         onConfirmRole={handleConfirmRole}
         onConfirmDelete={handleConfirmDelete}
+        onConfirmStatus={handleConfirmStatus}
       />
     </div>
   );

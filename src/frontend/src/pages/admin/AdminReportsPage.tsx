@@ -5,6 +5,7 @@ import {
   useEscalatedReports,
   useInstantDeleteContent,
   useDismissReport,
+  useSetUserStatus,
   type EscalatedReport,
 } from "#frontend/api/admin";
 
@@ -13,6 +14,7 @@ export const AdminReportsPage: React.FC = () => {
   const { data, isLoading } = useEscalatedReports();
   const instantDeleteMutation = useInstantDeleteContent();
   const dismissReportMutation = useDismissReport();
+  const setUserStatusMutation = useSetUserStatus();
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedReport, setSelectedReport] = useState<EscalatedReport | null>(null);
@@ -39,13 +41,29 @@ export const AdminReportsPage: React.FC = () => {
     if (!selectedReport) return;
 
     try {
+      let banSucceeded = false;
+
       if (actionType === "remove_post" || actionType === "ban_user") {
         await instantDeleteMutation.mutateAsync({
           type: selectedReport.targetType === "comment" ? "comment" : "post",
           id: selectedReport.targetId,
           input: { rationale: rationaleInput || "Removed due to policy violation" },
         });
-        toast.success(actionType === "ban_user" ? "Content removed and user banned" : "Content permanently removed");
+
+        if (actionType === "ban_user") {
+          if (selectedReport.authorId) {
+            await setUserStatusMutation.mutateAsync({
+              userId: selectedReport.authorId,
+              input: { status: "banned", rationale: rationaleInput || "Banned due to policy violation" },
+            });
+            banSucceeded = true;
+            toast.success("Content removed and user banned");
+          } else {
+            toast.error("Content removed, but the account to ban could not be determined");
+          }
+        } else {
+          toast.success("Content permanently removed");
+        }
       } else {
         await dismissReportMutation.mutateAsync({
           reportId: selectedReport.id,
@@ -60,7 +78,9 @@ export const AdminReportsPage: React.FC = () => {
           actionType === "remove_post"
             ? "Post Permanently Removed"
             : actionType === "ban_user"
-            ? "User Account Banned"
+            ? banSucceeded
+              ? "User Account Banned"
+              : "Content Removed (Ban Skipped)"
             : "Report Marked Safe",
         snippet: selectedReport.details || `Target ${selectedReport.targetType} ID: ${selectedReport.targetId}`,
       });
