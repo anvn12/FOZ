@@ -109,6 +109,50 @@ export const authRateLimiter: RequestHandler =
       })
     : noop;
 
+/**
+ * Rolling-window limiter for registration: 15 attempts per IP per rolling
+ * 60s, matching the comment/post write limiter's cadence.
+ */
+export const registerRateLimiter: RequestHandler =
+  process.env.NODE_ENV === "test"
+    ? noop
+    : rateLimit({
+        windowMs: 60_000,
+        limit: 15,
+        standardHeaders: "draft-7",
+        legacyHeaders: false,
+        store: new SlidingWindowStore(),
+        keyGenerator: (req: Request) => (req.ip ? ipKeyGenerator(req.ip) : "unknown"),
+        message: {
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many registration attempts, please wait a moment before trying again.",
+          },
+        },
+      });
+
+/**
+ * Rolling-window limiter for login: 15 attempts per IP per rolling 60s,
+ * matching the comment/post write limiter's cadence.
+ */
+export const loginRateLimiter: RequestHandler =
+  process.env.NODE_ENV === "test"
+    ? noop
+    : rateLimit({
+        windowMs: 60_000,
+        limit: 15,
+        standardHeaders: "draft-7",
+        legacyHeaders: false,
+        store: new SlidingWindowStore(),
+        keyGenerator: (req: Request) => (req.ip ? ipKeyGenerator(req.ip) : "unknown"),
+        message: {
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many login attempts, please wait a moment before trying again.",
+          },
+        },
+      });
+
 export const summaryRateLimiter: RequestHandler =
   process.env.NODE_ENV === "test"
     ? noop

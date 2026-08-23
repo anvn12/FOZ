@@ -1,6 +1,6 @@
 import { Router, type RequestHandler } from "express";
 import { RegisterRequest, LoginRequest, ChangePasswordRequest, usernameSchema } from "#shared/schemas/auth.js";
-import { authRateLimiter } from "#backend/lib/rate-limit.js";
+import { authRateLimiter, registerRateLimiter, loginRateLimiter } from "#backend/lib/rate-limit.js";
 import { requireAuth, requireGuest, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import {
   register,
@@ -104,7 +104,7 @@ function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
 authRouter.post(
   "/register",
   requireGuest,
-  authRateLimiter,
+  registerRateLimiter,
   validateBody(RegisterRequest),
   async (req, res, next) => {
     try {
@@ -124,7 +124,7 @@ authRouter.post(
 authRouter.post(
   "/login",
   requireGuest,
-  authRateLimiter,
+  loginRateLimiter,
   validateBody(LoginRequest),
   async (req, res, next) => {
     try {
