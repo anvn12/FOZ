@@ -1921,10 +1921,10 @@ Allows a Moderator to escalate a report that may require an administrative decis
 2. The system rolls back all changes and displays: "The report could not be escalated. Please try again."
 3. The use case ends.
 
-#### 3.2.6 A report is escalated by 2 moderators nearly on the same time
-1. If at step 3, there are 2 escalation request occurs nearly the same time.
-2.  system accepts the earlier one, and notifies for the second moderator that the report is escalated before.
-3.  The use case ends
+#### 3.2.6 Concurrent Escalation
+1. If at step 3, two moderators attempt to escalate the same report at nearly the same time.
+2. The system accepts the earlier transaction, rolls back the second one, and notifies the second moderator: "This report has already been escalated."
+3. The use case ends
 
 
 ### 4. Special Requirements
