@@ -1,15 +1,19 @@
 import { z } from "zod";
+import { accountStatuses } from "../schema-enums.js";
 
 export const UserRoleEnum = z.enum(["guest", "standard", "moderator", "administrator"]);
 export type UserRoleEnum = z.infer<typeof UserRoleEnum>;
 
-export const AccountStatusEnum = z.enum(["active", "warned", "suspended", "banned"]);
+export const AccountStatusEnum = z.enum(accountStatuses);
 export type AccountStatusEnum = z.infer<typeof AccountStatusEnum>;
 
 export const AuditActionTypeEnum = z.enum([
   "ROLE_ASSIGN",
   "ROLE_REVOKE",
   "USER_DELETE",
+  "USER_SUSPEND",
+  "USER_BAN",
+  "USER_REINSTATE",
   "CONTENT_DELETE",
   "REPORT_FORWARD",
   "REPORT_DISMISS",
@@ -39,6 +43,12 @@ export const DeleteUserRequest = z.object({
   rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type DeleteUserRequest = z.infer<typeof DeleteUserRequest>;
+
+export const SetUserStatusRequest = z.object({
+  status: z.enum(["active", "suspended", "banned"]),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
+});
+export type SetUserStatusRequest = z.infer<typeof SetUserStatusRequest>;
 
 export const InstantDeleteContentRequest = z.object({
   rationale: z.string().min(3, "Rationale is required").max(1000),
