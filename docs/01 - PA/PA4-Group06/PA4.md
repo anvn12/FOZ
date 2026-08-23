@@ -335,6 +335,7 @@
         - [3.2.3 Report Not Found](#323-report-not-found)
         - [3.2.4 Report Already Processed](#324-report-already-processed)
         - [3.2.5 Escalation Update Failure](#325-escalation-update-failure)
+      - [3.2.6 Concurrent Escalation](#326-concurrent-escalation)
     - [4. Special Requirements](#4-special-requirements-17)
     - [5. Postconditions](#5-postconditions-17)
     - [6. Extension Points](#6-extension-points-17)
@@ -1081,25 +1082,25 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC-08/1.png>)
 
- **Screen 2 (Alternative Flow 1):** Empty
+ **Screen 2 (Alternative Flow 1 - Empty):**
   ![](<./Prototype requirement/UC-08/2.png>)
 
-  **Screen 3 (Alternative Flow 2):** Query limit
+  **Screen 3 (Alternative Flow 2 - Query limit):** 
   ![](<./Prototype requirement/UC-08/7.png>)
 
-  **Screen 4 (Alternative Flow 3):** Switch Category
+  **Screen 4 (Alternative Flow 3 - Switch Category):** 
   ![](<./Prototype requirement/UC-08/8.png>)
 
-  **Screen 5 (Alternative Flow 4):** No results
+  **Screen 5 (Alternative Flow 4 - No results):** 
   ![](<./Prototype requirement/UC-08/3.png>)
 
-  **Screen 6 (Alternative Flow 5):** "TRENDING TOPICS"
+  **Screen 6 (Alternative Flow 5 - "TRENDING TOPICS"):** 
   ![](<./Prototype requirement/UC-08/4.png>)
 
-  **Screen 7 (Alternative Flow 6):** "Suggested Creators"
+  **Screen 7 (Alternative Flow 6 - "Suggested Creators"):** 
   ![](<./Prototype requirement/UC-08/5.png>)
 
-  **Screen 8 (Alternative Flow 7):** "Trending Discussions"
+  **Screen 8 (Alternative Flow 7 - "Trending Discussions"):** 
   ![](<./Prototype requirement/UC-08/6.png>)
 
 
@@ -1150,10 +1151,10 @@ Allows a user to read the full body of a post along with its entire nested comme
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
-* **Screen 2 (Alternative Flow 1):**
+* **Screen 2 (Alternative Flow 1 - No comments):**
 *   ![](<./Prototype requirement/UC09-2.png>)
 
- * **Screen 2 (Alternative Flow 2):**
+ * **Screen 2 (Alternative Flow 2 - Post Not Found):**
 *   ![](<./Prototype requirement/UC13-2.png>) 
 
   
@@ -1244,25 +1245,24 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
   ![](<./Prototype requirement/UC10-9.png>)
   ![](<./Prototype requirement/UC10-12.png>)
   ![](<./Prototype requirement/UC10-13.png>)
-* **Screen 2 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC10-5.png>)
-* **Screen 3 (Alternative Flow 3):**
+* **Screen 2 (Alternative Flow 2 - Content Validation Error):**
   ![](<./Prototype requirement/UC10-1.png>)
-* **Screen 4 (Alternative Flow 4):**
+* **Screen 3 (Alternative Flow 3 - Media Attachment Error):**
   ![](<./Prototype requirement/UC10-16.png>)
-* **Screen 5 (Alternative Flow 5):**
-  ![](<./Prototype requirement/UC10-11.png>)
+* **Screen 4 (Alternative Flow 4 - Media Attachment Cancelled):**
+  ![](<./Prototype requirement/UC10-3.png>)
   ![](<./Prototype requirement/UC10-1.png>)
-* **Screen 6 (Alternative Flow 6):**
+* **Screen 5 (Alternative Flow 5 - Exceeds Characters Limit):**
   ![](<./Prototype requirement/UC10-14.png>)
-* **Screen 7 (Alternative Flow 7):**
+* **Screen 6 (Alternative Flow 6 - Exceeds Media Attachments Limit):**
   ![](<./Prototype requirement/UC10-10.png>)
-* **Screen 8 (Alternative Flow 8):**
+* **Screen 7 (Alternative Flow 7 - Valid Image with Large Size):**
   ![](<./Prototype requirement/UC10-2.png>)
   ![](<./Prototype requirement/UC10-15.png>)
   ![](<./Prototype requirement/UC10-17.png>)
-* **Screen 9 (Alternative Flow 9):**
-  ![](<./Prototype requirement/UC10-3.png>)
+* **Screen 8 (Alternative Flow 8 - Network Timeout after Attaching Any Image):**
+  ![](<./Prototype requirement/UC10-18.png>)
+
 
 ## Use-Case Specification: Interact with Post
 
@@ -1482,7 +1482,7 @@ Allows an authenticated user to reply to a post or to another comment.
    ![](<./Prototype requirement/UC12-17.png>)
 
 * **Screen 14 (Alternative Flow 13 - Comment Rate Limit Exceeded):**
-   ![](<./Prototype requirement/UC12-13.jpg>)
+   ![](<./Prototype requirement/UC12-22.png>)
 
 * **Screen 15 (Alternative Flow 14 - Authentication Expired During Commenting):**
    ![](<./Prototype requirement/UC12-20.png>)
@@ -1540,7 +1540,8 @@ Allows a user to toggle an appreciation metric on a post or comment.
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC13-1.png>)
 * **Screen 2 (Alternative Flow):**
-  ![](<./Prototype requirement/UC13-2.png>)
+  ![](<./Prototype requirement/UC13-2-1.png>)
+  ![](<./Prototype requirement/UC13-2-2.png>)
 
 ## Use-Case Specification: Request AI Summary
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*

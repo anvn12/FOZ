@@ -201,7 +201,7 @@ Edge cases such as boundary limits, XSS prevention, duplicate post blocking, and
 <br>
 
 #### 3. Create Post (UC-10)
-*Tester: Nguyen Hai Nam*
+*Tester: Nguyễn Hải Nam*
 
 | Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
 |---|---|---|---|---|---|---|---|
