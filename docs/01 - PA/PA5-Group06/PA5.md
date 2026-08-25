@@ -170,11 +170,11 @@
 | --- | --- | --- |
 | **Test Planning** | Nguyen Hai Nam | Write specific Test Plan for team. |
 | **Test Environment and Data Preparation** | Nguyen Hai Nam & Nguyen Tuan An | Set up the local testing environment (DB container, backend, frontend). Prepare test data including mock user accounts, pre-existing posts, and valid/invalid Gemini API keys for AI testing. |
-| **Test Case Design (UC-07 & UC-08)** | Nguyen Tuan An | Refine and write 10 test cases for **UC-07 (Browse Feed)** and **UC-08 (Search Content)**. |
-| **Test Case Design (UC-10)** | Nguyen Hai Nam | Refine and write 10 test cases for **UC-10 (Create Post)**. |
-| **Test Case Design (UC-12)** | Vo An Phu | Refine and write 10 test cases for **UC-12 (Leave Comment)**. |
-| **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write 10 test cases for **UC-14 (Request AI Summary)**. |
-| **Test Case Design (UC-18)** | Pham Dinh Gia Khanh | Refine and write 10 test cases for **UC-18 (Forward Report to Admin)**. |
+| **Test Case Design (UC-07 & UC-08)** | Nguyen Tuan An | Refine and write test cases for **UC-07 (Browse Feed)** and **UC-08 (Search Content)**. |
+| **Test Case Design (UC-10)** | Nguyen Hai Nam | Refine and write test cases for **UC-10 (Create Post)**. |
+| **Test Case Design (UC-12)** | Vo An Phu | Refine and write test cases for **UC-12 (Leave Comment)**. |
+| **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write test cases for **UC-14 (Request AI Summary)**. |
+| **Test Case Design (UC-18)** | Pham Dinh Gia Khanh | Refine and write test cases for **UC-18 (Forward Report to Admin)**. |
 | **Test Case Review & Quality Assurance (UC-07 & UC-08)** | Nguyen Hai Nam & Pham Dinh Gia Khanh | Review and refine all test cases for **UC-07 & UC-08** |
 | **Test Case Review & Quality Assurance (UC-10 & UC-12)** | Nguyen Tuan An & Nguyen Hai Trong | Review and refine all test cases for **UC-10 & UC-12** |
 | **Test Case Review & Quality Assurance (UC-14 & UC-18)** | Pham Dinh Gia Khanh & Vo An Phu | Review and refine all test cases for **UC-14 & UC-18** |
@@ -188,7 +188,7 @@
 | Phase | Milestone / Task Category | Timeframe | Primary Assignees |
 | --- | --- | --- | --- |
 | Phase 1 | **Test Planning & Preparation:** Finalize the test plan, set up the local testing environment, and prepare all required test data (mock accounts, pre-existing posts, API keys). | Aug 11 - Aug 15, 2026 | Nguyen Hai Nam & Nguyen Tuan An |
-| Phase 2 | **Test Case Design & Review:** Refine and design 60 test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 16 - Aug 18,  2026 | All Team Members |
+| Phase 2 | **Test Case Design & Review:** Refine and design test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 16 - Aug 18,  2026 | All Team Members |
 | Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 19 - Aug 21, 2026 | All Team Members |
 | Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 22 - Aug 24, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
 | Phase 5 | **Reporting & Finalization:** Compile Test Summary metrics, verify bug ID traceability, format and finalize the document. | Aug 25, 2026 |	Nguyen Hai Nam & Nguyen Hai Trong |
@@ -206,13 +206,13 @@
 
 * **Test Data Seeded:** Mock user accounts (for all roles) and sample data (posts, comments, etc.) are loaded into the database.
 
-* **Test Cases Approved:** All 60 functional test cases have been reviewed, refined, and approved by the team.
+* **Test Cases Approved:** All functional test cases have been reviewed, refined, and approved by the team.
 
 * **API Keys Configured:** `.env` variables are set, including both valid and invalid Gemini API keys to verify the AI fallback mechanism. 
 
 #### 1.5.2 Exit Criteria
 
-* **100% Execution:** All 60 designed test cases have been executed.
+* **100% Execution:** All designed test cases have been executed.
 
 * **Results Logged:** Execution dates, status (Pass/Fail), and actual results are fully documented for every test case.
 
