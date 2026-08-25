@@ -1,14 +1,25 @@
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { createPost } from "#frontend/api/interactions";
+import { createPost, InteractionApiError } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
+import { NetworkError, showOfflineToast, isOffline } from "#frontend/api/network";
 import { useProfile } from "#frontend/api/profile";
-import { validateImageFile, compressImageClient, compressImageToBase64 } from "#frontend/utils/imageCompressor";
+import {
+  validateImageFile,
+  compressImageClient,
+  compressImageToBase64,
+} from "#frontend/utils/imageCompressor";
 import { uploadMediaToCloudinary } from "#frontend/api/upload";
 
 type Attachment = { fileUrl: string; fileType: string; fileSize: number };
-type PendingAttachment = { id: string; file: File; previewUrl: string; fileType: string; fileSize: number };
+type PendingAttachment = {
+  id: string;
+  file: File;
+  previewUrl: string;
+  fileType: string;
+  fileSize: number;
+};
 
 export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const user = useAuthStore((s) => s.user);
@@ -31,9 +42,6 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       toast.success("Your post is live.");
       onClose();
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Something went wrong.");
-    },
   });
 
   if (!isOpen) return null;
@@ -51,8 +59,14 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
           try {
             // Compress to WebP first, then stream the smaller blob to Cloudinary
             const compressed = await compressImageClient(item.file, "feed_post");
-            const compressedFile = new File([compressed.blob], compressed.fileName, { type: "image/webp" });
-            const asset = await uploadMediaToCloudinary(compressedFile, compressedFile.name, "posts");
+            const compressedFile = new File([compressed.blob], compressed.fileName, {
+              type: "image/webp",
+            });
+            const asset = await uploadMediaToCloudinary(
+              compressedFile,
+              compressedFile.name,
+              "posts",
+            );
             toast.success(`Uploaded ${item.file.name}`, { id: toastId });
             finalAttachments.push({
               fileUrl: asset.url,
@@ -60,10 +74,13 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               fileSize: asset.bytes,
             });
           } catch (cErr) {
+            toast.dismiss(toastId);
+            if (cErr instanceof NetworkError || isOffline()) {
+              throw cErr instanceof NetworkError ? cErr : new NetworkError();
+            }
             console.warn("Cloudinary upload failed, falling back to base64:", cErr);
             try {
               const compressed = await compressImageToBase64(item.file, "feed_post");
-              toast.dismiss(toastId);
               finalAttachments.push({
                 fileUrl: compressed.base64,
                 fileType: "image/webp",
@@ -71,7 +88,7 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               });
             } catch (err) {
               console.warn("Compression fallback error:", err);
-              toast.error(`Failed to process ${item.file.name}`, { id: toastId });
+              toast.error(`Failed to process ${item.file.name}`);
             }
           }
         } else {
@@ -81,7 +98,11 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
             reader.onerror = reject;
             reader.readAsDataURL(item.file);
           });
-          finalAttachments.push({ fileUrl: base64, fileType: item.fileType, fileSize: item.fileSize });
+          finalAttachments.push({
+            fileUrl: base64,
+            fileType: item.fileType,
+            fileSize: item.fileSize,
+          });
         }
       }
 
@@ -90,6 +111,19 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
         attachments: finalAttachments.length > 0 ? (finalAttachments as any) : undefined,
       });
     } catch (err: any) {
+      toast.dismiss();
+      if (err instanceof NetworkError) {
+        showOfflineToast();
+        return;
+      }
+      if (err instanceof InteractionApiError && err.fields) {
+        const messages = Object.values(err.fields);
+        const firstMsg = messages[0];
+        if (firstMsg) {
+          toast.error(firstMsg);
+          return;
+        }
+      }
       toast.error(err?.message || "Failed to create post");
     } finally {
       setIsUploading(false);
@@ -111,14 +145,21 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       <div className="relative w-full max-w-[600px] rounded-2xl bg-surface p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-outline-variant pb-4">
           <h2 className="text-xl font-bold text-primary">Create Post</h2>
-          <button onClick={handleCloseModal} className="rounded-full p-2 hover:bg-surface-container-low transition-colors">
+          <button
+            onClick={handleCloseModal}
+            className="rounded-full p-2 hover:bg-surface-container-low transition-colors"
+          >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
         <div className="mt-6 flex gap-4">
           {avatarUrl ? (
-            <img alt={displayName} className="avatar h-12 w-12 shrink-0 rounded-full object-cover border border-outline-variant" src={avatarUrl} />
+            <img
+              alt={displayName}
+              className="avatar h-12 w-12 shrink-0 rounded-full object-cover border border-outline-variant"
+              src={avatarUrl}
+            />
           ) : (
             <div className="avatar h-12 w-12 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-white text-sm font-semibold">
               {displayName.charAt(0).toUpperCase()}
@@ -140,7 +181,11 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
                 {pendingAttachments.map((att, i) => (
                   <div key={att.id} className="relative group">
                     {att.fileType.startsWith("image/") ? (
-                      <img src={att.previewUrl} alt="attachment" className="h-20 w-20 object-cover rounded-xl border border-outline-variant" />
+                      <img
+                        src={att.previewUrl}
+                        alt="attachment"
+                        className="h-20 w-20 object-cover rounded-xl border border-outline-variant"
+                      />
                     ) : (
                       <div className="h-20 w-20 flex items-center justify-center rounded-xl border border-outline-variant bg-surface-container">
                         <span className="material-symbols-outlined text-outline">movie</span>
@@ -182,7 +227,9 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
 
                     const availableSlots = 5 - pendingAttachments.length;
                     if (files.length > availableSlots) {
-                      toast.error(`Maximum 5 images allowed per post. Adding first ${availableSlots} file(s).`);
+                      toast.error(
+                        `Maximum 5 images allowed per post. Adding first ${availableSlots} file(s).`,
+                      );
                     }
 
                     const filesToProcess = files.slice(0, availableSlots);
@@ -232,7 +279,11 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               </div>
               <button
                 type="button"
-                disabled={(!draft.trim() && pendingAttachments.length === 0) || isUploading || createMutation.isPending}
+                disabled={
+                  (!draft.trim() && pendingAttachments.length === 0) ||
+                  isUploading ||
+                  createMutation.isPending
+                }
                 onClick={handlePostSubmit}
                 className="rounded-full bg-primary px-6 py-2 text-sm font-bold text-on-primary disabled:opacity-40 transition-opacity hover:opacity-90 flex items-center justify-center gap-2"
               >

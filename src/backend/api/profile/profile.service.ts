@@ -1,4 +1,6 @@
 import { findProfileByUserId, findProfileByUsername, updateProfile } from "#backend/db/repositories/profiles.js";
+import { updateUsername } from "#backend/db/repositories/users.js";
+import { generateUniqueUsername } from "#backend/services/social-auth.service.js";
 import { extractCloudinaryPublicId, isCloudinaryConfigured, destroyAsset } from "#backend/services/cloudinary.js";
 
 export class ProfileError extends Error {
@@ -30,6 +32,8 @@ export async function getProfileByUsername(username: string) {
 export async function updateUserProfile(
   userId: string,
   data: {
+    username?: string;
+    allowUsernameAutoGeneration?: boolean;
     displayName?: string;
     bio?: string | null;
     avatarUrl?: string | null;
@@ -43,7 +47,24 @@ export async function updateUserProfile(
     throw new ProfileError("NOT_FOUND", 404, "Profile not found");
   }
 
-  const updated = await updateProfile(userId, data);
+  if (data.username && data.username.toLowerCase() !== existing.username.toLowerCase()) {
+    const newUsername = await generateUniqueUsername(data.username);
+    if (newUsername.toLowerCase() !== data.username.toLowerCase()) {
+      // Collision occurred!
+      if (!data.allowUsernameAutoGeneration) {
+        throw new ProfileError("USERNAME_COLLISION", 409, "The username has already existed, the system will generate a unique name by adding a number.");
+      }
+    }
+    await updateUsername(userId, newUsername);
+  }
+
+  const updated = await updateProfile(userId, {
+    displayName: data.displayName,
+    bio: data.bio,
+    avatarUrl: data.avatarUrl,
+    location: data.location,
+    website: data.website
+  });
   if (!updated) {
     throw new ProfileError("NOT_FOUND", 404, "Profile not found");
   }

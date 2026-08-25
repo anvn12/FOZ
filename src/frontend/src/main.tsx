@@ -4,20 +4,32 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { App } from "./App";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { silentRefresh, useAuthStore, type AuthUser } from "./stores/auth";
+import { fetchWithNetworkGuard } from "./api/network";
 import "./index.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // Always invoke query/mutation functions regardless of browser online
+    // status so our fetchWithNetworkGuard can detect offline and toast,
+    // rather than react-query silently pausing the request.
+    queries: { networkMode: "always" },
+    mutations: { networkMode: "always" },
+  },
+});
 
 function Root() {
   return (
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-          <Toaster />
-        </BrowserRouter>
-      </QueryClientProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <App />
+            <Toaster />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 }
@@ -35,19 +47,24 @@ async function handleOAuthTokenParam(): Promise<void> {
   const url = new URL(window.location.href);
   const token = url.searchParams.get("token");
   if (!token) return;
+  const isNewUser = url.searchParams.get("new") === "1";
 
   // Clean the token from the URL immediately so it's not visible or bookmarkable
   url.searchParams.delete("token");
+  url.searchParams.delete("new");
   window.history.replaceState({}, "", url.pathname + url.search + url.hash);
 
   try {
-    const res = await fetch("/api/v1/auth/me", {
+    const res = await fetchWithNetworkGuard("/api/v1/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
       credentials: "include",
     });
     if (res.ok) {
       const data = (await res.json()) as { user: AuthUser };
       useAuthStore.getState().setSession({ user: data.user, accessToken: token });
+      if (isNewUser) {
+        window.location.replace("/onboarding/avatar");
+      }
     }
   } catch {
     // If /me fails (network error, expired token, etc.) we just remain as guest.

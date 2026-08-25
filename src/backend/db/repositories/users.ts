@@ -62,6 +62,15 @@ export async function createUserWithProfile(args: {
   });
 }
 
+export async function updateUsername(id: string, username: string) {
+  const [row] = await db
+    .update(userAccounts)
+    .set({ username, updatedAt: new Date() })
+    .where(eq(userAccounts.id, id))
+    .returning();
+  return row;
+}
+
 export async function updatePasswordHash(id: string, passwordHash: string) {
   const [row] = await db
     .update(userAccounts)
@@ -138,3 +147,4 @@ export function toPublicUser(user: { id: string; email: string; username?: strin
     status: user.status as PublicUser["status"],
   };
 }
+

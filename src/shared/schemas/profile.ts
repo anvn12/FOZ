@@ -27,7 +27,11 @@ const websiteSchema = z
     return val.match(/^https?:\/\//i) ? val : `https://${val}`;
   });
 
+import { usernameSchema } from "./auth.js";
+
 export const UpdateProfileRequest = z.object({
+  username: usernameSchema.optional(),
+  allowUsernameAutoGeneration: z.boolean().optional(),
   displayName: z
     .string()
     .trim()
@@ -42,7 +46,8 @@ export const UpdateProfileRequest = z.object({
     .max(160, "Bio must be at most 160 characters")
     .nullable()
     .optional()
-    .transform((val) => (val === "" ? null : val)),
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => !val || !/[<>]/.test(val), "Bio cannot contain HTML tags"),
   location: z
     .string()
     .max(100, "Location must be at most 100 characters")
@@ -50,6 +55,7 @@ export const UpdateProfileRequest = z.object({
     .optional()
     .transform((val) => (val === "" ? null : val)),
   website: websiteSchema,
+  avatarUrl: z.string().url().nullable().optional(),
 });
 export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequest>;
 

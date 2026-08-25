@@ -1,8 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
-import type { Profile } from "#frontend/api/profile";
-import type { SearchDiscoveryResponse } from "#shared/schemas/search.js";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
+import type {
+  SearchDiscoveryResponse,
+  SearchItem,
+  SearchResponse,
+} from "#shared/schemas/search.js";
 
 interface ErrorEnvelope {
   error?: {
@@ -20,7 +24,7 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(path, {
+  const res = await fetchWithNetworkGuard(path, {
     ...init,
     credentials: "include",
     headers,
@@ -37,23 +41,24 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function searchProfiles(query: string) {
-  return call<{ items: Profile[]; nextCursor: string | null }>(
-    `/api/v1/search?q=${encodeURIComponent(query)}&type=users`,
-    {
-      method: "GET",
-    },
-  ).then((res) => res.items);
+export type SearchType = "posts" | "users" | "hashtags" | "all";
+
+export function search(query: string, type: SearchType = "all") {
+  return call<SearchResponse>(`/api/v1/search?q=${encodeURIComponent(query)}&type=${type}`, {
+    method: "GET",
+  }).then((res) => res.items);
 }
 
-export function useSearchProfiles(query: string, enabledOverride?: boolean) {
-  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0 || query === " ";
+export function useSearch(query: string, type: SearchType = "all", enabledOverride?: boolean) {
+  const isEnabled = enabledOverride !== undefined ? enabledOverride : query.trim().length > 0;
   return useQuery({
-    queryKey: ["search", query],
-    queryFn: () => searchProfiles(query),
+    queryKey: ["search", type, query],
+    queryFn: () => search(query, type),
     enabled: isEnabled,
   });
 }
+
+export type { SearchItem };
 
 export function getSearchDiscovery() {
   return call<SearchDiscoveryResponse>("/api/v1/search/discovery", {

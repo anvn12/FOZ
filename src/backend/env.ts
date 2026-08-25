@@ -19,6 +19,8 @@ const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.string().min(1),
   TEST_DATABASE_URL: z.string().min(1).optional(),
+  TEST_EMPTY_DATABASE_URL: z.string().default("postgres://foz:foz@localhost:5432/foz_test_empty"),
+  TEST_POPULATED_DATABASE_URL: z.string().default("postgres://foz:foz@localhost:5432/foz_test_populated"),
   JWT_ACCESS_SECRET: z.string().min(16, "JWT_ACCESS_SECRET must be at least 16 chars"),
   JWT_ACCESS_TTL_MIN: z.coerce.number().int().positive().default(15),
   REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(7),
@@ -31,12 +33,18 @@ const schema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
   GOOGLE_CLIENT_ID: cleanString,
   GOOGLE_CLIENT_SECRET: cleanString,
-  // Render provides the external hostname via environment variable
+  // Cloud deployment hostnames (Render, Railway)
   RENDER_EXTERNAL_HOSTNAME: cleanString.optional(),
+  RAILWAY_PUBLIC_DOMAIN: cleanString.optional(),
+  RAILWAY_STATIC_URL: cleanString.optional(),
   GOOGLE_CALLBACK_URL: cleanString.transform(
     (v) =>
       v ||
-      (process.env.RENDER_EXTERNAL_HOSTNAME
+      (process.env.RAILWAY_PUBLIC_DOMAIN
+        ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/api/v1/auth/google/callback`
+        : process.env.RAILWAY_STATIC_URL
+        ? `https://${process.env.RAILWAY_STATIC_URL}/api/v1/auth/google/callback`
+        : process.env.RENDER_EXTERNAL_HOSTNAME
         ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}/api/v1/auth/google/callback`
         : "http://localhost:4000/api/v1/auth/google/callback"),
   ),

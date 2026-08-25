@@ -22,6 +22,7 @@ describe("Social Auth Routes (/api/v1/auth/google)", () => {
 
     expect(res.status).toBe(200);
     expect(res.text).toContain("SOCIAL_AUTH_SUCCESS");
+    expect(res.text).toContain('"isNewUser":true');
 
     const cookie = res.headers["set-cookie"];
     const rawCookie = Array.isArray(cookie) ? cookie.join("\n") : cookie ?? "";
@@ -43,13 +44,28 @@ describe("Social Auth Routes (/api/v1/auth/google)", () => {
     expect(link!.provider).toBe("google");
   });
 
+  it("marks returning social users as not new", async () => {
+    const first = await getAgent().get(
+      "/api/v1/auth/google/callback?code=mock_google_code&state=popup&mock_email=returning@example.com&mock_name=ReturningUser",
+    );
+    expect(first.text).toContain('"isNewUser":true');
+
+    const second = await getAgent().get(
+      "/api/v1/auth/google/callback?code=mock_google_code&state=popup&mock_email=returning@example.com&mock_name=ReturningUser",
+    );
+    expect(second.text).toContain('"isNewUser":false');
+  });
+
   it("GET /api/v1/auth/google/callback redirects to frontend in redirect mode", async () => {
     const res = await getAgent().get(
       "/api/v1/auth/google/callback?code=mock_google_code&state=redirect&mock_email=redirectgoogle@example.com",
     );
 
     expect(res.status).toBe(302);
-    expect(res.headers.location).toMatch(/\/\?token=/);
+    const location = new URL(res.headers.location as string, "http://localhost");
+    expect(location.pathname).toBe("/");
+    expect(location.searchParams.get("token")).toBeTruthy();
+    expect(location.searchParams.get("new")).toBe("1");
   });
 
   it("GET / handles root requests and token query params gracefully", async () => {

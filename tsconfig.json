@@ -26,6 +26,9 @@
       "vitest/globals"
     ],
     "paths": {
+      "@/*": [
+        "./src/frontend/src/*"
+      ],
       "#shared/*": [
         "./src/shared/*"
       ],

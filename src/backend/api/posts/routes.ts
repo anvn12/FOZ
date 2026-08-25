@@ -1,44 +1,66 @@
 import { Router } from "express";
-import { optionalAuth, requireAuth, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
+import {
+  optionalAuth,
+  requireAuth,
+  validateBody,
+  type AuthedRequest,
+} from "#backend/api/auth/middleware.js";
 import { createPostRequestSchema, feedQuerySchema } from "#shared/schemas/interactions.js";
 import {
-  createPost, deletePost, listPostFeed, updatePostBody, createRepost, removeRepost,
-  listForYouFeed, listPopularFeed,
+  createPost,
+  deletePost,
+  listPostFeed,
+  updatePostBody,
+  createRepost,
+  removeRepost,
+  listForYouFeed,
+  listPopularFeed,
 } from "#backend/services/interactions/posts.js";
 import { createReport } from "#backend/services/interactions/reports.js";
 import { createReportRequestSchema } from "#shared/schemas/interactions.js";
 import { getOrGeneratePostSummary } from "#backend/services/post-summary.service.js";
-import { summaryRateLimiter } from "#backend/lib/rate-limit.js";
-
-
+import { summaryRateLimiter, interactionWriteRateLimiter } from "#backend/lib/rate-limit.js";
 
 import { extractHashtagsAndSync } from "#backend/db/repositories/hashtags.js";
 
 export const postRouter = Router();
 
-postRouter.post("/", requireAuth, validateBody(createPostRequestSchema), async (req: AuthedRequest, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
-    }
-    const postOrPosts = await createPost(req.user.id, req.body);
-    const createdArray = Array.isArray(postOrPosts) ? postOrPosts : [postOrPosts];
-    for (const p of createdArray) {
-      if (p && p.id && p.content) {
-        await extractHashtagsAndSync(p.id, p.content).catch(() => null);
+postRouter.post(
+  "/",
+  requireAuth,
+  interactionWriteRateLimiter,
+  validateBody(createPostRequestSchema),
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
       }
+      const postOrPosts = await createPost(req.user.id, req.body);
+      const createdArray = Array.isArray(postOrPosts) ? postOrPosts : [postOrPosts];
+      for (const p of createdArray) {
+        if (p && p.id && p.content) {
+          await extractHashtagsAndSync(p.id, p.content).catch(() => null);
+        }
+      }
+      return res.status(201).json(postOrPosts);
+    } catch (err) {
+      next(err);
     }
-    return res.status(201).json(postOrPosts);
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 postRouter.get("/", optionalAuth, async (req: AuthedRequest, res, next) => {
   try {
     const parsed = feedQuerySchema.safeParse(req.query);
     if (!parsed.success) {
-      return res.status(400).json({ error: { code: "INVALID_QUERY", message: parsed.error.issues[0]?.message ?? "Invalid query" } });
+      return res.status(400).json({
+        error: {
+          code: "INVALID_QUERY",
+          message: parsed.error.issues[0]?.message ?? "Invalid query",
+        },
+      });
     }
     const { type, authorId, cursor, limit } = parsed.data;
 
@@ -67,36 +89,47 @@ postRouter.get("/", optionalAuth, async (req: AuthedRequest, res, next) => {
   }
 });
 
-postRouter.patch("/:postId", requireAuth, validateBody(createPostRequestSchema), async (req: AuthedRequest, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+postRouter.patch(
+  "/:postId",
+  requireAuth,
+  validateBody(createPostRequestSchema),
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      }
+      const postId = req.params.postId as string;
+      const post = await updatePostBody(postId, req.user.id, req.body);
+      if (post && post.id && post.content) {
+        await extractHashtagsAndSync(post.id, post.content).catch(() => null);
+      }
+      return res.status(200).json(post);
+    } catch (err) {
+      if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+      }
+      if (err instanceof Error && err.message === "POST_FORBIDDEN") {
+        return res
+          .status(403)
+          .json({ error: { code: "FORBIDDEN", message: "You do not own this post" } });
+      }
+      next(err);
     }
-    const postId = req.params.postId as string;
-    const post = await updatePostBody(postId, req.user.id, req.body);
-    if (post && post.id && post.content) {
-      await extractHashtagsAndSync(post.id, post.content).catch(() => null);
-    }
-    return res.status(200).json(post);
-  } catch (err) {
-    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
-      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
-    }
-    if (err instanceof Error && err.message === "POST_FORBIDDEN") {
-      return res.status(403).json({ error: { code: "FORBIDDEN", message: "You do not own this post" } });
-    }
-    next(err);
-  }
-});
+  },
+);
 
 postRouter.delete("/:postId", requireAuth, async (req: AuthedRequest, res, next) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      return res
+        .status(401)
+        .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
     }
     const postId = req.params.postId as string;
     const isAdmin = req.user.role === "administrator" || req.user.role === "moderator";
-    
+
     await deletePost(postId, req.user.id, isAdmin);
     return res.status(200).json({ ok: true });
   } catch (err) {
@@ -104,7 +137,9 @@ postRouter.delete("/:postId", requireAuth, async (req: AuthedRequest, res, next)
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
     }
     if (err instanceof Error && err.message === "POST_FORBIDDEN") {
-      return res.status(403).json({ error: { code: "FORBIDDEN", message: "You do not own this post" } });
+      return res
+        .status(403)
+        .json({ error: { code: "FORBIDDEN", message: "You do not own this post" } });
     }
     next(err);
   }
@@ -113,7 +148,9 @@ postRouter.delete("/:postId", requireAuth, async (req: AuthedRequest, res, next)
 postRouter.post("/:postId/repost", requireAuth, async (req: AuthedRequest, res, next) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      return res
+        .status(401)
+        .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
     }
     const postId = req.params.postId as string;
     const post = await createRepost(req.user.id, postId);
@@ -129,7 +166,9 @@ postRouter.post("/:postId/repost", requireAuth, async (req: AuthedRequest, res, 
 postRouter.delete("/:postId/repost", requireAuth, async (req: AuthedRequest, res, next) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      return res
+        .status(401)
+        .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
     }
     const postId = req.params.postId as string;
     await removeRepost(req.user.id, postId);
@@ -142,53 +181,96 @@ postRouter.delete("/:postId/repost", requireAuth, async (req: AuthedRequest, res
   }
 });
 
-postRouter.post("/:postId/report", requireAuth, validateBody(createReportRequestSchema), async (req: AuthedRequest, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+postRouter.post(
+  "/:postId/report",
+  requireAuth,
+  validateBody(createReportRequestSchema),
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      }
+      const postId = req.params.postId as string;
+      const report = await createReport(
+        req.user.id,
+        "post",
+        postId,
+        req.body.reasonType,
+        req.body.details,
+      );
+      return res.status(201).json(report);
+    } catch (err) {
+      if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+      }
+      if (err instanceof Error && err.message === "ALREADY_REPORTED") {
+        return res
+          .status(409)
+          .json({ error: { code: "ALREADY_REPORTED", message: "You have already reported this post" } });
+      }
+      next(err);
     }
-    const postId = req.params.postId as string;
-    const report = await createReport(req.user.id, "post", postId, req.body.reasonType, req.body.details);
-    return res.status(201).json(report);
-  } catch (err) {
-    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
-      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
-    }
-    next(err);
-  }
-});
+  },
+);
 
-postRouter.get("/:postId/summary", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
-  try {
-    const postId = req.params.postId as string;
-    const result = await getOrGeneratePostSummary(postId, false);
-    return res.status(200).json({
-      success: true,
-      cached: result.cached,
-      summary: result.summary,
-    });
-  } catch (err) {
-    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
-      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+postRouter.get(
+  "/:postId/summary",
+  requireAuth,
+  summaryRateLimiter,
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      }
+      const postId = req.params.postId as string;
+      const result = await getOrGeneratePostSummary(postId, false);
+      return res.status(200).json({
+        success: true,
+        cached: result.cached,
+        summary: result.summary,
+      });
+    } catch (err) {
+      if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+      }
+      // Handle AI API errors or unhandled exceptions
+      return res
+        .status(503)
+        .json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
     }
-    next(err);
-  }
-});
+  },
+);
 
-postRouter.post("/:postId/summary/refresh", optionalAuth, summaryRateLimiter, async (req: AuthedRequest, res, next) => {
-  try {
-    const postId = req.params.postId as string;
-    const result = await getOrGeneratePostSummary(postId, true);
-    return res.status(200).json({
-      success: true,
-      cached: result.cached,
-      summary: result.summary,
-    });
-  } catch (err) {
-    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
-      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+postRouter.post(
+  "/:postId/summary/refresh",
+  requireAuth,
+  summaryRateLimiter,
+  async (req: AuthedRequest, res, next) => {
+    try {
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
+      }
+      const postId = req.params.postId as string;
+      const result = await getOrGeneratePostSummary(postId, true);
+      return res.status(200).json({
+        success: true,
+        cached: result.cached,
+        summary: result.summary,
+      });
+    } catch (err) {
+      if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+        return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+      }
+      // Handle AI API errors or unhandled exceptions
+      return res
+        .status(503)
+        .json({ error: { code: "SERVICE_UNAVAILABLE", message: "Failed to load summary" } });
     }
-    next(err);
-  }
-});
-
+  },
+);

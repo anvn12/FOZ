@@ -43,6 +43,21 @@ async function insertPost(args: {
   return { id: row.id, createdAt: row.created_at };
 }
 
+async function linkHashtag(postId: string, tag: string, displayName = tag) {
+  const rows = (await db.execute(sql`
+    INSERT INTO hashtags (name, display_name)
+    VALUES (${tag.toLowerCase()}, ${displayName})
+    ON CONFLICT (name) DO UPDATE SET display_name = EXCLUDED.display_name
+    RETURNING id
+  `)) as Array<{ id: string }>;
+  const tagId = rows[0]!.id;
+  await db.execute(sql`
+    INSERT INTO post_hashtags (post_id, hashtag_id)
+    VALUES (${postId}, ${tagId})
+    ON CONFLICT DO NOTHING
+  `);
+}
+
 // --- tests ----------------------------------------------------------------
 
 describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
@@ -97,6 +112,7 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       expect(Array.isArray(res.body.items)).toBe(true);
       expect(res.body.items).toHaveLength(1);
       expect(res.body.items[0].body).toMatch(/FOZ/);
+      expect(res.body.items[0].authorName).toBe("Author");
       expect(res.body.nextCursor).toBeNull();
     });
 
@@ -115,6 +131,47 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       expect(bodies).not.toContain("removed-post");
       expect(bodies).not.toContain("hidden-post");
       expect(bodies).not.toContain("removed-admin-post");
+    });
+  });
+
+  describe("type=hashtags", () => {
+    it("matches case-insensitive substring in tag name and returns post count", async () => {
+      const { userId } = await registerUserWithDisplayName("Author");
+      const post = await insertPost({ authorId: userId, body: "Post about design systems" });
+      await linkHashtag(post.id, "DesignSystems");
+
+      const res = await getAgent().get("/api/v1/search").query({ q: "design", type: "hashtags" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.items).toHaveLength(1);
+      expect(res.body.items[0].type).toBe("hashtag");
+      expect(res.body.items[0].name).toBe("designsystems");
+      expect(res.body.items[0].displayName).toBe("DesignSystems");
+      expect(res.body.items[0].postCount).toBe(1);
+    });
+
+    it("counts only active public posts for each hashtag", async () => {
+      const { userId } = await registerUserWithDisplayName("Author");
+      const publicPost = await insertPost({ authorId: userId, body: "Public Foz post" });
+      const hiddenPost = await insertPost({
+        authorId: userId,
+        body: "Hidden Foz post",
+        visibilityState: "hidden",
+      });
+      const removedPost = await insertPost({
+        authorId: userId,
+        body: "Removed Foz post",
+        lifecycleState: "removed_by_moderation",
+      });
+      await linkHashtag(publicPost.id, "Foz");
+      await linkHashtag(hiddenPost.id, "Foz");
+      await linkHashtag(removedPost.id, "Foz");
+
+      const res = await getAgent().get("/api/v1/search").query({ q: "foz", type: "hashtags" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.items).toHaveLength(1);
+      expect(res.body.items[0].postCount).toBe(1);
     });
   });
 
@@ -166,23 +223,63 @@ describe("GET /search (US: Search & Discovery — Vision Doc §5.4)", () => {
       const { userId } = await registerUserWithDisplayName("TargetUser");
       // Bob's displayName does NOT contain "Target" — but Bob's post body does.
       const { userId: bobId } = await registerUserWithDisplayName("Bob");
-      await insertPost({ authorId: bobId, body: "Post about TargetUser topic" });
+      const post = await insertPost({ authorId: bobId, body: "Post about TargetUser topic" });
+      await linkHashtag(post.id, "TargetUser");
 
       const res = await getAgent().get("/api/v1/search").query({ q: "TargetUser", type: "all" });
 
       expect(res.status).toBe(200);
-      expect(res.body.items).toHaveLength(2);
+      expect(res.body.items).toHaveLength(3);
       const types = res.body.items.map((it: { type: string }) => it.type).sort();
-      expect(types).toEqual(["post", "user"]);
+      expect(types).toEqual(["hashtag", "post", "user"]);
       // user item's id matches the user we registered
       const userItem = res.body.items.find((it: { type: string }) => it.type === "user");
       const postItem = res.body.items.find((it: { type: string }) => it.type === "post");
+      const hashtagItem = res.body.items.find((it: { type: string }) => it.type === "hashtag");
       expect(userItem.id).toBe(userId);
       expect(postItem.body).toMatch(/TargetUser/);
+      expect(hashtagItem.name).toBe("targetuser");
     });
   });
 
-  describe("performance NFR (Vision §6: <500ms for standard queries)", () => {
+  describe("edge cases & security", () => {
+    it("safely handles SQL injection attempts and special characters without 500 errors", async () => {
+      const maliciousQueries = [
+        "' OR 1=1; --",
+        "%; DROP TABLE users;",
+        "<script>alert(1)</script>",
+        "\\\\",
+        "\"",
+      ];
+
+      for (const q of maliciousQueries) {
+        const res = await getAgent().get("/api/v1/search").query({ q, type: "posts" });
+        expect(res.status).toBe(200); // Should safely return no results or sanitized results
+        expect(Array.isArray(res.body.items)).toBe(true);
+      }
+    });
+
+    it("paginates results correctly when matching items exceed the limit", async () => {
+      const { userId } = await registerUserWithDisplayName("PaginationUser");
+      // Insert 25 posts matching "paginate"
+      for (let i = 0; i < 25; i++) {
+        await insertPost({ authorId: userId, body: `paginate post ${i}` });
+      }
+
+      const res = await getAgent().get("/api/v1/search").query({ q: "paginate", type: "posts" });
+      
+      expect(res.status).toBe(200);
+      expect(res.body.items.length).toBeLessThanOrEqual(20); // Default pagination limit should be 20 or similar
+      expect(res.body.nextCursor).not.toBeNull();
+      
+      // Test fetching the next page
+      const resPage2 = await getAgent().get("/api/v1/search").query({ q: "paginate", type: "posts", cursor: res.body.nextCursor });
+      expect(resPage2.status).toBe(200);
+      expect(resPage2.body.items.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("performance NFR (Vision A 6: <500ms for standard queries)", () => {
     it("responds within 500ms", async () => {
       const { userId } = await registerUserWithDisplayName("Perf");
       for (let i = 0; i < 20; i++) {

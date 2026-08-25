@@ -14,6 +14,7 @@ export function ChangePasswordForm({ onSuccess }: ChangePasswordFormProps) {
   const {
     register: field,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ChangePasswordRequest>({ resolver: zodResolver(ChangePasswordRequest) });
@@ -27,8 +28,23 @@ export function ChangePasswordForm({ onSuccess }: ChangePasswordFormProps) {
             reset();
             onSuccess?.();
           },
-          onError: (err) =>
-            toast.error(err instanceof ApiError ? err.message : "Something went wrong"),
+          onError: (err) => {
+            if (
+              err instanceof ApiError &&
+              (err.code === "INCORRECT_CURRENT_PASSWORD" ||
+                err.message === "Incorrect current password" ||
+                err.message === "Invalid email or password" ||
+                err.code === "INVALID_CREDENTIALS")
+            ) {
+              setError("currentPassword", {
+                type: "manual",
+                message: "Incorrect current password",
+              });
+              toast.error("Incorrect current password");
+            } else {
+              toast.error(err instanceof ApiError ? err.message : "Something went wrong");
+            }
+          },
         });
       })}
       className="w-full space-y-5"

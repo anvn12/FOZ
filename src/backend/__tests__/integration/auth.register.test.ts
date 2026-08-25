@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getAgent, clearDb, expectFastResponse } from "./auth.setup.js";
-import { uniqueEmail, uniquePassword } from "../fixtures/users.js";
+import { uniqueEmail, uniqueUsername, uniquePassword } from "../fixtures/users.js";
 
 describe("POST /api/v1/auth/register (US1)", () => {
   beforeEach(async () => {
@@ -44,6 +44,35 @@ describe("POST /api/v1/auth/register (US1)", () => {
     expect(second.status).toBe(409);
     expect(second.body.error.code).toBe("USERNAME_TAKEN");
     expect(second.body.error.message).toMatch(/already taken/i);
+  });
+
+  it("duplicate email returns 409 with EMAIL_TAKEN code", async () => {
+    const email = uniqueEmail();
+    const uname1 = uniqueUsername();
+    const uname2 = uniqueUsername();
+    const password = uniquePassword();
+
+    const first = await getAgent()
+      .post("/api/v1/auth/register")
+      .send({ email, username: uname1, password });
+    expect(first.status).toBe(201);
+
+    const second = await getAgent()
+      .post("/api/v1/auth/register")
+      .send({ email, username: uname2, password });
+    expect(second.status).toBe(409);
+    expect(second.body.error.code).toBe("EMAIL_TAKEN");
+    expect(second.body.error.message).toMatch(/already exists/i);
+  });
+
+  it("requireGuest returns 409 ALREADY_SIGNED_IN when a Bearer token is supplied", async () => {
+    const res = await getAgent()
+      .post("/api/v1/auth/register")
+      .set("Authorization", "Bearer invalid-token-xyz")
+      .send({ email: uniqueEmail(), username: "guestblock", password: uniquePassword() });
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe("ALREADY_SIGNED_IN");
+    expect(res.body.error.message).toMatch(/already signed in/i);
   });
 
   it("check-username endpoint reports availability correctly", async () => {

@@ -11,6 +11,7 @@ import type {
 } from "#shared/schemas/interactions";
 import type { ErrorEnvelope } from "#shared/schemas/auth";
 import { useAuthStore } from "#frontend/stores/auth";
+import { fetchWithNetworkGuard } from "#frontend/api/network";
 
 export class InteractionApiError extends Error {
   constructor(
@@ -30,7 +31,7 @@ async function call<T>(path: string, init: RequestInit): Promise<T> {
     ...(init.headers as Record<string, string> | undefined),
   };
   if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(path, { ...init, credentials: "include", headers });
+  const res = await fetchWithNetworkGuard(path, { ...init, credentials: "include", headers });
   if (!res.ok) {
     const env = (await res.json().catch(() => null)) as ErrorEnvelope | null;
     throw new InteractionApiError(
@@ -63,11 +64,16 @@ export function useToggleReaction() {
 }
 
 export function toggleRepost(postId: string, active: boolean) {
-  return call<{ ok: true } | PostResponse>(`/api/v1/posts/${postId}/repost`, { method: active ? "DELETE" : "POST" });
+  return call<{ ok: true } | PostResponse>(`/api/v1/posts/${postId}/repost`, {
+    method: active ? "DELETE" : "POST",
+  });
 }
 
 export function useToggleRepost() {
-  return useMutation({ mutationFn: (args: { postId: string; active: boolean }) => toggleRepost(args.postId, args.active) });
+  return useMutation({
+    mutationFn: (args: { postId: string; active: boolean }) =>
+      toggleRepost(args.postId, args.active),
+  });
 }
 
 export function createPost(input: CreatePostRequest) {
@@ -104,15 +110,21 @@ export function deleteComment(commentId: string) {
 }
 
 export function listComments(postId: string) {
-  return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(`/api/v1/posts/${postId}/comments`, {
-    method: "GET",
-  });
+  return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(
+    `/api/v1/posts/${postId}/comments`,
+    {
+      method: "GET",
+    },
+  );
 }
 
 export function listUserComments(authorId: string) {
-  return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(`/api/v1/comments?authorId=${authorId}`, {
-    method: "GET",
-  });
+  return call<{ items: Array<CommentResponse & { likeCount: number; liked: boolean }> }>(
+    `/api/v1/comments?authorId=${authorId}`,
+    {
+      method: "GET",
+    },
+  );
 }
 
 export function reportPost(postId: string, input: CreateReportRequest) {
@@ -122,19 +134,29 @@ export function reportPost(postId: string, input: CreateReportRequest) {
   });
 }
 
-export function listFeed(type: FeedQuery["type"] = "latest", cursor?: string) {
-  const params = new URLSearchParams({ type });
-  if (cursor) params.set("cursor", cursor);
-  return call<{ items: Array<PostResponse & { likeCount: number; liked: boolean }>; nextCursor: string | null; degraded?: boolean }>(
-    `/api/v1/posts?${params}`,
-    { method: "GET" },
-  );
-}
-
-export function resolveReport(reportId: string, input: { action: "delete_content" | "dismiss" | "escalate", notes?: string }) {
-  return call<{ id: string; status: string }>(`/api/v1/moderation/reports/${reportId}/action`, {
+export function reportComment(commentId: string, input: CreateReportRequest) {
+  return call<{ id: string; status: string }>(`/api/v1/comments/${commentId}/report`, {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
+export function listFeed(type: FeedQuery["type"] = "latest", cursor?: string) {
+  const params = new URLSearchParams({ type });
+  if (cursor) params.set("cursor", cursor);
+  return call<{
+    items: Array<PostResponse & { likeCount: number; liked: boolean }>;
+    nextCursor: string | null;
+    degraded?: boolean;
+  }>(`/api/v1/posts?${params}`, { method: "GET" });
+}
+
+export function resolveReport(
+  reportId: string,
+  input: { action: "delete_content" | "dismiss" | "escalate"; notes?: string },
+) {
+  return call<{ id: string; status: string }>(`/api/v1/moderation/reports/${reportId}/action`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}

@@ -57,7 +57,7 @@ export function ExpandableText({
     "font-semibold text-black dark:text-white hover:underline focus:outline-none cursor-pointer text-sm ml-1 inline-block transition-colors no-card-click";
 
   return (
-    <div className={className}>
+    <div className={[className, "break-words"].filter(Boolean).join(" ")}>
       <span>
         <HashtagText text={isExpanded ? text : `${displayText.trimEnd()}...`} />
       </span>

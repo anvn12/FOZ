@@ -1,99 +1,136 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "#frontend/stores/auth";
-import { useUpdateAvatar } from "#frontend/api/profile";
+import { useProfile, useUpdateAvatar, useUpdateProfile } from "#frontend/api/profile";
 import toast from "react-hot-toast";
 
+const INPUT_CLASS =
+  "w-full min-h-[44px] px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-colors";
+
+/**
+ * First-run profile setup shown right after registration (email or Google).
+ * Renders as a modal-style overlay; Google signups arrive with their Google
+ * display name and avatar already stored, so those are pre-filled.
+ */
 export function OnboardingAvatarPage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const { data: profile, isLoading: profileLoading } = useProfile(user?.id ?? "");
+  const updateAvatarMutation = useUpdateAvatar();
+  const updateProfileMutation = useUpdateProfile();
+
+  const [displayName, setDisplayName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const updateAvatarMutation = useUpdateAvatar();
+
+  useEffect(() => {
+    if (!profile) return;
+    setDisplayName(profile.displayName);
+    setPreviewUrl((prev) => prev ?? profile.avatarUrl);
+  }, [profile]);
 
   if (!user) {
-    navigate("/login");
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
-    if (selected) {
-      if (selected.size > 2 * 1024 * 1024) {
-        toast.error("File is too large (max 2MB)");
-        return;
-      }
-      setFile(selected);
-      const url = URL.createObjectURL(selected);
-      setPreviewUrl(url);
+    if (!selected) return;
+    if (selected.size > 2 * 1024 * 1024) {
+      toast.error("File is too large (max 2MB)");
+      return;
     }
+    setFile(selected);
+    setPreviewUrl(URL.createObjectURL(selected));
   };
 
-  const handleUpload = () => {
-    if (!file) {
-      toast.error("Please select an image first");
+  const handleSave = () => {
+    const name = displayName.trim();
+    if (!name) {
+      toast.error("Display name is required");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64Data = event.target?.result as string;
-      if (!base64Data) {
-        toast.error("Failed to process image");
-        return;
-      }
+    const uploadAvatar = file
+      ? new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const base64Data = event.target?.result as string;
+            if (!base64Data) {
+              reject(new Error("Failed to process image"));
+              return;
+            }
+            resolve(base64Data);
+          };
+          reader.onerror = () => reject(new Error("Failed to read image file"));
+          reader.readAsDataURL(file);
+        }).then((avatar) => updateAvatarMutation.mutateAsync({ avatar }))
+      : Promise.resolve();
 
-      updateAvatarMutation.mutate(
-        { avatar: base64Data },
-        {
-          onSuccess: () => {
-            toast.success("Profile picture updated!");
-            navigate("/");
-          },
-          onError: (err: any) => {
-            toast.error(err.message || "Failed to upload profile picture");
-          },
-        }
-      );
-    };
-    reader.onerror = () => {
-      toast.error("Failed to read image file");
-    };
-    reader.readAsDataURL(file);
+    Promise.all([
+      updateProfileMutation.mutateAsync({
+        displayName: name,
+        bio: profile?.bio ?? null,
+        location: profile?.location ?? null,
+        website: profile?.website ?? null,
+      }),
+      uploadAvatar,
+    ])
+      .then(() => {
+        toast.success("Profile updated!");
+        navigate("/");
+      })
+      .catch((err: Error) => {
+        toast.error(err.message || "Failed to update profile");
+      });
   };
 
-  const handleSkip = () => {
-    navigate("/");
-  };
+  const saving =
+    updateProfileMutation.isPending || updateAvatarMutation.isPending;
 
   return (
-    <div className="bg-[#f9f9ff] text-[#0f172a] min-h-screen flex flex-col antialiased overflow-x-hidden relative items-center justify-center p-4">
-      <div className="shader-bg" aria-hidden="true">
-        <div className="shader-orb orb-1" />
-        <div className="shader-orb orb-2" />
-      </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-tertiary/40 p-margin-mobile backdrop-blur-xl">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="onboarding-title"
+        className="animate-foz-pop w-full max-w-[400px] rounded-3xl bg-surface-container-lowest p-6 text-center shadow-2xl"
+      >
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface-container">
+          <span className="material-symbols-outlined text-4xl text-secondary">person</span>
+        </div>
 
-      <div className="glass-panel w-full max-w-md rounded-xl p-8 shadow-xl relative z-10 flex flex-col items-center">
-        <h1 className="text-3xl font-extrabold mb-2 text-[#0f172a] font-montserrat text-center">
-          Add a profile picture
-        </h1>
-        <p className="text-[#475569] font-plus-jakarta text-center mb-8">
-          Help others recognize you by adding a photo.
+        <h2 id="onboarding-title" className="font-headline-md text-headline-md text-primary">
+          Set up your profile
+        </h2>
+        <p className="mb-6 font-body-lg text-body-lg text-secondary">
+          Add a display name and photo so people recognize you.
         </p>
 
-        <div className="relative mb-8 group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-          <div className="w-40 h-40 rounded-full border-4 border-[#2E7DFF] bg-white overflow-hidden flex items-center justify-center shadow-lg transition-transform transform group-hover:scale-105">
+        {/* Avatar picker */}
+        <div
+          className="group relative mx-auto mb-6 h-28 w-28 cursor-pointer"
+          onClick={() => fileInputRef.current?.click()}
+          role="button"
+          aria-label="Choose profile picture"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }
+          }}
+        >
+          <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container">
             {previewUrl ? (
-              <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+              <img src={previewUrl} alt="Profile picture preview" className="h-full w-full object-cover" />
             ) : (
-              <span className="material-symbols-outlined text-[80px] text-[#94a3b8]">
-                person
-              </span>
+              <span className="material-symbols-outlined text-[56px] text-outline">person</span>
             )}
           </div>
-          <div className="absolute bottom-0 right-0 w-12 h-12 bg-[#2E7DFF] rounded-full flex items-center justify-center shadow-md border-4 border-[#f9f9ff] text-white">
-            <span className="material-symbols-outlined text-[20px]">
+          <div className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary">
+            <span className="material-symbols-outlined text-[18px]">
               {previewUrl ? "edit" : "add_a_photo"}
             </span>
           </div>
@@ -107,18 +144,37 @@ export function OnboardingAvatarPage() {
           onChange={handleFileChange}
         />
 
-        <div className="w-full flex flex-col gap-3">
+        {/* Display name */}
+        <label
+          htmlFor="displayName"
+          className="mb-1.5 block text-left text-label-md font-label-md text-on-surface-variant"
+        >
+          Display name
+        </label>
+        <input
+          id="displayName"
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          maxLength={50}
+          placeholder="Your display name"
+          className={INPUT_CLASS}
+        />
+
+        <div className="mt-6 flex w-full flex-col gap-3">
           <button
-            onClick={handleUpload}
-            disabled={!file || updateAvatarMutation.isPending}
-            className="w-full min-h-[44px] py-3 rounded-lg btn-gradient text-white text-base font-bold font-montserrat flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            type="button"
+            onClick={handleSave}
+            disabled={saving || profileLoading}
+            className="w-full rounded-xl bg-primary py-4 font-label-md text-label-md text-on-primary transition-opacity hover:opacity-80 active:scale-95 disabled:opacity-50"
           >
-            {updateAvatarMutation.isPending ? "Uploading..." : "Save and continue"}
+            {saving ? "Saving…" : "Save and continue"}
           </button>
           <button
-            onClick={handleSkip}
-            disabled={updateAvatarMutation.isPending}
-            className="w-full min-h-[44px] py-3 rounded-lg btn-glass text-center text-[#0f172a] text-sm font-bold font-montserrat hover:text-[#2E7DFF] transition-colors"
+            type="button"
+            onClick={() => navigate("/")}
+            disabled={saving}
+            className="w-full rounded-xl border border-outline-variant bg-transparent py-4 font-label-md text-label-md text-primary transition-colors hover:bg-surface-container-low active:scale-95 disabled:opacity-50"
           >
             Skip for now
           </button>

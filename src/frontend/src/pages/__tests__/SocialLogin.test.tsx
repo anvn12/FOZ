@@ -12,7 +12,7 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
     vi.clearAllMocks();
   });
 
-  it("renders full-width Google brand button with ARIA labels and OR divider", () => {
+  it("renders full-width Google brand button with ARIA labels", () => {
     const handleSelect = vi.fn();
     renderWithProviders(<SocialLoginButtons onSelectProvider={handleSelect} />);
 
@@ -20,7 +20,6 @@ describe("SocialLoginButtons & Social Auth Integration", () => {
 
     expect(googleBtn).toBeTruthy();
     expect(screen.getByText("Continue with Google")).toBeTruthy();
-    expect(screen.getByText(/^or$/i)).toBeTruthy();
 
     fireEvent.click(googleBtn);
     expect(handleSelect).toHaveBeenCalledWith("google");

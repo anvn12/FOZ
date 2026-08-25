@@ -1,10 +1,14 @@
 import { Router } from "express";
 import { requireAuth, requireRole, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import { db } from "#backend/db/client.js";
-import { reports, userAccounts, profiles } from "#backend/db/schema/index.js";
+import { reports, userAccounts, profiles, comments, posts } from "#backend/db/schema/index.js";
 import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } from "#shared/schemas/interactions.js";
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 import { deletePost } from "#backend/services/interactions/posts.js";
+import { deleteComment } from "#backend/services/interactions/comments.js";
+import { createAuditLog } from "#backend/db/repositories/admin.js";
+import { getUserById } from "#backend/db/repositories/users.js";
+import type { ReportStatus } from "#shared/schema-enums.js";
 
 export const moderationRouter = Router();
 
@@ -56,6 +60,7 @@ moderationRouter.get("/reports", async (req, res, next) => {
       status: reports.status,
       createdAt: reports.createdAt,
       updatedAt: reports.updatedAt,
+      contextPostId: comments.postId,
       reporter: {
         id: userAccounts.id,
         displayName: profiles.displayName,
@@ -64,6 +69,7 @@ moderationRouter.get("/reports", async (req, res, next) => {
     .from(reports)
     .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
     .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .leftJoin(comments, and(eq(reports.targetType, 'comment'), eq(reports.targetId, comments.id)))
     .where(status ? eq(reports.status, status) : undefined)
     .orderBy(desc(reports.updatedAt))
     .limit(limit || 50)
@@ -110,6 +116,17 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
     const reportId = req.params.reportId as string;
     const { action, notes } = req.body;
 
+    // Separation of powers: moderators flag and escalate, only administrators
+    // may remove content. Moderators must escalate to an administrator instead.
+    if (action === "delete_content" && req.user.role !== "administrator") {
+      return res.status(403).json({
+        error: {
+          code: "FORBIDDEN",
+          message: "Moderators cannot delete content directly. Escalate this report to an administrator instead.",
+        },
+      });
+    }
+
     const targetReport = await db.query.reports.findFirst({
       where: eq(reports.id, reportId)
     });
@@ -118,17 +135,61 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Report not found" } });
     }
 
-    let newStatus = targetReport.status;
+    if (targetReport.status === "escalated" && action === "escalate") {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "This report has already been escalated." } });
+    }
+    if (targetReport.status === "closed" || targetReport.status === "dismissed") {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "This report has already been resolved." } });
+    }
+
+    // Verify target content still exists
+    let contentExists = false;
+    if (targetReport.targetType === "post") {
+      const post = await db.query.posts.findFirst({ where: eq(posts.id, targetReport.targetId) });
+      contentExists = !!post;
+    } else if (targetReport.targetType === "comment") {
+      const comment = await db.query.comments.findFirst({ where: eq(comments.id, targetReport.targetId) });
+      contentExists = !!comment;
+    }
+    
+    if (!contentExists) {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Reported content is no longer available" } });
+    }
+
+    let newStatus: ReportStatus = targetReport.status;
+    const actor = await getUserById(req.user.id);
 
     if (action === "delete_content") {
       if (targetReport.targetType === "post") {
         await deletePost(targetReport.targetId, req.user.id, true);
+      } else if (targetReport.targetType === "comment") {
+        await deleteComment(targetReport.targetId, req.user.id, true);
       }
       newStatus = "closed";
+
+      await createAuditLog({
+        actorId: req.user.id,
+        actorName: actor?.email ?? "Administrator",
+        actorRole: req.user.role,
+        actionType: "CONTENT_DELETE",
+        targetType: targetReport.targetType.toUpperCase(),
+        targetId: targetReport.targetId,
+        rationale: notes || `Removed via report ${reportId}`,
+      });
     } else if (action === "dismiss") {
       newStatus = "dismissed";
     } else if (action === "escalate") {
       newStatus = "escalated";
+
+      await createAuditLog({
+        actorId: req.user.id,
+        actorName: actor?.email ?? "Moderator",
+        actorRole: req.user.role,
+        actionType: "REPORT_ESCALATE",
+        targetType: "REPORT",
+        targetId: reportId,
+        rationale: notes || "Escalated to administrator review",
+      });
     }
 
     const [updatedReport] = await db.update(reports)
@@ -136,8 +197,12 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
         status: newStatus as any, 
         updatedAt: new Date(),
       })
-      .where(eq(reports.id, reportId))
+      .where(and(eq(reports.id, reportId), eq(reports.status, targetReport.status)))
       .returning();
+
+    if (!updatedReport) {
+      return res.status(409).json({ error: { code: "CONFLICT", message: "Report status was modified by another user." } });
+    }
 
     res.json(updatedReport);
   } catch (err) {

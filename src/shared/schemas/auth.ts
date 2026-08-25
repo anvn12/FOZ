@@ -61,13 +61,13 @@ export const ChangePasswordRequest = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: passwordSchema,
-    confirmNewPassword: z.string(),
+    confirmNewPassword: z.string().optional(),
   })
   .refine((v) => v.currentPassword !== v.newPassword, {
     message: "New password must differ from the current one",
     path: ["newPassword"],
   })
-  .refine((v) => v.newPassword === v.confirmNewPassword, {
+  .refine((v) => !v.confirmNewPassword || v.newPassword === v.confirmNewPassword, {
     message: "Passwords do not match",
     path: ["confirmNewPassword"],
   });
@@ -82,6 +82,7 @@ export const AuthResponse = z.object({
     status: z.enum(["active", "suspended", "banned", "pending"]),
   }),
   accessToken: z.string(),
+  isNewUser: z.boolean().optional(),
 });
 export type AuthResponse = z.infer<typeof AuthResponse>;
 

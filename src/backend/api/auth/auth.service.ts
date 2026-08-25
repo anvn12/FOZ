@@ -193,6 +193,12 @@ export async function logout(cookie: RefreshCookie): Promise<{ ok: true }> {
   return { ok: true };
 }
 
+export class InvalidCurrentPasswordError extends AuthError {
+  constructor() {
+    super("INCORRECT_CURRENT_PASSWORD", 401);
+  }
+}
+
 export async function changePassword(args: {
   userId: string;
   currentPassword: string;
@@ -201,7 +207,7 @@ export async function changePassword(args: {
   const user = await getUserById(args.userId);
   if (!user) throw new InvalidCredentialsError();
   const ok = await verifyPassword(args.currentPassword, user.passwordHash);
-  if (!ok) throw new InvalidCredentialsError();
+  if (!ok) throw new InvalidCurrentPasswordError();
   const newHash = await hashPassword(args.newPassword);
   await updatePasswordHash(user.id, newHash);
   return { ok: true };

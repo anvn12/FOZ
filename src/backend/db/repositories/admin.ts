@@ -92,7 +92,21 @@ export async function getAuditLogs(params: {
   limit: number;
 }) {
   const conditions = [];
-  if (params.actorId) conditions.push(eq(adminAuditLogs.actorId, params.actorId));
+  if (params.actorId) {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.actorId);
+    if (isUUID) {
+      conditions.push(or(
+        eq(adminAuditLogs.actorId, params.actorId),
+        eq(adminAuditLogs.targetId, params.actorId)
+      ));
+    } else {
+      conditions.push(or(
+        ilike(adminAuditLogs.actorName, `%${params.actorId}%`),
+        ilike(adminAuditLogs.rationale, `%${params.actorId}%`),
+        ilike(adminAuditLogs.targetId, `%${params.actorId}%`)
+      ));
+    }
+  }
   if (params.actionType) conditions.push(eq(adminAuditLogs.actionType, params.actionType));
   if (params.startDate) conditions.push(gte(adminAuditLogs.createdAt, new Date(params.startDate)));
   if (params.endDate) conditions.push(lte(adminAuditLogs.createdAt, new Date(params.endDate)));
@@ -186,6 +200,23 @@ export async function updateUserRole(userId: string, role: string) {
   return updated;
 }
 
+export async function updateUserStatus(userId: string, status: string) {
+  const [updated] = await db
+    .update(userAccounts)
+    .set({ status: status as any, updatedAt: new Date() })
+    .where(eq(userAccounts.id, userId))
+    .returning({
+      id: userAccounts.id,
+      email: userAccounts.email,
+      username: userAccounts.username,
+      role: userAccounts.role,
+      status: userAccounts.status,
+      createdAt: userAccounts.createdAt,
+      updatedAt: userAccounts.updatedAt,
+    });
+  return updated;
+}
+
 export async function countAdministrators() {
   const [tRow] = await db
     .select({ total: sql<number>`count(*)::int` })
@@ -220,9 +251,35 @@ export async function deleteUserAccountAndReattribute(userId: string) {
 
 export async function getEscalatedReports() {
   return db
-    .select()
+    .select({
+      id: reports.id,
+      reporterId: reports.reporterId,
+      targetType: reports.targetType,
+      targetId: reports.targetId,
+      reasonType: reports.reasonType,
+      details: reports.details,
+      status: reports.status,
+      createdAt: reports.createdAt,
+      updatedAt: reports.updatedAt,
+      reporterName: profiles.displayName,
+      authorId: sql<string | null>`coalesce(${posts.authorId}, ${comments.authorId}, case when ${reports.targetType} = 'user' then ${reports.targetId} end)`,
+    })
     .from(reports)
+    .leftJoin(userAccounts, eq(reports.reporterId, userAccounts.id))
+    .leftJoin(profiles, eq(userAccounts.id, profiles.userAccountId))
+    .leftJoin(posts, and(eq(reports.targetType, "post"), eq(posts.id, reports.targetId)))
+    .leftJoin(comments, and(eq(reports.targetType, "comment"), eq(comments.id, reports.targetId)))
+    .where(eq(reports.status, "escalated"))
     .orderBy(desc(reports.createdAt));
+}
+
+export async function dismissReport(reportId: string) {
+  const [updated] = await db
+    .update(reports)
+    .set({ status: "dismissed", updatedAt: new Date() })
+    .where(eq(reports.id, reportId))
+    .returning();
+  return updated;
 }
 
 export async function deletePostById(postId: string) {

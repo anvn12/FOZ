@@ -12,6 +12,7 @@ export default defineConfig({
     include: [
       "src/backend/lib/**/*.test.ts",
       "src/backend/api/**/*.test.ts",
+      "src/backend/db/**/*.test.ts",
       "src/backend/__tests__/unit/**/*.test.ts",
       "src/backend/__tests__/integration/**/*.test.ts",
       "src/shared/**/*.test.ts",
@@ -27,6 +28,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src/frontend/src", import.meta.url)),
       "#shared": fileURLToPath(new URL("./src/shared", import.meta.url)),
       "#backend": fileURLToPath(new URL("./src/backend", import.meta.url)),
       "#frontend": fileURLToPath(new URL("./src/frontend/src", import.meta.url)),

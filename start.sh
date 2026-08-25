@@ -1,21 +1,37 @@
 #!/usr/bin/env bash
 
+TARGET_DB="${1:-dev}"
+
 echo "========================================="
-echo "       Starting Local Development"
+echo "       Starting Local Environment"
 echo "========================================="
+echo "Target Mode: $TARGET_DB"
 echo ""
 
 echo "Starting Database (Postgres) via Docker..."
 docker compose up -d db
 
-echo "Waiting 5 seconds for the database to be ready..."
-sleep 5
+echo "Waiting 3 seconds for the database to be ready..."
+sleep 3
 echo ""
 
-# npm run dev:be
-echo "Starting Backend on port 4000..."
-npm run dev:be &
-BE_PID=$!
+if [ "$TARGET_DB" = "empty" ]; then
+  echo "Provisioning and resetting Empty Test DB (foz_test_empty)..."
+  npm run db:test:empty:reset
+  echo "Starting Backend targeting foz_test_empty..."
+  DATABASE_URL="postgres://foz:foz@localhost:5432/foz_test_empty" npm run dev:be &
+  BE_PID=$!
+elif [ "$TARGET_DB" = "populated" ]; then
+  echo "Provisioning and resetting Populated Test DB (foz_test_populated)..."
+  npm run db:test:populated:reset
+  echo "Starting Backend targeting foz_test_populated..."
+  DATABASE_URL="postgres://foz:foz@localhost:5432/foz_test_populated" npm run dev:be &
+  BE_PID=$!
+else
+  echo "Starting Backend targeting default database (foz_dev)..."
+  npm run dev:be &
+  BE_PID=$!
+fi
 
 # npm run dev:fe
 echo "Starting Frontend on port 5173..."

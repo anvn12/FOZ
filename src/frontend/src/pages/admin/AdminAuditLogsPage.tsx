@@ -61,7 +61,7 @@ export const AdminAuditLogsPage: React.FC = () => {
               setActionTypeFilter(e.target.value);
               setPage(1);
             }}
-            className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           >
             <option value="">All Action Types</option>
             {actionTypes.map((act) => (
@@ -75,13 +75,13 @@ export const AdminAuditLogsPage: React.FC = () => {
         <div className="w-full md:w-72">
           <input
             type="text"
-            placeholder="Filter by Actor UUID..."
+            placeholder="Search by UUID or keyword..."
             value={actorIdInput}
             onChange={(e) => {
               setActorIdInput(e.target.value);
               setPage(1);
             }}
-            className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono"
+            className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 placeholder:text-slate-500 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono"
           />
         </div>
       </div>

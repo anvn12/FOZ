@@ -1,53 +1,90 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSearchProfiles, useSearchDiscovery } from "#frontend/api/search";
+﻿import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
+import { formatRelativeTime } from "#frontend/components/FeedPostItem";
+import { HorizontalMediaGallery } from "#frontend/components/HorizontalMediaGallery";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export function SearchPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedTerm, setSubmittedTerm] = useState("");
+  const [searchType, setSearchType] = useState<SearchType>("all");
+  const [activeTab, setActiveTab] = useState<"posts" | "profile">("posts");
 
-  const { data: searchResults, isLoading } = useSearchProfiles(submittedTerm);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSearchTerm("");
+    setSubmittedTerm("");
+    setSearchType("all");
+    setActiveTab("posts");
+  }, [location.key]);
+
+  const { data: searchResults, isLoading } = useSearch(submittedTerm, searchType);
   const { data: discoveryData } = useSearchDiscovery();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmittedTerm(searchTerm);
+    if (searchTerm.length > 100 || searchTerm.trim().length > 100) {
+      toast.error("Search query is too long. Please limit to 100 characters.");
+      return;
+    }
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return;
+    setSearchType("all");
+    setActiveTab("posts");
+    setSubmittedTerm(trimmed);
   };
 
   const handleViewAllCreators = () => {
+    setSearchType("users");
+    setActiveTab("profile");
     setSubmittedTerm("%");
   };
 
   const handleTopicClick = (topicTag: string) => {
+    if (topicTag.length > 100 || topicTag.trim().length > 100) {
+      toast.error("Search query is too long. Please limit to 100 characters.");
+      return;
+    }
+    setSearchType("all");
+    setActiveTab("posts");
     setSearchTerm(topicTag);
     setSubmittedTerm(topicTag);
   };
 
+  const people = (searchResults ?? []).filter((item) => item.type === "user");
+  const postResults = (searchResults ?? []).filter((item) => item.type === "post");
+  const hashtagResults = (searchResults ?? []).filter((item) => item.type === "hashtag");
+
   return (
+    <NavBar>
     <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
       {/* Container for layouts */}
       <div className="w-full max-w-7xl flex relative justify-center">
         
-        <NavBar />
-        
-
         {/* ======================================= */}
         {/* MAIN CONTENT AREA: Search Page          */}
         {/* ======================================= */}
-        <div className="flex-1 w-full flex justify-center md:pl-24">
-          <main className="max-w-2xl w-full pt-[60px] md:pt-0 min-h-screen pb-20 relative">
+        <div className="flex-1 w-full flex justify-center">
+          <main className="max-w-2xl w-full min-h-screen pb-20 relative">
             
             {/* Search Canvas Area */}
-            <div className="px-6 py-10 flex flex-col gap-10">
+            <div className="px-6 py-10 flex flex-col">
               
               {/* Large Search Bar */}
               <section className="flex flex-col gap-2 relative">
                 <form className="relative w-full group" onSubmit={handleSearchSubmit}>
                   <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
                   <input 
-                    className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-[18px] leading-[1.6] rounded-xl py-4 pl-[60px] pr-[100px] focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline shadow-sm" 
+                    ref={searchInputRef}
+                    className="w-full bg-zinc-500/20 border border-outline-variant text-on-surface h-12  leading-[1.6] rounded-full py-4 pl-[60px] pr-[100px] focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all placeholder:text-outline shadow-sm" 
                     placeholder="Search FOZ..." 
                     type="text"
                     value={searchTerm}
@@ -59,7 +96,7 @@ export function SearchPage() {
                         type="button"
                         onClick={() => {
                           setSearchTerm("");
-                          setSubmittedTerm("");
+                          searchInputRef.current?.focus();
                         }}
                         className="text-outline hover:text-primary p-2 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Clear search"
@@ -68,13 +105,13 @@ export function SearchPage() {
                       </button>
                     )}
                     {searchTerm.trim() !== "" && (
-                      <button 
+                      <Button 
                         type="submit"
-                        className="bg-primary text-on-primary p-2 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity ml-1"
+                        variant={"ghost"}
                         aria-label="Submit search"
                       >
                         <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </form>
@@ -83,63 +120,203 @@ export function SearchPage() {
               {submittedTerm !== "" ? (
                 /* Search Results UI */
                 <section className="flex flex-col gap-4">
-                  <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
-                    {isLoading ? "Searching..." : "People"}
-                  </h2>
-                  <div className="flex flex-col gap-3">
-                    {searchResults?.length === 0 && !isLoading && (
-                      <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
-                    )}
-                    {searchResults?.map(profile => {
-                      const handle = profile.username ? `@${profile.username}` : `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
-                      const linkPath = profile.username ? `/profiles/@${profile.username}` : `/profiles/${profile.userAccountId}`;
-                      return (
-                        <Link 
-                          key={profile.id} 
-                          to={linkPath}
-                          className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
-                        >
-                          {profile.avatarUrl ? (
-                            <img 
-                              alt={profile.displayName} 
-                              className="w-12 h-12 rounded-full object-cover border border-outline-variant/30 shrink-0" 
-                              src={profile.avatarUrl}
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-lg shrink-0">
-                              {(profile.displayName || "U").charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="flex flex-col flex-1 min-w-0">
-                            <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
-                            <span className="text-[13px] font-medium text-secondary truncate">{handle}</span>
-                            {profile.bio && (
-                              <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
-                            )}
-                          </div>
-                          <button className="bg-transparent border border-outline-variant text-on-surface text-[12px] font-medium py-1.5 px-4 rounded-full hover:bg-surface-container hover:border-outline transition-colors">
-                            View
-                          </button>
-                        </Link>
-                      );
-                    })}
+                  {/* Search Result Tabs */}
+                  <div
+                    role="tablist"
+                    aria-label="Search result type"
+                    className="flex h-14"
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      id="search-tab-posts"
+                      aria-selected={activeTab === "posts"}
+                      aria-controls="search-panel-posts"
+                      onClick={() => setActiveTab("posts")}
+                      className={`relative flex-1 flex items-center justify-center text-[15px] font-semibold transition-colors ${
+                        activeTab === "posts" ? "text-primary" : "text-secondary"
+                      }`}
+                    >
+                      Posts
+                      {activeTab === "posts" && (
+                        <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-12 rounded-full bg-primary" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      id="search-tab-profile"
+                      aria-selected={activeTab === "profile"}
+                      aria-controls="search-panel-profile"
+                      onClick={() => setActiveTab("profile")}
+                      className={`relative flex-1 flex items-center justify-center text-[15px] font-semibold transition-colors ${
+                        activeTab === "profile" ? "text-primary" : "text-secondary"
+                      }`}
+                    >
+                      Profile
+                      {activeTab === "profile" && (
+                        <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-12 rounded-full bg-primary" />
+                      )}
+                    </button>
                   </div>
+
+                  {isLoading ? (
+                    <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-2">
+                      Searching...
+                    </h2>
+                  ) : (
+                    <>
+                      {activeTab === "posts" && (
+                        <div
+                          id="search-panel-posts"
+                          role="tabpanel"
+                          aria-labelledby="search-tab-posts"
+                          className="flex flex-col gap-4"
+                        >
+                          {searchResults?.length === 0 && (
+                            <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
+                          )}
+                          {searchResults && searchResults.length > 0 && postResults.length === 0 && hashtagResults.length === 0 && (
+                            <div className="text-on-surface-variant px-2 py-4">No posts found for "{submittedTerm.trim()}"</div>
+                          )}
+                          {hashtagResults.length > 0 && (
+                            <section className="flex flex-col gap-3">
+                              <h3 className="text-[14px] font-semibold text-on-surface-variant uppercase tracking-widest px-2">
+                                Hashtags
+                              </h3>
+                              {hashtagResults.map(tag => (
+                                <Link
+                                  key={tag.id}
+                                  to={`/hashtags/${tag.name}`}
+                                  className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                                >
+                                  <div className="w-11 h-11 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-xl shrink-0">
+                                    #
+                                  </div>
+                                  <div className="flex flex-col flex-1 min-w-0">
+                                    <span className="text-[16px] font-bold text-primary group-hover:underline truncate">
+                                      #{tag.displayName || tag.name}
+                                    </span>
+                                    <span className="text-[13px] font-medium text-secondary">
+                                      {tag.postCount} {tag.postCount === 1 ? "post" : "posts"}
+                                    </span>
+                                  </div>
+                                </Link>
+                              ))}
+                            </section>
+                          )}
+                          {postResults.length > 0 && (
+                            <section className="flex flex-col gap-3">
+                              {postResults.map(post => {
+                                const handle = post.authorUsername
+                                  ? `@${post.authorUsername}`
+                                  : `@${post.authorName.toLowerCase().replace(/\s+/g, "")}`;
+                                return (
+                                  <Link
+                                    key={post.id}
+                                    to={`/posts/${post.id}`}
+                                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                                  >
+                                    {post.authorAvatarUrl ? (
+                                      <img
+                                        alt={post.authorName}
+                                        className="w-11 h-11 rounded-full object-cover border border-outline-variant/30 shrink-0"
+                                        src={post.authorAvatarUrl}
+                                      />
+                                    ) : (
+                                      <div className="w-11 h-11 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-base shrink-0">
+                                        {(post.authorName || "U").charAt(0).toUpperCase()}
+                                      </div>
+                                    )}
+                                    <div className="flex flex-col flex-1 min-w-0 gap-0.5">
+                                      <div className="flex items-baseline gap-2 min-w-0">
+                                        <span className="text-[14px] font-bold text-primary group-hover:underline truncate">{post.authorName}</span>
+                                        <span className="text-[12px] font-medium text-secondary truncate">{handle}</span>
+                                        <span className="text-[12px] text-outline shrink-0">Â· {formatRelativeTime(post.createdAt)}</span>
+                                      </div>
+                                      <p className="text-[14px] text-on-surface line-clamp-2">{post.content}</p>
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                            </section>
+                          )}
+                        </div>
+                      )}
+
+                      {activeTab === "profile" && (
+                        <div
+                          id="search-panel-profile"
+                          role="tabpanel"
+                          aria-labelledby="search-tab-profile"
+                          className="flex flex-col gap-3"
+                        >
+                          {searchResults?.length === 0 && (
+                            <div className="text-on-surface-variant px-2 py-4">No results found for "{submittedTerm.trim() || "creators"}"</div>
+                          )}
+                          {searchResults && searchResults.length > 0 && people.length === 0 && (
+                            <div className="text-on-surface-variant px-2 py-4">No profiles found for "{submittedTerm.trim()}"</div>
+                          )}
+                          {people.map(profile => {
+                            const handle = profile.username ? `@${profile.username}` : `@${profile.displayName.toLowerCase().replace(/\s+/g, "")}`;
+                            const linkPath = profile.username ? `/profiles/@${profile.username}` : `/profiles/${profile.userAccountId}`;
+                            return (
+                              <Link
+                                key={profile.id}
+                                to={linkPath}
+                                className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container transition-colors group"
+                              >
+                                {profile.avatarUrl ? (
+                                  <img
+                                    alt={profile.displayName}
+                                    className="w-12 h-12 rounded-full object-cover border border-outline-variant/30 shrink-0"
+                                    src={profile.avatarUrl}
+                                  />
+                                ) : (
+                                  <div className="w-12 h-12 rounded-full bg-zinc-800 text-white font-bold flex items-center justify-center text-lg shrink-0">
+                                    {(profile.displayName || "U").charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex flex-col flex-1 min-w-0">
+                                  <span className="text-[16px] font-bold text-primary group-hover:underline truncate">{profile.displayName}</span>
+                                  <span className="text-[13px] font-medium text-secondary truncate">{handle}</span>
+                                  {profile.bio && (
+                                    <span className="text-[14px] text-on-surface-variant line-clamp-1 mt-0.5">{profile.bio}</span>
+                                  )}
+                                </div>
+                                <button className="bg-transparent border border-outline-variant text-on-surface text-[12px] font-medium py-1.5 px-4 rounded-full hover:bg-surface-container hover:border-outline transition-colors">
+                                  View
+                                </button>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </section>
               ) : (
-                <>
+                <div className="w-full flex flex-col items-stretch gap-4 mt-4">
                   {/* Trending Topics (Chips) */}
-                  <section className="flex flex-col gap-4">
-                    <h2 className="text-[14px] font-semibold text-on-surface-variant uppercase tracking-widest px-2">Trending Topics</h2>
-                    <div className="flex flex-wrap gap-2">
-                      {discoveryData?.topics?.map(topic => (
-                        <span 
-                          key={topic.id} 
-                          onClick={() => handleTopicClick(topic.tag)}
-                          className="bg-surface-container-lowest text-primary border border-primary text-[14px] font-semibold px-4 py-2 rounded-full cursor-pointer hover:bg-surface-variant transition-colors"
-                        >
-                          {topic.tag}
-                        </span>
-                      ))}
+                  <section className="flex flex-col gap-4 w-full bg-zinc-500/10 backdrop-blur-2xl rounded-lg p-2">
+                    <div className="border border-white/10 p-4 rounded-md h-full">
+                      <h2 className="text-[14px] font-semibold text-on-surface-variant uppercase tracking-widest">Trending Topics</h2>
+                    <div className="flex flex-wrap gap-2 pt-4">
+                      {discoveryData?.topics && discoveryData.topics.length > 0 ? (
+                        discoveryData.topics.map(topic => (
+                          <Badge 
+                            key={topic.id} 
+                            onClick={() => handleTopicClick(topic.tag)}
+                            variant={"default"}
+                            className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                          >
+                            {topic.tag}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-[13px] text-outline italic">No trending topics yet</span>
+                      )}
+                    </div>
                     </div>
                   </section>
 
@@ -182,14 +359,15 @@ export function SearchPage() {
                   </section>
 
                   {/* Trending Discussions */}
-                  <section className="flex flex-col gap-0 mt-6">
-                    <h2 className="text-[20px] font-semibold text-primary tracking-tight px-2 mb-4">Trending Discussions</h2>
+                  <section className="flex flex-col gap-0 mt-6 w-full border border-zinc-500/50 rounded-2xl pt-4 pb-0 overflow-hidden">
+                    <h2 className="text-[20px] font-semibold text-primary tracking-tight px-8 mb-4">Trending Discussions</h2>
+                    <Separator/>
                     {discoveryData?.discussions?.map(discussion => {
                       return (
                         <article 
                           key={discussion.id}
                           onClick={() => navigate(`/posts/${discussion.id}`)}
-                          className="flex gap-6 py-4 px-2 border-b border-outline-variant hover:bg-surface-container-lowest transition-colors cursor-pointer"
+                          className="flex gap-4 py-4 px-8 border-b last:border-b-0 border-outline-variant hover:bg-surface-container-lowest transition-colors cursor-pointer"
                         >
                           <div className="flex-shrink-0 relative">
                             {discussion.authorAvatarUrl ? (
@@ -200,15 +378,16 @@ export function SearchPage() {
                               </div>
                             )}
                           </div>
-                          <div className="flex flex-col gap-2 flex-1">
+                          <div className="flex flex-col gap-2 flex-1 min-w-0">
                             <div className="flex items-baseline gap-2">
                               <span className="text-[14px] font-bold text-primary">{discussion.authorName}</span>
                               <span className="text-[12px] font-medium text-on-surface-variant">{discussion.authorHandle}</span>
                             </div>
-                            <h3 className="text-[16px] text-on-surface leading-tight line-clamp-2">{discussion.content}</h3>
+                            <h3 className="text-[16px] text-on-surface leading-tight line-clamp-2 break-words">{discussion.content}</h3>
+                            <HorizontalMediaGallery attachments={discussion.attachments} />
                             <div className="flex gap-6 mt-2 text-outline text-[13px] font-medium">
-                              <div className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <div className={`flex items-center gap-1.5 transition-colors ${discussion.liked ? "text-red-500" : "hover:text-primary"}`}>
+                                <svg className="w-4 h-4" fill={discussion.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
                                 <span>{discussion.likeCount}</span>
@@ -219,13 +398,19 @@ export function SearchPage() {
                                 </svg>
                                 <span>{discussion.commentCount}</span>
                               </div>
+                              <div className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>{discussion.repostCount}</span>
+                              </div>
                             </div>
                           </div>
                         </article>
                       );
                     })}
                   </section>
-                </>
+                </div>
               )}
             </div>
           </main>
@@ -233,5 +418,7 @@ export function SearchPage() {
 
       </div>
     </div>
+    </NavBar>
   );
 }
+

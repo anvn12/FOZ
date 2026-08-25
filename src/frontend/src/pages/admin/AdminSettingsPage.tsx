@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useSystemSettings, useUpdateSystemSetting, type SystemSettingItem } from "#frontend/api/admin";
 
 export const AdminSettingsPage: React.FC = () => {
@@ -19,12 +20,17 @@ export const AdminSettingsPage: React.FC = () => {
   };
 
   const handleSave = async (key: string) => {
-    await updateSettingMutation.mutateAsync({
-      key,
-      value: editValue,
-      rationale,
-    });
-    setEditingKey(null);
+    try {
+      await updateSettingMutation.mutateAsync({
+        key,
+        value: editValue,
+        rationale,
+      });
+      toast.success(`System setting "${key}" updated`);
+      setEditingKey(null);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update system setting");
+    }
   };
 
   return (

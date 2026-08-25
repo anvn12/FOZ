@@ -31,6 +31,7 @@ FOZ is a web-based forum application focused on fundamental community discussion
 	1. [File Structure](#file-structure)
 	2. [API Routing Convention](#api-routing-convention)
 	3. [Authentication API Endpoints](#authentication-api-endpoints)
+	4. [Production Deployment Architecture](#production-deployment-architecture)
 7. [🤖 Team AI Usage Logging](#-team-ai-usage-logging)
 
 ## 📖 Introduction & Overview
@@ -244,6 +245,57 @@ docker exec -i foz_db psql -U foz -d foz_dev -c "DROP SCHEMA public CASCADE; CRE
 npx drizzle-kit migrate
 ```
 
+### 🧪 Isolated Testing Databases & Fixtures
+
+FOZ provides two dedicated, isolated testing databases that run inside the same PostgreSQL instance without interfering with `foz_dev`:
+
+1. **`foz_test_empty`**: Clean slate database with up-to-date migrations, 0 posts, and pre-configured administrative accounts:
+   - **Administrator**: `admin@admin.foz` / `admin@admin.foz`
+   - **Moderator**: `mod@mod.foz` / `mod@mod.foz`
+2. **`foz_test_populated`**: High-density dataset with 50 users (`user1@foz.test`..`user50@foz.test` / `password123`), 100 posts spanning a 30-day timeline, threaded comments/replies, reposts, likes, hashtags, and moderation reports.
+
+#### Test Database Commands
+
+```sh
+# Setup & migrate both test databases simultaneously
+npm run db:test:setup
+
+# Reset empty state database (foz_test_empty)
+npm run db:test:empty:reset
+
+# Reset populated interaction database (foz_test_populated)
+npm run db:test:populated:reset
+
+# Apply pending Drizzle migrations to both test databases
+npm run db:test:migrate
+```
+
+#### Running the Full App with Test Databases
+
+You can launch the full local environment (Docker DB + Backend + Frontend) targeting any specific database:
+
+- **Option 1: 1-Click Batch Launchers (Windows)**
+  - Double-click `start-empty.bat` to run against `foz_test_empty`.
+  - Double-click `start-populated.bat` to run against `foz_test_populated`.
+  - Double-click `start.bat` to run against standard development (`foz_dev`).
+
+- **Option 2: Command Line (Windows)**
+  ```cmd
+  .\start.bat empty       # Boots servers targeting foz_test_empty
+  .\start.bat populated   # Boots servers targeting foz_test_populated
+  .\start.bat             # Boots servers targeting foz_dev
+  ```
+
+- **Option 3: Command Line (macOS / Linux)**
+  ```sh
+  ./start.sh empty        # Boots servers targeting foz_test_empty
+  ./start.sh populated    # Boots servers targeting foz_test_populated
+  ./start.sh              # Boots servers targeting foz_dev
+  ```
+
+
+
+
 ### Option A — Drizzle Studio (Web GUI)
 
 The codebase includes a [drizzle.config.ts](file:///d:/FOZ/drizzle.config.ts) file wired up to read the `DATABASE_URL` from [.env](file:///d:/FOZ/.env). To view and manage data in a browser UI:
@@ -359,6 +411,48 @@ The application includes a complete authentication slice (Phase 002) with the fo
 | `PATCH` | `/api/v1/auth/password` | Bearer Token       | `{ currentPassword, newPassword }` | `200`                                      |
 
 _Note: Access tokens live in client memory only (zustand); refresh tokens are sent via `httpOnly`, `SameSite=Lax` cookies on path `/api/v1/auth`._
+
+### Production Deployment Architecture
+
+The application infrastructure leverages cloud providers for hosting and media management:
+
+- **Frontend**: **Vercel** — Global Edge CDN serving static Vite React SPA with automated proxy rewrites (`vercel.json`).
+- **Backend API**: **Railway** — Managed Express 5 Node.js web service running continuous container workloads.
+- **Database**: **Aiven** — Fully managed PostgreSQL 16 database with TLS encryption.
+- **Media Storage**: **Cloudinary** — Image cloud service for avatar and post attachment uploads.
+- **AI & Identity**: **Google Cloud Platform** — Google OAuth 2.0 for social login and Gemini API for post TL;DR summarization.
+
+```mermaid
+flowchart LR
+    Browser["User Browser"]
+
+    subgraph vercel ["Vercel Edge CDN"]
+        SPA["Web Application SPA\n(React 19 / Vite 8)"]
+    end
+
+    subgraph railway ["Railway Web Service"]
+        API["Backend API Server\n(Express 5 / Node.js v24)"]
+    end
+
+    subgraph aiven ["Aiven"]
+        DB[("PostgreSQL 16")]
+    end
+
+    subgraph gcp ["Google Cloud Platform"]
+        GoogleOAuth["Google OAuth 2.0"]
+        GeminiAPI["Gemini API"]
+    end
+
+    Cloudinary["Cloudinary CDN"]
+
+    Browser -- "HTTPS :443" --> SPA
+    SPA -. "Vercel rewrite\n/api/v1/* → Railway" .-> API
+    API -- "SQL over TLS :5432" --> DB
+    API -- "HTTPS :443" --> GoogleOAuth
+    API -- "HTTPS :443" --> GeminiAPI
+    API -- "HTTPS :443" --> Cloudinary
+    Browser -- "Direct CDN image URLs" --> Cloudinary
+```
 
 ---
 

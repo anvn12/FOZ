@@ -1,7 +1,8 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent } from "@testing-library/react";
+import toast from "react-hot-toast";
 import { renderWithProviders } from "../../test/utils.js";
 import { SearchPage } from "../SearchPage.js";
 import * as searchApi from "../../api/search.js";
@@ -15,11 +16,22 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+vi.mock("react-hot-toast", () => {
+  const toastMock = {
+    error: vi.fn(),
+    success: vi.fn(),
+  };
+  return {
+    toast: toastMock,
+    default: toastMock,
+  };
+});
+
 vi.mock("../../api/search.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api/search.js")>();
   return {
     ...actual,
-    useSearchProfiles: vi.fn(),
+    useSearch: vi.fn(),
     useSearchDiscovery: vi.fn(),
   };
 });
@@ -28,12 +40,44 @@ describe("SearchPage Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    vi.mocked(searchApi.useSearchProfiles).mockReturnValue({
-      data: [
-        { id: "u-1", userAccountId: "acc-1", displayName: "Elena Rostova", bio: "Designer", avatarUrl: null },
-      ],
+    const userItem = {
+      id: "u-1",
+      userAccountId: "acc-1",
+      profileId: "p-1",
+      username: "erostova",
+      displayName: "Elena Rostova",
+      bio: "Designer",
+      avatarUrl: null,
+      location: null,
+      website: null,
+      createdAt: new Date().toISOString(),
+      type: "user",
+    };
+    const postItem = {
+      id: "po-1",
+      authorId: "acc-1",
+      authorName: "Elena Rostova",
+      authorUsername: "erostova",
+      authorAvatarUrl: null,
+      content: "React post content",
+      body: "React post content",
+      visibilityState: "public",
+      lifecycleState: "active",
+      createdAt: new Date().toISOString(),
+      type: "post",
+    };
+    const hashtagItem = {
+      id: "h-1",
+      name: "designsystems",
+      displayName: "DesignSystems",
+      postCount: 3,
+      type: "hashtag",
+    };
+
+    vi.mocked(searchApi.useSearch).mockImplementation((_query, type) => ({
+      data: type === "users" ? [userItem] : [userItem, postItem, hashtagItem],
       isLoading: false,
-    } as any);
+    }) as any);
 
     vi.mocked(searchApi.useSearchDiscovery).mockReturnValue({
       data: {
@@ -45,7 +89,7 @@ describe("SearchPage Component", () => {
           { id: "c1", userAccountId: "acc-1", displayName: "Elena Rostova", bio: "Designer", avatarUrl: null },
         ],
         discussions: [
-          { id: "d1", authorId: "acc-1", authorName: "Elena Rostova", authorHandle: "@erostova", authorAvatarUrl: null, content: "Discussion topic 1", createdAt: new Date().toISOString(), likeCount: 5, commentCount: 2 },
+          { id: "d1", authorId: "acc-1", authorName: "Elena Rostova", authorHandle: "@erostova", authorAvatarUrl: null, content: "Discussion topic 1", createdAt: new Date().toISOString(), likeCount: 5, commentCount: 2, repostCount: 0, attachments: [] },
         ],
       },
       isLoading: false,
@@ -84,7 +128,135 @@ describe("SearchPage Component", () => {
     // Click header View all
     fireEvent.click(viewAllButtons[0]!);
 
-    // Should trigger search results display for People
-    expect(screen.getByText("People")).toBeDefined();
+    // Should switch to the Profile tab and list matching profiles
+    expect(screen.getByRole("tab", { name: "Profile" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
+  });
+
+  it("renders post and hashtag results after submitting a search", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+    expect(screen.getByText("Hashtags")).toBeDefined();
+    expect(screen.getByText("#DesignSystems")).toBeDefined();
+
+    // Switching to Profile shows people instead of posts
+    fireEvent.click(screen.getByRole("tab", { name: "Profile" }));
+    expect(screen.getByText("Elena Rostova")).toBeDefined();
+    expect(screen.queryByText("React post content")).toBeNull();
+  });
+
+  it("does not trigger search when whitespace characters are entered and submitted", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    // Type whitespace only
+    fireEvent.change(input, { target: { value: "   " } });
+
+    // Submit search button should NOT be rendered for whitespace only
+    expect(screen.queryByLabelText("Submit search")).toBeNull();
+
+    // Submit form via Enter key on the input
+    fireEvent.submit(input.closest("form")!);
+
+    // Search results UI ("People") should NOT be visible
+    expect(screen.queryByText("People")).toBeNull();
+  });
+
+  it("shows toast error notification when search query exceeds 100 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "a".repeat(101);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    const submitBtn = screen.getByLabelText("Submit search");
+    expect(submitBtn).toBeDefined();
+
+    fireEvent.click(submitBtn);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 100 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+  });
+
+  it("shows toast error notification when submitting form with search query longer than 100 characters", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...");
+    const longQuery = "b".repeat(105);
+    fireEvent.change(input, { target: { value: longQuery } });
+
+    fireEvent.submit(input.closest("form")!);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Search query is too long. Please limit to 100 characters."
+    );
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+  });
+
+  it("clears search input, focuses input, and keeps search results page active when clicking the clear 'x' button", () => {
+    renderWithProviders(<SearchPage />);
+
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results page is rendered
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // Find and click the clear 'x' button
+    const clearBtn = screen.getByLabelText("Clear search");
+    expect(clearBtn).toBeDefined();
+    fireEvent.click(clearBtn);
+
+    // Verify search input is cleared and focused
+    expect(input.value).toBe("");
+    expect(document.activeElement).toBe(input);
+
+    // Verify search results page is STILL rendered (not reset to discovery view)
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+    expect(screen.queryByText("Trending Topics")).toBeNull();
+
+    // User can continue typing a new query in the search bar
+    fireEvent.change(input, { target: { value: "design" } });
+    expect(input.value).toBe("design");
+    expect(screen.getByLabelText("Submit search")).toBeDefined();
+  });
+
+  it("resets search results and returns to basic discovery page when clicking the search icon in the navigation bar", () => {
+    renderWithProviders(<SearchPage />);
+
+    // 1. Enter search and submit
+    const input = screen.getByPlaceholderText("Search FOZ...") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "react" } });
+    fireEvent.click(screen.getByLabelText("Submit search"));
+
+    // Verify search results are present
+    expect(screen.getByRole("tab", { name: "Posts" })).toBeDefined();
+    expect(screen.getByText("React post content")).toBeDefined();
+
+    // 2. Find Search link in navigation bar
+    const searchNavLinks = screen.getAllByRole("link").filter((link) => link.getAttribute("href") === "/search");
+    expect(searchNavLinks.length).toBeGreaterThan(0);
+
+    // Click Search icon in nav bar
+    fireEvent.click(searchNavLinks[0]!);
+
+    // 3. Verify search results are reset and basic search page (discovery) is shown
+    expect(screen.queryByRole("tab", { name: "Posts" })).toBeNull();
+    expect(screen.queryByText("React post content")).toBeNull();
+    expect(screen.getByText("Trending Topics")).toBeDefined();
+    expect(input.value).toBe("");
   });
 });
+
+

@@ -43,369 +43,400 @@
 
 # Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [A - Revised Use-Case Specification](#a---revised-use-case-specification)
-	- [Revision History](#revision-history)
-	- [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
-		- [1. Sign Up](#1-sign-up)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Email Already Exists](#321-email-already-exists)
-				- [3.2.2 Weak Password](#322-weak-password)
-				- [3.2.3 Password Too Long](#323-password-too-long)
-				- [3.2.4 Rate Limit Exceeded](#324-rate-limit-exceeded)
-				- [3.2.5 Confirm Password Does Not Match](#325-confirm-password-does-not-match)
-				- [3.2.6 Username Already Taken](#326-username-already-taken)
-				- [3.2.7 Sign Up with Google Account](#327-sign-up-with-google-account)
-				- [3.2.8 Google Sign Up Username Collision](#328-google-sign-up-username-collision)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Log In](#use-case-specification-log-in)
-		- [1. Log In](#1-log-in)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Invalid Credentials](#321-invalid-credentials)
-				- [3.2.2 Account Suspended](#322-account-suspended)
-				- [3.2.3 Rate Limit Exceeded](#323-rate-limit-exceeded)
-				- [3.2.4 Sign In with Google Account](#324-sign-in-with-google-account)
-				- [3.2.5 Log In with Non-Existent Google Account](#325-log-in-with-non-existent-google-account)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Log Out](#use-case-specification-log-out)
-		- [1. Log Out](#1-log-out)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Session Already Expired](#321-session-already-expired)
-				- [3.2.2 User Cancels Log Out](#322-user-cancels-log-out)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
-		- [1. Manage Profile](#1-manage-profile)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Invalid Input Format](#321-invalid-input-format)
-				- [3.2.2 Validation Errors](#322-validation-errors)
-				- [3.2.3 User Cancels](#323-user-cancels)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Change Password](#use-case-specification-change-password)
-		- [1. Change Password](#1-change-password)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Incorrect Current Password](#321-incorrect-current-password)
-				- [3.2.2 New Password Matches Old Password](#322-new-password-matches-old-password)
-				- [3.2.3 Confirm Password Does Not Match](#323-confirm-password-does-not-match)
-				- [3.2.4 Weak New Password](#324-weak-new-password)
-				- [3.2.5 User Cancels](#325-user-cancels)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
-		- [1. Change Avatar](#1-change-avatar)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 File Too Large](#321-file-too-large)
-				- [3.2.2 User Cancels](#322-user-cancels)
-				- [3.2.3 Wrong File Type](#323-wrong-file-type)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
-		- [1. Browse Feed](#1-browse-feed)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Switch feed mode](#321-switch-feed-mode)
-				- [3.2.2 No Posts Available](#322-no-posts-available)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Search Content](#use-case-specification-search-content)
-		- [1. Search Content](#1-search-content)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1. **Search feature unavailable**](#321-search-feature-unavailable)
-				- [3.2.2. **No matching results**](#322-no-matching-results)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
-		- [1. View Post Details](#1-view-post-details)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 No comments](#321-no-comments)
-				- [3.2.2 Post Not Found](#322-post-not-found)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Create Post](#use-case-specification-create-post)
-		- [1. Create Post](#1-create-post)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1. Post creation canceled](#321-post-creation-canceled)
-				- [3.2.2 Content Validation Error](#322-content-validation-error)
-				- [3.2.3 Exceeds Limits](#323-exceeds-limits)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
-		- [1. Interact with Post](#1-interact-with-post)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1. The user selects **Reply**.](#321-the-user-selects-reply)
-				- [3.2.2. The user selects **Like**.](#322-the-user-selects-like)
-				- [3.2.3. The user selects **Report**.](#323-the-user-selects-report)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
-		- [1. Leave Comment](#1-leave-comment)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Empty Comment](#321-empty-comment)
-				- [3.2.2 Comment Exceeds Maximum Length](#322-comment-exceeds-maximum-length)
-				- [3.2.3 Long Comment Display](#323-long-comment-display)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
-		- [1. Like/Unlike](#1-likeunlike)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Target Post or Comment Deleted / Not Found](#321-target-post-or-comment-deleted--not-found)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
-		- [1. Request AI Summary](#1-request-ai-summary)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Post Not Found or No Longer Accessible](#321-post-not-found-or-no-longer-accessible)
-				- [3.2.2 AI Provider Error](#322-ai-provider-error)
-				- [3.2.3 Invalid AI Response](#323-invalid-ai-response)
-				- [3.2.4 Rate Limit Exceeded](#324-rate-limit-exceeded)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
-		- [1. Delete Own Post](#1-delete-own-post)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 User Cancels Deletion](#321-user-cancels-deletion)
-				- [3.2.2 Post Not Found or Forbidden](#322-post-not-found-or-forbidden)
-				- [3.2.3 Deletion Failure](#323-deletion-failure)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
-		- [1. Report Inappropriate Content](#1-report-inappropriate-content)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 User Cancels Report](#321-user-cancels-report)
-				- [3.2.2 Validation Error](#322-validation-error)
-				- [3.2.3 Content Already Reported by User](#323-content-already-reported-by-user)
-				- [3.2.4 Content Not Found or No Longer Reportable](#324-content-not-found-or-no-longer-reportable)
-				- [3.2.5 Reporting Rate Limit Exceeded](#325-reporting-rate-limit-exceeded)
-				- [3.2.6 Report Submission Failure](#326-report-submission-failure)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
-		- [1. Review Reports](#1-review-reports)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 No Reports Available](#321-no-reports-available)
-				- [3.2.2 Actor Leaves Without a Decision](#322-actor-leaves-without-a-decision)
-				- [3.2.3 Report Not Found or Already Processed](#323-report-not-found-or-already-processed)
-				- [3.2.4 Reported Content No Longer Exists](#324-reported-content-no-longer-exists)
-				- [3.2.5 Unauthorized Action](#325-unauthorized-action)
-				- [3.2.6 Missing or Insufficient Decision Rationale](#326-missing-or-insufficient-decision-rationale)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
-		- [1. Forward Report to Admin](#1-forward-report-to-admin)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Moderator Cancels Escalation](#321-moderator-cancels-escalation)
-				- [3.2.2 Missing or Insufficient Escalation Rationale](#322-missing-or-insufficient-escalation-rationale)
-				- [3.2.3 Report Not Found](#323-report-not-found)
-				- [3.2.4 Report Already Processed](#324-report-already-processed)
-				- [3.2.5 Escalation Update Failure](#325-escalation-update-failure)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
-		- [1. Delete Any Content](#1-delete-any-content)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Administrator Cancels Deletion](#321-administrator-cancels-deletion)
-				- [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale)
-				- [3.2.3 Content Not Found or Already Deleted](#323-content-not-found-or-already-deleted)
-				- [3.2.4 Target Not Eligible for Force Deletion](#324-target-not-eligible-for-force-deletion)
-				- [3.2.5 Deletion Transaction Fails](#325-deletion-transaction-fails)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
-		- [1. Permanently Remove User](#1-permanently-remove-user)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Administrator Cancels Deletion](#321-administrator-cancels-deletion)
-				- [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale)
-				- [3.2.3 Target Not Found or Already Removed](#323-target-not-found-or-already-removed)
-				- [3.2.4 Target No Longer Eligible](#324-target-no-longer-eligible)
-				- [3.2.5 Data-Wipe Transaction Fails](#325-data-wipe-transaction-fails)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
-	- [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
-		- [1. Assign Moderator Role](#1-assign-moderator-role)
-			- [1.1 Brief Description](#11-brief-description)
-		- [2. Preconditions](#2-preconditions)
-		- [3. Flow of Events](#3-flow-of-events)
-			- [3.1 Basic Flow](#31-basic-flow)
-			- [3.2 Alternative Flows](#32-alternative-flows)
-				- [3.2.1 Administrator Cancels Role Assignment](#321-administrator-cancels-role-assignment)
-				- [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale)
-				- [3.2.3 Target Not Found or Not Eligible](#323-target-not-found-or-not-eligible)
-				- [3.2.4 Concurrent Role Update](#324-concurrent-role-update)
-				- [3.2.5 Role Update or Audit Failure](#325-role-update-or-audit-failure)
-		- [4. Special Requirements](#4-special-requirements)
-		- [5. Postconditions](#5-postconditions)
-		- [6. Extension Points](#6-extension-points)
-		- [7. Prototype Requirement](#7-prototype-requirement)
+  - [Revision History](#revision-history)
+  - [Use-Case Specification: Sign Up](#use-case-specification-sign-up)
+    - [1. Sign Up](#1-sign-up)
+      - [1.1 Brief Description](#11-brief-description)
+    - [2. Preconditions](#2-preconditions)
+    - [3. Flow of Events](#3-flow-of-events)
+      - [3.1 Basic Flow](#31-basic-flow)
+      - [3.2 Alternative Flows](#32-alternative-flows)
+        - [3.2.1 Email Already Exists](#321-email-already-exists)
+        - [3.2.2 Weak Password](#322-weak-password)
+        - [3.2.3 Password Too Long](#323-password-too-long)
+        - [3.2.4 Rate Limit Exceeded](#324-rate-limit-exceeded)
+        - [3.2.5 Confirm Password Does Not Match](#325-confirm-password-does-not-match)
+        - [3.2.6 Username Already Taken, Reserved, or Invalid](#326-username-already-taken-reserved-or-invalid)
+        - [3.2.7 Sign Up with Google Account](#327-sign-up-with-google-account)
+        - [3.2.8 Google Sign Up Username Collision](#328-google-sign-up-username-collision)
+    - [4. Special Requirements](#4-special-requirements)
+    - [5. Postconditions](#5-postconditions)
+    - [6. Extension Points](#6-extension-points)
+    - [7. Prototype Requirement](#7-prototype-requirement)
+  - [Use-Case Specification: Log In](#use-case-specification-log-in)
+    - [1. Log In](#1-log-in)
+      - [1.1 Brief Description](#11-brief-description-1)
+    - [2. Preconditions](#2-preconditions-1)
+    - [3. Flow of Events](#3-flow-of-events-1)
+      - [3.1 Basic Flow](#31-basic-flow-1)
+      - [3.2 Alternative Flows](#32-alternative-flows-1)
+        - [3.2.1 Invalid Credentials](#321-invalid-credentials)
+        - [3.2.2 Account Suspended or Banned](#322-account-suspended-or-banned)
+        - [3.2.3 Rate Limit Exceeded](#323-rate-limit-exceeded)
+        - [3.2.4 Sign In with Google Account](#324-sign-in-with-google-account)
+        - [3.2.5 Log In with Non-Existent Google Account](#325-log-in-with-non-existent-google-account)
+    - [4. Special Requirements](#4-special-requirements-1)
+    - [5. Postconditions](#5-postconditions-1)
+    - [6. Extension Points](#6-extension-points-1)
+    - [7. Prototype Requirement](#7-prototype-requirement-1)
+  - [Use-Case Specification: Log Out](#use-case-specification-log-out)
+    - [1. Log Out](#1-log-out)
+      - [1.1 Brief Description](#11-brief-description-2)
+    - [2. Preconditions](#2-preconditions-2)
+    - [3. Flow of Events](#3-flow-of-events-2)
+      - [3.1 Basic Flow](#31-basic-flow-2)
+      - [3.2 Alternative Flows](#32-alternative-flows-2)
+        - [3.2.1 User Cancels Log Out](#321-user-cancels-log-out)
+        - [3.2.2 Session Already Expired or Invalid](#322-session-already-expired-or-invalid)
+    - [4. Special Requirements](#4-special-requirements-2)
+    - [5. Postconditions](#5-postconditions-2)
+    - [6. Extension Points](#6-extension-points-2)
+    - [7. Prototype Requirement](#7-prototype-requirement-2)
+  - [Use-Case Specification: Manage Profile](#use-case-specification-manage-profile)
+    - [1. Manage Profile](#1-manage-profile)
+      - [1.1 Brief Description](#11-brief-description-3)
+    - [2. Preconditions](#2-preconditions-3)
+    - [3. Flow of Events](#3-flow-of-events-3)
+      - [3.1 Basic Flow](#31-basic-flow-3)
+      - [3.2 Alternative Flows](#32-alternative-flows-3)
+        - [3.2.1 Invalid Input Format](#321-invalid-input-format)
+        - [3.2.2 Input Exceeds Maximum Limits](#322-input-exceeds-maximum-limits)
+        - [3.2.3 Username Handle Collision on Update](#323-username-handle-collision-on-update)
+        - [3.2.4 User Cancels Profile Edit](#324-user-cancels-profile-edit)
+        - [3.2.5 Update Avatar Image](#325-update-avatar-image)
+    - [4. Special Requirements](#4-special-requirements-3)
+    - [5. Postconditions](#5-postconditions-3)
+    - [6. Extension Points](#6-extension-points-3)
+    - [7. Prototype Requirement](#7-prototype-requirement-3)
+  - [Use-Case Specification: Change Password](#use-case-specification-change-password)
+    - [1. Change Password](#1-change-password)
+      - [1.1 Brief Description](#11-brief-description-4)
+    - [2. Preconditions](#2-preconditions-4)
+    - [3. Flow of Events](#3-flow-of-events-4)
+      - [3.1 Basic Flow](#31-basic-flow-4)
+      - [3.2 Alternative Flows](#32-alternative-flows-4)
+        - [3.2.1 Incorrect Current Password](#321-incorrect-current-password)
+        - [3.2.2 New Password Matches Old Password](#322-new-password-matches-old-password)
+        - [3.2.3 Confirm Password Does Not Match](#323-confirm-password-does-not-match)
+        - [3.2.4 Weak or Too Long New Password](#324-weak-or-too-long-new-password)
+        - [3.2.5 User Cancels](#325-user-cancels)
+        - [3.2.6 Rate Limit Exceeded](#326-rate-limit-exceeded)
+    - [4. Special Requirements](#4-special-requirements-4)
+    - [5. Postconditions](#5-postconditions-4)
+    - [6. Extension Points](#6-extension-points-4)
+    - [7. Prototype Requirement](#7-prototype-requirement-4)
+  - [Use-Case Specification: Change Avatar](#use-case-specification-change-avatar)
+    - [1. Change Avatar](#1-change-avatar)
+      - [1.1 Brief Description](#11-brief-description-5)
+    - [2. Preconditions](#2-preconditions-5)
+    - [3. Flow of Events](#3-flow-of-events-5)
+      - [3.1 Basic Flow](#31-basic-flow-5)
+      - [3.2 Alternative Flows](#32-alternative-flows-5)
+        - [3.2.1 File Too Large](#321-file-too-large)
+        - [3.2.2 User Cancels](#322-user-cancels)
+        - [3.2.3 Wrong File Type](#323-wrong-file-type)
+    - [4. Special Requirements](#4-special-requirements-5)
+    - [5. Postconditions](#5-postconditions-5)
+    - [6. Extension Points](#6-extension-points-5)
+    - [7. Prototype Requirement](#7-prototype-requirement-5)
+  - [Use-Case Specification: Browse Feed](#use-case-specification-browse-feed)
+    - [1. Browse Feed](#1-browse-feed)
+      - [1.1 Brief Description](#11-brief-description-6)
+    - [2. Preconditions](#2-preconditions-6)
+    - [3. Flow of Events](#3-flow-of-events-6)
+      - [3.1 Basic Flow](#31-basic-flow-6)
+      - [3.2 Alternative Flows](#32-alternative-flows-6)
+        - [3.2.1 Switch feed mode](#321-switch-feed-mode)
+        - [3.2.2 No Posts Available](#322-no-posts-available)
+        - [3.2.3 Scroll to Load More Posts](#323-scroll-to-load-more-posts)
+        - [3.2.4 View a long content post](#324-view-a-long-content-post)
+    - [4. Special Requirements](#4-special-requirements-6)
+    - [5. Postconditions](#5-postconditions-6)
+    - [6. Extension Points](#6-extension-points-6)
+    - [7. Prototype Requirement](#7-prototype-requirement-6)
+  - [Use-Case Specification: Search Content](#use-case-specification-search-content)
+    - [1. Search Content](#1-search-content)
+      - [1.1 Brief Description](#11-brief-description-7)
+    - [2. Preconditions](#2-preconditions-7)
+    - [3. Flow of Events](#3-flow-of-events-7)
+      - [3.1 Basic Flow](#31-basic-flow-7)
+      - [3.2 Alternative Flows](#32-alternative-flows-7)
+        - [3.2.1 Search feature unavailable](#321-search-feature-unavailable)
+        - [3.2.2 Search Query Exceeds Character Limit](#322-search-query-exceeds-character-limit)
+        - [3.2.3 Switch Category (Posts and Profile)](#323-switch-category-posts-and-profile)
+        - [3.2.4 No matching results](#324-no-matching-results)
+        - [3.2.5 Click a hashtag in "TRENDING TOPICS"](#325-click-a-hashtag-in-trending-topics)
+        - [3.2.6 Click a profile in "Suggested Creators"](#326-click-a-profile-in-suggested-creators)
+        - [3.2.7 Click a post in "Trending Discussions"](#327-click-a-post-in-trending-discussions)
+    - [4. Special Requirements](#4-special-requirements-7)
+    - [5. Postconditions](#5-postconditions-7)
+    - [6. Extension Points](#6-extension-points-7)
+    - [7. Prototype Requirement](#7-prototype-requirement-7)
+  - [Use-Case Specification: View Post Details](#use-case-specification-view-post-details)
+    - [1. View Post Details](#1-view-post-details)
+      - [1.1 Brief Description](#11-brief-description-8)
+    - [2. Preconditions](#2-preconditions-8)
+    - [3. Flow of Events](#3-flow-of-events-8)
+      - [3.1 Basic Flow](#31-basic-flow-8)
+      - [3.2 Alternative Flows](#32-alternative-flows-8)
+        - [3.2.1 No comments](#321-no-comments)
+        - [3.2.2 Post Not Found](#322-post-not-found)
+    - [4. Special Requirements](#4-special-requirements-8)
+    - [5. Postconditions](#5-postconditions-8)
+    - [6. Extension Points](#6-extension-points-8)
+    - [7. Prototype Requirement](#7-prototype-requirement-8)
+  - [Use-Case Specification: Create Post](#use-case-specification-create-post)
+    - [1. Create Post](#1-create-post)
+      - [1.1 Brief Description](#11-brief-description-9)
+    - [2. Preconditions](#2-preconditions-9)
+    - [3. Flow of Events](#3-flow-of-events-9)
+      - [3.1 Basic Flow](#31-basic-flow-9)
+      - [3.2 Alternative Flows](#32-alternative-flows-9)
+        - [3.2.1. Post creation canceled](#321-post-creation-canceled)
+        - [3.2.2 Content Validation Error](#322-content-validation-error)
+        - [3.2.3 Media Attachment Error](#323-media-attachment-error)
+        - [3.2.4 Media Attachment Cancelled](#324-media-attachment-cancelled)
+        - [3.2.5 Exceeds Limit of Characters](#325-exceeds-limit-of-characters)
+        - [3.2.6 Exceeds Limit of Number of Media Attachments](#326-exceeds-limit-of-number-of-media-attachments)
+        - [3.2.7 Valid Image with Large Size](#327-valid-image-with-large-size)
+        - [3.2.8 Network Timeout after Attaching Any Image](#328-network-timeout-after-attaching-any-image)
+    - [4. Special Requirements](#4-special-requirements-9)
+    - [5. Postconditions](#5-postconditions-9)
+    - [6. Extension Points](#6-extension-points-9)
+    - [7. Prototype Requirement](#7-prototype-requirement-9)
+  - [Use-Case Specification: Interact with Post](#use-case-specification-interact-with-post)
+    - [1. Interact with Post](#1-interact-with-post)
+      - [1.1 Brief Description](#11-brief-description-10)
+    - [2. Preconditions](#2-preconditions-10)
+    - [3. Flow of Events](#3-flow-of-events-10)
+      - [3.1 Basic Flow](#31-basic-flow-10)
+      - [3.2 Alternative Flows](#32-alternative-flows-10)
+        - [3.2.1. The user selects **Reply**.](#321-the-user-selects-reply)
+        - [3.2.2. The user selects **Like**.](#322-the-user-selects-like)
+        - [3.2.3. The user selects **Report**.](#323-the-user-selects-report)
+    - [4. Special Requirements](#4-special-requirements-10)
+    - [5. Postconditions](#5-postconditions-10)
+    - [6. Extension Points](#6-extension-points-10)
+    - [7. Prototype Requirement](#7-prototype-requirement-10)
+  - [Use-Case Specification: Leave Comment](#use-case-specification-leave-comment)
+    - [1. Leave Comment](#1-leave-comment)
+      - [1.1 Brief Description](#11-brief-description-11)
+    - [2. Preconditions](#2-preconditions-11)
+    - [3. Flow of Events](#3-flow-of-events-11)
+      - [3.1 Basic Flow](#31-basic-flow-11)
+      - [3.2 Alternative Flows](#32-alternative-flows-11)
+        - [3.2.1 Empty Comment](#321-empty-comment)
+        - [3.2.2 Comment Exceeds Maximum Length](#322-comment-exceeds-maximum-length)
+        - [3.2.3 Long Comment Display](#323-long-comment-display)
+        - [3.2.4 Newline Input with Shift+Enter](#324-newline-input-with-shiftenter)
+        - [3.2.5 Duplicate Submission Prevention](#325-duplicate-submission-prevention)
+        - [3.2.6 Malicious Script Injection (XSS) Attempt](#326-malicious-script-injection-xss-attempt)
+        - [3.2.7 Emoji and Unicode Input](#327-emoji-and-unicode-input)
+        - [3.2.8 Nested Reply](#328-nested-reply)
+        - [3.2.9 Offline Submission](#329-offline-submission)
+        - [3.2.10 Multi-Level Nested Replies (Depth 1–2)](#3210-multi-level-nested-replies-depth-12)
+        - [3.2.11 Deep Nested Replies (Depth \> 2)](#3211-deep-nested-replies-depth--2)
+        - [3.2.12 URL in Comment](#3212-url-in-comment)
+        - [3.2.13 Comment Rate Limit Exceeded](#3213-comment-rate-limit-exceeded)
+        - [3.2.14 Authentication Expired During Commenting](#3214-authentication-expired-during-commenting)
+        - [3.2.15 Post Deleted While Commenting](#3215-post-deleted-while-commenting)
+    - [4. Special Requirements](#4-special-requirements-11)
+    - [5. Postconditions](#5-postconditions-11)
+    - [6. Extension Points](#6-extension-points-11)
+    - [7. Prototype Requirement](#7-prototype-requirement-11)
+  - [Use-Case Specification: Like/Unlike](#use-case-specification-likeunlike)
+    - [1. Like/Unlike](#1-likeunlike)
+      - [1.1 Brief Description](#11-brief-description-12)
+    - [2. Preconditions](#2-preconditions-12)
+    - [3. Flow of Events](#3-flow-of-events-12)
+      - [3.1 Basic Flow](#31-basic-flow-12)
+      - [3.2 Alternative Flows](#32-alternative-flows-12)
+        - [3.2.1 Target Post or Comment Deleted / Not Found](#321-target-post-or-comment-deleted--not-found)
+    - [4. Special Requirements](#4-special-requirements-12)
+    - [5. Postconditions](#5-postconditions-12)
+    - [6. Extension Points](#6-extension-points-12)
+    - [7. Prototype Requirement](#7-prototype-requirement-12)
+  - [Use-Case Specification: Request AI Summary](#use-case-specification-request-ai-summary)
+    - [1. Request AI Summary](#1-request-ai-summary)
+      - [1.1 Brief Description](#11-brief-description-13)
+    - [2. Preconditions](#2-preconditions-13)
+    - [3. Flow of Events](#3-flow-of-events-13)
+      - [3.1 Basic Flow](#31-basic-flow-13)
+      - [3.2 Alternative Flows](#32-alternative-flows-13)
+        - [3.2.1 Post Not Found or No Longer Accessible](#321-post-not-found-or-no-longer-accessible)
+        - [3.2.2 AI Provider Error](#322-ai-provider-error)
+        - [3.2.3 Invalid AI Response](#323-invalid-ai-response)
+        - [3.2.4 Rate Limit Exceeded](#324-rate-limit-exceeded-1)
+        - [3.2.5 Network Offline](#325-network-offline)
+        - [3.2.6 Unauthorized or Suspended Access](#326-unauthorized-or-suspended-access)
+    - [4. Special Requirements](#4-special-requirements-13)
+    - [5. Postconditions](#5-postconditions-13)
+    - [6. Extension Points](#6-extension-points-13)
+    - [7. Prototype Requirement](#7-prototype-requirement-13)
+  - [Use-Case Specification: Delete Own Post](#use-case-specification-delete-own-post)
+    - [1. Delete Own Post](#1-delete-own-post)
+      - [1.1 Brief Description](#11-brief-description-14)
+    - [2. Preconditions](#2-preconditions-14)
+    - [3. Flow of Events](#3-flow-of-events-14)
+      - [3.1 Basic Flow](#31-basic-flow-14)
+      - [3.2 Alternative Flows](#32-alternative-flows-14)
+        - [3.2.1 User Cancels Deletion](#321-user-cancels-deletion)
+        - [3.2.2 Post Not Found or Forbidden](#322-post-not-found-or-forbidden)
+        - [3.2.3 Deletion Failure](#323-deletion-failure)
+    - [4. Special Requirements](#4-special-requirements-14)
+    - [5. Postconditions](#5-postconditions-14)
+    - [6. Extension Points](#6-extension-points-14)
+    - [7. Prototype Requirement](#7-prototype-requirement-14)
+  - [Use-Case Specification: Report Inappropriate Content](#use-case-specification-report-inappropriate-content)
+    - [1. Report Inappropriate Content](#1-report-inappropriate-content)
+      - [1.1 Brief Description](#11-brief-description-15)
+    - [2. Preconditions](#2-preconditions-15)
+    - [3. Flow of Events](#3-flow-of-events-15)
+      - [3.1 Basic Flow](#31-basic-flow-15)
+      - [3.2 Alternative Flows](#32-alternative-flows-15)
+        - [3.2.1 User Cancels Report](#321-user-cancels-report)
+        - [3.2.2 Validation Error](#322-validation-error)
+        - [3.2.3 Content Already Reported by User](#323-content-already-reported-by-user)
+        - [3.2.4 Content Not Found or No Longer Reportable](#324-content-not-found-or-no-longer-reportable)
+        - [3.2.5 Reporting Rate Limit Exceeded](#325-reporting-rate-limit-exceeded)
+        - [3.2.6 Report Submission Failure](#326-report-submission-failure)
+    - [4. Special Requirements](#4-special-requirements-15)
+    - [5. Postconditions](#5-postconditions-15)
+    - [6. Extension Points](#6-extension-points-15)
+    - [7. Prototype Requirement](#7-prototype-requirement-15)
+  - [Use-Case Specification: Review Reports](#use-case-specification-review-reports)
+    - [1. Review Reports](#1-review-reports)
+      - [1.1 Brief Description](#11-brief-description-16)
+    - [2. Preconditions](#2-preconditions-16)
+    - [3. Flow of Events](#3-flow-of-events-16)
+      - [3.1 Basic Flow](#31-basic-flow-16)
+      - [3.2 Alternative Flows](#32-alternative-flows-16)
+        - [3.2.1 No Reports Available](#321-no-reports-available)
+        - [3.2.2 Actor Leaves Without a Decision](#322-actor-leaves-without-a-decision)
+        - [3.2.3 Report Not Found or Already Processed](#323-report-not-found-or-already-processed)
+        - [3.2.4 Reported Content No Longer Exists](#324-reported-content-no-longer-exists)
+        - [3.2.5 Unauthorized Action](#325-unauthorized-action)
+        - [3.2.6 Missing or Insufficient Decision Rationale](#326-missing-or-insufficient-decision-rationale)
+    - [4. Special Requirements](#4-special-requirements-16)
+    - [5. Postconditions](#5-postconditions-16)
+    - [6. Extension Points](#6-extension-points-16)
+    - [7. Prototype Requirement](#7-prototype-requirement-16)
+  - [Use-Case Specification: Forward Report to Admin](#use-case-specification-forward-report-to-admin)
+    - [1. Forward Report to Admin](#1-forward-report-to-admin)
+      - [1.1 Brief Description](#11-brief-description-17)
+    - [2. Preconditions](#2-preconditions-17)
+    - [3. Flow of Events](#3-flow-of-events-17)
+      - [3.1 Basic Flow](#31-basic-flow-17)
+      - [3.2 Alternative Flows](#32-alternative-flows-17)
+        - [3.2.1 Moderator Cancels Escalation](#321-moderator-cancels-escalation)
+        - [3.2.2 Missing or Insufficient Escalation Rationale](#322-missing-or-insufficient-escalation-rationale)
+        - [3.2.3 Report Not Found](#323-report-not-found)
+        - [3.2.4 Report Already Processed](#324-report-already-processed)
+        - [3.2.5 Escalation Update Failure](#325-escalation-update-failure)
+      - [3.2.6 Concurrent Escalation](#326-concurrent-escalation)
+    - [4. Special Requirements](#4-special-requirements-17)
+    - [5. Postconditions](#5-postconditions-17)
+    - [6. Extension Points](#6-extension-points-17)
+    - [7. Prototype Requirement](#7-prototype-requirement-17)
+  - [Use-Case Specification: Delete Any Content](#use-case-specification-delete-any-content)
+    - [1. Delete Any Content](#1-delete-any-content)
+      - [1.1 Brief Description](#11-brief-description-18)
+    - [2. Preconditions](#2-preconditions-18)
+    - [3. Flow of Events](#3-flow-of-events-18)
+      - [3.1 Basic Flow](#31-basic-flow-18)
+      - [3.2 Alternative Flows](#32-alternative-flows-18)
+        - [3.2.1 Administrator Cancels Deletion](#321-administrator-cancels-deletion)
+        - [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale)
+        - [3.2.3 Content Not Found or Already Deleted](#323-content-not-found-or-already-deleted)
+        - [3.2.4 Target Not Eligible for Force Deletion](#324-target-not-eligible-for-force-deletion)
+        - [3.2.5 Deletion Transaction Fails](#325-deletion-transaction-fails)
+    - [4. Special Requirements](#4-special-requirements-18)
+    - [5. Postconditions](#5-postconditions-18)
+    - [6. Extension Points](#6-extension-points-18)
+    - [7. Prototype Requirement](#7-prototype-requirement-18)
+  - [Use-Case Specification: Permanently Remove User](#use-case-specification-permanently-remove-user)
+    - [1. Permanently Remove User](#1-permanently-remove-user)
+      - [1.1 Brief Description](#11-brief-description-19)
+    - [2. Preconditions](#2-preconditions-19)
+    - [3. Flow of Events](#3-flow-of-events-19)
+      - [3.1 Basic Flow](#31-basic-flow-19)
+      - [3.2 Alternative Flows](#32-alternative-flows-19)
+        - [3.2.1 Administrator Cancels Deletion](#321-administrator-cancels-deletion-1)
+        - [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale-1)
+        - [3.2.3 Target Not Found or Already Removed](#323-target-not-found-or-already-removed)
+        - [3.2.4 Target No Longer Eligible](#324-target-no-longer-eligible)
+        - [3.2.5 Data-Wipe Transaction Fails](#325-data-wipe-transaction-fails)
+    - [4. Special Requirements](#4-special-requirements-19)
+    - [5. Postconditions](#5-postconditions-19)
+    - [6. Extension Points](#6-extension-points-19)
+    - [7. Prototype Requirement](#7-prototype-requirement-19)
+  - [Use-Case Specification: Assign Moderator Role](#use-case-specification-assign-moderator-role)
+    - [1. Assign Moderator Role](#1-assign-moderator-role)
+      - [1.1 Brief Description](#11-brief-description-20)
+    - [2. Preconditions](#2-preconditions-20)
+    - [3. Flow of Events](#3-flow-of-events-20)
+      - [3.1 Basic Flow](#31-basic-flow-20)
+      - [3.2 Alternative Flows](#32-alternative-flows-20)
+        - [3.2.1 Administrator Cancels Role Assignment](#321-administrator-cancels-role-assignment)
+        - [3.2.2 Missing or Insufficient Rationale](#322-missing-or-insufficient-rationale-2)
+        - [3.2.3 Target Not Found or Not Eligible](#323-target-not-found-or-not-eligible)
+        - [3.2.4 Concurrent Role Update](#324-concurrent-role-update)
+        - [3.2.5 Role Update or Audit Failure](#325-role-update-or-audit-failure)
+    - [4. Special Requirements](#4-special-requirements-20)
+    - [5. Postconditions](#5-postconditions-20)
+    - [6. Extension Points](#6-extension-points-20)
+    - [7. Prototype Requirement](#7-prototype-requirement-20)
 - [B - Software Architecture: System Context Diagram](#b---software-architecture-system-context-diagram)
-	- [1. Technology Stack](#1-technology-stack)
-		- [Frontend](#frontend)
-		- [Backend](#backend)
-		- [Database](#database)
-		- [External Services](#external-services)
-		- [Shared Module](#shared-module)
-	- [2. C4 Level 1 - System Context Diagram](#2-c4-level-1---system-context-diagram)
-		- [Diagram Explanation](#diagram-explanation)
+  - [1. Technology Stack](#1-technology-stack)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+    - [Database](#database)
+    - [External Services](#external-services)
+    - [Shared Module](#shared-module)
+  - [2. C4 Level 1 - System Context Diagram](#2-c4-level-1---system-context-diagram)
+    - [Diagram Explanation](#diagram-explanation)
 - [C - Software Architecture: Container Diagram and Component Diagram](#c---software-architecture-container-diagram-and-component-diagram)
-	- [3. C4 Level 2 - Container Diagram](#3-c4-level-2---container-diagram)
-		- [3.1 Diagram](#31-diagram)
-		- [3.2 Container Descriptions](#32-container-descriptions)
-		- [3.3 Relationships Summary](#33-relationships-summary)
-	- [4. C4 Level 3 - Component Diagrams](#4-c4-level-3---component-diagrams)
-		- [4.1 Frontend - Web Application](#41-frontend---web-application)
-			- [4.1.1 Diagram](#411-diagram)
-			- [4.1.2 Component Descriptions](#412-component-descriptions)
-		- [4.2 Backend - API Server](#42-backend---api-server)
-			- [4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media · Reports · AI TL;DR)](#421-diagram-a---content--discovery-feed-%C2%B7-search-%C2%B7-profile-%C2%B7-hashtags-%C2%B7-media-%C2%B7-reports-%C2%B7-ai-tldr)
-			- [4.2.2 Diagram B - Identity, Governance & AI (Auth · OAuth · Reactions · Moderation · Admin)](#422-diagram-b---identity-governance--ai-auth-%C2%B7-oauth-%C2%B7-reactions-%C2%B7-moderation-%C2%B7-admin)
-			- [4.2.3 Component Descriptions](#423-component-descriptions)
-				- [Middleware Pipeline (API Gateway)](#middleware-pipeline-api-gateway)
-				- [Route Layer](#route-layer)
-				- [Service Layer](#service-layer)
-				- [Data Access (`src/backend/db/`)](#data-access-srcbackenddb)
-				- [Infrastructure](#infrastructure)
+  - [3. C4 Level 2 - Container Diagram](#3-c4-level-2---container-diagram)
+    - [3.1 Diagram](#31-diagram)
+    - [3.2 Container Descriptions](#32-container-descriptions)
+    - [3.3 Relationships Summary](#33-relationships-summary)
+  - [4. C4 Level 3 - Component Diagrams](#4-c4-level-3---component-diagrams)
+    - [4.1 Frontend - Web Application](#41-frontend---web-application)
+      - [4.1.1 Diagram](#411-diagram)
+      - [4.1.2 Component Descriptions](#412-component-descriptions)
+    - [4.2 Backend - API Server](#42-backend---api-server)
+      - [4.2.1 Diagram A - Content \& Discovery (Feed · Search · Profile · Hashtags · Media · Reports · AI TL;DR)](#421-diagram-a---content--discovery-feed--search--profile--hashtags--media--reports--ai-tldr)
+      - [4.2.2 Diagram B - Identity, Governance \& AI (Auth · OAuth · Reactions · Moderation · Admin)](#422-diagram-b---identity-governance--ai-auth--oauth--reactions--moderation--admin)
+      - [4.2.3 Component Descriptions](#423-component-descriptions)
+        - [Middleware Pipeline (API Gateway)](#middleware-pipeline-api-gateway)
+        - [Route Layer](#route-layer)
+        - [Service Layer](#service-layer)
+        - [Data Access (`src/backend/db/`)](#data-access-srcbackenddb)
+        - [Infrastructure](#infrastructure)
 - [D - Deployment Diagram](#d---deployment-diagram)
-	- [1. Production Deployment Diagram](#1-production-deployment-diagram)
-		- [1.1 Diagram](#11-diagram)
-			- [How the request flows](#how-the-request-flows)
-		- [1.2 Node Descriptions](#12-node-descriptions)
-		- [1.3 Communication Protocols Summary](#13-communication-protocols-summary)
-	- [2. Development Deployment Diagram](#2-development-deployment-diagram)
-		- [2.1 Diagram](#21-diagram)
-			- [Key development details](#key-development-details)
-		- [2.2 Node Descriptions](#22-node-descriptions)
-		- [2.3 Communication Protocols Summary](#23-communication-protocols-summary)
-	- [3. Environment Comparison](#3-environment-comparison)
+  - [1. Production Deployment Diagram](#1-production-deployment-diagram)
+    - [1.1 Diagram](#11-diagram)
+      - [How the request flows](#how-the-request-flows)
+    - [1.2 Node Descriptions](#12-node-descriptions)
+    - [1.3 Communication Protocols Summary](#13-communication-protocols-summary)
+  - [2. Development Deployment Diagram](#2-development-deployment-diagram)
+    - [2.1 Diagram](#21-diagram)
+      - [Key development details](#key-development-details)
+    - [2.2 Node Descriptions](#22-node-descriptions)
+    - [2.3 Communication Protocols Summary](#23-communication-protocols-summary)
+  - [3. Environment Comparison](#3-environment-comparison)
 - [E - Implement 2 Functional Groups using Spec Kit](#e---implement-2-functional-groups-using-spec-kit)
 - [F - AI Usage Report and Weekly Report](#f---ai-usage-report-and-weekly-report)
-	- [AI Usage Report](#ai-usage-report)
-		- [Declaration of No AI Use](#declaration-of-no-ai-use)
-		- [AI Usage Notes](#ai-usage-notes)
-	- [Weekly Report](#weekly-report)
-		- [Sprint Planning](#sprint-planning)
-		- [Scrum Meetings](#scrum-meetings)
-		- [Sprint Review](#sprint-review)
-		- [Jira Board](#jira-board)
+  - [AI Usage Report](#ai-usage-report)
+    - [Declaration of No AI Use](#declaration-of-no-ai-use)
+    - [AI Usage Notes](#ai-usage-notes)
+  - [Weekly Report](#weekly-report)
+    - [Sprint Planning](#sprint-planning)
+    - [Scrum Meetings](#scrum-meetings)
+    - [Sprint Review](#sprint-review)
+    - [Jira Board](#jira-board)
 
 <div style="page-break-after: always;"></div>
 
@@ -418,11 +449,12 @@
 | :--- | :--- | :--- | :--- |
 | 19/Jul/2026 | 1.0 | Initial draft: Documented all 21 Use-Case Specifications covering Auth, Core Interactions, and Moderation. | Nguyễn Hải Trọng |
 | 06/Aug/2026 | 1.1 | Update the Alternative Flow and Reordered sections for clarity | Nguyễn Hải Trọng |
+| 22/Aug/2026 | 1.2 | Update UCS 01–05 to reflect current app implementation (onboarding redirection, role-based login routing, username collision handling, avatar management, and NIST password constraints) | Nguyễn Tuấn An |
 
 ## Use-Case Specification: Sign Up
-*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
+*Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An* 
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-01
 
 ### 1. Sign Up
@@ -430,91 +462,91 @@
 * **Actor(s):** Guest
 
 #### 1.1 Brief Description
-This use case allows an unauthenticated guest to create a new user account and profile on the FOZ platform using their email and a secure password.
+This use case allows an unauthenticated guest to create a new user account and initial profile on the FOZ platform using an email, unique username, and secure password, or via Google OAuth authentication.
 
 ### 2. Preconditions
 * The user must be a Guest (unauthenticated).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the Guest navigates to the Registration page.
-2. The user enters a valid email address, a unique username, and a strong password.
-3. The user clicks "Create account".
-4. The system validates the inputs (email format, password length > 8 chars).
-5. The system checks if the email is already registered.
-6. The system securely hashes the password using bcrypt.
-7. The system creates a new record in the `user_accounts` table (role: `standard`, status: `active`) and a default record in the `profiles` table.
-8. The system issues an access token and a refresh token (saved in `refresh_sessions`).
-9. The system redirects the user to the Home Feed.
+1. The use case begins when the Guest navigates to the Registration page (`/register`).
+2. The user enters a unique username, a valid email address, a strong password, and confirms the password.
+3. The user clicks "Sign up" (or "Create account").
+4. The system validates the inputs (email format, username length 3–30 characters and allowed characters `[a-z0-9._]`, password length between 8 and 128 characters, and password confirmation match).
+5. The system checks if the email or username is already registered in the database.
+6. The system securely hashes the password using bcrypt (cost factor 12).
+7. The system creates a new record in the `user_accounts` table (role: `standard`, status: `active`) and a default profile record in the `profiles` table (with display name initialized to username).
+8. The system issues a JWT access token and creates an active session in `refresh_sessions`, setting the `refresh_token` http-only cookie.
+9. The system redirects the user to the Onboarding Profile Setup page (`/onboarding/avatar`) to configure their display name and avatar (or proceed to the Home Feed).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Email Already Exists
-1. If at step 5, the email exists in the database.
-2. The system aborts the registration.
-3. The system displays a generic error: "An account with this email already exists".
+1. If at step 5, the entered email address already exists in the database.
+2. The system aborts the registration and returns HTTP 409 (`EMAIL_TAKEN`).
+3. The system displays an error message: "An account with this email already exists".
 4. The flow resumes at step 2.
 
 ##### 3.2.2 Weak Password
 1. If at step 4, the password is less than 8 characters.
-2. The system highlights the field with "Password must be at least 8 characters".
+2. The system highlights the password field and displays: "Password must be at least 8 characters".
 3. The flow resumes at step 2.
 
 ##### 3.2.3 Password Too Long
 1. If at step 4, the password exceeds 128 characters.
-2. The system aborts and displays "Password is too long".
+2. The system highlights the password field and displays: "Password is too long".
 3. The flow resumes at step 2.
 
 ##### 3.2.4 Rate Limit Exceeded
-1. If the user makes more than 100 registration attempts within 15 minutes.
-2. The system rejects the request and displays "Too many requests, slow down."
+1. If the user makes more than 15 registration attempts within 1 minutes.
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ##### 3.2.5 Confirm Password Does Not Match
 1. If at step 4, the confirmation password does not match the entered password.
-2. The system highlights the confirmation field and displays "Passwords do not match".
+2. The system highlights the confirmation field and displays: "Passwords do not match".
 3. The flow resumes at step 2.
 
-##### 3.2.6 Username Already Taken
-1. If at step 5, the chosen username exists in the database.
-2. The system aborts the registration and displays "This username is already taken".
+##### 3.2.6 Username Already Taken, Reserved, or Invalid
+1. If at step 4 or 5, the chosen username already exists in the database, is a reserved keyword (e.g., `admin`, `moderator`, `system`), or contains characters other than lowercase letters, numbers, underscores, and periods.
+2. The system aborts registration and displays the specific validation error (e.g., "This username is already taken", "This username is reserved", or "Username can only contain lowercase letters, numbers, underscores, and periods").
 3. The flow resumes at step 2.
 
 ##### 3.2.7 Sign Up with Google Account
-1. If at step 2, the user chooses to "Continue with Google".
-2. The system redirects the user to the Google OAuth consent screen.
+1. At step 2, the user chooses to "Continue with Google".
+2. The system initiates Google OAuth (popup or redirect to Google OAuth consent screen).
 3. The user successfully authenticates with Google.
-4. The system automatically provisions a `user_accounts` and `profiles` record using the Google profile data, deriving a unique username from their email prefix.
-5. The system issues access and refresh tokens, bypassing standard registration validation.
-6. The flow resumes at step 8.
+4. The system automatically provisions a `user_accounts` record (passwordless) and `profiles` record using Google profile data, deriving a unique base username from the email prefix.
+5. The system issues access and refresh tokens, displays a success notification ("Account created! Set up your profile."), and redirects the user to the onboarding page (`/onboarding/avatar`).
 
 ##### 3.2.8 Google Sign Up Username Collision
 1. If at step 4 of the Google Sign Up flow, the derived base username is already taken by another user or is a reserved keyword.
-2. The system automatically generates a unique username by appending a numeric counter to the base name.
-3. The system proceeds to provision the account with the newly generated username.
+2. The system automatically generates a unique username by appending an incremental numeric counter (e.g., base name + "1") to the base name.
+3. The system proceeds to provision the account with the newly generated unique username.
 
 ### 4. Special Requirements
-* **Security:** Passwords must be hashed via bcrypt with a minimum cost of 12. Plaintext passwords must never be logged.
+* **Security:** Passwords must be hashed via bcrypt with a minimum cost factor of 12. Plaintext passwords must never be logged. JWT access tokens are stored in client memory; refresh tokens are stored in http-only `SameSite=Lax` cookies.
+* **Rate Limiting:** Maximum 100 registration attempts per 15 minutes per IP address.
 
 ### 5. Postconditions
-* A new user account and profile are saved in the database. The user is signed in.
+* A new active user account and profile are saved in the database. An active session is stored in `refresh_sessions`. The user is authenticated.
 
 ### 6. Extension Points
 * None.
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):**
-    ![](<./Prototype requirement/UC01-1.png>)
+    ![](<./Prototype requirement/UC-01/0.png>)
 * **Screen 2 (Alt Flow - Email Already Exists):**
-    ![](<./Prototype requirement/UC01-2.png>)
+    ![](<./Prototype requirement/UC-01/2.png>)
 * **Screen 3 (Alt Flow - Weak Password):**
-    ![](<./Prototype requirement/UC01-3.png>)
+    ![](<./Prototype requirement/UC-01/3.png>)
 * **Screen 4 (Alt Flow - Password Too Long):**
-    ![](<./Prototype requirement/UC01-4.png>)
+    ![](<./Prototype requirement/UC-01/4.png>)
 * **Screen 5 (Alt Flow - Rate Limit Exceeded):**
     ![](<./Prototype requirement/UC01-5.png>)
 * **Screen 6 (Alt Flow - Confirm Password Does Not Match):**
-    ![](<./Prototype requirement/UC01-6.png>)
+    ![](<./Prototype requirement/UC-01/3.png>)
 * **Screen 7 (Alt Flow - Username Already Taken):**
     ![](<./Prototype requirement/UC01-7.png>)
 * **Screen 8 (Alt Flow - Sign Up with Google Account):**
@@ -523,14 +555,14 @@ This use case allows an unauthenticated guest to create a new user account and p
     ![](<./Prototype requirement/UC01-9-1.png>)
     This is the email to test the alternative flow.
     ![](<./Prototype requirement/UC01-9-2.png>)
-    The website already has an username that matches the Google account .
+    The website already has a username that matches the Google account email prefix.
     ![](<./Prototype requirement/UC01-9-3.png>)
     The system automatically generates a unique username by appending number "1" to the base name.
 
 ## Use-Case Specification: Log In
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-02
 
 ### 1. Log In
@@ -538,56 +570,57 @@ This use case allows an unauthenticated guest to create a new user account and p
 * **Actor(s):** Guest
 
 #### 1.1 Brief Description
-This use case describes how a registered Guest accesses their account by providing valid credentials.
+This use case describes how a registered user accesses their account by providing valid credentials (email and password) or authenticating via Google OAuth.
 
 ### 2. Preconditions
-* The user is unauthenticated.
+* The user is unauthenticated (Guest).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the Guest navigates to the Login page.
-2. The user enters their email and password, then clicks "Sign In".
-3. The system finds the user in `user_accounts` and verifies the password hash.
-4. The system checks if the account status is `active`.
-5. The system issues an Access Token and sets a Refresh Token cookie.
-6. The system redirects the user to the Home Feed.
+1. The use case begins when the Guest navigates to the Login page (`/login`).
+2. The user enters their registered email address and password, then clicks "Log in".
+3. The system finds the user in `user_accounts` and verifies the password hash using bcrypt.
+4. The system checks if the user account status is `active`.
+5. The system issues a short-lived JWT Access Token and sets an http-only Refresh Token cookie (recording the session in `refresh_sessions`).
+6. The system redirects the user based on their role: Administrators to `/admin`, Moderators to `/moderator`, and Standard Users to the Home Feed (`/`).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Invalid Credentials
-1. If at step 3, the email is not found or the password does not match.
-2. The system displays: "Invalid email or password".
+1. If at step 3, the email is not found in the database or the password does not match.
+2. The system rejects the request with HTTP 401 (`INVALID_CREDENTIALS`) and displays: "Invalid email or password".
 3. The flow resumes at step 2.
 
-##### 3.2.2 Account Suspended
-1. If at step 4, the account status is `suspended` or `banned`.
-2. The system displays: "Your account is not currently available."
+##### 3.2.2 Account Suspended or Banned
+1. If at step 4, the account status is `suspended` or `banned` (not `active`).
+2. The system rejects authentication with HTTP 403 (`ACCOUNT_NOT_ACTIVE`) and displays: "Your account is not currently available."
 3. The use case ends.
 
 ##### 3.2.3 Rate Limit Exceeded
-1. If the user makes more than 100 login attempts within 15 minutes.
-2. The system rejects the request and displays "Too many requests, slow down."
+1. If the user makes more than 15 login attempts within 1 minutes.
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ##### 3.2.4 Sign In with Google Account
 1. If at step 2, the user chooses to "Sign in with Google".
-2. The system redirects the user to the Google OAuth consent screen.
+2. The system initiates Google OAuth (popup or redirect to Google OAuth consent screen).
 3. The user successfully authenticates with Google.
-4. The system checks the database for an existing Google social link or matching email.
-5. The system verifies the account is active, issues an Access Token, and sets a Refresh Token cookie.
-6. The flow resumes at step 6.
+4. The system checks the database for an existing Google social link or matching email in `user_accounts`.
+5. The system verifies the account is active, issues an Access Token, sets the Refresh Token cookie, and redirects the user based on role (or to onboarding if new).
+6. The use case ends.
 
 ##### 3.2.5 Log In with Non-Existent Google Account
 1. If at step 4 of the Google Sign In flow, the system finds no existing user account associated with the Google profile or email.
-2. The system automatically provisions a new user account on the fly (including auto-generating a unique username) instead of rejecting the login.
-3. The login attempt is seamlessly converted into a successful registration.
-4. The flow resumes at step 5 of the Google Sign In flow.
+2. The system automatically provisions a new user account on the fly (including auto-generating a unique username and saving profile details) instead of rejecting the login.
+3. The login attempt is seamlessly converted into a successful registration, and the user is redirected to the onboarding profile setup page (`/onboarding/avatar`).
+4. The use case ends.
 
 ### 4. Special Requirements
-* **Rate Limiting:** Maximum 100 attempts per 15 minutes to prevent brute-force attacks.
+* **Rate Limiting:** Maximum 100 attempts per 15 minutes per IP to prevent brute-force attacks.
+* **Security:** Passwords verified via timing-safe comparison; access tokens kept in memory; refresh tokens in http-only cookies.
 
 ### 5. Postconditions
-* The user is authenticated and an active session is recorded in `refresh_sessions`.
+* The user is authenticated, an active session is recorded in `refresh_sessions`, and the user is navigated to the appropriate landing view.
 
 ### 6. Extension Points
 * None.
@@ -598,7 +631,8 @@ This use case describes how a registered Guest accesses their account by providi
 * **Screen 2 (Alt Flow - Invalid Credentials):**
     ![](<./Prototype requirement/UC02-2.png>)
 * **Screen 3 (Alt Flow - Account Suspended):**
-    ![](<./Prototype requirement/UC02-3.png>)
+    ![](<./Prototype requirement/UC02-3.png>) FLAG
+
 * **Screen 4 (Alt Flow - Rate Limit Exceeded):**
     ![](<./Prototype requirement/UC02-4.png>)
 * **Screen 5 (Alt Flow - Sign In with Google Account):**
@@ -612,12 +646,12 @@ This use case describes how a registered Guest accesses their account by providi
 ## Use-Case Specification: Log Out
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng* 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.1  
 **Document identifier:** FOZ-UCS-03
 
 ### 1. Log Out
 * **Use-Case ID:** UC-03
-* **Actor(s):** Standard User
+* **Actor(s):** Authenticated User (Standard User, Moderator, Administrator)
 
 #### 1.1 Brief Description
 Allows an authenticated user to securely end their active session on the current device.
@@ -627,28 +661,32 @@ Allows an authenticated user to securely end their active session on the current
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user clicks the "Sign out" button.
-2. The system reads the refresh cookie to identify the current session.
-3. The system updates the `revoked_at` timestamp in the `refresh_sessions` table for that session.
-4. The system clears the local access token and the refresh cookie from the browser.
-5. The system redirects the user to the Login page.
+1. The use case begins when the user clicks the "Log out" / "Sign out" button in the navigation or sidebar.
+2. The system opens the Logout confirmation modal (`LogoutDialog`), displaying the user's avatar, account handle/email, and confirmation prompt ("Log out of your account?").
+3. The user clicks "Log out" in the dialog.
+4. The client sends a `POST /api/v1/auth/logout` request.
+5. The backend validates the refresh cookie and updates the `revoked_at` timestamp in the `refresh_sessions` table to invalidate the session.
+6. The backend clears the `refresh_token` http-only cookie from the response.
+7. The client clears the JWT access token and user state from the local authentication store.
+8. The modal closes and the user state updates to unauthenticated (Guest).
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1 Session Already Expired
-1. If at step 2, the session token is already expired or invalid.
-2. The system proceeds to step 4 without database updates.
-
-##### 3.2.2 User Cancels Log Out
-1. If the system prompts for confirmation and the user selects "Cancel".
+##### 3.2.1 User Cancels Log Out
+1. At step 2, the user clicks "Cancel", presses the Escape key, or clicks outside the modal.
 2. The system closes the dialog and no action is taken.
-3. The use case ends.
+3. The user remains authenticated and the use case ends.
+
+##### 3.2.2 Session Already Expired or Invalid
+1. If at step 4, the refresh session token is already expired, revoked, or missing.
+2. The backend clears the refresh cookie and responds successfully.
+3. The client clears local authentication state and the use case ends.
 
 ### 4. Special Requirements
-* None.
+* **Security:** Immediate server-side session revocation in `refresh_sessions` and complete purging of client authentication credentials.
 
 ### 5. Postconditions
-* The user is signed out and redirected to a public page.
+* The user's session is marked revoked in `refresh_sessions`, authentication cookies/tokens are cleared, and the client returns to an unauthenticated state.
 
 ### 6. Extension Points
 * None.
@@ -662,7 +700,7 @@ Allows an authenticated user to securely end their active session on the current
 ## Use-Case Specification: Manage Profile
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-04
 
 ### 1. Manage Profile
@@ -670,42 +708,57 @@ Allows an authenticated user to securely end their active session on the current
 * **Actor(s):** Standard User
 
 #### 1.1 Brief Description
-Allows the user to update their public-facing information such as display name, bio, location, and website.
+Allows an authenticated user to view and update their public profile details, including display name, unique username handle, bio, location, website URL, and avatar image.
 
 ### 2. Preconditions
-* The user is authenticated.
+* The user must be authenticated and viewing their own profile page (`/profiles/@username` or `/profile`).
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user navigates to "Edit Profile".
-2. The system retrieves current data from the `profiles` table.
-3. The user edits text fields (Display Name, Bio, Location, Website) and clicks "Save".
-4. The system validates the inputs (e.g., URL format for website).
-5. The system updates the `profiles` table and the `updated_at` timestamp.
-6. The system displays a success message.
+1. The use case begins when the user navigates to their profile page and clicks the "Edit profile" button.
+2. The system opens the `ProfileEditModal`, pre-populating fields (Avatar, Username handle, Display Name, Bio, Location, Website) with current data from the `profiles` and `user_accounts` tables.
+3. The user modifies text fields (Display Name, Bio, Location, Website, or Username) and clicks "Save".
+4. The system validates the inputs (Display Name 1–50 characters and valid characters, Bio at most 160 characters, Location at most 100 characters, Website at most 200 characters with valid URL format, Username 3–30 characters and valid format).
+5. The client submits a `PATCH /api/v1/profile/me` request.
+6. The backend updates the `profiles` table (and `user_accounts` if username was changed) and updates the `updated_at` timestamp.
+7. The system displays a success toast ("Profile updated successfully"), closes the modal, and refreshes the profile view with updated details.
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Invalid Input Format
-1. If at step 4, the website URL is invalid.
-2. The system displays an error below the website field.
+1. If at step 4, the website URL is invalid (e.g. missing domain dot or bad protocol) or Display Name contains disallowed special characters.
+2. The system displays field validation error messages below the respective input fields.
 3. The flow resumes at step 3.
 
-##### 3.2.2 Validation Errors
-1. If at step 4, inputs exceed max lengths (Display Name: 50, Bio: 160, Location: 100, Website: 200 characters) or Display Name contains invalid characters.
-2. The system displays specific field validation errors.
+##### 3.2.2 Input Exceeds Maximum Limits
+1. If at step 4, any text input exceeds its maximum character limit (Display Name: 50, Bio: 160, Location: 100, Website: 200).
+2. The system displays specific field validation errors indicating character limits.
 3. The flow resumes at step 3.
 
-##### 3.2.3 User Cancels
-1. If at step 3, the user clicks "Cancel" instead of "Save".
-2. The system discards any unsaved changes and returns to the profile view.
+##### 3.2.3 Username Handle Collision on Update
+1. If at step 3, the user modifies their username handle to one that already exists for another account.
+2. The system displays a collision confirmation dialog: "The username has already existed. The system will generate a unique name by adding a number. Do you want to proceed? [Yes] [No]".
+3. If the user clicks "Yes", the system re-submits the request with auto-generation enabled, appends an incremental numeric suffix (e.g., `username1`), updates the username, and saves the profile.
+4. If the user clicks "No", the confirmation dialog closes and the user can manually change the username handle.
+
+##### 3.2.4 User Cancels Profile Edit
+1. If at step 3, the user clicks "Cancel", clicks the close icon, or clicks outside the modal.
+2. The system discards all pending changes and closes the modal without modifying database records.
 3. The use case ends.
 
+##### 3.2.5 Update Avatar Image
+1. At step 2, the user clicks on the avatar preview to select an image file.
+2. The client validates that the file is a supported image format (PNG, JPEG, GIF, WebP) and does not exceed 2MB.
+3. The client compresses the image to WebP and uploads it to Cloudinary (or encodes as base64 fallback), updating the avatar via `POST /api/v1/profile/me/avatar`.
+4. The system updates the avatar preview and persists the new `avatar_url`.
+5. The flow resumes at step 3.
+
 ### 4. Special Requirements
-* None.
+* **Performance:** Avatar images are compressed on the client before upload to minimize bandwidth and storage.
+* **Cleanup:** When an avatar hosted on Cloudinary is replaced, the previous asset is asynchronously destroyed.
 
 ### 5. Postconditions
-* Profile data is updated in the database.
+* The user's profile information (and username if changed) is updated in the database and visible publicly.
 
 ### 6. Extension Points
 * **Change Password:** Extended via UC-05.
@@ -718,11 +771,17 @@ Allows the user to update their public-facing information such as display name, 
   ![](<./Prototype requirement/UC04-2.png>)
 * **Screen 3 (Alt Flow - Validation Errors):**
   ![](<./Prototype requirement/UC04-3.png>)
+* **Screen 4 (Alt Flow - Input Exceeds Maximum Limits):**
+  ![](<./Prototype requirement/UC04-4.png>)
+* **Screen 5 (Alt Flow - Username Handle Collision on Update):**
+  ![](<./Prototype requirement/UC04-5.png>)
+* **Screen 6 (Alt Flow - User Cancels Profile Edit):**
+  ![](<./Prototype requirement/UC04-6.png>)
 
 ## Use-Case Specification: Change Password
 *Performed by: Nguyễn Hải Trọng | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Hải Trọng*
 **Project Name:** FOZ  
-**Version:** 1.1  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-05
 
 ### 1. Change Password
@@ -730,53 +789,59 @@ Allows the user to update their public-facing information such as display name, 
 * **Actor(s):** Standard User
 
 #### 1.1 Brief Description
-Allows an authenticated user to change their password securely by verifying their current password.
+Allows an authenticated user to change their password securely by verifying their current password and providing a new password meeting NIST security standards.
 
 ### 2. Preconditions
-* The user is authenticated.
+* The user must be authenticated.
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case extends UC-04 when the user selects "Change password".
+1. The use case begins when the user navigates to the Change Password interface (accessible via `/settings` under Account Settings or `/change-password`).
 2. The user enters their current password, a new password, and confirms the new password.
 3. The user clicks "Update password".
-4. The system verifies the current password against the stored `password_hash`.
-5. The system validates the new password strength.
-6. The system hashes the new password and updates `user_accounts`.
-7. The system displays a success toast message and redirects to home.
+4. The system verifies the current password against the stored `password_hash` in `user_accounts` using bcrypt.
+5. The system validates the new password (length 8–128 characters, differs from current password, and matches confirmation password).
+6. The system hashes the new password with bcrypt (cost factor 12) and updates `user_accounts.password_hash` and `updated_at`.
+7. The system displays a success toast message ("Password updated"), resets the input fields, and redirects to the Home page (if on the standalone page).
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Incorrect Current Password
-1. If at step 4, the current password does not match.
-2. The system displays "Invalid credentials".
-3. The flow resumes at step 2.
+1. If at step 4, the current password entered does not match the stored hash.
+2. The system rejects the request with HTTP 401 (`INCORRECT_CURRENT_PASSWORD`).
+3. The system highlights the current password field with "Incorrect current password" and displays an error toast.
+4. The flow resumes at step 2.
 
 ##### 3.2.2 New Password Matches Old Password
-1. If at step 4, the new password is exactly the same as the current password.
-2. The system rejects the request and displays "New password must differ from the current one".
+1. If at step 5, the new password is identical to the current password.
+2. The system rejects the request and displays: "New password must differ from the current one".
 3. The flow resumes at step 2.
 
 ##### 3.2.3 Confirm Password Does Not Match
 1. If at step 5, the confirmation password does not match the new password.
-2. The system highlights the confirmation field and displays "Passwords do not match".
+2. The system highlights the confirmation field and displays: "Passwords do not match".
 3. The flow resumes at step 2.
 
-##### 3.2.4 Weak New Password
-1. If at step 5, the new password is less than 8 characters.
-2. The system rejects the request and displays "Password must be at least 8 characters".
+##### 3.2.4 Weak or Too Long New Password
+1. If at step 5, the new password is less than 8 characters or exceeds 128 characters.
+2. The system rejects the request and displays the appropriate error (e.g., "Password must be at least 8 characters" or "Password is too long").
 3. The flow resumes at step 2.
 
 ##### 3.2.5 User Cancels
-1. If at step 2, the user clicks "Back" instead of "Update password".
-2. The system discards the input and returns to the Homepage screen.
+1. If at step 2, the user clicks "Back" or "Back to home" instead of "Update password".
+2. The system discards all inputs and returns to the previous screen.
+3. The use case ends.
+
+##### 3.2.6 Rate Limit Exceeded
+1. If the user makes more than 100 password change requests within 15 minutes.
+2. The system rejects the request with HTTP 429 (`RATE_LIMITED`) and displays: "Too many requests, slow down."
 3. The use case ends.
 
 ### 4. Special Requirements
-* **Security:** The new password must not be identical to the old password.
+* **Security:** Passwords must be hashed using bcrypt (cost 12); current password must be verified before changes are applied; new password must not be identical to the old password.
 
 ### 5. Postconditions
-* The user's password hash is updated.
+* The user's `password_hash` in `user_accounts` is updated with the new hash.
 
 ### 6. Extension Points
 * None.
@@ -863,7 +928,7 @@ Allows an authenticated user to upload a new profile picture.
 
 ### 1. Browse Feed
 * **Use-Case ID:** UC-07
-* **Actor(s):** Guest, Standard User
+* **Actor(s):** Guest, Standard User, Moderator, Admin
 
 #### 1.1 Brief Description
 Allows users to view a dynamic timeline of forum posts sorted by recent engagement metrics or chronological order.
@@ -876,41 +941,62 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 1. The use case begins when the user navigates to the application's homepage, which presents the feed tabs "For You" (default) and "Latest".
 2. The system queries the `posts` table for content with `visibility_state = 'public'` and `deleted_at IS NULL`, unwrapping reposts so the original post content is shown.
 3. The system orders the posts according to the selected feed mode:
-   * **For You:** personalized ranking based on viewer affinity, engagement, and recency; guests and viewers with no interaction history receive a popularity-ranked feed.
+   * **For You:** ranking based on engagement, and recency.
    * **Latest:** sorted by posting time, with the newest first.
 4. The system displays the feed with post content, author avatars, and interaction counts (likes, comments, reposts).
-5. The user scrolls to load more posts (cursor-based pagination).
+5. The user scrolls to browse feed.
 
 #### 3.2 Alternative Flows
 
 ##### 3.2.1 Switch feed mode
+
 1. The user switches between the "For You" and "Latest" feed tabs.
 2. The system reloads and displays the posts according to the newly selected mode.
 
-
 ##### 3.2.2 No Posts Available
+
 1. If at step 2, the database returns no posts.
 2. The system displays a "No discussions found. Be the first to post!" placeholder.
 3. The use case ends.
 
+##### 3.2.3 Scroll to Load More Posts
+
+1. If at step 5, the user scrolls to the bottom of the visible posts.
+2. The system triggers pagination displaying "Load more" button.
+3. The user clicks "Load more" button.
+4. The system fetches and displays the next set of posts.
+5. The use case ends.
+
+##### 3.2.4 View a long content post
+
+1. If at step 4, the post content is too long, the system displays a few first lines of post along with a button "Read more".
+2. The user clicks "Read more" button.
+3. The system displays the full content of the post along with a button "Show less".
+4. The user clicks "Show less" button.
+5. The system displays the first few lines of the post.
+6. The use case ends.
 ### 4. Special Requirements
 * **Performance:** The initial feed must load in `< 2 seconds` under good network conditions.
-
 ### 5. Postconditions
 * None.
-
 ### 6. Extension Points
 * None.
-
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC07-1.png>)
+  ![](<./Prototype requirement/UC-07/UC-07-1.png>)
 
-  **Screen 2 (Alternative Flow 1):**
-  ![](<./Prototype requirement/UC07-2.png>)
+  **Screen 2 (Alternative Flow 1):** Latest tab
+  ![](<./Prototype requirement/UC-07/UC-07-2.png>)
   
-  **Screen 3 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC07-3.png>)
+  **Screen 3 (Alternative Flow 2):** No post available
+  ![](<./Prototype requirement/UC-07/UC-07-3.png>)
+
+  **Screen 4 (Alternative Flow 3):** Scroll to load more posts
+  ![](<./Prototype requirement/UC-07/UC-07-4.png>)
+
+  **Screen 5 (Alternative Flow 4):** View a long content post
+  ![](<./Prototype requirement/UC-07/UC-07-5.png>)
+  ![](<./Prototype requirement/UC-07/UC-07-5-2.png>)
 
 ## Use-Case Specification: Search Content
 
@@ -920,7 +1006,7 @@ Allows users to view a dynamic timeline of forum posts sorted by recent engageme
 
 ### 1. Search Content
 * **Use-Case ID:** UC-08
-* **Actor(s):** Guest, Standard User
+* **Actor(s):** Guest, Standard User, Moderator, Admin
 
 #### 1.1 Brief Description
 Allows users to search for specific discussion topics, posts, or user profiles using keywords.
@@ -930,28 +1016,62 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 3. Flow of Events
 #### 3.1 Basic Flow
-1. The use case begins when the user enters a keyword into the search bar and presses Enter.
+1. The use case begins when the user navigates to the application's search page, then enters a keyword into the search bar and presses Enter (or clicks the search icon).
 2. The system sends the query to the backend.
-3. The backend searches the `posts` (body/title) and `profiles` (display_name) tables for matches.
+3. The backend searches the `posts` (body/title) and `profiles` (display_name/username) tables for matches.
 4. The system filters out content that is deleted, hidden, or authored by banned users.
-5. The system displays a categorized list of results (Posts, Users).
+5. The system displays a categorized list of results (Posts, Profile) with the **Posts** tab selected by default.
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1. **Search feature unavailable**
+##### 3.2.1 Search feature unavailable
 
-1. If at step 2, the search query is empty or just whitespace.
-2. The system does not display the search button until valid index is entered
+1. If at step 1, the search query is empty or contains only whitespace.
+2. The system does not display the search button until a valid search term is entered.
+3. The use case ends.
 
-##### 3.2.2. **No matching results**
+##### 3.2.2 Search Query Exceeds Character Limit
+
+1. If at step 1 of the basic flow, the user enters a search query exceeding the maximum length (500 characters) and attempts to submit.
+2. The system blocks query submission and displays an error message notifying the user (e.g., "Search query is too long. Please limit to 500 characters.").
+3. The user remains on the search interface to edit the query.
+4. The use case ends.
+
+##### 3.2.3 Switch Category (Posts and Profile)
+
+1. At step 5 of the basic flow, the user switches between the "Posts" and "Profile" category tabs on the search results page.
+2. The system updates the view to display the search results corresponding to the selected category (matching posts or matching user profiles).
+3. The use case ends.
+
+##### 3.2.4 No matching results
 
 1. The user enters a search query.
 2. The system finds no matching content.
 3. The system displays **"No results for search query."**
+4. The use case ends.
+
+##### 3.2.5 Click a hashtag in "TRENDING TOPICS"
+
+1. The user clicks a hashtag under the **"TRENDING TOPICS"** section on the search page.
+2. The system automatically populates the search bar with the selected hashtag and executes the search query.
+3. The system displays posts matching the selected topic/hashtag.
+4. The use case ends.
+
+##### 3.2.6 Click a profile in "Suggested Creators"
+
+1. The user clicks a creator profile under the **"Suggested Creators"** section on the search page.
+2. The system navigates the user to the selected creator's profile page.
+3. The use case ends.
+
+##### 3.2.7 Click a post in "Trending Discussions"
+
+1. The user clicks a discussion post under the **"Trending Discussions"** section on the search page.
+2. The system navigates the user to the selected post's detail page.
+3. The use case ends.
 
 
 ### 4. Special Requirements
-* **Performance:** Search results should be displayed within 2–3 seconds under good network conditions. `.
+* **Performance:** Search results should be displayed within 2–3 seconds under good network conditions.
 
 ### 5. Postconditions
 * None.
@@ -961,13 +1081,29 @@ Allows users to search for specific discussion topics, posts, or user profiles u
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC08-1.png>)
+  ![](<./Prototype requirement/UC-08/1.png>)
 
- **Screen 2 (Alternative Flow 1):**
-  ![](<./Prototype requirement/UC08-3.png>)
+ **Screen 2 (Alternative Flow 1 - Empty):**
+  ![](<./Prototype requirement/UC-08/2.png>)
 
-  **Screen 3 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC08-2.png>)
+  **Screen 3 (Alternative Flow 2 - Query limit):** 
+  ![](<./Prototype requirement/UC-08/7.png>)
+
+  **Screen 4 (Alternative Flow 3 - Switch Category):** 
+  ![](<./Prototype requirement/UC-08/8.png>)
+
+  **Screen 5 (Alternative Flow 4 - No results):** 
+  ![](<./Prototype requirement/UC-08/3.png>)
+
+  **Screen 6 (Alternative Flow 5 - "TRENDING TOPICS"):** 
+  ![](<./Prototype requirement/UC-08/4.png>)
+
+  **Screen 7 (Alternative Flow 6 - "Suggested Creators"):** 
+  ![](<./Prototype requirement/UC-08/5.png>)
+
+  **Screen 8 (Alternative Flow 7 - "Trending Discussions"):** 
+  ![](<./Prototype requirement/UC-08/6.png>)
+
 
 ## Use-Case Specification: View Post Details
 
@@ -1016,10 +1152,10 @@ Allows a user to read the full body of a post along with its entire nested comme
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
-* **Screen 2 (Alternative Flow 1):**
+* **Screen 2 (Alternative Flow 1 - No comments):**
 *   ![](<./Prototype requirement/UC09-2.png>)
 
- * **Screen 2 (Alternative Flow 2):**
+ * **Screen 2 (Alternative Flow 2 - Post Not Found):**
 *   ![](<./Prototype requirement/UC13-2.png>) 
 
   
@@ -1043,7 +1179,7 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 #### 3.1 Basic Flow
 1. The use case begins when the user clicks "Create Post".
 2. The system displays an editor.
-3. The user types the content and clicks "Submit".
+3. The user adds the content and clicks "Post".
 4. The system validates the input lengths.
 5. The system saves the record in the `posts` table (lifecycle_state: `active`).
 6. The system redirects to the new post's detail page.
@@ -1051,20 +1187,44 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 #### 3.2 Alternative Flows
 
 ##### 3.2.1. Post creation canceled
-
 1. The user cancels the post creation.
-2. The system discards the draft and returns to the previous screen.
-
+2. The system remains the draft and returns to the previous screen.
 
 ##### 3.2.2 Content Validation Error
 1. If at step 4, the post body is empty.
 2. The system disallows user to click submit button.
 3. The flow resumes at step 3.
 
-##### 3.2.3 Exceeds Limits
-1. If at step 4, the post body exceeds 5,000 characters, or there are more than 5 media attachments, or the chained thread exceeds 10 posts.
+##### 3.2.3 Media Attachment Error
+1. If at step 3, the users attachs wrong file type of the image to the post.
 2. The system aborts and displays a validation error message.
 3. The flow resumes at step 3.
+
+##### 3.2.4 Media Attachment Cancelled
+1. If at step 3, the user cancels the media attachment.
+2. The post body is left empty. 
+3. The system aborts and displays a validation error message.
+4. The flow resumes at step 3.
+
+##### 3.2.5 Exceeds Limit of Characters
+1. If at step 4, the post body exceeds 5,000 characters.
+2. The system aborts and displays a validation error message.
+3. The flow resumes at step 3.
+
+##### 3.2.6 Exceeds Limit of Number of Media Attachments
+1. If at step 4, there are more than 5 media attachments.
+2. The system aborts and displays a validation error message.
+3. The flow resumes at step 3.
+
+##### 3.2.7 Valid Image with Large Size
+1. If at step 3, a valid type image is attached to a post with the size more than 5MB.
+2. The system automatically compresses the image before uploading. 
+3. The flow resumes at step 5.
+
+##### 3.2.8 Network Timeout after Attaching Any Image
+1. If at step 3, the user attachs an image to a post.
+2. The network is timeout.
+3. The system displays pending "Posting" button.
 
 ### 4. Special Requirements
 * **Security:** Inputs must be sanitized against XSS.
@@ -1078,10 +1238,31 @@ Allows an authenticated user to publish a new text-based post to initiate a disc
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC10-1.png>)
-* **Screen 2 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC10-2.png>)
-* **Screen 2 (Alternative Flow 3):**
+  ![](<./Prototype requirement/UC10-4.png>)
+  ![](<./Prototype requirement/UC10-6.png>)
+  ![](<./Prototype requirement/UC10-7.png>)
+  ![](<./Prototype requirement/UC10-11.png>)
+  ![](<./Prototype requirement/UC10-8.png>)
+  ![](<./Prototype requirement/UC10-9.png>)
+  ![](<./Prototype requirement/UC10-12.png>)
+  ![](<./Prototype requirement/UC10-13.png>)
+* **Screen 2 (Alternative Flow 2 - Content Validation Error):**
+  ![](<./Prototype requirement/UC10-1.png>)
+* **Screen 3 (Alternative Flow 3 - Media Attachment Error):**
+  ![](<./Prototype requirement/UC10-16.png>)
+* **Screen 4 (Alternative Flow 4 - Media Attachment Cancelled):**
   ![](<./Prototype requirement/UC10-3.png>)
+  ![](<./Prototype requirement/UC10-1.png>)
+* **Screen 5 (Alternative Flow 5 - Exceeds Characters Limit):**
+  ![](<./Prototype requirement/UC10-14.png>)
+* **Screen 6 (Alternative Flow 6 - Exceeds Media Attachments Limit):**
+  ![](<./Prototype requirement/UC10-10.png>)
+* **Screen 7 (Alternative Flow 7 - Valid Image with Large Size):**
+  ![](<./Prototype requirement/UC10-2.png>)
+  ![](<./Prototype requirement/UC10-15.png>)
+  ![](<./Prototype requirement/UC10-17.png>)
+* **Screen 8 (Alternative Flow 8 - Network Timeout after Attaching Any Image):**
+  ![](<./Prototype requirement/UC10-18.png>)
 
 
 ## Use-Case Specification: Interact with Post
@@ -1140,7 +1321,7 @@ Acts as the generalized use case for users engaging with a post via various acti
 ## Use-Case Specification: Leave Comment
 
 **Project Name:** FOZ  
-**Version:** 1.0  
+**Version:** 1.2  
 **Document identifier:** FOZ-UCS-12
 
 ### 1. Leave Comment
@@ -1156,7 +1337,7 @@ Allows an authenticated user to reply to a post or to another comment.
 ### 3. Flow of Events
 
 #### 3.1 Basic Flow
-1. Extends UC-11 when the user clicks "Reply".
+1. Extends UC-11 when the user clicks "Reply" or the post.
 2. The system opens a small text input field.
 3. The user types their comment and clicks "Post Reply".
 4. The system validates the text.
@@ -1178,6 +1359,73 @@ Allows an authenticated user to reply to a post or to another comment.
 2. The system automatically truncates the body text preview and appends a "Read more" toggle action.
 3. The user clicks "Read more" to expand and view the full comment content.
 
+##### 3.2.4 Newline Input with Shift+Enter
+1. If at step 3, the user presses **Shift+Enter** while typing their comment.
+2. The system inserts a newline into the comment text instead of submitting the comment.
+3. The flow resumes at step 3.
+
+##### 3.2.5 Duplicate Submission Prevention
+1. If at step 3, the user submits the comment multiple times in rapid succession (e.g., pressing Enter or the send button repeatedly).
+2. The system disables the send button or otherwise ignores duplicate submissions while the first request is still pending.
+3. Only one comment record is created; the flow resumes at step 5.
+
+##### 3.2.6 Malicious Script Injection (XSS) Attempt
+1. If at step 4, the submitted comment contains malicious markup such as `<script>alert('xss')</script>`.
+2. The system sanitizes the input and renders it as plain text; no script executes.
+3. The comment remains safely displayed after a page reload; the flow resumes at step 5.
+
+##### 3.2.7 Emoji and Unicode Input
+1. If at step 4, the submitted comment contains emojis or text typed from the keyboard.
+2. The system accepts and renders the emojis exactly as typed.
+3. The flow resumes at step 5.
+
+##### 3.2.8 Nested Reply
+1. If at step 1, the user clicks "Reply" on an existing comment instead of on the post.
+2. The system opens the reply input for that specific comment.
+3. The user types the reply (e.g., "Nested standard reply") and submits it.
+4. The system inserts the record into the `comments` table with `parent_comment_id` pointing to the selected comment.
+5. The system displays the reply under the selected parent with the correct indentation and reply count, not as a separate top-level comment.
+6. The flow resumes at step 6.
+
+##### 3.2.9 Offline Submission
+1. If at step 3, the user submits the comment while their device has no internet connection.
+2. The request fails to reach the server.
+3. The system displays a toast notification notifying the user they are offline.
+4. The typed comment is preserved in the input box; the user can retry once the connection is restored.
+5. The flow resumes at step 3.
+
+##### 3.2.10 Multi-Level Nested Replies (Depth 1–2)
+1. If at step 1, the user replies to a reply (i.e., a comment already nested one level deep).
+2. The system displays replies at depth 1 and 2 indented to the right.
+3. The replies are clearly indicated with line markers, and a "Hide replies" button connects to the parent comment of the replies.
+4. The flow resumes at step 6.
+
+##### 3.2.11 Deep Nested Replies (Depth > 2)
+1. If at step 1, the user replies to a comment at depth greater than 2.
+2. The system no longer indents the reply further to the right.
+3. The reply stays below its parent, and below it a "Hide replies" button is shown.
+4. The flow resumes at step 6.
+
+##### 3.2.12 URL in Comment
+1. If at step 4, the submitted comment contains a valid URL (e.g., `https://example.com`).
+2. The system accepts the comment and displays the URL as plain text (no auto-hyperlinking).
+3. The flow resumes at step 5.
+
+##### 3.2.13 Comment Rate Limit Exceeded
+1. If at step 3, the user submits 15–20 comments within a single minute.
+2. The system displays a pop-up modal telling the user to slow down and prevents them from commenting for the next 10 seconds.
+3. The use case ends.
+
+##### 3.2.14 Authentication Expired During Commenting
+1. If at step 3, the user's authentication session expires while they are typing the comment.
+2. The system displays a modal telling the user their session is expired and prompts them to log in again.
+3. The use case ends; the typed draft is preserved so the user can continue after logging back in.
+
+##### 3.2.15 Post Deleted While Commenting
+1. If at step 3, an administrator deletes the post while the user is typing a comment.
+2. The system displays a modal telling the user that the post is no longer available.
+3. The use case ends.
+
 ### 4. Special Requirements
 * None.
 
@@ -1190,12 +1438,60 @@ Allows an authenticated user to reply to a post or to another comment.
 ### 7. Prototype Requirement 
 * **Screen 1 (Basic Flow):** 
    ![](<./Prototype requirement/UC12-1.png>)
-
-* **Screen 2 (Alternative Flow 2):**
-   ![](<./Prototype requirement/UC12-2.jpg>)
-
-* **Screen 3 (Alternative Flow 3):**
+   ![](<./Prototype requirement/UC12-2.png>)
    ![](<./Prototype requirement/UC12-3.png>)
+   ![](<./Prototype requirement/UC12-4.png>)
+
+* **Screen 2 (Alternative Flow 1 - Empty Comment):**
+   ![](<./Prototype requirement/UC12-2.png>)
+
+* **Screen 3 (Alternative Flow 2 - Comment Exceeds Maximum Length):**
+   ![](<./Prototype requirement/UC12-7.png>)
+
+* **Screen 4 (Alternative Flow 3 - Long Comment Display):**
+   ![](<./Prototype requirement/UC12-9.png>)
+
+* **Screen 5 (Alternative Flow 4 - Newline Input with Shift+Enter):**
+   ![](<./Prototype requirement/UC12-8.png>)
+
+* **Screen 6 (Alternative Flow 5 - Duplicate Submission Prevention):**
+   ![](<./Prototype requirement/UC12-3.png>)
+   ![](<./Prototype requirement/UC12-4.png>)
+* **Screen 7 (Alternative Flow 6 - Malicious Script Injection (XSS) Attempt):**
+   ![](<./Prototype requirement/UC12-10.png>)
+   ![](<./Prototype requirement/UC12-11.png>)
+
+* **Screen 8 (Alternative Flow 7 - Emoji and Unicode Input):**
+   ![](<./Prototype requirement/UC12-12.png>)
+   ![](<./Prototype requirement/UC12-13.png>)
+
+* **Screen 9 (Alternative Flow 8 - Nested Reply):**
+   ![](<./Prototype requirement/UC12-5.png>)
+   ![](<./Prototype requirement/UC12-6.png>)
+
+* **Screen 10 (Alternative Flow 9 - Offline Submission):**
+   ![](<./Prototype requirement/UC12-9.png>)
+
+* **Screen 11 (Alternative Flow 10 - Multi-Level Nested Replies (Depth 1–2)):**
+   ![](<./Prototype requirement/UC12-14.png>)
+
+* **Screen 12 (Alternative Flow 11 - Deep Nested Replies (Depth > 2)):**
+   ![](<./Prototype requirement/UC12-15.png>)
+   ![](<./Prototype requirement/UC12-16.png>)
+
+* **Screen 13 (Alternative Flow 12 - URL in Comment):**
+   ![](<./Prototype requirement/UC12-17.png>)
+
+* **Screen 14 (Alternative Flow 13 - Comment Rate Limit Exceeded):**
+   ![](<./Prototype requirement/UC12-22.png>)
+
+* **Screen 15 (Alternative Flow 14 - Authentication Expired During Commenting):**
+   ![](<./Prototype requirement/UC12-20.png>)
+   ![](<./Prototype requirement/UC12-21.png>)
+
+* **Screen 16 (Alternative Flow 15 - Post Deleted While Commenting):**
+   ![](<./Prototype requirement/UC12-18.png>)
+   ![](<./Prototype requirement/UC12-19.png>)
 
 ## Use-Case Specification: Like/Unlike
 
@@ -1245,7 +1541,8 @@ Allows a user to toggle an appreciation metric on a post or comment.
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC13-1.png>)
 * **Screen 2 (Alternative Flow):**
-  ![](<./Prototype requirement/UC13-2.png>)
+  ![](<./Prototype requirement/UC13-2-1.png>)
+  ![](<./Prototype requirement/UC13-2-2.png>)
 
 ## Use-Case Specification: Request AI Summary
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
@@ -1284,17 +1581,27 @@ Allows an authenticated user to request an on-demand AI-generated TL;DR of a pos
 ##### 3.2.2 AI Provider Error
 1. If at step 4 the primary AI provider times out, returns an error, or exceeds its quota.
 2. The system attempts the configured fallback provider.
-3. If every configured provider fails, the system displays: "Failed to load summary"
+3. If every configured provider fails, the system safely catches the exception and displays: "Failed to load summary" along with a "Retry" button.
 4. The use case ends. If a fallback provider succeeds, the flow resumes at step 5.
 
 ##### 3.2.3 Invalid AI Response
 1. If at step 5 the provider returns an empty, malformed, or unusable summary.
-2. The system does not display the response and shows: "Failed to load summary"
+2. The system does not display the response and shows: "Failed to load summary" along with a "Retry" button.
 3. The use case ends.
 
 ##### 3.2.4 Rate Limit Exceeded
 1. If at step 2 the user has already completed 10 summary requests in the rolling one-minute window.
 2. The system rejects the request and displays: "Too many summary requests, please try again in a minute."
+3. The use case ends.
+
+##### 3.2.5 Network Offline
+1. If the user loses internet connection while the request is pending.
+2. The system catches the network failure, stops the loading state, and displays an error message along with a "Retry" button.
+3. The use case ends.
+
+##### 3.2.6 Unauthorized or Suspended Access
+1. If the user is unauthenticated (guest) or their account is `suspended`.
+2. The system immediately rejects the API request (HTTP 401 Unauthorized or HTTP 403 Forbidden).
 3. The use case ends.
 
 ### 4. Special Requirements
@@ -1315,12 +1622,22 @@ Allows an authenticated user to request an on-demand AI-generated TL;DR of a pos
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC14-1.png>)
 
-* **Screen 2 (Alternative Flow 2):**
-  ![](<./Prototype requirement/UC14-2.png>)
+* **Screen 2 (Alternative Flow 1 - Post Not Found):** 
+  ![](<./Prototype requirement/UC14-2-1.png>)
+  ![](<./Prototype requirement/UC14-2-2.png>)
 
-* **Screen 3 (Alternative Flow 4):**
+* **Screen 3 (Alternative Flow 2 & 3 - AI Error / Invalid AI Response):**
   ![](<./Prototype requirement/UC14-3.png>)
 
+* **Screen 4 (Alternative Flow 4 - Rate Limit Exceeded):**
+  ![](<./Prototype requirement/UC14-4.png>)
+
+* **Screen 5 (Alternative Flow 5 - Network Offline):**
+  ![](<./Prototype requirement/UC14-5.png>)
+
+* **Screen 6 (Alternative Flow 6 - Unauthorized Access):**
+  ![](<./Prototype requirement/UC14-6.png>)
+  
 ## Use-Case Specification: Delete Own Post
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
@@ -1552,7 +1869,7 @@ Allows Moderators to review community reports and dismiss or escalate them, and 
   ![](<./Prototype requirement/UC17-1.png>)
 
 ## Use-Case Specification: Forward Report to Admin
-*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
+*Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu* | Refined by: Pham Dinh Gia Khanh
 
 **Project Name:** FOZ  
 **Version:** 1.1<br>
@@ -1606,6 +1923,12 @@ Allows a Moderator to escalate a report that may require an administrative decis
 2. The system rolls back all changes and displays: "The report could not be escalated. Please try again."
 3. The use case ends.
 
+#### 3.2.6 Concurrent Escalation
+1. If at step 3, two moderators attempt to escalate the same report at nearly the same time.
+2. The system accepts the earlier transaction, rolls back the second one, and notifies the second moderator: "This report has already been escalated."
+3. The use case ends
+
+
 ### 4. Special Requirements
 * **Authorization:** The Moderator role must be enforced at the API boundary.
 * **Decision Rationale:** The escalation rationale must contain at least five words after trimming whitespace.
@@ -1629,6 +1952,16 @@ Allows a Moderator to escalate a report that may require an administrative decis
 
 * **Screen 3 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC18-3.png>)
+
+* **Screen 4 (Alternative Flow 4):** 
+  ![](<./Prototype requirement/UC-18/1.png>)
+
+* **Screen 5 (Alternative Flow 5):** 
+  ![](<./Prototype requirement/UC-18/2.png>)
+
+* **Screen 6 (Alternative Flow 6):** 
+  ![](<./Prototype requirement/UC-18/3.png>)
+  
 
 ## Use-Case Specification: Delete Any Content
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
@@ -1964,6 +2297,13 @@ flowchart TD
     FOZ -. "Sends post + comments<br/>for summarization<br/>[HTTPS REST]" .-> Gemini
     FOZ -. "Uploads/deletes images<br/>via stream API<br/>[HTTPS]" .-> Cloudinary
 
+    subgraph legend ["Legend"]
+        direction LR
+        LegSystem["Software System<br/><i>the system in scope</i>"]
+        LegPerson["Person<br/><i>a user role / actor</i>"]
+        LegExt["External System<br/><i>third-party dependency</i>"]
+    end
+
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef person fill:#08427b,stroke:#073b6e,color:#fff
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
@@ -1971,6 +2311,9 @@ flowchart TD
     class FOZ system
     class Guest,Standard,Moderator,Admin person
     class Google,Gemini,Cloudinary ext
+    class LegSystem system
+    class LegPerson person
+    class LegExt ext
 ```
 
 ### Diagram Explanation
@@ -2030,6 +2373,13 @@ flowchart TD
     API -. "Summarization requests<br/>[HTTPS REST]" .-> Gemini
     API -. "Uploads/deletes images<br/>[HTTPS]" .-> Cloudinary
 
+    subgraph legend ["Legend"]
+        direction LR
+        LegContainer["Container<br/><i>deployable app or data store</i>"]
+        LegPerson["Person<br/><i>a user role / actor</i>"]
+        LegExt["External System<br/><i>third-party dependency</i>"]
+    end
+
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef person fill:#08427b,stroke:#073b6e,color:#fff
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
@@ -2037,6 +2387,9 @@ flowchart TD
     class SPA,API,DB system
     class Guest,Standard,Moderator,Admin person
     class Google,Gemini,Cloudinary ext
+    class LegContainer system
+    class LegPerson person
+    class LegExt ext
 ```
 
 ### 3.2 Container Descriptions
@@ -2055,7 +2408,7 @@ flowchart TD
 
 - **Google OAuth 2.0** *(external)* — Social login. Backend exchanges auth codes for tokens and fetches user profiles. HTTPS only, called by the backend.
 
-- **Google Generative AI / Gemini** *(external)* — On-demand AI TL;DR summaries (post snapshot, highlights, sentiment). Uses `gemini-2.5-flash` / `gemini-1.5-flash` / `gemini-2.0-flash` with a fallback chain. HTTPS only, called by the backend.
+- **Google Generative AI / Gemini** *(external)* — On-demand AI TL;DR summaries (post snapshot, highlights, sentiment). Uses `gemini-3.6-flash` / `gemini-flash-latest` / `gemini-3.5-flash` with a fallback chain. HTTPS only, called by the backend.
 
 - **Cloudinary** *(external)* — Image storage and CDN. Attachments and avatars are streamed up; CDN URLs are persisted in Postgres. HTTPS only, called by the backend.
 
@@ -2104,6 +2457,7 @@ flowchart TD
         subgraph state ["State & Data Layer"]
             AuthStore["Auth Store<br/>[component: Zustand store]<br/><br/>Client-side auth state:<br/>user, accessToken,<br/>login/logout, silent refresh"]
             APIClient["API Client<br/>[component: TypeScript fetch client]<br/><br/>Typed fetch functions and<br/>react-query hooks for<br/>each backend resource"]
+            Shared_FE["Shared Types<br/>[component: Zod schemas]<br/><br/>Zod DTOs · enums,<br/>imported from src/shared/<br/>(same source as backend)"]
         end
     end
 
@@ -2127,12 +2481,29 @@ flowchart TD
     AuthStore -. "injects Bearer token" .-> APIClient
     APIClient -. "HTTPS JSON /api/v1/*" .-> API_EXT
 
+    APIClient -. "uses request/response DTOs" .-> Shared_FE
+    AuthPages -. "validates forms<br/>(zodResolver)" .-> Shared_FE
+    AdminPages -. "validates forms<br/>(zodResolver)" .-> Shared_FE
+    ProfilePage -. "validates forms<br/>(zodResolver)" .-> Shared_FE
+
+    subgraph legend ["Legend"]
+        direction LR
+        LegContainerFE["Container<br/><i>shown for context</i>"]
+        LegComponentFE["Component"]
+        LegSharedFE["Shared build-time<br/>module<br/><i>not a runtime container</i>"]
+    end
+
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
+    classDef shared fill:#7b2d8b,stroke:#5a1d6b,color:#fff
 
     class API_EXT system
     class Router,FeedPages,PostPage,ProfilePage,SearchPage,AuthPages,ModPages,AdminPages comp
     class AuthStore,APIClient comp
+    class Shared_FE shared
+    class LegContainerFE system
+    class LegComponentFE comp
+    class LegSharedFE shared
 ```
 
 #### 4.1.2 Component Descriptions
@@ -2151,29 +2522,33 @@ flowchart TD
 
 - **Profile Page (`ProfilePage`)**
   - **Responsibility**: Displays a user's profile (display name, bio, avatar, location, website) and their posts. Includes a ProfileEditModal for the profile owner to update their information and upload avatars.
-  - **Relationships**: Calls APIClient for profile and user post data.
+  - **Relationships**: Calls APIClient for profile and user post data; validates the edit-profile form against Shared Types.
 
 - **Search Page (`SearchPage`)**
   - **Responsibility**: Provides full-text search across posts, users, and hashtags with tab-based result filtering.
   - **Relationships**: Calls APIClient for search queries.
 
-- **Auth Pages (`LoginPage`, `RegisterPage`, `OnboardingPage`, `ChangePasswordPage`)**
-  - **Responsibility**: Login page (email/password + Google OAuth), register page (with Zod-validated form), onboarding avatar upload, and change-password page.
-  - **Relationships**: Uses Auth Store to persist session; calls APIClient for auth endpoints.
+- **Auth Pages (`LoginPage`, `RegisterPage`, `OnboardingAvatarPage`, `ChangePasswordPage`, `SettingsPage`)**
+  - **Responsibility**: Login page (email/password + Google OAuth), register page (with Zod-validated form), onboarding avatar upload, and change-password page. `SettingsPage` (`/settings`) is a newer general account-settings screen that also embeds the change-password form plus an appearance (theme) toggle — it and the standalone `ChangePasswordPage` currently coexist as two routes to the same change-password flow.
+  - **Relationships**: Uses Auth Store to persist session; calls APIClient for auth endpoints; validates login/register forms directly against Shared Types via `zodResolver` (`LoginPage`, `RegisterPage`).
 
-- **Moderator Pages (`ModDashboard`, `ReportsQueue`)**
+- **Moderator Pages (`ModeratorDashboardPage`, `ReportsQueuePage`)**
   - **Responsibility**: Moderator dashboard with report statistics and a reports queue page where moderators can review, flag (escalate), or dismiss user reports.
   - **Relationships**: Calls APIClient for moderation endpoints; guarded by RequireRole.
 
-- **Admin Pages** (`Dashboard`, `Users`, `Reports`, `Categories`, `Settings`, `AuditLogs`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. Guarded by AdminGuard. Calls APIClient for admin endpoints.
+- **Admin Pages** (`AdminLoginPage`, `AdminDashboardPage`, `AdminUsersPage`, `AdminReportsPage`, `AdminCategoriesPage`, `AdminSettingsPage`, `AdminAuditLogsPage`) — Full admin panel: site stats, user management, report management, category CRUD, system settings, audit logs. `AdminLoginPage` (`/admin/login`) is the one public, unguarded entry point; all other `/admin/*` routes are wrapped in `AdminGuard`, which redirects to it if the signed-in user is not an administrator. Calls APIClient for admin endpoints; `AdminLoginPage` validates its form directly against Shared Types (it reuses the same `LoginRequest` schema as the standard `LoginPage`).
 
 - **Auth Store (`src/frontend/src/stores/auth.ts`)**
   - **Responsibility**: Zustand store managing client-side authentication state: `user` object, `accessToken`, `setSession`, `clearSession`, and `silentRefresh` (automatic token renewal via the refresh cookie).
   - **Relationships**: Read by APIClient for Bearer token injection; updated by Auth Pages upon login, registration, or session restoration.
 
 - **API Client (`src/frontend/src/api/`)**
-  - **Responsibility**: Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`, `upload.ts`, `admin.ts`, `hashtags.ts`) providing typed `fetch` wrappers with `Bearer` authorization headers and `@tanstack/react-query` hooks for caching and data sync.
-  - **Relationships**: Invoked by all page components; reads access tokens from Auth Store; executes REST calls to Backend API Server.
+  - **Responsibility**: Modular API modules (`auth.ts`, `interactions.ts`, `post-summary.ts`, `profile.ts`, `search.ts`, `upload.ts`, `admin.ts`, `hashtags.ts`) providing typed `fetch` wrappers with `Bearer` authorization headers and `@tanstack/react-query` hooks for caching and data sync. A shared `network.ts` module detects offline state and surfaces a `NetworkError` toast when a request cannot reach the server.
+  - **Relationships**: Invoked by all page components; reads access tokens from Auth Store; executes REST calls to Backend API Server; types request/response payloads against Shared Types.
+
+- **Shared Types (`src/shared/`)**
+  - **Responsibility**: The same Zod schemas, DTOs, and enums used by the backend (see 4.2), imported client-side via the `#shared/*` path alias. On the frontend it is compiled into the SPA bundle at build time rather than run as a service — it is not a runtime container of its own (see the note in Section D, "Shared Module"). Used both for typing API Client requests/responses and for `zodResolver`-driven form validation.
+  - **Relationships**: Imported by API Client, Auth Pages (`LoginPage`, `RegisterPage`), Admin Pages (`AdminLoginPage`), and Profile Page (`ProfileEditModal`). Same source module as the backend's Shared Types component (4.2.1) — no network call, just a shared compile-time dependency.
 
 ---
 
@@ -2183,7 +2558,7 @@ The backend is split into two diagrams for readability: **Diagram A** covers con
 
 **Why AI TL;DR is in Diagram A:** the summary endpoints live on the Post Router (`/posts/:postId/summary`), and the summary service / AI summarizer are wired from there, not from a standalone router.
 
-**Why no Report Service in Diagram B:** report *creation* lives on the Post Router (Diagram A); the Moderation Router only reads/updates reports directly against the database and has no service layer.
+**Why no Report Service in Diagram B:** report *creation* lives on the Post Router and Comment Router, both in Diagram A; the Moderation Router only reads/updates reports directly against the database and has no service layer.
 
 #### 4.2.1 Diagram A - Content & Discovery (Feed · Search · Profile · Hashtags · Media · Reports · AI TL;DR)
 
@@ -2230,6 +2605,7 @@ flowchart TD
     PostR -. "creates reports" .-> ReportSvc
     PostR -. "syncs hashtags" .-> DB_A
     CommentR -. "delegates CRUD" .-> CommentSvc
+    CommentR -. "creates reports" .-> ReportSvc
     ProfileR -. "delegates" .-> ProfileSvc
     UploadR -. "processes image" .-> ImgProc
     UploadR -. "streams to Cloudinary" .-> CloudSvc
@@ -2250,6 +2626,13 @@ flowchart TD
     GW_A -. "validate" .-> Shared_A
     PostSvc -. "schemas" .-> Shared_A
 
+    subgraph legend_A ["Legend"]
+        direction LR
+        LegContainerA["Container<br/><i>shown for context</i>"]
+        LegComponentA["Component"]
+        LegExtA["External System"]
+    end
+
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
@@ -2259,6 +2642,9 @@ flowchart TD
     class GW_A,PostR,CommentR,SearchR,ProfileR,HashtagR,UploadR comp
     class PostSvc,CommentSvc,ProfileSvc,ReportSvc,ImgProc,CloudSvc,PostSumSvc,AISvc comp
     class Shared_A comp
+    class LegContainerA system
+    class LegComponentA comp
+    class LegExtA ext
 ```
 
 #### 4.2.2 Diagram B - Identity, Governance & AI (Auth · OAuth · Reactions · Moderation · Admin)
@@ -2311,6 +2697,18 @@ flowchart TD
     GW_B -. "validate" .-> Shared_B
     AuthSvc -. "schemas" .-> Shared_B
 
+    EnvCfg -. "typed env config" .-> GW_B
+    EnvCfg -. "typed env config" .-> AuthSvc
+    EnvCfg -. "typed env config" .-> SocialAuth
+    EnvCfg -. "typed env config" .-> OAuthProv
+
+    subgraph legend_B ["Legend"]
+        direction LR
+        LegContainerB["Container<br/><i>shown for context</i>"]
+        LegComponentB["Component"]
+        LegExtB["External System"]
+    end
+
     classDef system fill:#1168bd,stroke:#0b4884,color:#fff
     classDef comp fill:#3baf4a,stroke:#2d8a3a,color:#fff
     classDef ext fill:#f5a623,stroke:#d4901c,color:#000
@@ -2321,6 +2719,9 @@ flowchart TD
     class AuthSvc,SocialAuth,OAuthProv,ReactionSvc,AdminSvc comp
     class EnvCfg comp
     class Shared_B comp
+    class LegContainerB system
+    class LegComponentB comp
+    class LegExtB ext
 ```
 
 > **Note:** The API Gateway and Shared Types appear in both diagrams (shared infrastructure). The split is purely for presentation — the backend runs as **one container**.
@@ -2345,13 +2746,13 @@ Middleware applied (in order) before routing in `src/backend/index.ts`:
 |---|---|---|
 | **Auth Router** | `/api/v1/auth` | `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, `GET /me`, `GET /check-username`, `GET /google`, `GET /google/callback`, `PATCH /password` |
 | **Post Router** | `/api/v1/posts` | `GET /` (feed via `?type=latest\|for-you`, `?authorId=`), `POST /`, `PATCH /:postId`, `DELETE /:postId`, `POST /:postId/repost`, `DELETE /:postId/repost`, `POST /:postId/report`, `GET /:postId/summary`, `POST /:postId/summary/refresh` |
-| **Comment Router** | mounted at `/` (no prefix) | `GET /posts/:postId/comments`, `POST /posts/:postId/comments`, `GET /comments` (by `?authorId=`), `PATCH /comments/:commentId`, `DELETE /comments/:commentId` |
+| **Comment Router** | mounted at `/` (no prefix) | `GET /posts/:postId/comments`, `POST /posts/:postId/comments`, `GET /comments` (by `?authorId=`), `PATCH /comments/:commentId`, `DELETE /comments/:commentId`, `POST /comments/:commentId/report` |
 | **Reaction Router** | mounted at `/` (no prefix) | `POST /posts/:postId/reaction`, `DELETE /posts/:postId/reaction`, `POST /comments/:commentId/reaction`, `DELETE /comments/:commentId/reaction` (like/unlike on posts and comments) |
 | **Profile Router** | `/api/v1/profiles` | `GET /by-username/:username`, `GET /:userId`, `PATCH /me`, `POST /me/avatar` |
 | **Search Router** | `/api/v1/search` | `GET /discovery` (suggested creators, trending discussions, topics), `GET /` (unified search, `?type=posts\|users\|all`) |
 | **Upload Router** | `/api/v1/upload` | `POST /image` (multer → sharp → local disk), `POST /cloudinary` (stream upload), `DELETE /cloudinary/{*publicId}` |
 | **Moderation Router** | `/api/v1/moderation` | `GET /metrics`, `GET /reports`, `PATCH /reports/:reportId/status`, `POST /reports/:reportId/action` (delete_content / dismiss / escalate) |
-| **Admin Router** | `/api/v1/admin` | `GET /metrics`, `GET /users`, `PUT /users/:userId/role`, `DELETE /users/:userId`, `GET /audit-logs`, `GET /reports`, `DELETE /content/:type/:id`, `GET/POST /categories`, `PUT /categories/:id`, `DELETE /categories/:id`, `GET /settings`, `PUT /settings` |
+| **Admin Router** | `/api/v1/admin` | `GET /metrics`, `GET /users`, `PUT /users/:userId/role`, `DELETE /users/:userId`, `GET /audit-logs`, `GET /reports`, `POST /reports/:id/dismiss`, `DELETE /content/:type/:id`, `GET/POST /categories`, `PUT /categories/:id`, `DELETE /categories/:id`, `GET /settings`, `PUT /settings` |
 | **Hashtag Router** | `/api/v1/hashtags` | `GET /trending`, `GET /:tag/posts` |
 
 ##### Service Layer
@@ -2359,13 +2760,13 @@ Middleware applied (in order) before routing in `src/backend/index.ts`:
 | Component | Responsibility | Key Relationships |
 |---|---|---|
 | **Auth Service** (`src/backend/api/auth/auth.service.ts`) | Core authentication logic: password hashing and verification (bcrypt), JWT access token signing and verification (HS256, 15-min TTL), refresh token issuance with rotation (7-day, HttpOnly cookie), cookie construction, and session management. Defines the `AuthError` class used by the central error handler. | Reads/writes `user_accounts`, `profiles`, `refresh_sessions` tables. |
-| **Social Auth Service** (`src/backend/api/auth/social-auth.service.ts`) | Handles the OAuth account-linking flow: finds existing social links, links social profiles to existing email-matched accounts, or creates new user accounts with generated usernames. Issues session tokens matching the standard auth flow. | Calls OAuth Providers; reads/writes `user_accounts`, `user_social_links` tables. |
-| **OAuth Providers** (`src/backend/api/auth/oauth-providers.ts`) | Implements provider-specific OAuth logic. Currently supports Google: exchanges authorization codes for tokens via the Google token endpoint, then fetches the user profile from the Google userinfo API. | Calls Google OAuth 2.0 (external). |
+| **Social Auth Service** (`src/backend/services/social-auth.service.ts`) | Handles the OAuth account-linking flow: finds existing social links, links social profiles to existing email-matched accounts, or creates new user accounts with generated usernames. Issues session tokens matching the standard auth flow. | Calls OAuth Providers; reads/writes `user_accounts`, `user_social_links` tables. |
+| **OAuth Providers** (`src/backend/services/oauth-providers.service.ts`) | Implements provider-specific OAuth logic. Currently supports Google: exchanges authorization codes for tokens via the Google token endpoint, then fetches the user profile from the Google userinfo API. A Facebook route file exists (`facebook-auth.routes.ts`) but is an unimplemented stub — not a live feature. | Calls Google OAuth 2.0 (external). |
 | **Post Service** (`src/backend/services/interactions/posts.ts`) | Business logic for post CRUD: creation (with content and attachments), reading (single post with author/reactions/comment count), updating, soft-deletion (respecting ownership), repost create/remove, and feed assembly with cursor-based pagination. Includes the For-You feed algorithm (engagement-weighted scoring via `feed-ranking.ts`). Hashtag sync on create/update is done by the **Post Router** directly, not this service. | Reads/writes `posts`, `post_attachments`; calls Cloudinary Service to delete attachments on post delete. |
 | **Comment Service** (`src/backend/services/interactions/comments.ts`) | Business logic for comment CRUD: creation (with post-existence check and optional parent-comment for nesting), updating, and soft-deletion with ownership enforcement. | Reads/writes `comments` table. |
 | **Reaction Service** (`src/backend/services/interactions/reactions.ts`) | Like/unlike logic: `likeTarget` adds a reaction, `unlikeTarget` removes it. Currently supports the "like" reaction kind on both posts and comments. | Reads/writes `reactions` table. |
-| **Report Service** (`src/backend/services/interactions/reports.ts`) | Creates user reports against posts or comments with a reason type and optional details. Report creation is invoked by the **Post Router** (`POST /posts/:postId/report`); the Moderation Router reads/updates reports directly via `db` and does not use this service. | Reads/writes `reports` table. Called by Post Router. |
-| **AI Summarizer** (`src/backend/services/ai-summarizer.ts`) | Core AI logic: builds a structured prompt from post content and comment bodies, calls the Gemini API with a fallback chain of model versions (`gemini-2.5-flash` -> `gemini-1.5-flash` -> `gemini-2.0-flash`), parses the JSON response into `{ postSnapshot, keyHighlights, sentiment }`, and falls back to a text-truncation heuristic if all API calls fail. | Calls Gemini API (external). |
+| **Report Service** (`src/backend/services/interactions/reports.ts`) | Creates user reports against posts or comments with a reason type and optional details. Report creation is invoked by the **Post Router** (`POST /posts/:postId/report`) and the **Comment Router** (`POST /comments/:commentId/report`); the Moderation Router reads/updates reports directly via `db` and does not use this service. | Reads/writes `reports` table. Called by Post Router and Comment Router. |
+| **AI Summarizer** (`src/backend/services/ai-summarizer.ts`) | Core AI logic: builds a structured prompt from post content and comment bodies, calls the Gemini API with a fallback chain of model versions (`gemini-3.6-flash` -> `gemini-flash-latest` -> `gemini-3.5-flash`), parses the JSON response into `{ postSnapshot, keyHighlights, sentiment }`, and falls back to a text-truncation heuristic if all API calls fail. | Calls Gemini API (external). |
 | **Post Summary Service** (`src/backend/services/post-summary.service.ts`) | Orchestrates the summary lifecycle: checks if a cached summary exists and is still fresh, triggers AI Summarizer if not, and upserts the result into the database. | Uses AI Summarizer; reads/writes `post_summaries` table. |
 | **Profile Service** (`src/backend/api/profile/profile.service.ts`) | Profile read by user ID / username and update. On avatar change, deletes the previous Cloudinary avatar asset (best-effort). Defines the `ProfileError` class. | Reads/writes `profiles`; calls Cloudinary Service for old-avatar cleanup. |
 | **Image Processor** (`src/backend/services/image-processor.ts`) | Wraps `sharp`: validates format, auto-orients, resizes to per-upload-type limits, converts to WebP, strips EXIF, and enforces a 2MB output cap with quality step-down. | Used by Upload Router (`POST /upload/image`); writes to local disk, no DB or Cloudinary. |
@@ -2389,14 +2790,14 @@ Database access is handled by Drizzle ORM repository modules. These are an imple
 
 | Component | Responsibility |
 |---|---|
-| **Env Config** (`src/backend/env.ts`) | Validates all environment variables at startup using a Zod schema. Fails fast with clear error messages if required variables are missing or malformed. Exports the typed `env` object used throughout the backend. |
+| **Env Config** (`src/backend/env.ts`) | Validates all environment variables at startup using a Zod schema. Fails fast with clear error messages if required variables are missing or malformed. Exports the typed `env` object used throughout the backend, including the API Gateway bootstrap (`index.ts`), Auth Service, Social Auth Service, and OAuth Providers (shown as direct dependencies in Diagram B). |
 
 # D - Deployment Diagram
 
 *Work performed by: Nguyễn Tuấn An | Reviewed by: Võ An Phú | Edited by: Võ An Phú*
 
-> **Version**: 1.1.0
-> **Last Updated**: 2026-08-07
+> **Version**: 1.3.0
+> **Last Updated**: 2026-08-22
 >
 > This document maps the containers defined in the Architecture Document to the physical and cloud infrastructure that runs them, for both **development** and **production** environments. Diagrams use Mermaid syntax following C4 deployment conventions.
 
@@ -2416,11 +2817,11 @@ flowchart LR
         SPA["Web Application SPA\nReact 19 · Vite 8"]
     end
 
-    subgraph render ["Render Web Service — Free Tier"]
+    subgraph railway ["Railway Web Service"]
         API["Backend API Server\nNode.js v24 · Express 5"]
     end
 
-    subgraph neon ["Neon — Serverless PostgreSQL"]
+    subgraph aiven ["Aiven — Managed PostgreSQL"]
         DB[("PostgreSQL 16")]
     end
 
@@ -2432,7 +2833,7 @@ flowchart LR
     Cloudinary["Cloudinary CDN"]
 
     Browser -- "HTTPS :443\nStatic assets" --> SPA
-    SPA -. "Vercel rewrite\n/api/v1/* → Render\nHTTPS :443" .-> API
+    SPA -. "Vercel rewrite\n/api/v1/* → Railway\nHTTPS :443" .-> API
     API -- "SQL over TLS\npostgres.js :5432" --> DB
     API -- "HTTPS :443\nOAuth exchange" --> GoogleOAuth
     API -- "HTTPS :443\nAI summarization" --> GeminiAPI
@@ -2454,31 +2855,31 @@ flowchart LR
 
 1. The **User Browser** loads static assets (HTML, JS, CSS) from **Vercel CDN** over HTTPS.
 2. Once the React SPA is running in the browser, all API calls go to the same Vercel domain under `/api/v1/*`.
-3. **Vercel rewrite rules** (defined in `vercel.json`) transparently proxy those requests to `https://foz-backend.onrender.com/api/v1/*` — the browser never contacts Render directly.
-4. The **Backend API Server** on Render connects to **Neon PostgreSQL** via the `postgres.js` driver (TLS-encrypted, port 5432), and makes outbound HTTPS calls to **Google OAuth 2.0**, **Gemini API**, and **Cloudinary** as needed.
+3. **Vercel rewrite rules** (defined in `vercel.json`) transparently proxy those requests to `https://foz-backend.up.railway.app/api/v1/*` — the browser never contacts Railway directly.
+4. The **Backend API Server** on Railway connects to **Aiven PostgreSQL** via the `postgres.js` driver (TLS-encrypted, port 5432), and makes outbound HTTPS calls to **Google OAuth 2.0**, **Gemini API**, and **Cloudinary** as needed.
 5. The browser loads images directly from **Cloudinary CDN** URLs stored in the database.
 
 ### 1.2 Node Descriptions
 
-| Node                             | Infrastructure / Cloud Service                                                        | Containers Deployed                                                                                                      | Notes                                                                                                                                                                                                                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User Device**                  | Desktop or mobile device running a modern web browser (Chrome, Firefox, Safari, Edge) | **Web Application (SPA)** — downloaded and executed client-side as static JS/CSS/HTML                                    | The React 19 SPA runs entirely in the browser after the initial page load. All server communication is via REST API calls.                                                                                                                                                                    |
-| **Vercel — Edge Network / CDN**  | **Vercel** (free tier). Global edge CDN with serverless rewrite rules.                | **Web Application (SPA)** — static build output (`src/frontend/dist`) served from Vercel's CDN.                          | Vercel serves the static SPA bundle and uses rewrite rules (`vercel.json`) to proxy all `/api/v1/*` requests to the Render-hosted backend (`foz-backend.onrender.com`). This eliminates CORS issues in production and provides a unified domain for the user. Build command: `npm run build`. |
-| **Render — Web Service**         | **Render** (free tier). Managed web-service hosting.                                  | **Backend API Server** — Node.js v24 Express 5 application running as a Render Web Service.                              | The backend runs as a single long-lived process. Render provides the env var used for Google OAuth callback URL construction. The free tier has cold-start latency on idle instances.                                                                                                         |
-| **Neon — Serverless PostgreSQL** | **Neon** (free tier). Serverless PostgreSQL with auto-scaling.                        | **PostgreSQL Database** — `postgres:16`-compatible managed database.                                                     | Neon provides a serverless PostgreSQL-compatible endpoint. The backend connects via `DATABASE_URL` using the `postgres.js` driver over TLS-encrypted TCP on port 5432. Schema migrations are managed via `drizzle-kit`.                                                                       |
-| **Google Cloud Platform**        | **Google Cloud** (API-based services).                                                | **Google OAuth 2.0** — social login identity provider. **Google Generative AI (Gemini API)** — AI summarization service. | Two independent Google services: OAuth 2.0 for authentication and Gemini API for post/comment TL;DR summarization with a fallback model chain (`gemini-2.5-flash` → `gemini-1.5-flash` → `gemini-2.0-flash`).                                                                                 |
-| **Cloudinary**                   | **Cloudinary** (free tier). Cloud-based media management and CDN.                     | **Cloudinary Media Service** — image storage, transformation, and CDN delivery.                                          | Post attachments and profile avatars are uploaded from the backend via Cloudinary's streaming API. CDN URLs are stored in the database and served directly to browsers for read access.                                                                                                       |
+| Node | Infrastructure / Cloud Service | Containers Deployed | Notes |
+| --- | --- | --- | --- |
+| **User Device** | Desktop or mobile device running a modern web browser (Chrome, Firefox, Safari, Edge) | **Web Application (SPA)** — downloaded and executed client-side as static JS/CSS/HTML | The React 19 SPA runs entirely in the browser after the initial page load. All server communication is via REST API calls. |
+| **Vercel — Edge Network / CDN** | **Vercel** (free tier). Global edge CDN with serverless rewrite rules. | **Web Application (SPA)** — static build output (`src/frontend/dist`) served from Vercel's CDN. | Vercel serves the static SPA bundle and uses rewrite rules (`vercel.json`) to proxy all `/api/v1/*` requests to the Railway-hosted backend (`foz-backend.up.railway.app`). This eliminates CORS issues in production and provides a unified domain for the user. Build command: `npm run build`. |
+| **Railway — Web Service** | **Railway**. Cloud platform & container hosting. | **Backend API Server** — Node.js v24 Express 5 application running as a Railway Web Service. | The backend runs as a single long-lived containerized service. Railway handles environment variables, continuous deployment from GitHub, and domain routing for Google OAuth callback URL construction (`https://foz-backend.up.railway.app`). |
+| **Aiven — Managed PostgreSQL** | **Aiven**. Fully managed cloud database service. | **PostgreSQL Database** — `postgres:16`-compatible managed database. | Aiven provides a highly available, cloud-managed PostgreSQL 16 instance. The backend connects via `DATABASE_URL` using the `postgres.js` driver over TLS-encrypted TCP on port 5432. Schema migrations are managed via `drizzle-kit`. |
+| **Google Cloud Platform** | **Google Cloud** (API-based services). | **Google OAuth 2.0** — social login identity provider. **Google Generative AI (Gemini API)** — AI summarization service. | Two independent Google services: OAuth 2.0 for authentication and Gemini API for post/comment TL;DR summarization with a fallback model chain (`gemini-3.6-flash` → `gemini-flash-latest` → `gemini-3.5-flash`). |
+| **Cloudinary** | **Cloudinary** (free tier). Cloud-based media management and CDN. | **Cloudinary Media Service** — image storage, transformation, and CDN delivery. | Post attachments and profile avatars are uploaded from the backend via Cloudinary's streaming API. CDN URLs are stored in the database and served directly to browsers for read access. |
 
 ### 1.3 Communication Protocols Summary
 
 | From | To | Protocol | Port | Description |
 |---|---|---|---|---|
 | User Browser | Vercel CDN | HTTPS | 443 | Initial SPA download (HTML, JS, CSS, static assets) |
-| Vercel CDN (rewrite) | Render Backend | HTTPS | 443 | Vercel transparently rewrites `/api/v1/*` to `foz-backend.onrender.com`. The browser never contacts Render directly. Authenticated requests include `Authorization: Bearer <token>` header; refresh uses HTTP-only cookies. |
-| Render Backend | Neon PostgreSQL | PostgreSQL wire protocol over TLS | 5432 | SQL queries via `postgres.js` driver through Drizzle ORM |
-| Render Backend | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
-| Render Backend | Google Gemini API | HTTPS REST | 443 | Structured prompt submission and JSON response parsing |
-| Render Backend | Cloudinary | HTTPS | 443 | Image stream upload and asset deletion |
+| Vercel CDN (rewrite) | Railway Backend | HTTPS | 443 | Vercel transparently rewrites `/api/v1/*` to `foz-backend.up.railway.app`. The browser never contacts Railway directly. Authenticated requests include `Authorization: Bearer <token>` header; refresh uses HTTP-only cookies. |
+| Railway Backend | Aiven PostgreSQL | PostgreSQL wire protocol over TLS | 5432 | SQL queries via `postgres.js` driver through Drizzle ORM |
+| Railway Backend | Google OAuth 2.0 | HTTPS | 443 | Authorization code exchange and user profile fetch |
+| Railway Backend | Google Gemini API | HTTPS REST | 443 | Structured prompt submission and JSON response parsing |
+| Railway Backend | Cloudinary | HTTPS | 443 | Image stream upload and asset deletion |
 | User Browser | Cloudinary CDN | HTTPS | 443 | Direct image retrieval via CDN-delivered URLs |
 
 ---
@@ -2561,18 +2962,18 @@ flowchart LR
 
 ## 3. Environment Comparison
 
-| Aspect                   | Development                                             | Production                                                     |
-| ------------------------ | ------------------------------------------------------- | -------------------------------------------------------------- |
-| **Frontend Hosting**     | Vite dev server on `localhost:5173`                     | Vercel Edge CDN (global, static build)                         |
-| **Backend Hosting**      | Express on `localhost:4000` via `tsx watch`             | Render Web Service (`foz-backend.onrender.com`)                |
-| **Database**             | Docker container `foz_db` (`postgres:16`, local)        | Neon Serverless PostgreSQL (cloud, TLS-encrypted)              |
-| **API Proxying**         | Vite proxy (`/api/v1` and `/health` → `localhost:4000`) | Vercel rewrite rules (`/api/v1/*` → Render)                    |
-| **TLS/HTTPS**            | HTTP (no TLS locally)                                   | HTTPS everywhere (Vercel, Render, Neon all enforce TLS)        |
-| **Image Storage**        | Cloudinary (same cloud service)                         | Cloudinary (same cloud service)                                |
-| **OAuth Callback**       | `http://localhost:4000/api/v1/auth/google/callback`     | `https://foz-backend.onrender.com/api/v1/auth/google/callback` |
-| **Shared Module**        | Live source imports with HMR rebuild                    | Compiled into static bundles at build time                     |
-| **Database Credentials** | Hardcoded in `docker-compose.yml` (`foz/foz`)           | Managed via Neon dashboard + `DATABASE_URL` env var            |
-| **Cold Start**           | None (always running)                                   | Render free tier has cold-start on idle                        |
+| Aspect | Development | Production |
+| --- | --- | --- |
+| **Frontend Hosting** | Vite dev server on `localhost:5173` | Vercel Edge CDN (global, static build) |
+| **Backend Hosting** | Express on `localhost:4000` via `tsx watch` | Railway Web Service (`foz-backend.up.railway.app`) |
+| **Database** | Docker container `foz_db` (`postgres:16`, local) | Aiven Managed PostgreSQL (cloud, TLS-encrypted) |
+| **API Proxying** | Vite proxy (`/api/v1` and `/health` → `localhost:4000`) | Vercel rewrite rules (`/api/v1/*` → Railway) |
+| **TLS/HTTPS** | HTTP (no TLS locally) | HTTPS everywhere (Vercel, Railway, Aiven all enforce TLS) |
+| **Image Storage** | Cloudinary (same cloud service) | Cloudinary (same cloud service) |
+| **OAuth Callback** | `http://localhost:4000/api/v1/auth/google/callback` | `https://foz-backend.up.railway.app/api/v1/auth/google/callback` |
+| **Shared Module** | Live source imports with HMR rebuild | Compiled into static bundles at build time |
+| **Database Credentials** | Hardcoded in `docker-compose.yml` (`foz/foz`) | Managed via Aiven console + `DATABASE_URL` env var |
+| **Cold Start / Uptime** | None (always running) | Continuous service running on Railway |
 
 # E - Implement 2 Functional Groups using Spec Kit
 

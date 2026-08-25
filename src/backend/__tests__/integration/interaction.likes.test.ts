@@ -28,7 +28,7 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
   });
 
   describe("POST / DELETE /api/v1/posts/:postId/reaction - Toggle Post Reaction", () => {
-    it("should return 401 if user is not logged in", async () => {
+    it("TC17: Should return 401 if user is not logged in", async () => {
       const author = await registerAndGetToken("author@example.com");
       const post = await createTestPost(author.accessToken);
 
@@ -37,7 +37,7 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
       expect(res.status).toBe(401);
     });
 
-    it("should allow a user to like and unlike a post (reaction)", async () => {
+    it("TC18: Should allow a user to like and unlike a post (reaction)", async () => {
       const { accessToken } = await registerAndGetToken();
       const post = await createTestPost(accessToken, "Like me");
 
@@ -60,7 +60,7 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
       expect(unlikeRes.body.likeCount).toBe(0);
     });
 
-    it("should correctly accumulate likes from multiple users", async () => {
+    it("TC19: Should correctly accumulate likes from multiple users", async () => {
       const userA = await registerAndGetToken("usera@example.com");
       const userB = await registerAndGetToken("userb@example.com");
       const post = await createTestPost(userA.accessToken);
@@ -79,7 +79,7 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
   });
 
   describe("POST / DELETE /api/v1/comments/:commentId/reaction - Toggle Comment Reaction", () => {
-    it("should allow a user to like and unlike a comment", async () => {
+    it("TC20: Should allow a user to like and unlike a comment", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
@@ -104,6 +104,29 @@ describe("User Interactions - Likes/Reactions API Integration Tests", () => {
 
       expect(unlikeRes.status).toBe(200);
       expect(unlikeRes.body.active).toBe(false);
+    });
+
+    it("TC21: Should aggregate concurrent comment likes from multiple distinct users accurately", async () => {
+      const userA = await registerAndGetToken("usera_cmt@example.com");
+      const userB = await registerAndGetToken("userb_cmt@example.com");
+      const post = await createTestPost(userA.accessToken);
+
+      const commentRes = await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${userA.accessToken}`)
+        .send({ body: "Multi-like comment" });
+      const commentId = commentRes.body.id;
+
+      await getAgent()
+        .post(`/api/v1/comments/${commentId}/reaction`)
+        .set("Authorization", `Bearer ${userA.accessToken}`);
+
+      const resB = await getAgent()
+        .post(`/api/v1/comments/${commentId}/reaction`)
+        .set("Authorization", `Bearer ${userB.accessToken}`);
+
+      expect(resB.status).toBe(200);
+      expect(resB.body.active).toBe(true);
     });
   });
 });

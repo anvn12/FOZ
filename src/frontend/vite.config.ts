@@ -7,12 +7,14 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
       "#shared": fileURLToPath(new URL("../shared", import.meta.url)),
       "#frontend": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   server: {
     port: 5173,
+    host: true,
     proxy: {
       "/api/v1": "http://localhost:4000",
       "/health": "http://localhost:4000",

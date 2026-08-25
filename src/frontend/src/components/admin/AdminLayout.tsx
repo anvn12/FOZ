@@ -134,11 +134,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 ${
                   isActive
-                    ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30"
-                    : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
-                  }`}
+                    ? "bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                }`}
               >
-                <span className={isActive ? "text-white" : "text-slate-400"}>
+                <span className={isActive ? "text-white" : "text-slate-400 group-hover:text-white"}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
@@ -164,7 +164,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <button
             onClick={() => navigate("/")}
             title="Return to Forum"
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -190,7 +190,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <div className="flex items-center space-x-3 flex-1 max-w-md">
             <div className="relative w-full">
               <svg
-                className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"
+                className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -205,7 +205,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <input
                 type="text"
                 placeholder="Search report ID, user handle, or audit action..."
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-100/80 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-100 border border-slate-300 text-slate-800 placeholder:text-slate-500 font-medium focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
               />
             </div>
           </div>

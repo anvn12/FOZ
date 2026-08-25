@@ -12,25 +12,17 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="w-full mt-3">
-      {/* "or continue with" Divider */}
-      <div className="relative flex items-center justify-center my-4">
-        <div className="border-t border-black/10 w-full" />
-        <span className="bg-[#ffffff] px-3 text-xs font-medium text-[#727786] font-plus-jakarta absolute">
-          or
-        </span>
-      </div>
-
+    <div className="w-full mt-3 ">
       {/* Full-width Google Button */}
       <button
         type="button"
         aria-label="Continue with Google account"
         disabled={disabled || loadingProvider !== null}
         onClick={() => onSelectProvider("google")}
-        className="w-full min-h-[44px] py-3 px-4 rounded-xl border border-black/10 bg-white/70 backdrop-blur-md hover:bg-white/90 flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E7DFF]/40 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm cursor-pointer"
+        className="w-full min-h-[44px] py-3 px-4 rounded-full border border-outline-variant bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center space-x-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {loadingProvider === "google" ? (
-          <span className="material-symbols-outlined animate-spin text-[#1e2024]">
+          <span className="material-symbols-outlined animate-spin text-on-surface">
             progress_activity
           </span>
         ) : (
@@ -53,9 +45,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
             />
           </svg>
         )}
-        <span className="text-sm font-semibold text-[#1e2024] font-montserrat">
-          Continue with Google
-        </span>
+        <span className="text-sm font-semibold text-on-surface">Continue with Google</span>
       </button>
     </div>
   );

@@ -28,7 +28,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
   });
 
   describe("POST /api/v1/posts/:postId/comments - Add Comment", () => {
-    it("should return 401 if user is not logged in", async () => {
+    it("TC1: Should return 401 if user is not logged in", async () => {
       const author = await registerAndGetToken("author@example.com");
       const post = await createTestPost(author.accessToken);
 
@@ -39,7 +39,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
       expect(res.status).toBe(401);
     });
 
-    it("should allow a user to comment on an existing post", async () => {
+    it("TC2: Should allow a user to comment on an existing post", async () => {
       const author = await registerAndGetToken("author@example.com");
       const commenter = await registerAndGetToken("commenter@example.com");
       const post = await createTestPost(author.accessToken, "Discussion topic");
@@ -55,7 +55,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
       expect(res.body.postId).toBe(post.id);
     });
 
-    it("should allow nested comment replies (parentCommentId)", async () => {
+    it("TC7: Should allow nested comment replies (parentCommentId)", async () => {
       const userA = await registerAndGetToken("usera@example.com");
       const userB = await registerAndGetToken("userb@example.com");
       const post = await createTestPost(userA.accessToken);
@@ -77,7 +77,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
       expect(replyRes.body.parentCommentId).toBe(parentCommentId);
     });
 
-    it("should return 422 if comment body is empty", async () => {
+    it("TC3: Should return 422 if comment body is empty", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
@@ -90,7 +90,38 @@ describe("User Interactions - Comments API Integration Tests", () => {
       expect(res.body.error.code).toBe("VALIDATION");
     });
 
-    it("should return 404 if post does not exist", async () => {
+    it("TC4: Should return 422 if comment body exceeds maximum character length", async () => {
+      const user = await registerAndGetToken();
+      const post = await createTestPost(user.accessToken);
+      const longBody = "a".repeat(2001);
+
+      const res = await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: longBody });
+
+      expect(res.status).toBe(422);
+    });
+
+    it("TC9: Should reject nested reply if parent comment ID belongs to a different post", async () => {
+      const user = await registerAndGetToken();
+      const postA = await createTestPost(user.accessToken, "Post A");
+      const postB = await createTestPost(user.accessToken, "Post B");
+
+      const commentA = await getAgent()
+        .post(`/api/v1/posts/${postA.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Comment on Post A" });
+
+      const res = await getAgent()
+        .post(`/api/v1/posts/${postB.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Mismatched reply", parentCommentId: commentA.body.id });
+
+      expect([400, 404, 422]).toContain(res.status);
+    });
+
+    it("TC6: Should return 404 if post does not exist", async () => {
       const { accessToken } = await registerAndGetToken();
       const nonExistentId = "00000000-0000-0000-0000-000000000000";
 
@@ -104,7 +135,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
   });
 
   describe("GET /api/v1/posts/:postId/comments - Get Post Comments", () => {
-    it("should list comments for a specific post with reply counts", async () => {
+    it("TC10 & TC8: Should list comments for a post with reply counts & multi-tier nesting", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
@@ -118,7 +149,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
         .set("Authorization", `Bearer ${user.accessToken}`)
         .send({ body: "Reply to first comment", parentCommentId: parentRes.body.id });
 
-      // Sub-reply to reply
+      // Sub-reply to reply (TC8)
       await getAgent()
         .post(`/api/v1/posts/${post.id}/comments`)
         .set("Authorization", `Bearer ${user.accessToken}`)
@@ -139,8 +170,44 @@ describe("User Interactions - Comments API Integration Tests", () => {
     });
   });
 
+  describe("PATCH /api/v1/comments/:commentId - Edit Comment", () => {
+    it("TC11: Should allow author to edit comment text", async () => {
+      const user = await registerAndGetToken();
+      const post = await createTestPost(user.accessToken);
+
+      const commentRes = await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Initial text" });
+
+      const editRes = await getAgent()
+        .patch(`/api/v1/comments/${commentRes.body.id}`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Updated text" });
+
+      expect([200, 204]).toContain(editRes.status);
+    });
+
+    it("TC12: Should reject edit if body is whitespace-only", async () => {
+      const user = await registerAndGetToken();
+      const post = await createTestPost(user.accessToken);
+
+      const commentRes = await getAgent()
+        .post(`/api/v1/posts/${post.id}/comments`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "Initial text" });
+
+      const editRes = await getAgent()
+        .patch(`/api/v1/comments/${commentRes.body.id}`)
+        .set("Authorization", `Bearer ${user.accessToken}`)
+        .send({ body: "   " });
+
+      expect(editRes.status).toBe(422);
+    });
+  });
+
   describe("DELETE /api/v1/comments/:commentId - Delete Comment", () => {
-    it("should allow author to delete their comment", async () => {
+    it("TC14: Should allow author to delete their comment", async () => {
       const user = await registerAndGetToken();
       const post = await createTestPost(user.accessToken);
 
@@ -158,7 +225,7 @@ describe("User Interactions - Comments API Integration Tests", () => {
       expect(delRes.body.ok).toBe(true);
     });
 
-    it("should return 403 if another user tries to delete the comment", async () => {
+    it("TC15: Should return 403 if another user tries to delete the comment", async () => {
       const author = await registerAndGetToken("author@example.com");
       const stranger = await registerAndGetToken("stranger@example.com");
       const post = await createTestPost(author.accessToken);

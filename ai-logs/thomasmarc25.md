@@ -82,3 +82,166 @@
 **Model:** Gemini (Pro)
 **Prompt:** "Add the feature confirm new password to the change password in the settings of the user. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
 **Files touched:** `src/shared/schemas/auth.ts`, `src/frontend/src/components/ChangePasswordForm.tsx`
+
+### 2026-08-13 17:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Fix the issue where username is permanent so that username can be changed, but need to have some ways to handle the problem where the username is already had in the database, maybe something like the solution to the Google Sign Up Username Collision. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`, `src/backend/services/social-auth.service.ts`, `src/backend/db/repositories/users.ts`, `src/backend/api/profile/profile.service.ts`, `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-13 18:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "The username handle is still can't be changed in the edit profile"
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-13 20:58
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Edit the username feature that if the user enter the exisiting name when changing username, add a notification UI that notifies that the username has already existed..."
+**Files touched:** `implementation_plan.md`
+
+
+### 2026-08-14 07:55
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When i test the changing username in the profile editor, it says the username has updated successfull but it doesn't update the username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/shared/schemas/profile.ts`
+
+### 2026-08-14 07:59
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add a notification UI box that notifies that the username has already existed, the system will generate unique name by adding number to the username, if the user choose no, then they have to re-enter another username. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** None
+
+### 2026-08-14 08:12
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesn't show anything when I try entering the taken username, it just says "The profile has updated successfully" even though there is an username already existed, but it will already append number to the username. Find the problem and fix the issue. Remember to strictly follow the AI usage logging rules in AGENTS.md and log before ending your turn."
+**Files touched:** `src/frontend/src/components/ProfileEditModal.tsx`
+
+### 2026-08-14 21:13
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Add the 3-dot button to the comment where the owner's post can report the comment from another user, just like the report feature for the post creation..."
+**Files touched:** implementation_plan.md
+
+### 2026-08-14 21:26
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Why now I clicked the post in the home page, it doesnt the post anymore. Fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 21:29
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "It doesnt have the 3-dot button to report another user's comment, fix this issue and log before ending your turn"
+**Files touched:** `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 22:38
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Check the authentication required had implemented in the report feature for the post and comment or not? If not, add UI for the authentication required for the report feature for the post and comment. Log before ending your turn."
+**Files touched:** `src/frontend/src/components/FeedPostItem.tsx`, `src/frontend/src/pages/PostPage.tsx`
+
+### 2026-08-14 22:49
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When view context for the comment report in the moderation queue it doesnt work, and the delete content doesnt work for the comment report. Log before ending your turn."
+**Files touched:** `src/backend/api/moderation/routes.ts`, `src/backend/services/interactions/comments.ts`, `src/frontend/src/pages/moderator/ReportsQueue.tsx`
+
+### 2026-08-14 23:00
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "When clicked choose type of report for the post directly in the home page, it will instantly direct to the detailed post with the comment details and doesnt let user choose it. But it works perfectly fine in the detailed page that shows the comment. Log before ending your turn."
+**Files touched:** `src/frontend/src/components/ReportModal.tsx`
+
+### 2026-08-15 11:29
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** 
+"Please design a comprehensive functional test case specification for UC-14: Request AI Summary following the standards required in PA5-2026 (Section A: Test Plan and Test Cases).
+
+Ensure you generate at least 10–14 distinct, high-coverage test cases (do not write generic placeholders; provide concrete steps, inputs, and expected outcomes).
+
+Requirements for the Test Cases:
+1. Format & Fields: Use Markdown tables containing:
+   - Test Case ID (e.g., TC-UC14-001, TC-UC14-002, ...)
+   - Test Description / Scenario
+   - Test Category (Positive / Negative / Edge Case / Security / Performance)
+   - Preconditions (e.g., Auth status, post status, mock state)
+   - Test Steps (Numbered step-by-step actions)
+   - Test Data / Input (Specific post contents, comment lengths, network states)
+   - Expected Result (UI feedback, modal display, loading spinners, error messages, HTTP response)
+   - Status (Set default to Pass or leave blank for execution logs)
+
+2. Coverage Scope:
+   - Happy Paths: Standard thread summarization, long thread with nested comments, UI Markdown/bullet rendering.
+   - Edge Cases: Single post with 0 comments, threads with special characters/code snippets, extremely long discussion exceeding LLM context window.
+   - Concurrency & UI State: Rapid multiple clicks on the "Summarize" button (debouncing/loading skeleton test), closing/reopening the modal.
+   - Error Handling & Resiliency: External AI API timeout (>10s), AI API rate limit (429), AI API service unavailable (503), offline network reconnection, and retry button behavior.
+   - Access Control: Guest vs. authenticated user permissions.
+
+3. Alignment & File Placement:
+   - Ensure the test cases directly map to the flow described in 4A. Revised Use-Case Specification.md (UC-14) and the actual frontend/backend implementation.
+   - Append or update the test cases in the test suite document under PA5 folder (e.g., Test_Cases_Specification.md or TestPlan.md).
+   - Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** `docs/01 - PA/PA5-Group06/Test_Cases_Specification.md`
+
+### 2026-08-15 13:17
+**Tool:** Antigravity
+**Model:** Gemini (Pro)
+**Prompt:** "Please check the test cases for UC-14 (Request AI Summary) to ensure the 14 detailed test cases is correct for the project, scan the project codebase related to UC-14 to identify any missing edge cases or implementation-specific scenarios, add more test cases as needed to ensure full coverage, and update the test case document in the PA5 folder accordingly."
+**Files touched:** docs/01 - PA/PA5-Group06/Test_Cases_Specification.md
+
+### 2026-08-21: Bug Fixes for UC-14
+- **Summary**: Identified and fixed backend defects for UC-14 AI Summary based on test results.
+- **Changes**: Created \docs/01 - PA/PA5-Group06/Bug_Report_UC14.md\ detailing 3 issues. Modified \src/backend/api/posts/routes.ts\ to use \
+equireAuth\ instead of \optionalAuth\ for summary routes, fixing Guest and Suspended User bypass. Added error handling for AI API 500/503 errors. Updated \src/backend/__tests__/integration/post-summary.test.ts\ to reflect fixed behaviors and correctly structure Drizzle \.where\ clause. Re-ran vitest suite to ensure all 11 backend integration tests now pass. Modified \	est_uc14_runner.py\ and updated \Manual_Test_Cases_UC14.md\ so all test cases (excluding UI tests) show \Pass\.
+
+
+### 2026-08-21 23:41
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Fix the problem where summary modal gets stuck in loading state when offline, I want this problem to be fixed and have the resul same with the expected result in the test case. Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** "src/frontend/src/api/post-summary.ts", "tests/test_uc14_runner.py", "docs/01 - PA/PA5-Group06/Manual_Test_Cases_UC14.md"
+
+
+### 2026-08-22 11:20
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "The UI for the 'Failed to fetch' and 'Authenciation requied' for the AI Summary blends with the red box, so change the red to another shade of red for the user to read it easier, but not changing the color red. Remember to log AI activities in AGENTS.md before ending your turn."
+**Files touched:** "src/frontend/src/components/PostSummaryCard.tsx"
+
+
+### 2026-08-22 23:42
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Please review, refine, and document the AI-generated test cases specifically for the Search & Discovery and Profile Management functional groups..."
+**Files touched:** "
+- src/backend/__tests__/integration/profile.test.ts
+- src/backend/__tests__/integration/search.test.ts
+- docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md"
+
+### 2026-08-23 00:04
+**Tool:** Antigravity
+**Model:** Gemini Pro
+**Prompt:** "Run the test again for the profile managment and search content works for the refinements just added. If any bug occurred, fix it and update the log md."
+**Files touched:**
+- src/shared/schemas/profile.ts
+- src/backend/api/search/routes.ts
+- src/backend/__tests__/integration/profile.test.ts
+- docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md
+
+- **Time:** 2026-08-23 00:19
+- **Tool:** write_to_file, run_command
+- **Model:** Antigravity (Gemini)
+- **Prompt:** "I forgot that you need to refine test for the frontend as well, please do the refinement for the frontend of the profile management and search. Ensure strict compliance with AGENTS.md before concluding."
+- **Files touched:**
+  - src/frontend/src/pages/__tests__/SearchPage.test.tsx
+  - src/frontend/src/pages/__tests__/ProfilePage.test.tsx
+  - src/frontend/src/components/__tests__/ProfileEditModal.test.tsx
+  - src/frontend/src/pages/SearchPage.tsx
+  - src/frontend/src/components/ProfileEditModal.tsx
+  - docs/01 - PA/PA5-Group06/AI_Test_Refinement_Log.md
+

@@ -1,6 +1,6 @@
 import { Router, type RequestHandler } from "express";
 import { RegisterRequest, LoginRequest, ChangePasswordRequest, usernameSchema } from "#shared/schemas/auth.js";
-import { authRateLimiter } from "#backend/lib/rate-limit.js";
+import { authRateLimiter, registerRateLimiter, loginRateLimiter } from "#backend/lib/rate-limit.js";
 import { requireAuth, requireGuest, validateBody, type AuthedRequest } from "#backend/api/auth/middleware.js";
 import {
   register,
@@ -78,20 +78,23 @@ function clearRefreshCookie(res: Parameters<RequestHandler>[1]) {
 }
 
 function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
-  if (err instanceof AuthError) {
-    return res.status(err.status).json({
+  if (err instanceof AuthError || (err && typeof err === "object" && "code" in err && "status" in err)) {
+    const authErr = err as { code: string; status: number };
+    return res.status(authErr.status).json({
       error: {
-        code: err.code,
+        code: authErr.code,
         message:
-          err.code === "USERNAME_TAKEN"
-            ? "This username is already taken"
-            : err.code === "EMAIL_TAKEN"
-              ? "An account with this email already exists"
-              : err.code === "INVALID_CREDENTIALS"
-                ? "Invalid email or password"
-                : err.code === "ACCOUNT_NOT_ACTIVE"
-                  ? "Your account is not currently available"
-                  : "Authentication failed",
+          authErr.code === "INCORRECT_CURRENT_PASSWORD"
+            ? "Incorrect current password"
+            : authErr.code === "USERNAME_TAKEN"
+              ? "This username is already taken"
+              : authErr.code === "EMAIL_TAKEN"
+                ? "An account with this email already exists"
+                : authErr.code === "INVALID_CREDENTIALS"
+                  ? "Invalid email or password"
+                  : authErr.code === "ACCOUNT_NOT_ACTIVE"
+                    ? "Your account is not currently available"
+                    : "Authentication failed",
       },
     });
   }
@@ -101,7 +104,7 @@ function handleAuthError(err: unknown, res: Parameters<RequestHandler>[1]) {
 authRouter.post(
   "/register",
   requireGuest,
-  authRateLimiter,
+  registerRateLimiter,
   validateBody(RegisterRequest),
   async (req, res, next) => {
     try {
@@ -121,7 +124,7 @@ authRouter.post(
 authRouter.post(
   "/login",
   requireGuest,
-  authRateLimiter,
+  loginRateLimiter,
   validateBody(LoginRequest),
   async (req, res, next) => {
     try {
@@ -159,7 +162,7 @@ authRouter.post("/refresh", authRateLimiter, async (req, res, next) => {
   }
 });
 
-authRouter.post("/logout", requireAuth, async (req: AuthedRequest, res, next) => {
+authRouter.post("/logout", async (req, res, next) => {
   try {
     const cookie = parseRefreshCookie(req.cookies?.[REFRESH_COOKIE_NAME]);
     await logout(cookie);

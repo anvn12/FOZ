@@ -16,10 +16,33 @@ vi.mock("../../api/interactions.js", () => ({
 }));
 
 vi.mock("react-hot-toast", () => {
-  const toastMock = vi.fn();
+  const toastMock = vi.fn() as any;
+  toastMock.loading = vi.fn(() => "loading-toast-id");
+  toastMock.success = vi.fn();
+  toastMock.error = vi.fn();
+  toastMock.dismiss = vi.fn();
   return {
     toast: toastMock,
     default: toastMock,
+  };
+});
+
+vi.mock("../../api/upload.js", () => ({
+  uploadMediaToCloudinary: vi.fn(),
+}));
+
+vi.mock("#frontend/utils/imageCompressor", async () => {
+  const actual = (await vi.importActual("#frontend/utils/imageCompressor")) as any;
+  return {
+    ...actual,
+    compressImageClient: vi.fn().mockResolvedValue({
+      blob: new Blob(["fake webp"], { type: "image/webp" }),
+      fileName: "photo.webp",
+      width: 100,
+      height: 100,
+      originalSize: 1000,
+      compressedSize: 500,
+    }),
   };
 });
 
@@ -90,6 +113,31 @@ describe("CreatePostModal Component", () => {
     await waitFor(() => {
       expect(screen.queryByAltText("attachment")).toBeNull();
       expect(screen.queryByLabelText("Remove attachment")).toBeNull();
+    });
+  });
+
+  it("shows offline error message when network error or timeout occurs during image upload", async () => {
+    const { uploadMediaToCloudinary } = await import("../../api/upload.js");
+    const { NetworkError } = await import("#frontend/api/network");
+    const { toast } = await import("react-hot-toast");
+
+    vi.mocked(uploadMediaToCloudinary).mockRejectedValue(new NetworkError());
+
+    renderWithProviders(<CreatePostModal isOpen={true} onClose={mockOnClose} />);
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(["fake image content"], "photo.png", { type: "image/png" });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const postBtn = screen.getByRole("button", { name: "Post" });
+    fireEvent.click(postBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "You're offline. Check your connection and try again.",
+        expect.objectContaining({ id: "offline-toast" }),
+      );
+      expect(screen.getByRole("button", { name: "Post" })).toBeDefined();
     });
   });
 });

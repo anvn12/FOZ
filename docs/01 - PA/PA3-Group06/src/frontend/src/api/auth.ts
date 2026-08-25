@@ -103,7 +103,9 @@ export function useLogin() {
 export function useLogout() {
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => useAuthStore.getState().clearSession(),
+    onSuccess: () => {
+      useAuthStore.getState().clearSession();
+    },
   });
 }
 
