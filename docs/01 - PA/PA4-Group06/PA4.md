@@ -1702,6 +1702,9 @@ Allows an authenticated user to permanently delete a post they authored. The pos
 
 * **Screen 3 (Alternative Flow 2):** 
   ![](<./Prototype requirement/UC15-3.png>)
+
+ * **Screen 4 (Alternative Flow 3):** 
+  ![](<./Prototype requirement/UC15-4.png>)
   
 
 ## Use-Case Specification: Report Inappropriate Content
@@ -1778,11 +1781,14 @@ Allows an authenticated user to report an active post or comment that may violat
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC16-1.png>)
 
-* **Screen 2 (Alternative Flow 3):** 
-  ![](<./Prototype requirement/UC16-3.png>)
-
-* **Screen 3 (Alternative Flow 2):** 
+* **Screen 2 (Alternative Flow 2):** 
   ![](<./Prototype requirement/UC16-2.png>)
+
+* **Screen 3 (Alternative Flow 3):** 
+  ![](<./Prototype requirement/UC16-4.png>)
+
+* **Screen 4 (Alternative Flow 6):** 
+  ![](<./Prototype requirement/UC16-5.png>)
 
 ## Use-Case Specification: Review Reports
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
@@ -1836,17 +1842,6 @@ Allows Moderators to review community reports and dismiss or escalate them, and 
 2. The system marks the report `closed` with closure code `content_unavailable`, records the closure rationale "Reported content is no longer available.", and informs the actor that no further content action is possible.
 3. The use case ends.
 
-##### 3.2.5 Unauthorized Action
-1. If at step 4 the actor attempts an action not permitted for their role, such as a Moderator attempting to delete content.
-2. The system rejects the action, displays an authorization error, and leaves the report in its current review state.
-3. The use case ends.
-
-##### 3.2.6 Missing or Insufficient Decision Rationale
-1. If at step 4 the actor selects an action without entering a rationale or enters a rationale shorter than five words after trimming whitespace.
-2. The system displays: "A rationale of at least 5 words is required for every moderation decision."
-3. The action is prevented, the report remains in its current review state, and the decision form remains open.
-4. The flow resumes at step 4.
-
 ### 4. Special Requirements
 * **Authorization:** Moderator and Administrator permissions must be enforced at the API boundary, not only in the dashboard.
 * **Separation of Powers:** Moderators may dismiss or escalate reports but must not permanently remove content or punish users.
@@ -1866,8 +1861,16 @@ Allows Moderators to review community reports and dismiss or escalate them, and 
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC17-1.png>)
+  ![](<./Prototype requirement/UC17-2.png>)
 
+* **Screen 2 (Alternative Flow 1):** 
+  ![](<./Prototype requirement/UC17-3.png>)
+
+* **Screen 3 (Alternative Flow 3):** 
+  ![](<./Prototype requirement/UC17-4.png>)
+
+* **Screen 4 (Alternative Flow 4):** 
+  ![](<./Prototype requirement/UC16-5.png>)
 ## Use-Case Specification: Forward Report to Admin
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu* | Refined by: Pham Dinh Gia Khanh
 
@@ -1898,32 +1901,28 @@ Allows a Moderator to escalate a report that may require an administrative decis
 
 #### 3.2 Alternative Flows
 
-##### 3.2.1 Moderator Cancels Escalation
-1. If at step 3 the Moderator clicks "Cancel", closes the modal, or presses Escape.
-2. The modal closes, no database changes are made, and the report remains `under_review`.
-3. The use case ends.
 
-##### 3.2.2 Missing or Insufficient Escalation Rationale
+##### 3.2.1 Missing or Insufficient Escalation Rationale
 1. If at step 4 the Moderator submits no rationale or a rationale shorter than five words after trimming whitespace.
 2. The system displays: "A rationale of at least 5 words is required to escalate a report."
 3. The modal remains open, escalation is prevented, and the flow resumes at step 3.
 
-##### 3.2.3 Report Not Found
+##### 3.2.2 Report Not Found
 1. If at step 4 or step 5 the report does not exist.
 2. The system aborts the transaction and displays: "This report is no longer available."
 3. The use case ends.
 
-##### 3.2.4 Report Already Processed
+##### 3.2.3 Report Already Processed
 1. If at step 4 or step 5 the report is no longer `under_review` because another reviewer processed it.
 2. The system aborts the transaction, returns a conflict response, and displays the report's current state.
 3. The use case ends.
 
-##### 3.2.5 Escalation Update Failure
+##### 3.2.4 Escalation Update Failure
 1. If at step 5 any status, review-log, or audit-log operation fails.
 2. The system rolls back all changes and displays: "The report could not be escalated. Please try again."
 3. The use case ends.
 
-#### 3.2.6 Concurrent Escalation
+#### 3.2.5 Concurrent Escalation
 1. If at step 3, two moderators attempt to escalate the same report at nearly the same time.
 2. The system accepts the earlier transaction, rolls back the second one, and notifies the second moderator: "This report has already been escalated."
 3. The use case ends
@@ -1945,21 +1944,21 @@ Allows a Moderator to escalate a report that may require an administrative decis
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC18-1.png>)
+  ![](<./Prototype requirement/UC18-4.png>)
 
 * **Screen 2 (Alternative Flow 1):** 
-  ![](<./Prototype requirement/UC18-2.png>)
+  ![](<./Prototype requirement/UC18-6.png>)
 
-* **Screen 3 (Alternative Flow 3):** 
-  ![](<./Prototype requirement/UC18-3.png>)
+* **Screen 3 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC17-4.png>)
 
-* **Screen 4 (Alternative Flow 4):** 
+* **Screen 4 (Alternative Flow 3):** 
   ![](<./Prototype requirement/UC-18/1.png>)
 
-* **Screen 5 (Alternative Flow 5):** 
+* **Screen 5 (Alternative Flow 4):** 
   ![](<./Prototype requirement/UC-18/2.png>)
 
-* **Screen 6 (Alternative Flow 6):** 
+* **Screen 6 (Alternative Flow 5):** 
   ![](<./Prototype requirement/UC-18/3.png>)
   
 
@@ -2036,9 +2035,9 @@ Allows an Administrator to permanently delete an authorized post or comment and 
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC19-1.png>)
+  ![](<./Prototype requirement/UC19-4.png>)
 
-* **Screen 2 (Alternative Flow 1):** 
+* **Screen 2 (Alternative Flow 2):** 
   ![](<./Prototype requirement/UC19-2.png>)
 
 * **Screen 3 (Alternative Flow 3):** 
