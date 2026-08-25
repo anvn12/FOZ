@@ -188,9 +188,9 @@
 | Phase | Milestone / Task Category | Timeframe | Primary Assignees |
 | --- | --- | --- | --- |
 | Phase 1 | **Test Planning & Preparation:** Finalize the test plan, set up the local testing environment, and prepare all required test data (mock accounts, pre-existing posts, API keys). | Aug 11 - Aug 15, 2026 | Nguyen Hai Nam & Nguyen Tuan An |
-| Phase 2 | **Test Case Design & Review:** Refine and design test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 16 - Aug 18,  2026 | All Team Members |
-| Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 19 - Aug 21, 2026 | All Team Members |
-| Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 22 - Aug 24, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
+| Phase 2 | **Test Case Design & Review:** Refine and design test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 16, 2026 | All Team Members |
+| Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 17 - Aug 23, 2026 | All Team Members |
+| Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 24, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
 | Phase 5 | **Reporting & Finalization:** Compile Test Summary metrics, verify bug ID traceability, format and finalize the document. | Aug 25, 2026 |	Nguyen Hai Nam & Nguyen Hai Trong |
 
 ### 1.5 Entry and Exit Criteria
@@ -240,7 +240,7 @@
 
 ## 4. Bug Report
 
-### 4.1 Bug Report
+### 4.1 Bug Report File
 
 > The link below contains the bug report performed by our team.
 
