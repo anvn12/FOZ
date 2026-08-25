@@ -26,6 +26,7 @@ export function listPostsByHashtag(tag: string, cursor?: string) {
   return call<{
     items: Array<PostResponse & { likeCount: number; liked: boolean }>;
     nextCursor: string | null;
+    totalCount: number;
   }>(`/api/v1/hashtags/${encodeURIComponent(tag)}/posts${queryStr}`);
 }
 
