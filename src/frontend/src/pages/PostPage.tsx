@@ -142,9 +142,11 @@ export function PostPage() {
                     <div className="border-b border-outline-variant">
                       <FeedPostItem post={post} isDetailsPage={true} />
                     </div>
-                    <div className="px-4">
-                      <PostSummaryCard postId={post.id} />
-                    </div>
+                    {user && (
+                      <div className="px-4">
+                        <PostSummaryCard postId={post.id} />
+                      </div>
+                    )}
 
                     {/* Sort Comment & Comment Input Section */}
                     <div className="px-4 pt-2.5 pb-3 border-b border-outline-variant bg-surface flex flex-col gap-2">

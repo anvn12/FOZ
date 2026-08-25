@@ -148,3 +148,7 @@ vite.config.ts.timestamp-*
 uploads/
 
 package-lock.json
+
+# Local one-off scripts (DB resets, ad-hoc seeding/queries) — never on main,
+# never run against anything but a local dev database.
+.local/

@@ -32,11 +32,16 @@ googleAuthRouter.get("/google/callback", async (req, res, next) => {
 
     // Live OAuth2 token exchange with Google (or mock fallback if test code)
     const profile = await getGoogleProfileFromCode(code);
-    if (req.query.mock_email) {
-      profile.email = req.query.mock_email as string;
-    }
-    if (req.query.mock_name) {
-      profile.displayName = req.query.mock_name as string;
+
+    // Dev/test-only override so integration tests can pick the mock identity;
+    // must never let a caller pick who they log in as in production.
+    if (env.NODE_ENV !== "production") {
+      if (req.query.mock_email) {
+        profile.email = req.query.mock_email as string;
+      }
+      if (req.query.mock_name) {
+        profile.displayName = req.query.mock_name as string;
+      }
     }
 
     const session = await processSocialAuth(profile);

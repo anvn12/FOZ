@@ -15,11 +15,11 @@ This document fixes the frontend stack for FOZ
 | --- | --- | --- |
 | Build tool | Vite | 5 |
 | Framework | React + TypeScript | 18 / 5 |
-| Styling | Tailwind CSS (vanilla config, **no** UI component lib) | 3 |
+| Styling | Tailwind CSS (vanilla config) + shadcn/ui (Radix UI primitives) | 4 |
 | Routing | react-router-dom | 6 |
 | Server state | @tanstack/react-query | 5 |
 | Client state | zustand | 5 |
-| Realtime | socket.io-client | 4 |
+| Live updates | No socket layer — the product has no chat or live notification stream. `@tanstack/react-query` refetch/polling covers this | — |
 | Forms | react-hook-form | 7 |
 | Toasts | react-hot-toast | 2 |
 | Tests | Vitest | 2 |

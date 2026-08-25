@@ -6,6 +6,9 @@ import { getReportsQuerySchema, updateReportStatusSchema, resolveReportSchema } 
 import { eq, and, desc, ilike, or, not, gte, sql } from "drizzle-orm";
 import { deletePost } from "#backend/services/interactions/posts.js";
 import { deleteComment } from "#backend/services/interactions/comments.js";
+import { createAuditLog } from "#backend/db/repositories/admin.js";
+import { getUserById } from "#backend/db/repositories/users.js";
+import type { ReportStatus } from "#shared/schema-enums.js";
 
 export const moderationRouter = Router();
 
@@ -113,6 +116,17 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
     const reportId = req.params.reportId as string;
     const { action, notes } = req.body;
 
+    // Separation of powers: moderators flag and escalate, only administrators
+    // may remove content. Moderators must escalate to an administrator instead.
+    if (action === "delete_content" && req.user.role !== "administrator") {
+      return res.status(403).json({
+        error: {
+          code: "FORBIDDEN",
+          message: "Moderators cannot delete content directly. Escalate this report to an administrator instead.",
+        },
+      });
+    }
+
     const targetReport = await db.query.reports.findFirst({
       where: eq(reports.id, reportId)
     });
@@ -142,7 +156,8 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Reported content is no longer available" } });
     }
 
-    let newStatus = targetReport.status;
+    let newStatus: ReportStatus = targetReport.status;
+    const actor = await getUserById(req.user.id);
 
     if (action === "delete_content") {
       if (targetReport.targetType === "post") {
@@ -151,10 +166,30 @@ moderationRouter.post("/reports/:reportId/action", validateBody(resolveReportSch
         await deleteComment(targetReport.targetId, req.user.id, true);
       }
       newStatus = "closed";
+
+      await createAuditLog({
+        actorId: req.user.id,
+        actorName: actor?.email ?? "Administrator",
+        actorRole: req.user.role,
+        actionType: "CONTENT_DELETE",
+        targetType: targetReport.targetType.toUpperCase(),
+        targetId: targetReport.targetId,
+        rationale: notes || `Removed via report ${reportId}`,
+      });
     } else if (action === "dismiss") {
       newStatus = "dismissed";
     } else if (action === "escalate") {
       newStatus = "escalated";
+
+      await createAuditLog({
+        actorId: req.user.id,
+        actorName: actor?.email ?? "Moderator",
+        actorRole: req.user.role,
+        actionType: "REPORT_ESCALATE",
+        targetType: "REPORT",
+        targetId: reportId,
+        rationale: notes || "Escalated to administrator review",
+      });
     }
 
     const [updatedReport] = await db.update(reports)
