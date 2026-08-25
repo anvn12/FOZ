@@ -44,6 +44,10 @@ export async function assignUserRole(params: {
     throw new Error("This user account is no longer available.");
   }
 
+  if (targetUser.role === params.newRole) {
+    throw new Error(`User already has the role: ${params.newRole}`);
+  }
+
   if (targetUser.status !== "active") {
     throw new Error(`Cannot assign a role to a user with status: ${targetUser.status}`);
   }

@@ -88,6 +88,9 @@ adminRouter.put(
       if (err.message.includes("Cannot assign a role to a user with status:")) {
         return res.status(400).json({ error: { code: "INVALID_OPERATION", message: err.message } });
       }
+      if (err.message.includes("User already has the role:")) {
+        return res.status(400).json({ error: { code: "INVALID_OPERATION", message: err.message } });
+      }
       next(err);
     }
   }
