@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { listPostsByHashtag } from "#frontend/api/hashtags";
 import { FeedPostItem } from "#frontend/components/FeedPostItem";
 import { NavBar } from "#frontend/components/NavBar";
@@ -10,13 +10,16 @@ export function HashtagFeedPage() {
   const { tag } = useParams<{ tag: string }>();
   const cleanTag = (tag || "").toLowerCase();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["posts", "hashtag", cleanTag],
-    queryFn: () => listPostsByHashtag(cleanTag),
+    queryFn: ({ pageParam }) => listPostsByHashtag(cleanTag, pageParam as string | undefined),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialPageParam: undefined as string | undefined,
     enabled: Boolean(cleanTag),
   });
 
-  const posts = data?.items || [];
+  const posts = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   return (
     <NavBar>
@@ -40,7 +43,7 @@ export function HashtagFeedPage() {
               </Link>
               <div>
                 <h1 className="text-[17px] font-semibold text-primary">#{cleanTag}</h1>
-                <p className="text-xs text-secondary">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+                <p className="text-xs text-secondary">{totalCount.toLocaleString()} {totalCount === 1 ? "post" : "posts"}</p>
               </div>
             </header>
 
@@ -62,9 +65,23 @@ export function HashtagFeedPage() {
                     <p className="text-sm text-secondary mt-1">Be the first to publish a post with this hashtag!</p>
                   </div>
                 ) : (
-                  posts.map((post) => (
-                    <FeedPostItem key={(post as any).repostId ?? post.id} post={post} />
-                  ))
+                  <>
+                    {posts.map((post) => (
+                      <FeedPostItem key={(post as any).repostId ?? post.id} post={post} />
+                    ))}
+                    {hasNextPage && (
+                      <div className="p-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => fetchNextPage()}
+                          disabled={isFetchingNextPage}
+                          className="rounded-full border border-outline-variant px-6 py-2 text-sm font-semibold text-secondary hover:bg-surface-container-highest transition-colors disabled:opacity-50"
+                        >
+                          {isFetchingNextPage ? "Loading…" : "Load more"}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { db } from "#backend/db/client.js";
 import { hashtags, postHashtags } from "../schema/hashtags.js";
 import { posts } from "../schema/interactions.js";
-import { eq, sql, desc, gte, and, isNull } from "drizzle-orm";
+import { eq, sql, desc, and, isNull, lt } from "drizzle-orm";
 
 export function parseHashtagsFromText(text: string): string[] {
   if (!text) return [];
@@ -83,35 +83,44 @@ export async function getPostsByHashtag(tag: string, limit = 20, cursor?: string
     .then((rows: Array<{ id: string }>) => rows[0]);
 
   if (!targetHashtag) {
-    return { items: [], nextCursor: null };
+    return { items: [], nextCursor: null, totalCount: 0 };
   }
 
-  const queryConditions = [
+  const baseConditions = [
     eq(postHashtags.hashtagId, targetHashtag.id),
     eq(posts.visibilityState, "public"),
     isNull(posts.deletedAt),
   ];
+  const queryConditions = [...baseConditions];
   if (cursor) {
-    queryConditions.push(sql`${posts.createdAt} < ${new Date(cursor)}`);
+    queryConditions.push(lt(posts.createdAt, new Date(cursor)));
   }
 
-  const rows = await db
-    .select({
-      id: posts.id,
-      authorId: posts.authorId,
-      content: posts.content,
-      parentId: posts.parentId,
-      repostOfId: posts.repostOfId,
-      visibilityState: posts.visibilityState,
-      lifecycleState: posts.lifecycleState,
-      createdAt: posts.createdAt,
-      updatedAt: posts.updatedAt,
-    })
-    .from(posts)
-    .innerJoin(postHashtags, eq(posts.id, postHashtags.postId))
-    .where(and(...queryConditions))
-    .orderBy(desc(posts.createdAt))
-    .limit(limit + 1);
+  const [rows, totalCountRows] = await Promise.all([
+    db
+      .select({
+        id: posts.id,
+        authorId: posts.authorId,
+        content: posts.content,
+        parentId: posts.parentId,
+        repostOfId: posts.repostOfId,
+        visibilityState: posts.visibilityState,
+        lifecycleState: posts.lifecycleState,
+        createdAt: posts.createdAt,
+        updatedAt: posts.updatedAt,
+      })
+      .from(posts)
+      .innerJoin(postHashtags, eq(posts.id, postHashtags.postId))
+      .where(and(...queryConditions))
+      .orderBy(desc(posts.createdAt))
+      .limit(limit + 1),
+    db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(posts)
+      .innerJoin(postHashtags, eq(posts.id, postHashtags.postId))
+      .where(and(...baseConditions)),
+  ]);
+  const totalCount = totalCountRows[0]?.count ?? 0;
 
   const hasNextPage = rows.length > limit;
   const rawItems = hasNextPage ? rows.slice(0, limit) : rows;
@@ -121,26 +130,31 @@ export async function getPostsByHashtag(tag: string, limit = 20, cursor?: string
   const { enrichPostList } = await import("#backend/services/interactions/posts.js");
   const items = await enrichPostList(rawItems, viewerId);
 
-  return { items, nextCursor };
+  return { items, nextCursor, totalCount };
 }
 
 export async function getTrendingHashtags(limit = 10) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const recentCountExpr = () =>
+    sql`count(${postHashtags.postId}) filter (where ${posts.createdAt} >= ${sql.param(sevenDaysAgo, posts.createdAt)})`;
 
   const rows = await db
     .select({
       id: hashtags.id,
       name: hashtags.name,
       displayName: hashtags.displayName,
+      // Total posts for the tag (matches what the hashtag feed shows), not just the trending window.
       postCount: sql<number>`count(${postHashtags.postId})::int`,
+      recentCount: sql<number>`${recentCountExpr()}::int`,
     })
     .from(hashtags)
     .innerJoin(postHashtags, eq(hashtags.id, postHashtags.hashtagId))
     .innerJoin(posts, eq(postHashtags.postId, posts.id))
-    .where(and(gte(posts.createdAt, sevenDaysAgo), eq(posts.visibilityState, "public"), isNull(posts.deletedAt)))
+    .where(and(eq(posts.visibilityState, "public"), isNull(posts.deletedAt)))
     .groupBy(hashtags.id, hashtags.name, hashtags.displayName)
-    .orderBy(desc(sql`count(${postHashtags.postId})`))
+    .having(sql`${recentCountExpr()} > 0`)
+    .orderBy(desc(recentCountExpr()))
     .limit(limit);
 
-  return rows;
+  return rows.map(({ recentCount: _recentCount, ...tag }) => tag);
 }
