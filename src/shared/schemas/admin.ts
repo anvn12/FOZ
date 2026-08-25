@@ -35,7 +35,7 @@ export type AuditTargetTypeEnum = z.infer<typeof AuditTargetTypeEnum>;
 
 export const AssignRoleRequest = z.object({
   role: z.enum(["standard", "moderator"]),
-  rationale: z.string().min(3).max(500).optional(),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type AssignRoleRequest = z.infer<typeof AssignRoleRequest>;
 
@@ -51,9 +51,14 @@ export const SetUserStatusRequest = z.object({
 export type SetUserStatusRequest = z.infer<typeof SetUserStatusRequest>;
 
 export const InstantDeleteContentRequest = z.object({
-  rationale: z.string().min(3, "Rationale is required").max(1000),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type InstantDeleteContentRequest = z.infer<typeof InstantDeleteContentRequest>;
+
+export const DismissReportRequest = z.object({
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
+});
+export type DismissReportRequest = z.infer<typeof DismissReportRequest>;
 
 export const CreateCategoryRequest = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -61,21 +66,25 @@ export const CreateCategoryRequest = z.object({
   description: z.string().max(500).optional(),
   displayOrder: z.number().int().min(0).default(0),
   allowNewPosts: z.boolean().default(true),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type CreateCategoryRequest = z.infer<typeof CreateCategoryRequest>;
 
-export const UpdateCategoryRequest = CreateCategoryRequest.partial();
+export const UpdateCategoryRequest = CreateCategoryRequest.omit({ rationale: true }).partial().extend({
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
+});
 export type UpdateCategoryRequest = z.infer<typeof UpdateCategoryRequest>;
 
 export const DeleteCategoryRequest = z.object({
   targetCategoryId: z.string().uuid("Target category ID must be a valid UUID"),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type DeleteCategoryRequest = z.infer<typeof DeleteCategoryRequest>;
 
 export const UpdateSystemSettingRequest = z.object({
   key: z.string().min(1, "Key is required"),
   value: z.string(),
-  rationale: z.string().optional(),
+  rationale: z.string().min(5, "Rationale must be at least 5 characters").max(1000),
 });
 export type UpdateSystemSettingRequest = z.infer<typeof UpdateSystemSettingRequest>;
 

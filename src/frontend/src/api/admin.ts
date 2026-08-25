@@ -264,7 +264,7 @@ export function useEscalatedReports() {
   });
 }
 
-export function dismissReport(reportId: string, rationale?: string) {
+export function dismissReport(reportId: string, rationale: string) {
   return call<{ message: string; report: EscalatedReport }>(
     `/api/v1/admin/reports/${reportId}/dismiss`,
     {
@@ -277,7 +277,7 @@ export function dismissReport(reportId: string, rationale?: string) {
 export function useDismissReport() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ reportId, rationale }: { reportId: string; rationale?: string }) =>
+    mutationFn: ({ reportId, rationale }: { reportId: string; rationale: string }) =>
       dismissReport(reportId, rationale),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "reports"] });

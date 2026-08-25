@@ -133,7 +133,7 @@ export async function fetchEscalatedReports() {
 export async function dismissReport(params: {
   adminUser: { id: string; role: string };
   reportId: string;
-  rationale?: string;
+  rationale: string;
 }) {
   const adminProfile = await getUserById(params.adminUser.id);
   const updated = await adminRepo.dismissReport(params.reportId);
@@ -145,7 +145,7 @@ export async function dismissReport(params: {
     actionType: "REPORT_DISMISS",
     targetType: "REPORT",
     targetId: params.reportId,
-    rationale: params.rationale || "Report marked safe / dismissed",
+    rationale: params.rationale,
   });
 
   return updated;
@@ -193,6 +193,7 @@ export async function createCategory(params: {
   description?: string;
   displayOrder: number;
   allowNewPosts: boolean;
+  rationale: string;
 }) {
   const adminProfile = await getUserById(params.adminUser.id);
   const created = await adminRepo.createForumCategory({
@@ -210,7 +211,7 @@ export async function createCategory(params: {
     actionType: "CATEGORY_CREATE",
     targetType: "CATEGORY",
     targetId: created.id,
-    rationale: `Created category ${params.name}`,
+    rationale: params.rationale,
   });
 
   return created;
@@ -224,6 +225,7 @@ export async function updateCategory(params: {
   description?: string;
   displayOrder?: number;
   allowNewPosts?: boolean;
+  rationale: string;
 }) {
   const adminProfile = await getUserById(params.adminUser.id);
   const updated = await adminRepo.updateForumCategory(params.id, {
@@ -241,7 +243,7 @@ export async function updateCategory(params: {
     actionType: "CATEGORY_UPDATE",
     targetType: "CATEGORY",
     targetId: params.id,
-    rationale: `Updated category properties`,
+    rationale: params.rationale,
   });
 
   return updated;
@@ -251,6 +253,7 @@ export async function deleteCategory(params: {
   adminUser: { id: string; role: string };
   id: string;
   targetCategoryId: string;
+  rationale: string;
 }) {
   const adminProfile = await getUserById(params.adminUser.id);
   const deleted = await adminRepo.deleteCategoryAndReassignThreads(params.id, params.targetCategoryId);
@@ -262,7 +265,7 @@ export async function deleteCategory(params: {
     actionType: "CATEGORY_DELETE",
     targetType: "CATEGORY",
     targetId: params.id,
-    rationale: `Deleted category and reassigned threads to ${params.targetCategoryId}`,
+    rationale: params.rationale,
   });
 
   return deleted;
@@ -276,7 +279,7 @@ export async function updateSetting(params: {
   adminUser: { id: string; role: string };
   key: string;
   value: string;
-  rationale?: string;
+  rationale: string;
 }) {
   const adminProfile = await getUserById(params.adminUser.id);
   const updated = await adminRepo.updateSystemSetting(params.key, params.value, params.adminUser.id);
@@ -288,7 +291,7 @@ export async function updateSetting(params: {
     actionType: "SETTING_UPDATE",
     targetType: "SYSTEM_SETTING",
     targetId: params.key,
-    rationale: params.rationale || `Updated setting ${params.key}`,
+    rationale: params.rationale,
   });
 
   return updated;

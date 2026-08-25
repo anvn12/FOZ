@@ -12,6 +12,7 @@ interface CategoryModalProps {
     description?: string;
     displayOrder: number;
     allowNewPosts: boolean;
+    rationale: string;
   }) => Promise<void>;
   onConfirmUpdate: (id: string, data: {
     name?: string;
@@ -19,8 +20,9 @@ interface CategoryModalProps {
     description?: string;
     displayOrder?: number;
     allowNewPosts?: boolean;
+    rationale: string;
   }) => Promise<void>;
-  onConfirmDelete: (id: string, targetCategoryId: string) => Promise<void>;
+  onConfirmDelete: (id: string, targetCategoryId: string, rationale: string) => Promise<void>;
 }
 
 export const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -40,6 +42,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   const [targetCategoryId, setTargetCategoryId] = useState(
     categories.find((c) => c.id !== category?.id)?.id || ""
   );
+  const [rationale, setRationale] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -52,16 +55,22 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
     setIsSubmitting(true);
 
     try {
+      if (!rationale || rationale.trim().length < 5) {
+        setErrorMsg("A rationale of at least 5 characters is required.");
+        setIsSubmitting(false);
+        return;
+      }
+
       if (mode === "create") {
         if (!name || !slug) {
           setErrorMsg("Name and slug are required");
           setIsSubmitting(false);
           return;
         }
-        await onConfirmCreate({ name, slug, description, displayOrder, allowNewPosts });
+        await onConfirmCreate({ name, slug, description, displayOrder, allowNewPosts, rationale });
       } else if (mode === "edit") {
         if (!category) return;
-        await onConfirmUpdate(category.id, { name, slug, description, displayOrder, allowNewPosts });
+        await onConfirmUpdate(category.id, { name, slug, description, displayOrder, allowNewPosts, rationale });
       } else if (mode === "delete") {
         if (!category) return;
         if (!targetCategoryId) {
@@ -69,7 +78,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
           setIsSubmitting(false);
           return;
         }
-        await onConfirmDelete(category.id, targetCategoryId);
+        await onConfirmDelete(category.id, targetCategoryId, rationale);
       }
       onClose();
     } catch (err: any) {
@@ -198,6 +207,19 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               </div>
             </div>
           )}
+
+          <div className="pt-2">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              Rationale / Audit Reason *
+            </label>
+            <input
+              type="text"
+              value={rationale}
+              onChange={(e) => setRationale(e.target.value)}
+              placeholder="Reason for this change..."
+              className="w-full text-xs p-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
 
           <div className="flex justify-end space-x-3 pt-2">
             <button

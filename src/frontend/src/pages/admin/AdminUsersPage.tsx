@@ -47,7 +47,7 @@ export const AdminUsersPage: React.FC = () => {
   const deleteAccountMutation = useDeleteUserAccount();
   const setStatusMutation = useSetUserStatus();
 
-  const handleConfirmRole = async (userId: string, newRole: "standard" | "moderator", rationale?: string) => {
+  const handleConfirmRole = async (userId: string, newRole: "standard" | "moderator", rationale: string) => {
     try {
       await assignRoleMutation.mutateAsync({ userId, input: { role: newRole, rationale } });
       toast.success(`User role updated to ${newRole}`);

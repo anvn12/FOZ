@@ -25,6 +25,7 @@ export const AdminCategoriesPage: React.FC = () => {
     description?: string;
     displayOrder: number;
     allowNewPosts: boolean;
+    rationale: string;
   }) => {
     try {
       await createMutation.mutateAsync(input);
@@ -43,6 +44,7 @@ export const AdminCategoriesPage: React.FC = () => {
       description?: string;
       displayOrder?: number;
       allowNewPosts?: boolean;
+      rationale: string;
     }
   ) => {
     try {
@@ -54,9 +56,9 @@ export const AdminCategoriesPage: React.FC = () => {
     }
   };
 
-  const handleConfirmDelete = async (id: string, targetCategoryId: string) => {
+  const handleConfirmDelete = async (id: string, targetCategoryId: string, rationale: string) => {
     try {
-      await deleteMutation.mutateAsync({ id, input: { targetCategoryId } });
+      await deleteMutation.mutateAsync({ id, input: { targetCategoryId, rationale } });
       toast.success("Category deleted and threads reassigned");
     } catch (err: any) {
       toast.error(err?.message || "Failed to delete category");
