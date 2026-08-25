@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSearch, type SearchType, useSearchDiscovery } from "#frontend/api/search";
 import { NavBar } from "#frontend/components/NavBar";
+import { PageContainer } from "#frontend/components/PageContainer";
 import { formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { HorizontalMediaGallery } from "#frontend/components/HorizontalMediaGallery";
 import { Badge } from "@/components/ui/badge";
@@ -67,12 +68,7 @@ export function SearchPage() {
     <NavBar>
     <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
       {/* Container for layouts */}
-      <div className="w-full max-w-7xl flex relative justify-center">
-        
-        {/* ======================================= */}
-        {/* MAIN CONTENT AREA: Search Page          */}
-        {/* ======================================= */}
-        <div className="flex-1 w-full flex justify-center">
+      <PageContainer>
           <main className="max-w-2xl w-full min-h-screen pb-20 relative">
             
             {/* Search Canvas Area */}
@@ -414,9 +410,7 @@ export function SearchPage() {
               )}
             </div>
           </main>
-        </div>
-
-      </div>
+      </PageContainer>
     </div>
     </NavBar>
   );

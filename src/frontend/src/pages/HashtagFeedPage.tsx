@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { listPostsByHashtag } from "#frontend/api/hashtags";
 import { FeedPostItem } from "#frontend/components/FeedPostItem";
 import { NavBar } from "#frontend/components/NavBar";
+import { PageContainer } from "#frontend/components/PageContainer";
 import { TrendingHashtagsWidget } from "#frontend/components/TrendingHashtagsWidget";
 
 export function HashtagFeedPage() {
@@ -25,9 +26,7 @@ export function HashtagFeedPage() {
     <NavBar>
     <div className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
       {/* Container for layouts */}
-      <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
-        {/* MAIN CONTENT AREA */}
-        <div className="flex-1 w-full flex justify-center h-full">
+      <PageContainer sidebar={<TrendingHashtagsWidget />}>
           <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
             
             {/* Top Sticky Header */}
@@ -86,14 +85,7 @@ export function HashtagFeedPage() {
               </div>
             </div>
           </main>
-        </div>
-
-        {/* Right Sidebar: Trending Hashtags */}
-        <aside className="hidden lg:block w-80 pt-4 pr-16 shrink-0">
-          <TrendingHashtagsWidget />
-        </aside>
-
-      </div>
+      </PageContainer>
     </div>
     </NavBar>
   );

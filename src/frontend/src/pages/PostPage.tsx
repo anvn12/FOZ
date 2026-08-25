@@ -14,6 +14,7 @@ import {
 } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar";
+import { PageContainer } from "#frontend/components/PageContainer";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
 import { useProfile } from "#frontend/api/profile";
 import { ExpandableText } from "#frontend/components/ExpandableText";
@@ -110,9 +111,8 @@ export function PostPage() {
         onWheel={handleWheel}
         className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden"
       >
-        <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
-          <div className="flex-1 w-full flex justify-center h-full">
-            <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
+        <PageContainer>
+          <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-24 md:pb-4 relative">
               <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex items-center px-4 h-14 gap-4 flex-shrink-0">
                 <button
                   onClick={() => navigate(-1)}
@@ -353,13 +353,7 @@ export function PostPage() {
                 <div className="p-8 text-center text-outline">Post not found</div>
               )}
             </main>
-          </div>
-
-          {/* Spacer matching the feed's trending sidebar width, so the post
-              column lines up with where it sat in the feed instead of
-              jumping to true center. */}
-          <div className="hidden lg:block w-80 pt-4 pr-16 shrink-0" aria-hidden="true" />
-        </div>
+        </PageContainer>
       </div>
       <ReportModal
         isOpen={!!reportingCommentId}
