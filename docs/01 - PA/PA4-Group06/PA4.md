@@ -1153,10 +1153,11 @@ Allows a user to read the full body of a post along with its entire nested comme
 * **Screen 1 (Basic Flow):** 
   ![](<./Prototype requirement/UC09-1.png>)
 * **Screen 2 (Alternative Flow 1 - No comments):**
-*   ![](<./Prototype requirement/UC09-2.png>)
+   ![](<./Prototype requirement/UC09-2.png>)
 
  * **Screen 2 (Alternative Flow 2 - Post Not Found):**
-*   ![](<./Prototype requirement/UC13-2.png>) 
+  ![](<./Prototype requirement/UC09-3.png>)
+   ![](<./Prototype requirement/UC09-4.png>)
 
   
 ## Use-Case Specification: Create Post
@@ -1694,7 +1695,8 @@ Allows an authenticated user to permanently delete a post they authored. The pos
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC15-1.png>)
+  ![](<./Prototype requirement/UC15-1.1.png>)
+  ![](<./Prototype requirement/UC15-1.2.png>)
 
 * **Screen 2 (Alternative Flow 1):** 
   ![](<./Prototype requirement/UC15-2.1.png>)
