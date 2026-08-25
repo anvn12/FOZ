@@ -39,6 +39,10 @@ export const AdminReportsPage: React.FC = () => {
 
   const handleExecuteAction = async (actionType: "remove_post" | "ban_user" | "safe") => {
     if (!selectedReport) return;
+    if (!rationaleInput || rationaleInput.trim().length < 5) {
+      toast.error("Rationale must be at least 5 characters");
+      return;
+    }
 
     try {
       let banSucceeded = false;
@@ -47,14 +51,14 @@ export const AdminReportsPage: React.FC = () => {
         await instantDeleteMutation.mutateAsync({
           type: selectedReport.targetType === "comment" ? "comment" : "post",
           id: selectedReport.targetId,
-          input: { rationale: rationaleInput || "Removed due to policy violation" },
+          input: { rationale: rationaleInput },
         });
 
         if (actionType === "ban_user") {
           if (selectedReport.authorId) {
             await setUserStatusMutation.mutateAsync({
               userId: selectedReport.authorId,
-              input: { status: "banned", rationale: rationaleInput || "Banned due to policy violation" },
+              input: { status: "banned", rationale: rationaleInput },
             });
             banSucceeded = true;
             toast.success("Content removed and user banned");
@@ -67,7 +71,7 @@ export const AdminReportsPage: React.FC = () => {
       } else {
         await dismissReportMutation.mutateAsync({
           reportId: selectedReport.id,
-          rationale: rationaleInput || "Report marked safe / dismissed",
+          rationale: rationaleInput,
         });
         toast.success("Report marked safe and dismissed");
       }

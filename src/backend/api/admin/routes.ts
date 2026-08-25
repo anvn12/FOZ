@@ -10,6 +10,7 @@ import {
   UpdateCategoryRequest,
   DeleteCategoryRequest,
   UpdateSystemSettingRequest,
+  DismissReportRequest,
 } from "#shared/schemas/admin.js";
 import * as adminService from "#backend/services/admin.service.js";
 
@@ -149,21 +150,25 @@ adminRouter.get("/reports", async (req, res, next) => {
   }
 });
 
-adminRouter.post("/reports/:id/dismiss", async (req, res, next) => {
-  try {
-    const authed = req as AuthedRequest;
-    const reportId = String(req.params.id);
-    const { rationale } = req.body || {};
-    const updated = await adminService.dismissReport({
-      adminUser: authed.user!,
-      reportId,
-      rationale,
-    });
-    return res.json({ message: "Report dismissed", report: updated });
-  } catch (err) {
-    next(err);
+adminRouter.post(
+  "/reports/:id/dismiss",
+  validateBody(DismissReportRequest),
+  async (req, res, next) => {
+    try {
+      const authed = req as AuthedRequest;
+      const reportId = String(req.params.id);
+      const { rationale } = req.body;
+      const updated = await adminService.dismissReport({
+        adminUser: authed.user!,
+        reportId,
+        rationale,
+      });
+      return res.json({ message: "Report dismissed", report: updated });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 adminRouter.delete(
   "/content/:type/:id",
@@ -249,11 +254,12 @@ adminRouter.delete(
     try {
       const authed = req as AuthedRequest;
       const id = String(req.params.id);
-      const { targetCategoryId } = req.body;
+      const { targetCategoryId, rationale } = req.body;
       const deleted = await adminService.deleteCategory({
         adminUser: authed.user!,
         id,
         targetCategoryId,
+        rationale,
       });
       return res.json({ message: "Category deleted and threads reassigned", deleted });
     } catch (err) {

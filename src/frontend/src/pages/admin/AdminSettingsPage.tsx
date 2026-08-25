@@ -16,10 +16,14 @@ export const AdminSettingsPage: React.FC = () => {
   const handleStartEdit = (setting: SystemSettingItem) => {
     setEditingKey(setting.key);
     setEditValue(setting.value);
-    setRationale("Updating system configuration");
+    setRationale("");
   };
 
   const handleSave = async (key: string) => {
+    if (!rationale || rationale.trim().length < 5) {
+      toast.error("A rationale of at least 5 characters is required.");
+      return;
+    }
     try {
       await updateSettingMutation.mutateAsync({
         key,

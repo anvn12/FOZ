@@ -13,7 +13,7 @@ interface UserActionModalProps {
   mode: "role" | "delete" | "status" | null;
   statusAction?: StatusAction | null;
   onClose: () => void;
-  onConfirmRole: (userId: string, newRole: "standard" | "moderator", rationale?: string) => Promise<void>;
+  onConfirmRole: (userId: string, newRole: "standard" | "moderator", rationale: string) => Promise<void>;
   onConfirmDelete: (userId: string, rationale: string) => Promise<void>;
   onConfirmStatus: (userId: string, status: "active" | "suspended" | "banned", rationale: string) => Promise<void>;
 }
@@ -55,6 +55,11 @@ export const UserActionModal: React.FC<UserActionModalProps> = ({
     setIsSubmitting(true);
     try {
       if (mode === "role") {
+        if (!rationale || rationale.trim().length < 5) {
+          setErrorMsg("Rationale must be at least 5 characters long for role change.");
+          setIsSubmitting(false);
+          return;
+        }
         await onConfirmRole(user.id, targetRole, rationale);
       } else if (mode === "delete") {
         if (!rationale || rationale.trim().length < 5) {
