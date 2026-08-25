@@ -46,14 +46,14 @@ export function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"threads" | "replies" | "reposts">("threads");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { data: postsData } = useQuery({
+  const { data: postsData, isLoading: isPostsLoading } = useQuery({
     queryKey: ["posts", "profile", targetUserId],
     queryFn: () => listPosts(targetUserId),
     enabled: !!profile?.userAccountId,
   });
   const posts = postsData?.items || [];
 
-  const { data: repliesData } = useQuery({
+  const { data: repliesData, isLoading: isRepliesLoading } = useQuery({
     queryKey: ["replies", "profile", targetUserId],
     queryFn: () => listUserComments(targetUserId),
     enabled: !!profile?.userAccountId,
@@ -361,7 +361,9 @@ export function ProfilePage() {
                   {/* Tabs Content */}
                   <div className="py-6">
                     {activeTab === "threads" &&
-                      (threads.length > 0 ? (
+                      (isPostsLoading ? (
+                        <TabLoadingSpinner />
+                      ) : threads.length > 0 ? (
                         <div className="flex flex-col">
                           {threads.map((post: any) => (
                             <FeedPostItem key={post.id} post={post} />
@@ -382,7 +384,9 @@ export function ProfilePage() {
                       ))}
 
                     {activeTab === "replies" &&
-                      (replies.length > 0 ? (
+                      (isRepliesLoading ? (
+                        <TabLoadingSpinner />
+                      ) : replies.length > 0 ? (
                         <div className="flex flex-col divide-y divide-outline-variant">
                           {replies.map((reply: any) => (
                             <ProfileReplyItem key={reply.id} reply={reply} profile={profile} />
@@ -403,7 +407,9 @@ export function ProfilePage() {
                       ))}
 
                     {activeTab === "reposts" &&
-                      (reposts.length > 0 ? (
+                      (isPostsLoading ? (
+                        <TabLoadingSpinner />
+                      ) : reposts.length > 0 ? (
                         <div className="flex flex-col">
                           {reposts.map((post: any) => (
                             <FeedPostItem key={post.repostId} post={post} />
@@ -438,6 +444,14 @@ export function ProfilePage() {
         )}
       </div>
     </NavBar>
+  );
+}
+
+function TabLoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <div className="h-6 w-6 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-700 border-t-zinc-900 dark:border-t-white" />
+    </div>
   );
 }
 

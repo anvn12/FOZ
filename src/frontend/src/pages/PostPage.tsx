@@ -322,21 +322,29 @@ export function PostPage() {
 
                     {/* Comments List */}
                     <div className="divide-y divide-outline-variant">
-                      {roots.map((comment) => (
-                        <CommentBranch
-                          key={comment.id}
-                          comment={comment}
-                          comments={commentsQuery.data?.items ?? []}
-                          user={user}
-                          postId={postId}
-                          onReport={setReportingCommentId}
-                          onRequireLogin={() => setShowLoginModal(true)}
-                        />
-                      ))}
-                      {roots.length === 0 && (
-                        <div className="p-8 text-center text-outline">
-                          No comments yet. Be the first to reply!
+                      {commentsQuery.isLoading ? (
+                        <div className="flex items-center justify-center p-8">
+                          <div className="h-6 w-6 animate-spin rounded-full border-2 border-outline-variant border-t-primary" />
                         </div>
+                      ) : (
+                        <>
+                          {roots.map((comment) => (
+                            <CommentBranch
+                              key={comment.id}
+                              comment={comment}
+                              comments={commentsQuery.data?.items ?? []}
+                              user={user}
+                              postId={postId}
+                              onReport={setReportingCommentId}
+                              onRequireLogin={() => setShowLoginModal(true)}
+                            />
+                          ))}
+                          {roots.length === 0 && (
+                            <div className="p-8 text-center text-outline">
+                              No comments yet. Be the first to reply!
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

@@ -27,7 +27,7 @@ export function HashtagFeedPage() {
       {/* Container for layouts */}
       <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
         {/* MAIN CONTENT AREA */}
-        <div className="flex-1 w-full flex justify-center lg:ml-24 h-full">
+        <div className="flex-1 w-full flex justify-center h-full">
           <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
             
             {/* Top Sticky Header */}
@@ -89,7 +89,7 @@ export function HashtagFeedPage() {
         </div>
 
         {/* Right Sidebar: Trending Hashtags */}
-        <aside className="hidden lg:block w-80 pt-4 pr-4 shrink-0">
+        <aside className="hidden lg:block w-80 pt-4 pr-16 shrink-0">
           <TrendingHashtagsWidget />
         </aside>
 
