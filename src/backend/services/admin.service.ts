@@ -44,6 +44,10 @@ export async function assignUserRole(params: {
     throw new Error("This user account is no longer available.");
   }
 
+  if (targetUser.status !== "active") {
+    throw new Error(`Cannot assign a role to a user with status: ${targetUser.status}`);
+  }
+
   const adminProfile = await getUserById(params.adminUser.id);
   const updatedUser = await adminRepo.updateUserRole(params.targetUserId, params.newRole);
 
