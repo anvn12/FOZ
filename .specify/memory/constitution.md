@@ -1,36 +1,65 @@
 <!--
 Sync Impact Report
-- Version change: 2.0.0 → 2.1.0 (MINOR)
-  Rationale: New accessibility principle added (Principle VII) reflecting
-  WCAG 2.1 Level AA NFR from the vision document; duplicate AI Service
-  section consolidated; factual corrections (team size, PostgreSQL version);
-  Scrum workflow codified. These are additions/corrections, not backward-
-  incompatible redefinitions, so MINOR per semver.
+- Version change: 2.1.0 → 2.2.0 (MINOR)
+  Rationale: Reconciles four places where the shipped codebase had already,
+  legitimately diverged from the binding Technology Stack / principle text
+  (a real cross-review of `main` against this document found the drift, not
+  a proposed redesign). Ratifies a component library adopted since v2.1.0,
+  removes a push-based realtime/socket.io layer the product was never built
+  to need (no chat, no live notification stream — @tanstack/react-query
+  refetch already covers every live-update need it actually has), widens
+  the AI fallback-chain principle to match a shipped model-level
+  implementation, and formally recognizes social login (which shipped
+  without ever being added to this document) — while hardening its
+  security bar in the same edit, closing a mock-auth bypass a security pass
+  found live on `main`. These are corrections, one removal, and one
+  addition, not reversals of any existing normative requirement, so MINOR
+  per semver (matching the v2.0.0→2.1.0 precedent).
 - Modified principles (old → new):
-  - VI. AI Service Boundaries: consolidated duplicate "AI Service Isolation"
-    section into single principle; added authentication gate (guests MUST NOT
-    trigger AI calls) per vision doc NFRs
-  - VII. Accessibility (NEW): WCAG 2.1 Level AA, keyboard navigation,
-    semantic HTML, screen-reader support mandated as a core principle
-- Added sections:
-  - VII. Accessibility (new principle)
+  - IV. Security at Every Layer: added a social-login sub-clause — OAuth is
+    now a recognized first-class auth method alongside password + JWT, and
+    any mock/test identity-override path MUST be inert outside non-production
+    `NODE_ENV`, codifying the fix for a live mock-code account-takeover bug.
+  - VI. AI Service Boundaries: fallback chain requirement widened from
+    "provider chain (OpenAI/Gemini)" to "provider and/or model chain," since
+    the shipped implementation is a same-provider, multi-model chain (Gemini
+    tiers) plus a local non-AI degrade path, not a two-vendor chain.
+- Modified sections:
+  - Technology Stack (Frontend): "NO UI component library" replaced with
+    "Tailwind CSS + shadcn/ui (Radix UI primitives)," ratifying a dependency
+    already used across ~10 components on `main`.
+  - Technology Stack (Backend): added a Social Login row documenting the
+    OAuth 2.0 authorization-code flow (Google today) already shipped under
+    `specs/019-social-login`.
+  - Principle I: dropped "socket event names" from the list of cross-cutting
+    shared contracts (no socket layer exists or is planned).
+- Added sections: none (all changes land inside existing Core Principles /
+  Technology Stack sections).
 - Removed sections:
-  - Duplicate "### VI. AI Service Isolation" standalone section (merged into
-    Principle VI under Core Principles)
+  - Technology Stack (Backend) Realtime line (socket.io server) — the
+    product has no push-based realtime feature (no chat, no live
+    notification stream); react-query refetch already covers its actual
+    live-update needs. Not deferred — removed outright; reintroducing
+    realtime later is a fresh design decision, not a resumption of this one.
+  - Technology Stack (Frontend) Realtime line (socket.io-client) — same
+    reason, dropped in the same edit.
 - Templates requiring updates (consistency propagation):
   - .specify/templates/plan-template.md — ✅ compatible (generic Constitution
     Check section; no stack-coupled content)
-  - .specify/templates/spec-template.md — ✅ compatible (generic requirements;
-    no accessibility-specific content to add — accessibility NFRs are captured
-    in spec Success Criteria when relevant)
-  - .specify/templates/tasks-template.md — ✅ compatible (generic; Phase N
-    Polish section already includes "Security hardening" — accessibility
-    testing naturally fits there)
+  - .specify/templates/spec-template.md — ✅ compatible (generic requirements)
+  - .specify/templates/tasks-template.md — ✅ compatible (generic)
   - .specify/templates/checklist-template.md — ✅ compatible (generic)
-  - .specify/templates/commands/ — ✅ N/A (no command files present)
+  - docs/Techstack/fe.md — ⚠️ updated in this same change (Styling row,
+    Realtime row removed)
+  - docs/Techstack/be.md — ⚠️ updated in this same change (Realtime row
+    removed, Social Login row added, team size corrected 4→5)
   - AGENTS.md — ✅ compatible (API routing convention unchanged)
-  - README.md — ✅ compatible (roles, file structure, tech stack consistent)
-- Follow-up TODOs: none.
+  - README.md — not re-verified in this pass; check on next edit that
+    touches it
+- Follow-up TODOs:
+  - No second AI provider exists yet; the widened principle accepts today's
+    single-provider/multi-model chain, but a true second provider is still
+    the stronger design if/when there's time to build it.
 -->
 
 # FOZ Constitution
@@ -42,11 +71,11 @@ Strict client/server separation. No business logic in the client; no
 presentation in the server. The client lives in `src/frontend/` and the
 server in `src/backend/`; both are TypeScript ESM behind one toolchain.
 
-Cross-cutting contracts — Zod schemas, DTOs, error envelopes, and socket
-event names — live in `src/shared/` as the **single source of truth**,
-imported by both sides via path aliases. No npm workspace package, no
-codegen, no tRPC. Duplicating these types across sides is a defect; the
-shared module is the only copy.
+Cross-cutting contracts — Zod schemas, DTOs, and error envelopes — live in
+`src/shared/` as the **single source of truth**, imported by both sides
+via path aliases. No npm workspace package, no codegen, no tRPC.
+Duplicating these types across sides is a defect; the shared module is the
+only copy.
 
 Rationale: a 5-person team on a deadline. One language and one shared
 schema module beat two toolchains and hand-mirrored types.
@@ -82,6 +111,14 @@ Authentication is JWT access (short-lived, client memory) + refresh
 Authorization is ownership-based by default: users may only create, edit,
 and delete their own content, enforced in both the UI and the API.
 
+Social login (OAuth 2.0 authorization-code flow; Google today, extensible
+to other providers) is a recognized first-class authentication method
+alongside password auth, issuing the same JWT access + refresh session on
+success. Any mock or test identity-override path (a synthetic
+authorization code, a caller-supplied email/profile override) MUST be
+inert whenever `NODE_ENV=production` — such a path MUST NEVER be able to
+authenticate as, or link to, a real account in production.
+
 Role-based access control (Guest / Standard User / Moderator /
 Administrator) is first-class for the moderation pipeline and MUST be
 enforced at the API boundary via middleware, not only in the UI:
@@ -112,9 +149,12 @@ amendment, not a silent swap.
 ### VI. AI Service Boundaries
 AI features (TL;DR summarization) MUST sit behind a single, small service
 module with a swappable provider: a pure-function prompt plus a `for` loop
-over fetch-based providers (OpenAI/Gemini), no streaming or caching in v1.
-A fallback provider chain MUST be configured so a single provider outage
-or quota exhaustion does not disable the feature.
+over fetch-based provider and/or model candidates, no streaming or caching
+in v1. A fallback chain MUST be configured — across providers, across
+models within one provider, or both — so that a single outage or quota
+exhaustion partway down the chain does not disable the feature outright.
+When the entire chain is exhausted, the feature MUST still degrade
+gracefully rather than error out (e.g., a local non-AI fallback).
 
 The provider MUST be swappable without business-logic changes. AI
 unavailability MUST NOT block core user flows; a failed summarization MUST
@@ -149,20 +189,26 @@ Backend:
   central error handler.
 - Database: PostgreSQL 16, provisioned via `docker-compose.yml`.
 - Data layer: Drizzle (SQL-visible), migrations via `drizzle-kit`.
-- Realtime: socket.io server on Express's `httpServer`; a small fixed
-  event set, inline emits.
 - Auth: JWT access + refresh cookie, bcrypt, `role` column + hardcoded
   permission matrix.
+- Social login: OAuth 2.0 authorization-code flow (Google today), backed
+  by a `user_social_links` table; issues the same JWT access + refresh
+  session as password auth. Mock/test identity-override paths are gated to
+  non-production `NODE_ENV` (see Principle IV).
 - Config: Zod-validated environment, fail-fast at startup.
 - Tests: Vitest — tier-1 pure unit tests, tier-2 integration; no E2E.
 
 Frontend:
 
 - Build: Vite. Framework: React + TypeScript. Styling: Tailwind CSS,
-  vanilla config, NO UI component library.
-- Routing: react-router-dom. Server state: @tanstack/react-query. Client
-  state: zustand. Realtime: socket.io-client. Forms: react-hook-form.
-  Toasts: react-hot-toast.
+  vanilla config, plus shadcn/ui (Radix UI primitives) for accessible
+  interactive components (dropdown, dialog, tooltip, sidebar, etc.); no
+  other UI component library.
+- Routing: react-router-dom. Server state: @tanstack/react-query, which
+  also covers live updates via refetch/polling — the product does not do
+  push-based realtime (no chat, no live notification stream), so there is
+  no socket layer. Client state: zustand. Forms: react-hook-form. Toasts:
+  react-hot-toast.
 - Lint/format: ESLint + Prettier. Module system: ESM,
   `moduleResolution: "bundler"`, `noEmit`.
 - Tests: Vitest.
@@ -231,4 +277,4 @@ by majority vote (3 of 5 members); the Project Manager holds the final say
 on project-management issues and domain leads on their domain, per the
 Team Contract.
 
-**Version**: 2.1.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-07-25
+**Version**: 2.2.0 | **Ratified**: 2026-06-30 | **Last Amended**: 2026-08-25

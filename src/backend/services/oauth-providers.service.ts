@@ -2,8 +2,12 @@ import { env } from "#backend/env.js";
 import type { SocialProfileInput } from "./social-auth.service.js";
 
 export async function getGoogleProfileFromCode(code: string): Promise<SocialProfileInput> {
-  // If mock code or credentials missing in test environment, use fallback mock
-  if (code.startsWith("mock_") || !env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
+  const allowMock = env.NODE_ENV !== "production";
+  const missingCredentials = !env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET;
+
+  // Mock codes and the missing-credentials fallback are dev/test-only: a
+  // "mock_" code must never authenticate a real account in production.
+  if (allowMock && (code.startsWith("mock_") || missingCredentials)) {
     return {
       provider: "google",
       providerUserId: code === "mock_google_code" ? "google_user_123" : `google_${code}`,
@@ -13,22 +17,27 @@ export async function getGoogleProfileFromCode(code: string): Promise<SocialProf
     };
   }
 
+  const clientId = env.GOOGLE_CLIENT_ID;
+  const clientSecret = env.GOOGLE_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error("Google OAuth is not configured");
+  }
+
   // 1. Exchange authorization code for tokens
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       code,
-      client_id: env.GOOGLE_CLIENT_ID,
-      client_secret: env.GOOGLE_CLIENT_SECRET,
+      client_id: clientId,
+      client_secret: clientSecret,
       redirect_uri: env.GOOGLE_CALLBACK_URL,
       grant_type: "authorization_code",
     }),
   });
 
   if (!tokenRes.ok) {
-    const errorText = await tokenRes.text();
-    console.error("Google token exchange error:", errorText);
+    console.error("Google token exchange failed:", tokenRes.status);
     throw new Error("Failed to exchange authorization code with Google");
   }
 

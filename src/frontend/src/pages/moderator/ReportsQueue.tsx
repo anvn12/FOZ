@@ -25,6 +25,7 @@ type Report = {
 
 export function ReportsQueuePage() {
   const queryClient = useQueryClient();
+  const isAdministrator = useAuthStore((s) => s.user?.role === "administrator");
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -392,16 +393,18 @@ export function ReportsQueuePage() {
                               priority_high
                             </span>
                           </button>
-                          <button
-                            onClick={() => {
-                              setDeleteId(report.id);
-                              setDeleteDialog(true);
-                            }}
-                            className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all"
-                            title="Delete Content"
-                          >
-                            <span className="material-symbols-outlined text-[20px]">delete</span>
-                          </button>
+                          {isAdministrator && (
+                            <button
+                              onClick={() => {
+                                setDeleteId(report.id);
+                                setDeleteDialog(true);
+                              }}
+                              className="p-2 text-secondary hover:text-error hover:bg-error-container/20 rounded-lg transition-all"
+                              title="Delete Content"
+                            >
+                              <span className="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                          )}
                         </div>
                       )}
                     </td>
