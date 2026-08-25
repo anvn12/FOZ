@@ -43,45 +43,40 @@
 
 # Table of Contents
 
-1. [A - How to add Table of Contents](#a---how-to-add-table-of-contents)
-	1. [1. Requirements](#1-requirements)
-		1. [1.1. How to export to PDF](#11-how-to-export-to-pdf)
-2. [B - Export to PDF](#b---export-to-pdf)
-	1. [1. Requirements](#1-requirements)
-		1. [1.1 How to export to PDF](#11-how-to-export-to-pdf)
-3. [C - Diagram example](#c---diagram-example)
-	1. [1. Diagram rules](#1-diagram-rules)
-4. [D - Image example](#d---image-example)
-	1. [1. Insert image rule](#1-insert-image-rule)
 - [Table of Contents](#table-of-contents)
 - [A - Test Plan and Test Cases](#a---test-plan-and-test-cases)
-  - [Test Summary Report](#test-summary-report)
-    - [1. Project Information](#1-project-information)
-    - [2. Test Objectives](#2-test-objectives)
-    - [3. Test Execution Summary](#3-test-execution-summary)
-    - [4. Defect Summary (All Fixed)](#4-defect-summary-all-fixed)
-      - [UC-07 \& UC-08 Defects (Browse \& Search) - FIXED](#uc-07--uc-08-defects-browse--search---fixed)
-      - [UC-10 Defects - FIXED](#uc-10-defects---fixed)
-      - [UC-12 Defects (Leave Comment) - FIXED](#uc-12-defects-leave-comment---fixed)
-      - [UC-14 Defects (Request AI Summary) - FIXED](#uc-14-defects-request-ai-summary---fixed)
-      - [UC-18 Defects (Escalate Report) - FIXED](#uc-18-defects-escalate-report---fixed)
-    - [5. Scope \& Coverage Analysis](#5-scope--coverage-analysis)
-      - [Feed \& Search (UC-07, UC-08)](#feed--search-uc-07-uc-08)
-      - [Engagement (UC-10, UC-12, UC-14)](#engagement-uc-10-uc-12-uc-14)
-      - [Moderation (UC-18)](#moderation-uc-18)
-    - [6. Conclusion](#6-conclusion)
-  - [Bug Report](#bug-report)
-      - [1. Browse Feed (UC-07)](#1-browse-feed-uc-07)
-      - [2. Search Content (UC-08)](#2-search-content-uc-08)
-      - [3. Create Post (UC-10)](#3-create-post-uc-10)
-      - [4. Leave Comment (UC-12)](#4-leave-comment-uc-12)
-      - [5. Request AI Summary (UC-14)](#5-request-ai-summary-uc-14)
-      - [6. Escalate Report (UC-18)](#6-escalate-report-uc-18)
+  - [1. Test Plan](#1-test-plan)
+    - [1.1 Test Objectives and Scope](#11-test-objectives-and-scope)
+      - [1.1.1 Test Objectives](#111-test-objectives)
+      - [1.1.2 Test Scope](#112-test-scope)
+        - [1.1.2.1 In-Scope](#11121-in-scope)
+        - [1.1.2.2 Out-of-Scope](#1122-out-of-scope)
+    - [1.2 Features to be tested](#12-features-to-be-tested)
+    - [1.3 Test Environment and Tools](#13-test-environment-and-tools)
+      - [1.3.1 Operating and Execution Environment](#131-operating-and-execution-environment)
+      - [1.3.2 Test and Inspection Tools](#132-test-and-inspection-tools)
+    - [1.4 Test Schedule and Responsibilities](#14-test-schedule-and-responsibilities)
+      - [1.4.1 Test Responsibilities](#141-test-responsibilities)
+      - [1.4.2 Test Schedule](#142-test-schedule)
+    - [1.5 Entry and Exit Criteria](#15-entry-and-exit-criteria)
+      - [1.5.1 Entry Criteria](#151-entry-criteria)
+      - [1.5.2 Exit Criteria](#152-exit-criteria)
+  - [2. Test Cases](#2-test-cases)
+  - [3. Test Execution](#3-test-execution)
+  - [4. Bug Report](#4-bug-report)
+    - [4.1 Bug Report File](#41-bug-report-file)
+    - [4.2 Test Summary](#42-test-summary)
+      - [1. Test Objectives](#1-test-objectives)
+      - [2. Test Execution Summary](#2-test-execution-summary)
 - [B - Export to PDF](#b---export-to-pdf)
   - [1. Requirements](#1-requirements)
     - [1.1 How to export to PDF](#11-how-to-export-to-pdf)
-- [C - Diagram example](#c---diagram-example)
-  - [1. Diagram rules](#1-diagram-rules)
+- [C - Reflective Report](#c---reflective-report)
+  - [1. Team experience](#1-team-experience)
+  - [2. Spec Kit experience](#2-spec-kit-experience)
+  - [3. AI tools usage](#3-ai-tools-usage)
+  - [4. SDLC feedback](#4-sdlc-feedback)
+  - [5. Individual contributions](#5-individual-contributions)
 - [D - Image example](#d---image-example)
   - [1. Insert image rule](#1-insert-image-rule)
 
@@ -136,7 +131,7 @@
 
 * UC-14 - Request AI Summary (Post Summarization)
 
-* UC-18: Forward Report to Admin (Administration & Moderation)
+* UC-18 - Forward Report to Admin (Administration & Moderation)
 
 ### 1.3 Test Environment and Tools
 
@@ -170,11 +165,11 @@
 | --- | --- | --- |
 | **Test Planning** | Nguyen Hai Nam | Write specific Test Plan for team. |
 | **Test Environment and Data Preparation** | Nguyen Hai Nam & Nguyen Tuan An | Set up the local testing environment (DB container, backend, frontend). Prepare test data including mock user accounts, pre-existing posts, and valid/invalid Gemini API keys for AI testing. |
-| **Test Case Design (UC-07 & UC-08)** | Nguyen Tuan An | Refine and write 10 test cases for **UC-07 (Browse Feed)** and **UC-08 (Search Content)**. |
-| **Test Case Design (UC-10)** | Nguyen Hai Nam | Refine and write 10 test cases for **UC-10 (Create Post)**. |
-| **Test Case Design (UC-12)** | Vo An Phu | Refine and write 10 test cases for **UC-12 (Leave Comment)**. |
-| **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write 10 test cases for **UC-14 (Request AI Summary)**. |
-| **Test Case Design (UC-18)** | Pham Dinh Gia Khanh | Refine and write 10 test cases for **UC-18 (Forward Report to Admin)**. |
+| **Test Case Design (UC-07 & UC-08)** | Nguyen Tuan An | Refine and write test cases for **UC-07 (Browse Feed)** and **UC-08 (Search Content)**. |
+| **Test Case Design (UC-10)** | Nguyen Hai Nam | Refine and write test cases for **UC-10 (Create Post)**. |
+| **Test Case Design (UC-12)** | Vo An Phu | Refine and write test cases for **UC-12 (Leave Comment)**. |
+| **Test Case Design (UC-14)** | Nguyen Hai Trong | Refine and write test cases for **UC-14 (Request AI Summary)**. |
+| **Test Case Design (UC-18)** | Pham Dinh Gia Khanh | Refine and write test cases for **UC-18 (Forward Report to Admin)**. |
 | **Test Case Review & Quality Assurance (UC-07 & UC-08)** | Nguyen Hai Nam & Pham Dinh Gia Khanh | Review and refine all test cases for **UC-07 & UC-08** |
 | **Test Case Review & Quality Assurance (UC-10 & UC-12)** | Nguyen Tuan An & Nguyen Hai Trong | Review and refine all test cases for **UC-10 & UC-12** |
 | **Test Case Review & Quality Assurance (UC-14 & UC-18)** | Pham Dinh Gia Khanh & Vo An Phu | Review and refine all test cases for **UC-14 & UC-18** |
@@ -187,11 +182,11 @@
 
 | Phase | Milestone / Task Category | Timeframe | Primary Assignees |
 | --- | --- | --- | --- |
-| Phase 1 | **Test Planning & Preparation:** Finalize the test plan, set up the local testing environment, and prepare all required test data (mock accounts, pre-existing posts, API keys). | Aug 11 - Aug 12, 2026 | Nguyen Hai Nam & Nguyen Tuan An |
-| Phase 2 | **Test Case Design & Review:** Refine and design 60 test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 13 - Aug 15,  2026 | All Team Members |
-| Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 16 - Aug 17, 2026 | All Team Members |
-| Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 18 - Aug 19, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
-| Phase 5 | **Reporting & Finalization:** Compile Test Summary metrics, verify bug ID traceability, format and finalize the document. | Aug 20 - Aug 21, 2026 |	Nguyen Hai Nam & Nguyen Hai Trong |
+| Phase 1 | **Test Planning & Preparation:** Finalize the test plan, set up the local testing environment, and prepare all required test data (mock accounts, pre-existing posts, API keys). | Aug 11 - Aug 15, 2026 | Nguyen Hai Nam & Nguyen Tuan An |
+| Phase 2 | **Test Case Design & Review:** Refine and design test cases across 6 selected use cases. Review and refine all AI-generated test cases. Conduct peer reviews to ensure optimal test coverage and validity. | Aug 16, 2026 | All Team Members |
+| Phase 3 | **First Run Execution & Bug Logging:** Perform cross-testing on the application. Accurately record execution status (Pass/Fail) and systematically log all discovered defects. | Aug 17 - Aug 23, 2026 | All Team Members |
+| Phase 4 | **Bug Fixing & Retesting (Final Run):** Allocate time for defect resolution. Perform retesting on previously failed test cases to verify fixes and achieve a 100% pass rate. | Aug 24, 2026 | Nguyen Hai Nam & Vo An Phu (Retesting) |
+| Phase 5 | **Reporting & Finalization:** Compile Test Summary metrics, verify bug ID traceability, format and finalize the document. | Aug 25, 2026 |	Nguyen Hai Nam & Nguyen Hai Trong |
 
 ### 1.5 Entry and Exit Criteria
 
@@ -206,13 +201,13 @@
 
 * **Test Data Seeded:** Mock user accounts (for all roles) and sample data (posts, comments, etc.) are loaded into the database.
 
-* **Test Cases Approved:** All 60 functional test cases have been reviewed, refined, and approved by the team.
+* **Test Cases Approved:** All functional test cases have been reviewed, refined, and approved by the team.
 
 * **API Keys Configured:** `.env` variables are set, including both valid and invalid Gemini API keys to verify the AI fallback mechanism. 
 
 #### 1.5.2 Exit Criteria
 
-* **100% Execution:** All 60 designed test cases have been executed.
+* **100% Execution:** All designed test cases have been executed.
 
 * **Results Logged:** Execution dates, status (Pass/Fail), and actual results are fully documented for every test case.
 
@@ -222,57 +217,33 @@
 
 * **Report Finalized:** The Test Summary metrics and Bug Report are fully populated and formatted for submission.
 
+## 2. Test Cases
 
+> The below link contains the manual functional test cases designed by our team.
 
+[Team Manual Functional Test Cases](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx)
 
+> The link below contains our team's document on reviewing, refining, and adding AI-generated test cases.
 
+[Team's Document on Reviewing, Refining, and Adding AI-generated Test Cases](./Review-AI-Test-Case/)
 
+## 3. Test Execution
 
+> The below link contains the manual functional test execution with required records performed by our team.
 
+[Team Manual Functional Test Execution](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx)
 
+## 4. Bug Report
 
+### 4.1 Bug Report File
 
+> The link below contains the bug report performed by our team.
 
+[Team Bug Report](./Individual-Bug-Report/Individual-Bug-Report.xlsx)
 
+### 4.2 Test Summary
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Test Summary Report
-
-### 1. Project Information
-| | |
-|---|---|
-| **PROJECT NAME:** | FOZ |
-| **TEST CYCLE:** | PA5 - Manual Testing |
-| **TEST PLATFORM:** | Web (Desktop & Mobile) |
-| **LANGUAGE TESTED:** | English |
-
-### 2. Test Objectives
+#### 1. Test Objectives
 The objective of this test cycle was to validate the functionality of key features in the FOZ application, specifically focusing on:
 * **UC-07 (Browse Feed):** Verifying the feed functionality across all user roles, sorting, ranking algorithms, scroll behaviors, and offline states.
 * **UC-08 (Search Content):** Validating the search capability across posts and profiles, including hashtag filtering, query limits, empty states, and offline conditions.
@@ -281,155 +252,19 @@ The objective of this test cycle was to validate the functionality of key featur
 * **UC-14 (Request AI Summary):** Validating the generation of AI summaries for posts and comments, including cache behavior, external API resiliency, and access control.
 * **UC-18 (Escalate Report):** Validating the ability for moderators to escalate reports of serious or complex violations to administrators, including handling concurrent edge cases, deleted content, and input validation.
 
-### 3. Test Execution Summary
+#### 2. Test Execution Summary
 
 | Feature / Use Case | Tester | Test Date | Total Cases | Initial Failed (Defects Logged) | Final Failed | Final Passed | Final Pass Rate |
 |---|---|---|---|---|---|---|---|
-| **UC-07 (Browse Feed)** | Nguyễn Tuấn An  | 2026-08-21 | 12 | 3 | 0 | 12 | 100% |
+| **UC-07 (Browse Feed)** | Nguyễn Tuấn An  | 2026-08-21 | 11 | 3 | 0 | 11 | 100% |
 | **UC-08 (Search Content)** | Nguyễn Tuấn An | 2026-08-22 | 15 | 4 | 0 | 15 | 100% |
 | **UC-10 (Create Post)** | Nguyễn Hải Nam | 2026-08-17 | 17 | 1 | 0 | 17 | 100% |
 | **UC-12 (Leave Comment)** | Võ An Phú | 2026-08-17 | 24 | 5 | 0 | 24 | 100% |
-| **UC-14 (Request AI Summary)** | Nguyễn Hải Trọng | 2026-08-23 | 17 | 4 | 0 | 17 | 100% |
-| **UC-18 (Escalate Report)** | Phạm Đinh Gia Khánh | 2026-08-22 | 23 | 8 | 0 | 23 | 100% |
-| **Total** | | | **108** | **25** | **0** | **108** | **100%** |
+| **UC-14 (Request AI Summary)** | Nguyễn Hải Trọng | 2026-08-23 | 17 | 5 | 0 | 17 | 100% |
+| **UC-18 (Escalate Report)** | Phạm Đinh Gia Khánh | 2026-08-22 | 19 | 7 | 0 | 19 | 100% |
+| **Total** | | | **103** | **25** | **0** | **103** | **100%** |
 
 *(Note: During the initial testing phase, 25 test steps had associated Defect IDs logged. All 25 failed/defective test steps have since been addressed, re-tested, and successfully verified. The application now yields a clean 100% pass rate across these core use cases.)*
-
-### 4. Defect Summary (All Fixed)
-A total of **21 unique defects/issues** were tracked during this test cycle across all features. **All issues have now been resolved.**
-
-#### UC-07 & UC-08 Defects (Browse & Search) - FIXED
-* **Defect #194:** Generic network offline handling across features (offline scroll & search).
-* **Defect #211:** The "Load more" button on the feed requires guest log in.
-* **Defect #210:** Search query too long error text appears but the operation is silent.
-* **Defect #208 / #209:** Issues regarding clearing search queries and navigating via the nav bar while maintaining state.
-
-#### UC-10 Defects - FIXED
-* **Defect #221 (Test #14 - Network Disconnect):** Network timeout or disconnect mid-upload behaved unexpectedly regarding pending states, but the system ultimately recovered.
-
-#### UC-12 Defects (Leave Comment) - FIXED
-* **Issue #190:** Guest clicking the comment box does not pop up an auth modal, but aggressively redirects to login.
-* **Issue #192:** UI truncation for >240 characters fails when the line itself is not broken by newlines.
-* **Issue #193:** Comment box does not expand dynamically for long words, forcing an awkward horizontal scroll.
-* **Issue #194:** Offline submission triggers a generic "Failed to fetch" toast instead of an intuitive offline warning.
-* **Issue #202:** Lacks spam rate-limiting; submitting 16 comments in a minute works instead of popping a throttle modal.
-
-#### UC-14 Defects (Request AI Summary) - FIXED
-* **Defect #194:** Guest permissions not enforced on summary API endpoints.
-* **Defect #195:** External AI API timeouts & 503s cause unhandled backend exceptions.
-* **Defect #196:** Suspended users could still generate AI summaries.
-* **Defect #197:** Summary modal UI hangs indefinitely when network is offline.
-
-#### UC-18 Defects (Escalate Report) - FIXED
-* **Defect #214:** Search context bar on the Moderation Queue fails to filter.
-* **Defect #215:** System allows escalation to proceed even when the reason rationale is left blank.
-* **Defect #216:** Race condition allows two moderators to escalate the same report simultaneously.
-* **Defect #217:** Filtering audit logs by Actor UUID returns no results.
-* **Defect #225:** The system allows an already escalated report to be re-escalated without warning.
-* **Defect #226:** Author deleting reported content mid-escalation forces a ghost completion.
-* **Defect #227:** Hitting the 'Escape' key does not close the escalation modal dialogue.
-
-### 5. Scope & Coverage Analysis
-
-#### Feed & Search (UC-07, UC-08)
-* **Coverage:** Validates sorting algorithms (chronological vs ranking), hashtag handling, caching, empty states, and offline conditions. Both modules successfully prevent excessive API calls and handle edge cases safely.
-* **Gaps:** Edge cases such as triggering infinite scroll *precisely* as the network drops or reading extremely long posts inside the feed UI were identified as missing test paths.
-
-#### Engagement (UC-10, UC-12, UC-14)
-* **Coverage:** Thorough testing on boundary limits (exactly 5000/5001 chars), media constraints, and security injections. The Leave Comment suite effectively validated XSS resistance, duplicate post prevention, and nested reply logic.
-* **Gaps:** The UC-12 suite heavily tested desktop interactions (Shift+Enter, Tab) but lacked parallel validation for virtual mobile keyboards. Auth expiry tests and max-depth nested comment assertions were recommended.
-
-#### Moderation (UC-18)
-* **Coverage:** Evaluated role-based access to admin queues, input flow, and basic filtering. 
-* **Gaps:** The suite lacked assertions verifying proper conflict handling (escalating dismissed reports) and verifying the exact required threshold for rationale character limits.
-
-### 6. Conclusion
-The FOZ Application has achieved a **100% Pass Rate** across 108 manual test cases spanning its core functionality (**Browse Feed, Search Content, Create Post, Leave Comment, Request AI Summary, and Escalate Report**). 
-
-Initially, **25 test cases** encountered defects due to a combination of unhandled edge cases (e.g., deleted content mid-escalation, race conditions), UI responsiveness issues, missing rate-limit throttles, and permission loopholes. However, following targeted bug fixes, **all defects have been successfully resolved and re-verified**. 
-
-Edge cases such as boundary limits, XSS prevention, duplicate post blocking, and unsupported file formats are now handled gracefully. The UI remains highly responsive with resilient offline capability, and the moderation workflows are stable. **The application meets all specified functional requirements and is fully ready for deployment.**
-
-
-## Bug Report
-
-| | |
-|---|---|
-| **PROJECT NAME:** | FOZ |
-| **TEST CYCLE:** | PA5 |
-| **STATUS:** | All Bugs Fixed & Re-tested |
-
-<br>
-
-#### 1. Browse Feed (UC-07)
-*Tester: Nguyễn Tuấn An*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| 8, 9 | 194 | There should be a modal "You are offline" when the network is out | 1. Connect to the web with good network connection.<br>2. Turn off your network or turn off network in network tab in development tool in browser | There should be a modal "You are offline" when the network is out | No modal shown | Minor | Fixed |
-| 10 | 211 | Load more should prompt a login modal for guest | 1. Open the web with Guest account<br>2. Scroll until see "Load more" button<br>3. Press the "Load more" button | A login modal should be displayed | No modal shown. Guest can still load more post | Minor | Fixed |
-
-<br>
-
-#### 2. Search Content (UC-08)
-*Tester: Nguyễn Tuấn An*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| 10 | 194 | Offline modal missing when network is turned off in search | 1. When in search route, turn off network. | The system should display a modal showing "You are offline", no action can be made | The modal shows to notify offline status, action cannot be made | Minor | Fixed |
-| 11 | 210 | Search query limit exceeded error | 1. User exceed the character limit of search query | The system does not execute the search query. A toast error notification message appears, stating "Search query is too long. Please limit to 500 characters." | Showing a message "Search query is too long. Please limit to 500 characters.", no action has been executed | Minor | Fixed |
-| 14 | 208 | Clearing search query doesn't reset the page | 1. search something valid. In the result page, users click the "x" button to clear the search bar. | The search query is cleared and users can continue type in the search bar. | The query is cleared, and the page is not reset | Minor | Fixed |
-| 15 | 209 | Pressing search icon in navbar resets page | 1. Search something valid. Press search icon in the navigation bar while in search result | The system should reset the results and load the search route (the basic search page, no result) | The page is reset | Minor | Fixed |
-
-<br>
-
-#### 3. Create Post (UC-10)
-*Tester: Nguyễn Hải Nam*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| 14 | 221 | Missing error message when network timeout during posting an image | 1. Click 'Create Post' under good connection<br>2. Click 'Image' then attach an image<br>3. After the post modal shows the preview of the attached image, turn off the network in the browser devtools. Then click 'Post' | The user should receive a retry option or error message, and the 'Post' button should remain disabled/pending until resolved | The modal remains, the 'Post' button remains pending 'Posting' until the problem resolved. The post is displayed on the feed afterward, and a success message "Your post is live." appears. Miss the error message like "You are offline." | Minor | Fixed |
-
-<br>
-
-#### 4. Leave Comment (UC-12)
-*Tester: Võ An Phú*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| 2 | 190 | Pop up modal prompting user to login before commenting | 1. Be a guest<br>2. Click the comment box | A login prompt/modal appears explaining that authentication is required before commenting. | No pop up modal prompting the user to login, the user is redirected to the login page | Minor | Fixed |
-| 11 | 192 | Truncated long comment visualization fails | 1. Choose a post<br>2. Submit a comment longer than 240 characters or more than 4 lines | The preview is truncated and a Read more control appears; selecting Read more reveals the full comment | Only the more than 4 lines works, one line with more than 240 characters does not show the full content | Moderate | Fixed |
-| 14 | 194 | Offline toast notification for commenting is generic | 1. Choose a post<br>2. Disconnect from internet connection<br>3. Submit a comment | A toast notification notifying the user they are offline | Only a toast notification of "Failed to fetch" which does not directly mean the user is offline | Minor | Fixed |
-| 18 | 202 | Comment rate limiting | 1. Choose a post<br>2. Submit 16 comments in under a minute | A pop up modal telling the user to slow down and prevent them to comment for the next 1 minute to prevent spam | No pop up modal, the user can freely spam comment submissions | Moderate | Fixed |
-| 24 | 193 | Comment box visualization fails to expand | 1. Choose a post<br>2. Submit a comment longer than 20 words | The comment box should expand and clearly display what the user type | Does not expand, only show 1 line and have to scroll to see the full comment | Moderate | Fixed |
-
-<br>
-
-#### 5. Request AI Summary (UC-14)
-*Tester: Nguyễn Hải Trọng*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| TC09, TC11 | 200 | External AI API timeouts & 503s cause unhandled exceptions | 1. Simulate an external AI service timeout or 503 error.<br>2. Trigger the AI Summary. | Backend should gracefully catch the error and return a JSON error response (HTTP 503). | Backend throws an unhandled exception which bubbles up and returns raw 500 error. | Critical | Fixed |
-| TC12 | 206 | Summary modal UI hangs indefinitely when network is offline | 1. Navigate to a post.<br>2. Open DevTools and set network to "Offline".<br>3. Click "Generate TL;DR". | UI catches the network error, stops loading state, and displays "Failed to load" with a "Retry" button. | UI gets stuck in the skeleton loading state indefinitely without throwing an error message. | Moderate | Fixed |
-| TC13 | 198 | Guest permissions not enforced on summary API endpoints | 1. Navigate to a post as an unauthenticated guest user.<br>2. Click the "Generate TL;DR" button. | System should return HTTP 401 Unauthorized and block the request. | HTTP 200 OK. Summary is successfully generated despite being a guest. | Major | Fixed |
-| TC14 | 199 | Suspended users can still generate AI summaries | 1. Log in as a user with suspended status.<br>2. Navigate to post details and click "Generate TL;DR". | System should return HTTP 403 Forbidden. | HTTP 200 OK. Summary is successfully generated because suspended users are treated as guests. | Major | Fixed |
-
-<br>
-
-#### 6. Escalate Report (UC-18)
-*Tester: Phạm Đinh Gia Khánh*
-
-| Test # | Bug # | Description | Steps to Reproduce | Expected Result | Actual Result | Severity | Status |
-|---|---|---|---|---|---|---|---|
-| 4 | 214 | No matched results, the queue is not even filtered when moderators search for a report | 1. Redirect to the moderation queue.<br>2. Type in the search bar. | When type in keywords that match with the information of (a) report(s), the queue should display the matched ones | No matched results, the queue is not even filtered | Minor | Fixed |
-| 9 | 215 | Moderator must fill in the reason for an escalation | 1. Choose a report to escalate<br>2. Leave the reason unfilled and submit the escalation | Only accept the escalate request when there is a reason and priority level | The escalation is still completed without escalate reason | Moderate | Fixed |
-| 10, 11 | 216 | If a moderator forward a report that had already been escalated before, the action cannot be done and there must be a toast error | 1. Access with 2 moderator accounts<br>2. Both choose the same report to forward<br>3. Mod A submit first then mod B | Only accept one escalation (the first one), and notice the second moderator with a toast error | Although there is still only one escalation is accepted, but 2 moderator receive the successful notification, and the admin page is not optimalized to see which one is accepted | Critical | Fixed |
-| 15.2.1 | 217 | Search audit log based on UUID (admin page) | 1. Redirect to the admin page and its moderation queue<br>2. Type in the search bar for an audit log | When type in keywords that match with the information of (a) report(s), the queue should display the matched ones | No audit found | Moderate | Fixed |
-| 14 | 225 | User re-escalate a report after it has been escalated | 1. Redirect to the moderation queue<br>2. Click the escalate button of a report that is already escalated | A toast error notification appears at the top of the screen displaying the message "This report had been escalated before" | The escalation is still completed again | Critical | Fixed |
-| 20 | 226 | The author deleted the reports before it is escalated | 1. Mod redirect to mod page and choose a report to escalate<br>2. Use an authorized user account and delete the reported post<br>3. Mod escalate that post | A toast error with message "Reported content is no longer available" Appears | The escalation is still complete | Critical | Fixed |
-| 11.1 | 227 | Users click "escalate" button, fill in the reason and choose priority level, then press escapae button to close the escalation box | 1. Mod redirect to mod page and choose a report to escalate<br>2. Press escape button to go back | Users move back to the Moderation queue, the report's status stays unchanged ("Pending") | Escape button not works | Moderate | Fixed |
-
 # B - Export to PDF
 
 *Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
@@ -446,27 +281,118 @@ Use default format
 
 ==CTRL P -> Better export PDF: Export current file to PDF==
 
-# C - Diagram example
+# C - Reflective Report
 
-*Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
+*Work performed by: Group 06 | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
 
-## 1. Diagram rules
 
-Diagram must be drawn using Mermaid.
+## 1. Team experience
 
-Example as below:
+### What went well:
 
-**Workflow 1: User Authentication & Post Creation**
+- Agile Scrum collaboration: the team successfully adopted the Scrum methodology across all 5 PAs. We maintained regular sprint planning sessions, daily scrums, sprint reviews, and tracked progress using Jira.
+- Clear domain leadership with fullstack ownership: While every member operated as a full-stack engineer, assigning domain ownership (Project Management, QA/Testing, Backend/Database, UI/UX Design, and Frontend Architecture) enabled efficient guidance and specialized accountability.
+- Strict quality control: mandatory peer reviews, automated TypeScript compile checks (`tsc --noEmit`), Zod trust-boundary schema validations, and extensive Vitest integration test suites ensured high code quality and zero regressions across sprints.
+- Architectural Cohesion: Establishing a single source of truth in `src/shared/` for Zod schemas, DTOs, and enums eliminated API contract discrepancies between the React frontend and Express backend.
+- Successful Multi-Cloud Production Deployment: The team successfully delivered and deployed a production-grade web application with a live frontend on Vercel Edge CDN, containerized backend API on Railway, fully managed PostgreSQL on Aiven, image CDN on Cloudinary, and Google Cloud Platform integrations (OAuth 2.0 and Gemini API).
+- Gradually improve our product based on lecturer's feedback from each PA.
+- Successfully apply software engineering foundations on a real project (e.g. testing, diagram drawing, etc.)
 
-```mermaid
-flowchart TD
-    A[User clicks Create Post] --> B{Is Authenticated?}
-    B -- No --> C[Redirect to Login/Signup]
-    C --> D[User Authenticates]
-    D --> E[Open Post Editor]
-    B -- Yes --> E
+### Challenges during the project:
 
-```
+- Time management & heavy workload: balancing heavy course commitments, midterm exams, and intensive development sprints required diligent backlog prioritization and front-loading critical tasks early in each sprint.
+- AI results not good on document tasks: AI shows flaws when dealing with document writing, it lacks creativity and logical coherence.
+- Deploy challenge: as we do not have enough facility for solid deployment services, we only choose free-tier with limited bandwidth, storage, and computing power. It is not stable for production-grade deployment and we have changed 2 services for backend and database hosting services due to resource limitation.
+- Lack of hands-on experience, especially when dealing with web development.
+
+## 2. Spec Kit experience
+
+### How was the experience of using Spec Kit for specification-driven development?
+
+Using Spec Kit transformed our development approach from informal prompting into a structured, specification-driven engineering lifecycle (`specify` -> (`clarify`) -> `plan` -> `tasks` -> (`analyze`) -> `implement`). Defining formal feature specifications, data models, and API contracts before writing code forced the team to thoroughly evaluate edge cases, validation boundaries, and dependencies upfront. This systematic workflow minimized rework and ensured that the implementation directly fulfilled the functional requirements.
+
+### Benefits compared to traditional development:
+
+- Early disambiguation & reduced rework: Spec Kit surfaces ambiguous requirements during the `specify` and `clarify` phases, resolving architectural questions before they manifest as costly bugs in production. The `analyze` phase further cross-checks the spec, plan, and tasks for gaps and inconsistencies before implementation begins, catching coverage issues that manual reviews would otherwise miss.
+- Granular, dependency-ordered task decomposition: The `tasks.md` breakdown allowed our team members can review before actual implementation.
+- Living architectural documentation: The artifacts generated in the `specs/` directory serve as clear, evergreen documentation of the system's design, API contracts, and testing requirements, making onboarding and code reviews seamless.
+- Enhanced AI context & code generation quality: Spec Kit provides AI coding assistants with rich contextual anchors (schemas, project constitution, directory conventions), resulting in higher accuracy and minimal hallucinations.
+
+### Limitations compared to traditional development:
+
+- Upfront process overhead: Generating specs, research notes, contracts, and task checklists requires significant initial time investment, which can feel heavy for trivial UI adjustments or minor bug fixes.
+- Tooling and prompt dependency: Effective use of Spec Kit requires familiarity with specific prompt commands and token management; poor prompts can lead to oversized task lists or generic boilerplate.
+- Token limitation: Spec Kit or any vibe engineering methods often depend on AI tokens. The limitation of tokens and decent models can sometimes make it difficult to generate a quality codes, specifications.
+- Setup Spec Kit and skill sets is time-consuming and requires steep learning curve. Different models, OS, IDEs, code editors, etc. require different set up (e.g. setup Spec Kit on VS Code is different from Antigravity)
+
+## 3. AI tools usage
+
+### How AI coding tools contributed to the project:
+
+AI coding assistants such as Google Antigravity (Gemini 3.7 Flash, Gemini 3.1 Pro), GitHub Copilot (GPT-4o, GPT-5.4 mini), etc. deeply integrated into every phase of the software development lifecycle. They assisted in:
+
+- Rapidly scaffolding backend route handlers, Drizzle schemas, and Zod validation DTOs.
+- Designing responsive React UI components with Tailwind CSS based on design specifications.
+- Generating comprehensive Vitest integration tests covering edge cases, authentication gating, and interaction flows.
+- Executing SpecKit specification and planning workflows from natural-language requirements.
+- Rapidly write draft version for the document required for PA submissions.
+- Maintaining continuous development transparency via automated logging in `ai-logs/<username>.md`.
+- Designing UI for app (Google Stitch)
+- Giving information about exploring and choosing appropriate tech stack, cloud services for the project.
+
+### Effective aspects:
+
+- Accelerated Boilerplate & CRUD Development: Scaffolding REST endpoints, data access layers, and type definitions took minutes instead of hours, significantly boosting team velocity.
+- Comprehensive Test Case Generation: AI tools excelled at identifying boundary conditions (e.g., empty arrays, invalid JWTs, SQL injection payloads, long unicode inputs, rate limits) and writing extensive automated test suites.
+- Strict Architectural Adherence: When supplied with our project constitution (`constitution.md`) and routing guidelines (`AGENTS.md`), the AI consistently enforced team conventions (e.g., `/api/v1` route prefixing, modular client-server isolation).
+- Rapid Debugging & Error Diagnosis: AI assistants quickly identified root causes for subtle bugs, such as session cookie ID mismatches and Vite proxy misconfigurations.
+
+### Limitations encountered:
+
+- Superficial "Smoke Test" Generation: AI models sometimes generated shallow assertions (e.g., verifying `typeof fn === 'function'` or duplicating sorting logic in tests) rather than writing genuine end-to-end database queries, requiring manual test refinement during QA reviews.
+- Context Degradation in Long Conversations: Over prolonged sessions, AI agents occasionally lost track of existing utility functions or attempted to re-implement already available helpers.
+- Outdated Suggestions: AI occasionally suggested not suitable services. When our team first asked AI about services for deployment, the AI suggest those with low bandwidth leading to the service change later. 
+- Learning coding skills from AI: learning only basics from AI, not enough for advanced concepts and professional software development.
+
+## 4. SDLC feedback
+
+So far, we have reached the final PA and have a good understanding of the SDLC process and course structure. Overall, the course and project are well-organized and the team has learned a lot, strengthening both technical and soft skills. The team sincerely thanks the instructors for their guidance.
+
+Below are some constructive suggestions for improving the Software Development Life Cycle (SDLC) process and course structure:
+
+1. Detailed and Actionable Grading Feedback:
+   - Feedback on previous PA submissions was occasionally brief or lacked specific breakdowns, making it difficult for the team to understand exact grading criteria or identify which specific sections lost marks. Also there should be more instruction or more meeting in class for both discussions and clarifications.
+   - Suggestion: Provide a transparent, specific feedback comments for each milestone by pointing out exactly what students have done good or not good, . This will give student teams concrete guidance on areas needing improvement before the subsequent submission.
+
+2. Up-to-date and Centralized Course Documentation:
+   - Some requirement documents and template files contained outdated instructions or ambiguous specifications that required clarification across different communication channels (e.g. Moodle discussion forum).
+   - Suggestion: Maintain a single, updated repository for all PA templates, grading criteria, and technical requirements. Clarify modern stack expectations (e.g., TypeScript, modern ORMs, and cloud deployments) early in the semester. Also should provide a template for reports for each PA to help students save time when defining the format.
+
+3. The documentation tasks is overhead:
+   - Our team thinks that the main value of Agile/Scrum is about development and minimal documentation, especially for small team size under short period of time and the huge workload of this course.
+   - Suggestion: Optimize the documentation so that it is both more condensed, and more realistic for small team size.
+
+## 5. Individual contributions
+
+### Nguyễn Tuấn An (24127011) — Project Manager & DevOps, Full-Stack Developer
+
+As Project Manager, I organized sprint planning sessions, coordinated task assignments on Jira, and also established the development workflow and multi-cloud deployment pipeline across Vercel, Railway, Aiven, and Cloudinary. I implemented the Google OAuth 2.0 social login flow, the Post Summarize (TL;DR) AI service with resilient fallback chains, and led the AI summarization test suite refinement, fixed a huge number of bugs, manage the document for submission. Through this project, I gained invaluable practical experience in orchestrating end-to-end cloud infrastructure, managing agile team dynamics, and enforcing specification-driven AI development with SpecKit.
+
+### Nguyễn Hải Nam (24127088) — QA Engineer / Full-Stack Developer
+
+During this project, I worked on core features like the admin dashboard and user interactions, plus a few smaller additions like hashtag feature. I also handled the documentation for all PAs and fixed bugs across the codebase. I have learned a lot—from understanding the overall architecture and system flow, to learning GitHub Speckit and various frameworks and putting them into practice. It was an unforgettable experience for me.
+
+### Nguyễn Hải Trọng (24127311) — Backend & Database Lead / Full-Stack Developer
+
+During the project, I designed the core database schema, authored the Vision Document, developed comprehensive Use-Case Specifications, and implemented key backend features like post creation. For PA5, I designed detailed manual test cases for the AI Summary feature and reviewed and refined AI-generated test cases for the Profile Management and Search & Discovery functional groups. I faced significant challenges, including occasionally missing deadlines and a laptop failure during PA2 that impacted our progress. I am deeply grateful to my teammates for stepping up to cover my tasks during that time. Ultimately, this experience built my foundational industry knowledge by teaching me the mechanics of TDD, the practical application of Spec Kit, and how to collaborate effectively with AI Agents and my team.
+
+### Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer
+
+During this project, I built up some core features like searching, moderator,... as well as handled the documentation for PAs, fixed bugs. I have learnt a lot of things, especially about the architecture, the workflow and how to set up speckit. I think these experience would assist me a lot in my future projects. Besides, a big shoutout to my teammate, we’ve done such a great job working like a cohesive team.
+
+### Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer
+
+In this project, I think my contribution was a lot, from setting up the project speckit foundation, team AI usage, the web scaffold, key feature like AuthN, frontend UI overhaul to documentations. I have learnt a lot about architecture and data flow of the whole system throughtout this project. Overall it was pleasant
 
 # D - Image example
 
