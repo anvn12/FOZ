@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "#frontend/stores/auth";
 import { ApiError } from "#frontend/api/auth";
-import { fetchWithNetworkGuard } from "#frontend/api/network";
+import { authFetch } from "#frontend/api/authFetch";
 import type { UpdateProfileRequest, UpdateAvatarRequest } from "#shared/schemas/profile";
 
 export interface Profile {
@@ -27,18 +27,12 @@ interface ErrorEnvelope {
 }
 
 async function call<T>(path: string, init: RequestInit): Promise<T> {
-  const token = useAuthStore.getState().accessToken;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(init.headers as Record<string, string> | undefined),
   };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetchWithNetworkGuard(path, {
-    ...init,
-    credentials: "include",
-    headers,
-  });
+  const res = await authFetch(path, { ...init, headers });
   if (!res.ok) {
     const env = (await res.json().catch(() => null)) as ErrorEnvelope | null;
     throw new ApiError(

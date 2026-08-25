@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
-import { useAuthStore } from "../../stores/auth";
-import { fetchWithNetworkGuard } from "../../api/network";
+import { authFetch } from "../../api/authFetch";
 
 type DashboardMetrics = {
   totalReports: number;
@@ -39,16 +38,9 @@ export function ModeratorDashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const token = useAuthStore.getState().accessToken;
-        const headers: Record<string, string> = { "Content-Type": "application/json" };
-        if (token) headers.Authorization = `Bearer ${token}`;
-
         const [metricsRes, reportsRes] = await Promise.all([
-          fetchWithNetworkGuard("/api/v1/moderation/metrics", { credentials: "include", headers }),
-          fetchWithNetworkGuard("/api/v1/moderation/reports?limit=50", {
-            credentials: "include",
-            headers,
-          }),
+          authFetch("/api/v1/moderation/metrics"),
+          authFetch("/api/v1/moderation/reports?limit=50"),
         ]);
 
         if (metricsRes.ok) {
