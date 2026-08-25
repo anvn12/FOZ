@@ -1,4 +1,94 @@
-# PA2
+<div style="text-align: center; margin: 0 auto; padding: 40px 20px; min-height: 85vh; display: flex; flex-direction: column;">
+  <div style="text-transform: uppercase; line-height: 1.8;">
+    <div>VNUHCM - University of Science</div>
+    <div>Faculty of Information Technology</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="margin: 20px 0;">
+    <h1 style="margin: 0; padding: 0 0 10px 0; font-size: 2.2em; border: none;">PA2 Report</h1>
+    <div style="font-size: 1.2em; font-weight: bold;">Group 6: PDF</div>
+  </div>
+
+  <div style="border-top: 2px solid black; margin: 30px 0;"></div>
+
+  <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 40px;">
+    CSC13002 - Introduction to Software Engineering
+  </div>
+
+  <div style="display: flex; justify-content: space-between; margin: 0 5%; text-align: left; line-height: 1.8;">
+    <div style="width: 50%;">
+      <div style="font-style: italic;">Author:</div>
+      <div>Nguyễn Tuấn An - 24127011</div>
+      <div>Nguyễn Hải Nam - 24127088</div>
+      <div>Nguyễn Hải Trọng - 24127311</div>
+      <div>Phạm Đinh Gia Khánh - 24127420</div>
+      <div>Võ An Phú - 24127494</div>
+    </div>
+    <div style="width: 45%;">
+      <div style="font-style: italic;">Lecturer:</div>
+      <div>Ms. Nguyễn Thị Minh Tuyền</div>
+      <div>Mr. Hồ Tuấn Thanh</div>
+      <div>Mr. Mai Anh Tuấn</div>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding-top: 60px;">
+
+  </div>
+</div>
+
+<div style="page-break-after: always;"></div>
+
+# Table of Contents
+
+- [A - Project Plan](#a---project-plan)
+	- [1. Introduction](#1-introduction)
+	- [2. Project Overview](#2-project-overview)
+	- [3. Project Organization](#3-project-organization)
+		- [3.1 Team Structure and Member Roles](#31-team-structure-and-member-roles)
+		- [3.2 Risk Management](#32-risk-management)
+	- [4. Project Plan](#4-project-plan)
+		- [4.1 Completed Sprint (Sprint 1 - PA1)](#41-completed-sprint-sprint-1---pa1)
+		- [4.2 Upcoming Sprint (Sprint 2 - PA2)](#42-upcoming-sprint-sprint-2---pa2)
+		- [4.3 Future Sprints (Sprint 3 - PA3, Sprint 4 - PA4, Sprint 5 - PA5)](#43-future-sprints-sprint-3---pa3-sprint-4---pa4-sprint-5---pa5)
+		- [4.4 Schedule](#44-schedule)
+		- [4.5 Build Plan](#45-build-plan)
+- [B - Vision Document](#b---vision-document)
+	- [Version 1.0](#version-10)
+		- [Table of Contents](#table-of-contents)
+		- [Vision (Small Project)](#vision-small-project)
+		- [1. Introduction](#1-introduction)
+			- [1.1. References](#11-references)
+		- [2. Positioning](#2-positioning)
+			- [2.1. Problem Statement](#21-problem-statement)
+			- [2.2. Product Position Statement](#22-product-position-statement)
+		- [3. Stakeholder and User Descriptions](#3-stakeholder-and-user-descriptions)
+			- [3.1. Stakeholder Summary](#31-stakeholder-summary)
+			- [3.2. User Summary](#32-user-summary)
+			- [3.3. User Environment](#33-user-environment)
+			- [3.4. Summary of Key Stakeholder or User Needs](#34-summary-of-key-stakeholder-or-user-needs)
+			- [3.5. Alternatives and Competition](#35-alternatives-and-competition)
+		- [4. Product Overview](#4-product-overview)
+			- [4.1. Product Perspective](#41-product-perspective)
+			- [4.2. Assumptions and Dependencies](#42-assumptions-and-dependencies)
+			- [4.3. Scope Boundaries](#43-scope-boundaries)
+		- [5. Product Features](#5-product-features)
+			- [Key Workflows (Mermaid Diagrams)](#key-workflows-mermaid-diagrams)
+		- [6. Non-Functional Requirements](#6-non-functional-requirements)
+- [C - Spec Kit Initialization](#c---spec-kit-initialization)
+- [D - AI Usage Report and Weekly Report](#d---ai-usage-report-and-weekly-report)
+	- [AI Usage Report](#ai-usage-report)
+		- [Declaration of No AI Use](#declaration-of-no-ai-use)
+		- [AI Usage Notes](#ai-usage-notes)
+	- [Weekly Report](#weekly-report)
+		- [Sprint Planning](#sprint-planning)
+		- [Scrum Meetings](#scrum-meetings)
+		- [Sprint Review](#sprint-review)
+	- [Jira Board](#jira-board)
+
+<div style="page-break-after: always;"></div>
 
 ## A - Project Plan
 
