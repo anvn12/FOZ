@@ -10,8 +10,7 @@ import type {
   FeedQuery,
 } from "#shared/schemas/interactions";
 import type { ErrorEnvelope } from "#shared/schemas/auth";
-import { useAuthStore } from "#frontend/stores/auth";
-import { fetchWithNetworkGuard } from "#frontend/api/network";
+import { authFetch } from "#frontend/api/authFetch";
 
 export class InteractionApiError extends Error {
   constructor(
@@ -25,13 +24,11 @@ export class InteractionApiError extends Error {
 }
 
 async function call<T>(path: string, init: RequestInit): Promise<T> {
-  const token = useAuthStore.getState().accessToken;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(init.headers as Record<string, string> | undefined),
   };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetchWithNetworkGuard(path, { ...init, credentials: "include", headers });
+  const res = await authFetch(path, { ...init, headers });
   if (!res.ok) {
     const env = (await res.json().catch(() => null)) as ErrorEnvelope | null;
     throw new InteractionApiError(

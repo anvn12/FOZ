@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { resolveReport } from "../../api/interactions";
-import { fetchWithNetworkGuard } from "../../api/network";
+import { authFetch } from "../../api/authFetch";
 import { ModeratorLayout } from "../../components/layout/ModeratorLayout";
 
 import { useAuthStore } from "../../stores/auth";
@@ -74,16 +74,12 @@ export function ReportsQueuePage() {
   async function fetchReports() {
     setLoading(true);
     try {
-      const token = useAuthStore.getState().accessToken;
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (token) headers.Authorization = `Bearer ${token}`;
-
       const url =
         filter === "all"
           ? "/api/v1/moderation/reports"
           : `/api/v1/moderation/reports?status=${filter}`;
 
-      const res = await fetchWithNetworkGuard(url, { credentials: "include", headers });
+      const res = await authFetch(url);
       if (res.ok) {
         const data = await res.json();
         setReports(data.reports);

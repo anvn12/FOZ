@@ -1,16 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PostSummaryResponse } from "#shared/schemas/post-summary";
-import { useAuthStore } from "#frontend/stores/auth";
-import { fetchWithNetworkGuard } from "#frontend/api/network";
+import { authFetch } from "#frontend/api/authFetch";
 
 export async function fetchPostSummary(postId: string): Promise<PostSummaryResponse> {
-  const token = useAuthStore.getState().accessToken;
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  const res = await fetchWithNetworkGuard(`/api/v1/posts/${postId}/summary`, {
-    credentials: "include",
-    headers,
+  const res = await authFetch(`/api/v1/posts/${postId}/summary`, {
+    headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => null);
@@ -20,14 +14,9 @@ export async function fetchPostSummary(postId: string): Promise<PostSummaryRespo
 }
 
 export async function refreshPostSummary(postId: string): Promise<PostSummaryResponse> {
-  const token = useAuthStore.getState().accessToken;
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  const res = await fetchWithNetworkGuard(`/api/v1/posts/${postId}/summary/refresh`, {
+  const res = await authFetch(`/api/v1/posts/${postId}/summary/refresh`, {
     method: "POST",
-    credentials: "include",
-    headers,
+    headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => null);
