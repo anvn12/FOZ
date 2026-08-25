@@ -2108,6 +2108,9 @@ Allows an Administrator to permanently remove an eligible user account, revoke a
 * **Screen 2 (Alternative Flow 2):** 
   ![](<./Prototype requirement/UC20-8.png>)
 
+* **Screen 3 (Alternative Flow 3):** 
+  ![](<./Prototype requirement/UC20-10.png>)
+
 ## Use-Case Specification: Assign Moderator Role
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
 
@@ -2187,6 +2190,17 @@ Allows an Administrator to promote an eligible Standard User to the Moderator ro
 
 * **Screen 3 (Alternative Flow 2):**
   ![](<./Prototype requirement/UC21-3.png>)
+
+* **Screen 3 (Alternative Flow 3):**
+  ![](<./Prototype requirement/UC20-9.png>)
+
+* **Screen 4 (Alternative Flow 4):**
+  ![](<./Prototype requirement/UC21-4.png>)
+
+* **Screen 5 (Alternative Flow 5):**
+  ![](<./Prototype requirement/UC21-5.png>)
+
+
 
 # B - Software Architecture: System Context Diagram
 
