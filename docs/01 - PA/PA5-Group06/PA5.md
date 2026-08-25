@@ -43,47 +43,57 @@
 
 # Table of Contents
 
-- [Table of Contents](#table-of-contents)
 - [A - Test Plan and Test Cases](#a---test-plan-and-test-cases)
-  - [1. Test Plan](#1-test-plan)
-    - [1.1 Test Objectives and Scope](#11-test-objectives-and-scope)
-      - [1.1.1 Test Objectives](#111-test-objectives)
-      - [1.1.2 Test Scope](#112-test-scope)
-        - [1.1.2.1 In-Scope](#11121-in-scope)
-        - [1.1.2.2 Out-of-Scope](#1122-out-of-scope)
-    - [1.2 Features to be tested](#12-features-to-be-tested)
-    - [1.3 Test Environment and Tools](#13-test-environment-and-tools)
-      - [1.3.1 Operating and Execution Environment](#131-operating-and-execution-environment)
-      - [1.3.2 Test and Inspection Tools](#132-test-and-inspection-tools)
-    - [1.4 Test Schedule and Responsibilities](#14-test-schedule-and-responsibilities)
-      - [1.4.1 Test Responsibilities](#141-test-responsibilities)
-      - [1.4.2 Test Schedule](#142-test-schedule)
-    - [1.5 Entry and Exit Criteria](#15-entry-and-exit-criteria)
-      - [1.5.1 Entry Criteria](#151-entry-criteria)
-      - [1.5.2 Exit Criteria](#152-exit-criteria)
-  - [2. Test Cases](#2-test-cases)
-  - [3. Test Execution](#3-test-execution)
-  - [4. Bug Report](#4-bug-report)
-    - [4.1 Bug Report File](#41-bug-report-file)
-    - [4.2 Test Summary](#42-test-summary)
-      - [1. Test Objectives](#1-test-objectives)
-      - [2. Test Execution Summary](#2-test-execution-summary)
-- [B - Export to PDF](#b---export-to-pdf)
-  - [1. Requirements](#1-requirements)
-    - [1.1 How to export to PDF](#11-how-to-export-to-pdf)
+	- [1. Test Plan](#1-test-plan)
+		- [1.1 Test Objectives and Scope](#11-test-objectives-and-scope)
+			- [1.1.1 Test Objectives](#111-test-objectives)
+			- [1.1.2 Test Scope](#112-test-scope)
+				- [1.1.2.1 In-Scope](#1121-in-scope)
+				- [1.1.2.2 Out-of-Scope](#1122-out-of-scope)
+		- [1.2 Features to be tested](#12-features-to-be-tested)
+		- [1.3 Test Environment and Tools](#13-test-environment-and-tools)
+			- [1.3.1 Operating and Execution Environment](#131-operating-and-execution-environment)
+			- [1.3.2 Test and Inspection Tools](#132-test-and-inspection-tools)
+		- [1.4 Test Schedule and Responsibilities](#14-test-schedule-and-responsibilities)
+			- [1.4.1 Test Responsibilities](#141-test-responsibilities)
+			- [1.4.2 Test Schedule](#142-test-schedule)
+		- [1.5 Entry and Exit Criteria](#15-entry-and-exit-criteria)
+			- [1.5.1 Entry Criteria](#151-entry-criteria)
+			- [1.5.2 Exit Criteria](#152-exit-criteria)
+	- [2. Test Cases](#2-test-cases)
+	- [3. Test Execution](#3-test-execution)
+	- [4. Bug Report](#4-bug-report)
+		- [4.1 Bug Report File](#41-bug-report-file)
+		- [4.2 Test Summary](#42-test-summary)
+			- [1. Test Objectives](#1-test-objectives)
+			- [2. Test Execution Summary](#2-test-execution-summary)
 - [C - Reflective Report](#c---reflective-report)
-  - [1. Team experience](#1-team-experience)
-  - [2. Spec Kit experience](#2-spec-kit-experience)
-  - [3. AI tools usage](#3-ai-tools-usage)
-  - [4. SDLC feedback](#4-sdlc-feedback)
-  - [5. Individual contributions](#5-individual-contributions)
+	- [1. Team experience](#1-team-experience)
+		- [What went well:](#what-went-well)
+		- [Challenges during the project:](#challenges-during-the-project)
+	- [2. Spec Kit experience](#2-spec-kit-experience)
+		- [How was the experience of using Spec Kit for specification-driven development?](#how-was-the-experience-of-using-spec-kit-for-specification-driven-development)
+		- [Benefits compared to traditional development:](#benefits-compared-to-traditional-development)
+		- [Limitations compared to traditional development:](#limitations-compared-to-traditional-development)
+	- [3. AI tools usage](#3-ai-tools-usage)
+		- [How AI coding tools contributed to the project:](#how-ai-coding-tools-contributed-to-the-project)
+		- [Effective aspects:](#effective-aspects)
+		- [Limitations encountered:](#limitations-encountered)
+	- [4. SDLC feedback](#4-sdlc-feedback)
+	- [5. Individual contributions](#5-individual-contributions)
+		- [Nguyễn Tuấn An (24127011) — Project Manager & DevOps, Full-Stack Developer](#nguy%E1%BB%85n-tu%E1%BA%A5n-an-24127011--project-manager--devops-full-stack-developer)
+		- [Nguyễn Hải Nam (24127088) — QA Engineer / Full-Stack Developer](#nguy%E1%BB%85n-h%E1%BA%A3i-nam-24127088--qa-engineer--full-stack-developer)
+		- [Nguyễn Hải Trọng (24127311) — Backend & Database Lead / Full-Stack Developer](#nguy%E1%BB%85n-h%E1%BA%A3i-tr%E1%BB%8Dng-24127311--backend--database-lead--full-stack-developer)
+		- [Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer](#ph%E1%BA%A1m-%C4%90inh-gia-kh%C3%A1nh-24127420--uiux-designer--full-stack-developer)
+		- [Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer](#v%C3%B5-an-ph%C3%BA-24127494--frontend-lead--full-stack-developer)
 - [D - Image example](#d---image-example)
-  - [1. Insert image rule](#1-insert-image-rule)
+	- [1. Insert image rule](#1-insert-image-rule)
+
 
 <div style="page-break-after: always;"></div>
 
 # A - Test Plan and Test Cases
-*Work performed by: Nguyen Hai Nam | Reviewed and Edited by: Nguyen Hai Nam,*
+*Work performed by: Nguyễn Hải Nam | Reviewed and Edited by: Võ An Phú*
 
 ## 1. Test Plan
 
@@ -221,17 +231,17 @@
 
 > The below link contains the manual functional test cases designed by our team.
 
-[Team Manual Functional Test Cases](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx)
+[Team Manual Functional Test Cases](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx) `./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx`
 
 > The link below contains our team's document on reviewing, refining, and adding AI-generated test cases.
 
-[Team's Document on Reviewing, Refining, and Adding AI-generated Test Cases](./Review-AI-Test-Case/)
+[Team's Document on Reviewing, Refining, and Adding AI-generated Test Cases](./Review-AI-Test-Case/) `./Review-AI-Test-Case/`
 
 ## 3. Test Execution
 
 > The below link contains the manual functional test execution with required records performed by our team.
 
-[Team Manual Functional Test Execution](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx)
+[Team Manual Functional Test Execution](./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx) `./Individual-Test-Execution/Individual-Manual-Test-Cases-Execution.xlsx`
 
 ## 4. Bug Report
 
@@ -239,7 +249,7 @@
 
 > The link below contains the bug report performed by our team.
 
-[Team Bug Report](./Individual-Bug-Report/Individual-Bug-Report.xlsx)
+[Team Bug Report](./Individual-Bug-Report/Individual-Bug-Report.xlsx) `./Individual-Bug-Report/Individual-Bug-Report.xlsx`
 
 ### 4.2 Test Summary
 
@@ -265,25 +275,10 @@ The objective of this test cycle was to validate the functionality of key featur
 | **Total** | | | **103** | **25** | **0** | **103** | **100%** |
 
 *(Note: During the initial testing phase, 25 test steps had associated Defect IDs logged. All 25 failed/defective test steps have since been addressed, re-tested, and successfully verified. The application now yields a clean 100% pass rate across these core use cases.)*
-# B - Export to PDF
-
-*Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
-
-## 1. Requirements
-
-Install Obsidian
-
-Install Plugin **"Better export PDF"**
-
-Use default format
-
-### 1.1 How to export to PDF
-
-==CTRL P -> Better export PDF: Export current file to PDF==
 
 # C - Reflective Report
 
-*Work performed by: Group 06 | Reviewed by: Nguyễn Tuấn An | Edited by: Nguyễn Tuấn An*
+*Work performed by: Group 06 | Reviewed by: Nguyễn Tuấn An and Võ An Phú | Edited by: Nguyễn Tuấn An*
 
 
 ## 1. Team experience
@@ -393,15 +388,3 @@ During this project, I built up some core features like searching, moderator,...
 ### Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer
 
 In this project, I think my contribution was a lot, from setting up the project speckit foundation, team AI usage, the web scaffold, key feature like AuthN, frontend UI overhaul to documentations. I have learnt a lot about architecture and data flow of the whole system throughtout this project. Overall it was pleasant
-
-# D - Image example
-
-*Work performed by: [Name] | Reviewed by: [Name] | Edited by: [Name]*
-
-## 1. Insert image rule
-
-Insert as markdown format `![Name](image link)`
-
-Example as below:
-
-![Jira Board 1](./PA2-Group06/images/jira1.png)
