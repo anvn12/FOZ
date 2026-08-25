@@ -5,6 +5,7 @@ import { useAuthStore } from "#frontend/stores/auth";
 import { NetworkError } from "#frontend/api/network";
 import { ProfileEditModal } from "#frontend/components/ProfileEditModal.js";
 import { NavBar } from "#frontend/components/NavBar.js";
+import { PageContainer } from "#frontend/components/PageContainer";
 import { useQuery } from "@tanstack/react-query";
 import { listPosts, listUserComments } from "#frontend/api/interactions";
 import { FeedPostItem, formatRelativeTime } from "#frontend/components/FeedPostItem";
@@ -67,16 +68,14 @@ export function ProfilePage() {
     return (
       <NavBar>
         <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
-          <div className="w-full max-w-7xl flex relative justify-center">
-            <div className="flex-1 w-full flex justify-center">
+          <PageContainer>
               <main className="max-w-2xl w-full min-h-screen flex items-center justify-center">
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-700 border-t-zinc-900 dark:border-t-white" />
                 <span className="ml-3 text-zinc-600 dark:text-zinc-400 font-medium">
                   Loading profile...
                 </span>
               </main>
-            </div>
-          </div>
+          </PageContainer>
         </div>
       </NavBar>
     );
@@ -87,8 +86,7 @@ export function ProfilePage() {
     return (
       <NavBar>
         <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
-          <div className="w-full max-w-7xl flex relative justify-center">
-            <div className="flex-1 w-full flex justify-center">
+          <PageContainer>
               <main className="max-w-2xl w-full min-h-screen px-4 py-8">
                 <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700">
                   <h2 className="text-lg font-semibold">
@@ -101,8 +99,7 @@ export function ProfilePage() {
                   </p>
                 </div>
               </main>
-            </div>
-          </div>
+          </PageContainer>
         </div>
       </NavBar>
     );
@@ -138,8 +135,7 @@ export function ProfilePage() {
   return (
     <NavBar>
       <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
-        <div className="w-full max-w-7xl flex relative justify-center">
-          <div className="flex-1 w-full flex justify-center">
+        <PageContainer>
             <main className="max-w-2xl w-full min-h-screen pb-20">
               <div className="px-4 py-6">
                 {/* Header Profile Section with Modern Banner */}
@@ -432,8 +428,7 @@ export function ProfilePage() {
                 </div>
               </div>
             </main>
-          </div>
-        </div>
+        </PageContainer>
 
         {isOwner && (
           <ProfileEditModal

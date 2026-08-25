@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "#frontend/stores/auth";
 import { NavBar } from "#frontend/components/NavBar.js";
+import { PageContainer } from "#frontend/components/PageContainer";
 import { GuestLoginModal, GUEST_LOGIN_PROMPT_KEY } from "#frontend/components/GuestLoginModal";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -71,12 +72,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
     <NavBar>
     <div onWheel={handleWheel} className="w-full min-h-screen md:h-screen bg-background flex justify-center text-on-background antialiased md:overflow-hidden">
       {/* Container for layouts */}
-      <div className="w-full max-w-7xl flex relative justify-center h-full gap-6">
-
-        {/* ======================================= */}
-        {/* MAIN CONTENT AREA: Centered Feed        */}
-        {/* ======================================= */}
-        <div className="flex-1 w-full flex justify-center h-full">
+      <PageContainer sidebar={<TrendingHashtagsWidget />}>
           <main className="max-w-2xl w-full min-h-screen md:min-h-0 md:h-full flex flex-col pb-20 md:pb-4">
             {/* Top Sticky Header */}
             <header className="sticky top-0 md:relative bg-surface/90 backdrop-blur-md z-40 flex-shrink-0">
@@ -138,12 +134,7 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
               </div>
             </div>
           </main>
-        </div>
-
-      {/* Right Sidebar: Trending Hashtags */}
-      <aside className="hidden lg:block w-80 pt-4 pr-16 shrink-0">
-        <TrendingHashtagsWidget />
-      </aside>
+      </PageContainer>
 
       {/* First-visit or action prompt for guests */}
       <GuestLoginModal
@@ -152,7 +143,6 @@ export function HomePage({ feedType }: { feedType: "for-you" | "latest" }) {
         {...guestModalConfig}
       />
 
-      </div>
     </div>
     </NavBar>
   );
