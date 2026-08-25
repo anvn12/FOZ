@@ -2008,12 +2008,7 @@ Allows an Administrator to permanently delete an authorized post or comment and 
 2. The system makes no changes and displays: "This content is no longer available."
 3. The use case ends.
 
-##### 3.2.4 Target Not Eligible for Force Deletion
-1. If at step 5 the target is not an authorized target or its related report is in a state that does not permit permanent deletion.
-2. The system rejects the request, records no deletion, and displays: "This content cannot be permanently deleted in its current state."
-3. The use case ends.
-
-##### 3.2.5 Deletion Transaction Fails
+##### 3.2.4 Deletion Transaction Fails
 1. If at step 6 the content, dependent-record, report, or audit update fails.
 2. The system rolls back the entire transaction and displays: "The content could not be deleted. Please try again."
 3. The use case ends.
@@ -2038,10 +2033,13 @@ Allows an Administrator to permanently delete an authorized post or comment and 
   ![](<./Prototype requirement/UC19-4.png>)
 
 * **Screen 2 (Alternative Flow 2):** 
-  ![](<./Prototype requirement/UC19-2.png>)
+  ![](<./Prototype requirement/UC19-7.png>)
 
 * **Screen 3 (Alternative Flow 3):** 
-  ![](<./Prototype requirement/UC19-3.png>)
+  ![](<./Prototype requirement/UC19-6.png>)
+
+* **Screen 3 (Alternative Flow 4):** 
+  ![](<./Prototype requirement/UC19-5.png>)
 
 ## Use-Case Specification: Permanently Remove User
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
@@ -2083,17 +2081,7 @@ Allows an Administrator to permanently remove an eligible user account, revoke a
 2. The system displays: "Rationale must be at least 5 words long for account deletion."
 3. The modal remains open, the deletion is prevented, and the flow resumes at step 4.
 
-##### 3.2.3 Target Not Found or Already Removed
-1. If at step 5 the target account no longer exists or has already been removed.
-2. The system makes no changes and displays: "This user account is no longer available."
-3. The use case ends.
-
-##### 3.2.4 Target No Longer Eligible
-1. If at step 5 the target account's role has changed to `administrator`, the target is the acting Administrator, or account-protection rules otherwise make the target ineligible.
-2. The system rejects the request, displays: "This account cannot be permanently removed.", and makes no changes.
-3. The use case ends.
-
-##### 3.2.5 Data-Wipe Transaction Fails
+##### 3.2.3 Data-Wipe Transaction Fails
 1. If at step 6 a dependent-record deletion, session revocation, account deletion, or audit-log operation fails.
 2. The system rolls back the entire transaction and displays: "The user account could not be removed. Please try again."
 3. The use case ends.
@@ -2115,13 +2103,10 @@ Allows an Administrator to permanently remove an eligible user account, revoke a
 
 ### 7. Prototype Requirement
 * **Screen 1 (Basic Flow):** 
-  ![](<./Prototype requirement/UC20-1.png>)
+  ![](<./Prototype requirement/UC20-7.png>)
 
-* **Screen 2 (Alternative Flow 1):** 
-  ![](<./Prototype requirement/UC20-3.png>)
-
-* **Screen 3 (Alternative Flow 2):** 
-  ![](<./Prototype requirement/UC20-2.png>)
+* **Screen 2 (Alternative Flow 2):** 
+  ![](<./Prototype requirement/UC20-8.png>)
 
 ## Use-Case Specification: Assign Moderator Role
 *Reviewed and Edited by: Nguyen Hai Nam | Reviewed by: Vo An Phu*
