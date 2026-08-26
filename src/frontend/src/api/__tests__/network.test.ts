@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { toast } from "react-hot-toast";
-import { fetchWithNetworkGuard, isOffline, NetworkError, showOfflineToast } from "../network.js";
+import {
+  fetchWithNetworkGuard,
+  isOffline,
+  NetworkError,
+  ServerUnavailableError,
+  showOfflineToast,
+} from "../network.js";
 
 vi.mock("react-hot-toast", () => ({
   toast: { error: vi.fn() },
@@ -38,12 +44,38 @@ describe("network guard", () => {
     );
   });
 
-  it("throws NetworkError and toasts when fetch rejects (server unreachable)", async () => {
+  it("throws ServerUnavailableError (not NetworkError) when fetch rejects while still online", async () => {
+    // The browser still reports a live connection — a flaky/unreachable
+    // server (or our own timeout) is not the same thing as the user being
+    // offline, so this must NOT surface as "you're offline".
     Object.defineProperty(navigator, "onLine", { configurable: true, value: true });
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
 
+    await expect(fetchWithNetworkGuard("/api/v1/test")).rejects.toBeInstanceOf(
+      ServerUnavailableError,
+    );
+    expect(toast.error).toHaveBeenCalledWith(
+      "We're having trouble reaching the server. Please try again.",
+      expect.objectContaining({ id: "server-error-toast" }),
+    );
+  });
+
+  it("throws NetworkError and toasts the offline message when the browser goes offline mid-request", async () => {
+    Object.defineProperty(navigator, "onLine", { configurable: true, value: true });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(() => {
+        // Simulate the connection dropping while the request was in flight.
+        Object.defineProperty(navigator, "onLine", { configurable: true, value: false });
+        return Promise.reject(new TypeError("Failed to fetch"));
+      }),
+    );
+
     await expect(fetchWithNetworkGuard("/api/v1/test")).rejects.toBeInstanceOf(NetworkError);
-    expect(toast.error).toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith(
+      "You're offline. Check your connection and try again.",
+      expect.objectContaining({ id: "offline-toast" }),
+    );
   });
 
   it("returns the response on success", async () => {

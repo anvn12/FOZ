@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useProfile, useProfileByUsername } from "#frontend/api/profile";
 import { useAuthStore } from "#frontend/stores/auth";
-import { NetworkError } from "#frontend/api/network";
+import { NetworkError, ServerUnavailableError } from "#frontend/api/network";
 import { ProfileEditModal } from "#frontend/components/ProfileEditModal.js";
 import { NavBar } from "#frontend/components/NavBar.js";
 import { PageContainer } from "#frontend/components/PageContainer";
@@ -83,20 +83,25 @@ export function ProfilePage() {
 
   if (error || !profile) {
     const isNetworkError = error instanceof NetworkError;
+    const isServerError = error instanceof ServerUnavailableError;
+    const title = isNetworkError
+      ? "You're offline"
+      : isServerError
+        ? "Server unavailable"
+        : "Profile Not Found";
+    const message = isNetworkError
+      ? "Check your connection and try again."
+      : isServerError
+        ? "We're having trouble reaching the server. Please try again."
+        : "The profile you are looking for does not exist or could not be loaded.";
     return (
       <NavBar>
         <div className="w-full min-h-screen bg-background flex justify-center text-on-background antialiased">
           <PageContainer>
               <main className="max-w-2xl w-full min-h-screen px-4 py-8">
                 <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700">
-                  <h2 className="text-lg font-semibold">
-                    {isNetworkError ? "You're offline" : "Profile Not Found"}
-                  </h2>
-                  <p className="mt-1 text-sm">
-                    {isNetworkError
-                      ? "Check your connection and try again."
-                      : "The profile you are looking for does not exist or could not be loaded."}
-                  </p>
+                  <h2 className="text-lg font-semibold">{title}</h2>
+                  <p className="mt-1 text-sm">{message}</p>
                 </div>
               </main>
           </PageContainer>

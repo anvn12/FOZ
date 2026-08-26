@@ -24,11 +24,12 @@ import { ReportModal } from "#frontend/components/ReportModal";
 import { PostSummaryCard } from "#frontend/components/PostSummaryCard";
 import { isMobileDevice } from "#frontend/utils/device";
 import { sortComments, type SortMode } from "#frontend/utils/comment-sorting";
-import { NetworkError } from "#frontend/api/network";
+import { NetworkError, ServerUnavailableError } from "#frontend/api/network";
 
 function showError(error: Error) {
-  // The network guard already toasts for connectivity failures; don't duplicate.
-  if (error instanceof NetworkError) return;
+  // The network guard already toasts for connectivity/server-reachability
+  // failures; don't duplicate.
+  if (error instanceof NetworkError || error instanceof ServerUnavailableError) return;
   if (error instanceof InteractionApiError && error.fields) {
     const messages = Object.values(error.fields);
     const firstMsg = messages[0];
@@ -57,6 +58,7 @@ export function PostPage() {
     data: post,
     isLoading: isPostsLoading,
     isError: isPostError,
+    error: postError,
     refetch: refetchPost,
   } = useQuery({
     queryKey: ["post", postId],
@@ -357,7 +359,11 @@ export function PostPage() {
                 </div>
               ) : isPostError ? (
                 <div className="p-8 text-center text-outline flex flex-col items-center gap-3">
-                  <span>Couldn't load this post. Check your connection and try again.</span>
+                  <span>
+                    {postError instanceof NetworkError
+                      ? "You're offline. Check your connection and try again."
+                      : "We're having trouble reaching the server. Please try again."}
+                  </span>
                   <button
                     type="button"
                     onClick={() => refetchPost()}

@@ -3,7 +3,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { createPost, InteractionApiError } from "#frontend/api/interactions";
 import { useAuthStore } from "#frontend/stores/auth";
-import { NetworkError, showOfflineToast, isOffline } from "#frontend/api/network";
+import {
+  NetworkError,
+  ServerUnavailableError,
+  isOffline,
+  showOfflineToast,
+  showServerErrorToast,
+} from "#frontend/api/network";
 import { useProfile } from "#frontend/api/profile";
 import {
   validateImageFile,
@@ -114,6 +120,10 @@ export function CreatePostModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       toast.dismiss();
       if (err instanceof NetworkError) {
         showOfflineToast();
+        return;
+      }
+      if (err instanceof ServerUnavailableError) {
+        showServerErrorToast();
         return;
       }
       if (err instanceof InteractionApiError && err.fields) {

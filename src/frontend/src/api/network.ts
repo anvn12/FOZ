@@ -1,13 +1,29 @@
 import { toast } from "react-hot-toast";
 
 /**
- * Network error sentinel. Thrown when a request cannot reach the server
- * (offline, DNS failure, connection refused, etc.).
+ * Network error sentinel. Thrown ONLY when the browser itself reports no
+ * internet connection (navigator.onLine === false). Do not throw this for a
+ * failed/timed-out fetch while the browser still reports being online — that
+ * means the server (or our own request timeout) is the problem, not the
+ * user's connection. See `ServerUnavailableError` for that case.
  */
 export class NetworkError extends Error {
   constructor(message = "You're offline. Check your connection and try again.") {
     super(message);
     this.name = "NetworkError";
+  }
+}
+
+/**
+ * Thrown when a request fails or times out while the browser still reports
+ * being online — i.e. our backend is slow, unreachable, or dropped the
+ * connection. Distinct from `NetworkError` so the UI doesn't tell the user
+ * they're offline when they aren't.
+ */
+export class ServerUnavailableError extends Error {
+  constructor(message = "We're having trouble reaching the server. Please try again.") {
+    super(message);
+    this.name = "ServerUnavailableError";
   }
 }
 
@@ -29,13 +45,27 @@ export function showOfflineToast(): void {
 }
 
 /**
+ * Show the server-unavailable toast (slow/unreachable backend, not the
+ * user's connection). Stable id so retries collapse into one toast.
+ */
+export function showServerErrorToast(): void {
+  toast.error("We're having trouble reaching the server. Please try again.", {
+    id: "server-error-toast",
+    duration: 4000,
+  });
+}
+
+/**
  * Shared fetch wrapper used by every API module.
  *
  * - Before sending: if the browser reports offline, toast + throw immediately
  *   (no pointless request).
- * - After sending: if the request throws a network-level error (fetch rejects),
- *   toast + throw `NetworkError` so callers can distinguish connectivity
- *   problems from API errors.
+ * - After sending: if the request throws (fetch rejects, or our own timeout
+ *   aborts it), re-check `navigator.onLine` to decide what actually
+ *   happened — only genuine offline gets the "you're offline" toast; a
+ *   flaky/slow/unreachable server while still online gets a distinct
+ *   `ServerUnavailableError` instead, so we never blame the user's
+ *   connection for our own backend's problems.
  */
 export async function fetchWithNetworkGuard(
   input: RequestInfo | URL,
@@ -61,8 +91,12 @@ export async function fetchWithNetworkGuard(
     });
     return res;
   } catch {
-    showOfflineToast();
-    throw new NetworkError();
+    if (isOffline()) {
+      showOfflineToast();
+      throw new NetworkError();
+    }
+    showServerErrorToast();
+    throw new ServerUnavailableError();
   } finally {
     clearTimeout(timeoutId);
   }
