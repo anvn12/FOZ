@@ -88,6 +88,12 @@ export function listPosts(authorId?: string) {
   });
 }
 
+export function getPost(postId: string) {
+  return call<PostResponse & { likeCount: number; liked: boolean }>(`/api/v1/posts/${postId}`, {
+    method: "GET",
+  });
+}
+
 export function createComment(postId: string, input: CreateCommentRequest) {
   return call<CommentResponse>(`/api/v1/posts/${postId}/comments`, {
     method: "POST",

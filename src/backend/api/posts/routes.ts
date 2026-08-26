@@ -10,6 +10,7 @@ import {
   createPost,
   deletePost,
   listPostFeed,
+  getPost,
   updatePostBody,
   createRepost,
   removeRepost,
@@ -85,6 +86,19 @@ postRouter.get("/", optionalAuth, async (req: AuthedRequest, res, next) => {
     const items = await listPostFeed(req.user?.id, authorId);
     return res.status(200).json({ items });
   } catch (err) {
+    next(err);
+  }
+});
+
+postRouter.get("/:postId", optionalAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const postId = req.params.postId as string;
+    const post = await getPost(postId, req.user?.id);
+    return res.status(200).json(post);
+  } catch (err) {
+    if (err instanceof Error && err.message === "POST_NOT_FOUND") {
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "Post not found" } });
+    }
     next(err);
   }
 });

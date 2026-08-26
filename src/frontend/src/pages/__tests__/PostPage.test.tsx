@@ -23,7 +23,7 @@ vi.mock("react-hot-toast", () => {
   return { toast: toastMock, default: toastMock };
 });
 
-const listPosts = vi.fn();
+const getPost = vi.fn();
 const listComments = vi.fn();
 const createComment = vi.fn();
 
@@ -31,7 +31,7 @@ vi.mock("../../api/interactions.js", async (importOriginal) => {
   const actual = await importOriginal<typeof InteractionsApi>();
   return {
     ...actual,
-    listPosts: (...args: unknown[]) => listPosts(...args),
+    getPost: (...args: unknown[]) => getPost(...args),
     listComments: (...args: unknown[]) => listComments(...args),
     createComment: (...args: unknown[]) => createComment(...args),
   };
@@ -74,7 +74,7 @@ const makeComment = (overrides: Record<string, unknown>) => ({
 describe("PostPage Guest Interactions (TC30)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    listPosts.mockResolvedValue({ items: [basePost] });
+    getPost.mockResolvedValue(basePost);
     listComments.mockResolvedValue({ items: [makeComment({})] });
     createComment.mockRejectedValue(new NetworkError());
     useAuthStore.setState({ user: null, accessToken: null });
@@ -93,7 +93,7 @@ describe("PostPage Guest Interactions (TC30)", () => {
 describe("PostPage Comment Sorting (TC24)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    listPosts.mockResolvedValue({ items: [basePost] });
+    getPost.mockResolvedValue(basePost);
   });
 
   it("TC24: Allows user to select comment sorting tab (Top, Newest, Oldest)", async () => {

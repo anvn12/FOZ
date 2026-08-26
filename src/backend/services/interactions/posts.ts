@@ -188,6 +188,20 @@ export async function listPostFeed(viewerId?: string, authorId?: string) {
 }
 
 /**
+ * Fetch a single post by id, enriched the same way as feed rows (attachments,
+ * counts, viewer reaction/repost state). Used by the post detail page so it
+ * doesn't have to pull the entire feed just to find one post.
+ */
+export async function getPost(postId: string, viewerId?: string) {
+  const row = await getPostById(postId);
+  if (!row || row.deletedAt || row.visibilityState !== "public") {
+    throw new Error("POST_NOT_FOUND");
+  }
+  const [enriched] = await enrichPostList([row], viewerId);
+  return enriched;
+}
+
+/**
  * Replace repost rows with their original post's content, keeping the repost's
  * id as repostId and its createdAt for recency. Mirrors listPostFeed's unwrap
  * so ranked feeds don't render blank repost shells.

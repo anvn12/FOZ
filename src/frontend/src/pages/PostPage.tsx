@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import {
-  listPosts,
+  getPost,
   listComments,
   createComment,
   deleteComment,
@@ -53,11 +53,17 @@ export function PostPage() {
     }
   };
 
-  const { data: postsData, isLoading: isPostsLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: () => listPosts(),
+  const {
+    data: post,
+    isLoading: isPostsLoading,
+    isError: isPostError,
+    refetch: refetchPost,
+  } = useQuery({
+    queryKey: ["post", postId],
+    queryFn: () => getPost(postId),
+    enabled: Boolean(postId),
+    retry: false,
   });
-  const post = postsData?.items?.find((item) => item.id === postId);
 
   const commentsQuery = useQuery({
     queryKey: ["comments", postId],
@@ -348,6 +354,17 @@ export function PostPage() {
                       )}
                     </div>
                   </div>
+                </div>
+              ) : isPostError ? (
+                <div className="p-8 text-center text-outline flex flex-col items-center gap-3">
+                  <span>Couldn't load this post. Check your connection and try again.</span>
+                  <button
+                    type="button"
+                    onClick={() => refetchPost()}
+                    className="px-4 py-2 rounded-full bg-surface-container-low text-primary text-sm font-semibold hover:bg-surface-container transition-colors"
+                  >
+                    Try again
+                  </button>
                 </div>
               ) : (
                 <div className="p-8 text-center text-outline">Post not found</div>
