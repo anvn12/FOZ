@@ -86,8 +86,6 @@
 		- [Nguyễn Hải Trọng (24127311) — Backend & Database Lead / Full-Stack Developer](#nguy%E1%BB%85n-h%E1%BA%A3i-tr%E1%BB%8Dng-24127311--backend--database-lead--full-stack-developer)
 		- [Phạm Đinh Gia Khánh (24127420) — UI/UX Designer & Full-Stack Developer](#ph%E1%BA%A1m-%C4%90inh-gia-kh%C3%A1nh-24127420--uiux-designer--full-stack-developer)
 		- [Võ An Phú (24127494) — Frontend Lead & Full-Stack Developer](#v%C3%B5-an-ph%C3%BA-24127494--frontend-lead--full-stack-developer)
-- [D - Image example](#d---image-example)
-	- [1. Insert image rule](#1-insert-image-rule)
 
 
 <div style="page-break-after: always;"></div>
